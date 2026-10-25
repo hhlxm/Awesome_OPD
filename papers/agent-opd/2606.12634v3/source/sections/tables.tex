@@ -1,0 +1,84 @@
+% ============================================================================
+% Shared main-body table definitions. \input by each venue's main.tex.
+% Canonical number set (single source of truth across abstract / experiments /
+% tables / figures). The AppWorld Vanilla GRPO row is the reported in-family comparator.
+% ============================================================================
+\providecommand{\venuecompacttablefont}{\scriptsize}
+
+% ---- T1: AppWorld held-out results (main). Comparator = Vanilla GRPO. ----
+\begin{table}[t]
+  \centering
+  \small
+  \begin{tabular}{lcccc}
+    \hline
+    & \multicolumn{2}{c}{\textbf{test\_normal}} & \multicolumn{2}{c}{\textbf{test\_challenge}} \\
+    \textbf{Method} & TGC & SGC & TGC & SGC \\
+    \hline
+    Base Qwen3.5-4B          & 23.8 & 10.7 & 11.3 & 2.2 \\
+    Vanilla GRPO            & 42.9 & 16.1 & 24.7 & 7.2 \\
+    \textbf{SGCD (ours)}     & \textbf{45.6} & \textbf{17.9} & \textbf{27.0} & \textbf{8.5} \\
+    \hline
+  \end{tabular}
+  \caption{AppWorld held-out task-goal completion (TGC) and scenario-goal
+    completion (SGC), reported as the official evaluator aggregates (\%), under
+    greedy decoding with Qwen3.5-4B. \texttt{test\_normal}
+    ($n{=}168$ tasks / $56$ scenarios) and \texttt{test\_challenge}
+    ($n{=}417$ / $139$) are reported separately. SGCD raises official TGC over
+    the un-finetuned base and gives higher held-out point
+    estimates than the Vanilla GRPO control under matched rollout-generation
+    hyperparameters, environment, and evaluation settings. This recipe-level
+    comparison uses reference-KL only
+    in Vanilla GRPO; SGCD instead uses detached divergence for credit weighting.
+    AppWorld values are single-training-run point
+    estimates; time and compute constraints prevented multi-seed reruns.}
+  \label{tab:appworld}
+\end{table}
+
+% ---- T2: tau^3-airline held-out results (main). ----
+\begin{table}[t]
+  \centering
+  \venuecompacttablefont
+  \setlength{\tabcolsep}{2.2pt}
+  \begin{tabular}{lcccc}
+    \hline
+    \textbf{Method} & \textbf{step} & \textbf{mean Pass$^1$} & \textbf{action succ.} & \textbf{info succ.} \\
+    \hline
+    SFT base              & 800 & 0.438 & 26.9 & 68.8 \\
+    SDPO                  & 300 & 0.317 & 0.0 & 91.7 \\
+    Vanilla GRPO         & 120 & 0.583 & 41.0 & 91.7 \\
+    \textbf{SGCD (ours)}  & 120 & \textbf{0.617} & \textbf{44.9} & \textbf{93.8} \\
+    \hline
+  \end{tabular}
+  \caption{$\tau^3$-airline held-out mean Pass$^1$ and per-category
+    diagnostics over 20 task specifications. Each task uses a paired grid of
+    three evaluation seeds and four greedy trials per seed. Pass$^1$ is the
+    macro-average of per-task binary success rates; because every task has 12
+    episodes, it also equals total successes divided by 240. \emph{Action succ.} is the state-changing-action
+    diagnostic; \emph{info succ.} is the information-only diagnostic. The SGCD
+    row is the closest-to-mean run ($148/240$); Table~\ref{tab:seedrobust}
+    reports the three-training-run summary, and the tau margin is directional rather
+    than variance-controlled. Vanilla GRPO uses the benchmark reference-KL
+    regularizer with coefficient $0.05$; SGCD omits reference-KL and uses
+    detached divergence for credit weighting.}
+  \label{tab:tau3}
+\end{table}
+
+% ---- T3: tau SGCD seed variation vs fixed single-run anchor. ----
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{llcc}
+\toprule
+  Metric & Anchor & SGCD (mean$\pm$std) & min $\Delta$ \\
+\midrule
+$\tau^3$ mean Pass$^1$  & 0.583 & $0.615\pm0.006$ & $+0.025$ \\
+  \bottomrule
+\end{tabular}
+\caption{$\tau^3$-airline SGCD seed variation against the fixed single-run
+Vanilla GRPO anchor. SGCD uses three independent training runs; its standard
+deviation is SGCD-only dispersion, not between-method variance. \emph{min
+$\Delta$} is the worst-seed margin over the anchor. We make no significance
+claim; action/information diagnostics appear only in Table~\ref{tab:tau3}.}
+\label{tab:seedrobust}
+\end{table}

@@ -1,0 +1,77 @@
+\section{Introduction}
+\label{sec:intro}
+
+Recent multi-turn tool-agent work \citep{coevolve2026,multiturnguide2025} uses
+group-relative policy-gradient (PG) methods such as GRPO
+\citep{deepseekmath2024}. These methods can
+learn from outcome verification alone, but their token-level credit assignment is
+coarse: the same trajectory-level advantage is broadcast across long sequences
+of reasoning, API calls, tool observations, and final answers. Self-distillation
+(SD) offers an attractive complement: use the policy's own successful behavior,
+or a teacher conditioned on privileged training-time information, to supply a
+denser signal \citep{sdpo2026,opsd2026,skillsd2026,sdar2026}. The hard part is
+making that signal help the policy gradient rather than fight it.
+
+\paragraph{The hidden failure.} We first show, on the corrected $\tau^3$-airline
+customer-service task set in the $\tau$-bench family
+\citep{taubench2024,tau2bench2025,tau3bench2026}, that naive SD
+\emph{can degrade} long-horizon tool-use. Over training, the model
+increasingly solves easy information-only cases without using tools, while
+state-changing action tasks collapse to zero success (\S\ref{sec:diagnosis}).
+The aggregate score conceals the mechanism: the policy is not learning a better
+agent; it is abandoning executable tool-use behavior the base or supervised
+checkpoint already possessed.
+
+\paragraph{Design implication: use distillation for credit, not as a competing loss.}
+The contrast with a $\tau^3$ Vanilla GRPO control using the benchmark
+reference-KL is informative: it preserves
+tool-use and reaches held-out mean Pass$^1$ $0.583$, whereas SDPO reaches
+$0.317$ and collapses on state-changing action tasks. Our subsequent
+AppWorld probes led to the
+same design constraint. Direct SD pressure can be live and non-inert, yet still
+degrade action quality when the teacher target is misaligned with what the
+verifier rewards; our diagnostic direct/uncapped SD ablation
+falls below the reported Vanilla GRPO control. This evidence motivates
+repurposing
+teacher/student divergence as a \emph{credit-weighting signal}: it determines
+where the broadcast policy-gradient advantage should receive bounded
+token-level emphasis, while the
+reward-grounded policy optimization remains the update driver. On AppWorld,
+this detached signal replaces Vanilla GRPO's reference-KL operationally, but
+affects the actor only through credit weights rather than an equivalent penalty.
+
+\paragraph{The method.} We introduce \textbf{Sibling-Guided Credit Distillation
+(SGCD)}. Dynamic sampling produces mixed groups of verified successful and failed
+sibling rollouts for the same task; \creditreferenceproviderphrase{} summarizes their
+contrast into a stepwise credit reference (what succeeded, which branches failed,
+where failures deviated). The policy is scored twice on the rollout: once under
+the ordinary student context and once under the credit reference as a stop-gradient
+teacher. Dense top-$K$ reverse-KL and entropy convert the divergence into
+clipped token-level advantage weights inside the policy-gradient surrogate
+(\S\ref{sec:method}). No distillation loss touches the actor: distillation guides
+credit, and policy gradient performs the update.
+
+\paragraph{Training-time boundary.} The external LLM, sibling evidence, and
+credit reference are training-only; the inference-time student sees the same clean
+task prompt as the policy, with no oracle, sibling rollouts, external LLM, or credit
+reference. Because the divergence signal is detached from the actor parameters
+and only reshapes the verified advantage, SGCD removes the teacher-matching
+actor-gradient path that can pull the model toward actions the clean deployment
+prompt cannot reproduce.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+  \item A tool-use diagnosis: naive self-distillation can reinforce benchmark
+    shortcuts, preserving easy information-only behavior while losing
+    state-changing action capability (\S\ref{sec:diagnosis}).
+  \item \textbf{SGCD}: a sibling-guided credit-distillation method that builds a
+    stepwise credit reference from mixed successful/failed rollouts and uses
+    dense teacher/student divergence to reweight, not replace, the PG update
+    (\S\ref{sec:method}).
+  \item An empirical study on AppWorld and $\tau^3$-airline: AppWorld carries the
+    main positive held-out result, while $\tau^3$-airline provides a directional
+    held-out comparison and a failure-mode diagnostic. Ablations give lower
+    point estimates when the sibling credit reference or divergence-driven
+    weighting is removed, and direct SD pressure falls below the reported Vanilla
+    GRPO control (\S\ref{sec:experiments}).
+\end{enumerate}

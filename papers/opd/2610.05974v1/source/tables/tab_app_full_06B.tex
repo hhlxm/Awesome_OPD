@@ -1,0 +1,33 @@
+\begin{table}[h]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Per-benchmark results for the 0.6B student (\%). Direct GRPO uses no teacher. Macro averages weight each benchmark equally.}
+\label{tab:app-full-06B}
+\begin{tabular}{llrrrrrrrrr}
+\toprule
+ & & & \multicolumn{4}{c}{Teacher: base-8B} & \multicolumn{4}{c}{Teacher: GRPO-8B} \\
+\cmidrule(lr){4-7}\cmidrule(lr){8-11}
+Benchmark & Metric & \shortstack{Direct\\GRPO} & OPD-r & OPD-f & \shortstack{TS-OPD\\(routing only)} & TS-OPD & OPD-r & OPD-f & \shortstack{TS-OPD\\(routing only)} & TS-OPD \\
+\midrule
+MATH500 & Avg@8 & 62.58 & 53.08 & 51.48 & 55.95 & 56.67 & 64.45 & 62.20 & 65.25 & 68.10 \\
+ & Pass@8 & 82.00 & 78.80 & 78.00 & 82.80 & 81.60 & 85.00 & 82.60 & 84.40 & 85.40 \\
+Minerva & Avg@8 & 16.87 & 10.29 & 10.62 & 11.17 & 12.18 & 18.01 & 17.23 & 16.96 & 17.28 \\
+ & Pass@8 & 30.88 & 25.74 & 27.21 & 28.31 & 26.84 & 33.46 & 34.93 & 32.72 & 32.35 \\
+OlympiadBench & Avg@8 & 28.86 & 23.11 & 22.16 & 24.63 & 25.48 & 32.36 & 28.73 & 31.88 & 32.68 \\
+ & Pass@8 & 47.03 & 44.07 & 45.10 & 45.85 & 48.66 & 52.23 & 46.88 & 50.89 & 50.15 \\
+AIME24 & Avg@16 & 7.50 & 1.46 & 3.33 & 2.50 & 5.00 & 7.92 & 8.54 & 10.62 & 9.58 \\
+ & Pass@16 & 30.00 & 10.00 & 20.00 & 13.33 & 20.00 & 36.67 & 33.33 & 43.33 & 30.00 \\
+AIME25 & Avg@16 & 14.38 & 3.12 & 2.71 & 5.21 & 6.25 & 14.17 & 15.00 & 15.62 & 17.08 \\
+ & Pass@16 & 33.33 & 20.00 & 13.33 & 20.00 & 23.33 & 36.67 & 30.00 & 40.00 & 33.33 \\
+HMMT-Feb25 & Avg@16 & 6.25 & 1.46 & 0.83 & 2.08 & 2.08 & 8.12 & 6.67 & 7.92 & 11.25 \\
+ & Pass@16 & 20.00 & 10.00 & 10.00 & 10.00 & 16.67 & 20.00 & 16.67 & 20.00 & 26.67 \\
+HMMT-Nov25 & Avg@16 & 4.79 & 3.96 & 2.50 & 3.75 & 3.12 & 5.42 & 6.25 & 5.42 & 6.46 \\
+ & Pass@16 & 13.33 & 13.33 & 10.00 & 13.33 & 13.33 & 23.33 & 23.33 & 20.00 & 30.00 \\
+MATH-test & Avg@1 & 67.10 & 60.42 & 59.60 & 59.52 & 59.34 & 65.54 & 67.92 & 67.30 & 68.62 \\
+\midrule
+Macro Avg & Avg@k & 26.04 & 19.61 & 19.15 & 20.60 & 21.27 & 27.00 & 26.57 & 27.62 & 28.88 \\
+ & Pass@k & 40.46 & 32.80 & 32.91 & 34.14 & 36.22 & 44.11 & 41.96 & 44.83 & 44.57 \\
+\bottomrule
+\end{tabular}
+\end{table}

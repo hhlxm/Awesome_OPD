@@ -1,0 +1,70 @@
+% \section*{NeurIPS Paper Checklist}
+%%% BEGIN INSTRUCTIONS -- REMOVE THIS BLOCK
+% The checklist is designed to encourage best practices for responsible machine learning research, addressing issues of reproducibility, transparency, research ethics, and societal impact. Do not remove the checklist: {\bf The papers not including the checklist will be desk rejected.} The checklist should follow the references and follow the (optional) supplemental material.  The checklist does NOT count towards the page limit. 
+%
+% Please read the checklist guidelines carefully for information on how to answer these questions. For each question in the checklist:
+% \begin{itemize}
+%     \item You should answer \answerYes{}, \answerNo{}, or \answerNA{}.
+%     \item \answerNA{} means either that the question is Not Applicable for that particular paper or the relevant information is Not Available.
+%     \item Please provide a short (1–2 sentence) justification right after your answer (even for NA). 
+% \end{itemize}
+% {\bf The checklist answers are an integral part of your paper submission.} They are visible to the reviewers, area chairs, senior area chairs, and ethics reviewers. You will be asked to also include it (after eventual revisions) with the final version of your paper, and its final version will be published with the paper.
+%
+% The reviewers of your paper will be asked to use the checklist as one of the factors in their evaluation. While "\answerYes{}" is generally preferable to "\answerNo{}", it is perfectly acceptable to answer "\answerNo{}" provided a proper justification is given (e.g., "error bars are not reported because it would be too computationally expensive" or "we were unable to find the license for the dataset we used"). In general, answering "\answerNo{}" or "\answerNA{}" is not grounds for rejection. While the questions are phrased in a binary way, we acknowledge that the true answer is often more nuanced, so please just use your best judgment and write a justification to elaborate. All supporting evidence can appear either in the main paper or the supplemental material, provided in appendix. If you answer \answerYes{} to a question, in the justification please point to the section(s) where related material for the question can be found.
+%
+% IMPORTANT, please:
+% \begin{itemize}
+%     \item {\bf Delete this instruction block, but keep the section heading ``NeurIPS Paper Checklist"},
+%     \item  {\bf Keep the checklist subsection headings, questions/answers and guidelines below.}
+%     \item {\bf Do not modify the questions and only use the provided macros for your answers}.
+% \end{itemize} 
+%%% END INSTRUCTIONS
+
+\section{Background of Reinforcement Learning}
+~\label{app:a.rl}
+Reinforcement learning (RL) enables foundation models to learn through interaction and reward signals. The general RL objective is:
+\begin{equation}
+ J(\theta) = \mathbb{E}_{s \sim \mathcal{D}, a \sim \pi_\theta(\cdot|s)}[R(s,a)],   
+\end{equation}
+where $\pi_\theta$ is the policy, $s$ is the input prompt, $a$ is the response, and $R(s,a)$ is the reward function evaluating response quality. 
+
+Common approaches use reward modeling and policy optimization for RL. Proximal Policy Optimization (PPO) \citep{schulman2017proximalpolicyoptimizationalgorithms} stabilizes training through probability ratio clipping and advantage estimation. The probability ratio is defined as:
+\begin{equation}
+\rho_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}
+\end{equation}
+The PPO objective uses this ratio with clipping:
+\begin{equation}
+J_{PPO}(\theta) = \mathbb{E}_t[\min(\rho_iA_i, \hat{\rho_i}A_i) - \beta D_{KL}],
+\end{equation}
+with probability ratio $\rho_i = \frac{\pi_\theta(o_i|q)}{\pi_{\theta_{old}}(o_i|q)}$ and clipped ratio $\hat{\rho_i} = \text{clip}(\rho_i, 1-\epsilon, 1+\epsilon)$.
+
+For advantage estimation, Generalized Advantage Estimation (GAE) \citep{schulman2018highdimensionalcontinuouscontrolusing} computes:
+\begin{equation}
+A_t^{GAE(\gamma,\lambda)} = \sum_{l=0}^{\infty}(\gamma\lambda)^l\delta_{t+l}
+\end{equation}
+where $\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$ is the TD error, and $(\gamma,\lambda)$ control the bias-variance tradeoff.
+
+
+Recently, DeepSeek-R1-Zero~\cite{deepseek1} implements this paradigm through Group Relative Policy Optimization (GRPO), sampling $G$ outputs $\{o_i\}$ [consisting of reasoning and actions] for each prompt and optimizes:
+\begin{equation}
+J_{GRPO}(\theta) = \mathbb{E}_{q,\{o_i\}}[J_{group}(\theta)],
+\end{equation}
+where:
+\begin{equation}
+J_{group}(\theta) = \frac{1}{G}\sum^G_{i=1}\min(\rho_iA_i, \hat{\rho_i}A_i) - \beta D_{KL},
+\end{equation}
+while mostly similar to Eq. 3, the GRPO advantage is neural-model free and calculated as:
+\begin{equation}
+A_i = \frac{r_i - \text{mean}(\{r_j\})}{\text{std}(\{r_j\})}.
+\end{equation}
+Using rule-based rewards $r_i$, this pure RL approach demonstrates emergent reasoning behaviors.
+
+
+\section{Extended Related Work}
+\label{app:extendedrelatedwork}
+
+\noindent\textbf{Reinforcement Learning for Reasoning in LLMs.}~~
+Reinforcement learning (RL) on LLMs \citep{christiano2023deepreinforcementlearninghuman,ouyang2022traininglanguagemodelsfollow,chen2021decisiontransformer, havrilla2024teachinglargelanguagemodels} has significantly improved LLMs' reasoning capabilities. Notable approaches include the use of Proximal Policy Optimization Algorithms (PPO) \citep{schulman2017proximalpolicyoptimizationalgorithms} which maintains training stability while enhancing performance by clipping policy updates, Group Relative Policy Optimization (GRPO) \citep{deepseekai2025deepseekr1incentivizingreasoningcapability} for enhancing the ability of systematic problem-solving, actor-critic methods like SAC \citep{haarnoja2018softactorcritic} and ArCHer \citep{archer} that leverages an critic to promote robust exploration and stability, and meta tokens \citep{goyal2024thinkspeaktraininglanguage,herel2024thinkingtokenslanguagemodeling,pfau2024letsthinkdotdot} for structured thinking. Other significant developments include Process Reward Model (PRM) \citep{zhang2025lessonsdevelopingprocessreward, lightman2023verify} and Monte Carlo Tree Search (MCTS) based approaches \citep{hao2023reasoning} for systematic problem-solving. On the other hand, recent advances in LLM reasoning have explored techniques to enable models to generate intermediate chain-of-thought rationales. In particular, STaR \citep{Zelikman2022STaR} iteratively leverages a small set of rationale examples along with a large dataset without rationales. Recent work like SimpleRL-Zoo \citep{zeng2025simplerlzoo} DAPO \citep{yu2025DAPO}, RLOO \citep{rloo}, Dr. GRPO \citep{liu2025DRGRPO}, and Open Reasoner Zero \citep{hu2025openreasonerzero} all demonstrate that minimalist, reproducible RL techniques—featuring decoupled clipping, unbiased optimization, and simple reward schemes—can significantly enhance LLM reasoning performance. 
+
+\noindent\textbf{Existing agent frameworks.}~~
+LLM-based agent architectures have evolved from early reasoning-action frameworks \citep{yao2022react, shinn2024reflexion, xu2023rewoo, lin2024swiftsage} to structured approaches \citep{rafa, liu2023llm+, hao2023reasoning, zeng2025reinforcingmultiturnreasoningllm}. Multi-agent systems \citep{du2023improving, li2023camel, chen2023agentverse, wang2024rethinking} are designed for tasks with more complex interactions. Widely used platforms such as OpenAI Gym \citep{brockman2016openaigym} and specialized environments including Sokoban \citep{sokoban}, FrozenLake \citep{frozenlake}, and Webshop \citep{yao2022webshop} provide diverse testbeds for evaluating these agents. Moreover, general-purpose systems \citep{shen2024hugginggpt, wu2023autogen, hao2023toolkengpt, zhuang2023toolchain, xie2023openagents} have enabled broad applications ranging from web navigation and search \citep{qi2025webrltrainingllmweb, searchr1, webagentr1, jin2025empiricalstudyreinforcementlearning}, coding copilot \citep{jimenez2024swebench,deepseekai2024deepseekcoderv2breakingbarrierclosedsource,wang2024mintevaluatingllmsmultiturn} to GUI~\citep{uitars, yao2022webshop}, Game~\citep{hu2025game} and embodied tasks \citep{lin2024advancesembodiednavigationusing, xi2024teachingembodiedreinforcementlearning,li2025embodiedagentinterfacebenchmarking, gigpo}. Social interaction capabilities have been advanced through Generative Agents and AgentSims \citep{park2023generativeagentsinteractivesimulacra,lin2023agentsimsopensourcesandboxlarge}. Challenges persist in architectural complexity and self-correction \citep{he2025enhancingllmreasoning}, especially for diverse, multi-step reasoning tasks \citep{wang2025enigmaevalbenchmarklongmultimodal,nguyen2024turningheatminpsampling, song2024trial}.

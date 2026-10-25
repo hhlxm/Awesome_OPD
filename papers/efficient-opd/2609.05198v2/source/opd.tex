@@ -1,0 +1,97 @@
+
+\documentclass{article} % For LaTeX2e
+
+\usepackage[preprint]{neurips_2026}
+\usepackage{booktabs} 
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{listings}
+\usepackage{titletoc}
+\usepackage{wrapfig}
+\usepackage{float}
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother
+
+\title{What Matters in On-Policy Distillation? A Perspective on Data Efficiency and Data Selection}
+
+% Authors must not appear in the submitted version. They should be hidden
+% as long as the \iclrfinalcopy macro remains commented out below.
+% Non-anonymous submissions will be rejected without review.
+
+\author{Zhinan Hou\thanks{This work was done during Zhinan’s internship at Meituan.} \\
+Tsinghua University \\
+\And
+Jiaqi Zhang$^\dagger$ \\
+Meituan LongCat Team
+\And
+Xunliang Cai \\
+Meituan LongCat Team
+\And
+Keyou You\thanks{Correspondence to: \texttt{youky@tsinghua.edu.cn}, \texttt{zhangjiaqi39@meituan.com}}\\
+Tsinghua University 
+}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+%\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+On-Policy Distillation (OPD) has emerged as a widely adopted post-training paradigm for enhancing large language models in reasoning domains. However, the data-centric mechanisms in OPD remain relatively underexplored. This paper presents an empirical study of data efficiency and data selection in OPD. We begin by investigating an extreme setting: training OPD on only one example, namely \textbf{1-shot OPD}. Surprisingly, we find that 1-shot OPD is consistently effective across all sampled training examples and harder examples often yield superior performance gain. We next investigate what actually drives the student model’s improvement in the training data. Our analysis reveals that the improvement is not driven by high token entropy, but the longer CoT paths which hard problem naturally generate. Training on longer CoT can help maintain closer alignment with the teacher over a long reasoning horizon, and learn critical thinking patterns usually missing in short CoTs, such as reflection (e.g., \texttt{"Alternatively"}). Based on these insights, we propose a simple data selection method that selects only hard examples for training, where even "unsolvable" examples that completely exceed the teacher's capability can be successfully used. Our experiments conducted on five models ranging from 1.5B to 8B show that training the student model on only 8 selected hard examples matches the performance of the 17K dataset baseline. Code and models will be publicly available.
+\end{abstract}
+
+\section{Introduction}
+\input{data/introduction}
+
+
+\section{Preliminaries}
+\input{data/preliminary}
+
+\section{Pilot Experiments: 1-Shot OPD}
+\input{data/pilot}
+
+\section{Data Selection for OPD}  \label{sec:selection}
+\input{data/selection}
+
+\section{How Much Data is Sufficient for OPD?}  \label{sec:analysis}
+\input{data/effiency}
+
+\section{Related Work}
+\input{data/related_work}
+
+
+\section{Conclusions} 
+\input{data/conclusion}
+
+\bibliography{opd}
+\bibliographystyle{iclr2027_conference}
+
+\appendix
+\input{data/appendix}
+
+\end{document}

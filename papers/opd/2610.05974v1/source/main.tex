@@ -1,0 +1,955 @@
+\documentclass[10pt]{article}
+% arXiv preprint layout: single column, title block in a rounded box.
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,mathtools}
+\usepackage{XCharter}
+\usepackage[xcharter]{newtxmath}
+\usepackage[scaled=0.9]{helvet}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[round]{natbib}
+\usepackage[skins]{tcolorbox}
+\usepackage{titlesec}
+\usepackage[font=small]{caption}
+\definecolor{linkblue}{HTML}{1F4FBF}
+\definecolor{boxgray}{HTML}{F3F3F4}
+\usepackage[colorlinks=true,linkcolor=linkblue,citecolor=linkblue,urlcolor=linkblue]{hyperref}
+\usepackage{url}
+
+\titleformat{\section}{\sffamily\bfseries\Large}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\sffamily\bfseries\large}{\thesubsection}{0.8em}{}
+\titleformat{\paragraph}[runin]{\sffamily\bfseries}{}{0pt}{}[.]
+\titlespacing*{\paragraph}{0pt}{1.0ex plus .5ex minus .2ex}{0.6em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6ex plus 0.2ex}
+
+% Tighter space around display equations, applied to the whole paper.
+\newcommand{\tightdisplay}{%
+  \setlength{\abovedisplayskip}{3pt plus1pt minus1pt}%
+  \setlength{\belowdisplayskip}{3pt plus1pt minus1pt}%
+  \setlength{\abovedisplayshortskip}{0pt}%
+  \setlength{\belowdisplayshortskip}{2pt plus1pt minus1pt}}
+\newcommand{\avgk}{avg@$K$}
+\newcommand{\passk}{pass@$K$}
+\newcommand{\tsopd}{TS-OPD}
+\newcommand{\tsro}{TS-OPD (routing only)}
+\newcommand{\AC}{A$\cup$C}
+\newcommand{\Gt}{G_{\mathrm{transfer}}}
+\newcommand{\qt}{\operatorname{qt}}
+% Outcome categories on test problems, distinct from the training strata A/C/P/N.
+\newcommand{\tA}{\mathsf{A}}
+\newcommand{\tC}{\mathsf{C}}
+\newcommand{\tP}{\mathsf{P}}
+\newcommand{\tN}{\mathsf{N}}
+
+\makeatletter\g@addto@macro\normalsize{\tightdisplay}\makeatother
+\begin{document}
+\tightdisplay
+
+\thispagestyle{plain}
+\begin{tcolorbox}[enhanced, colback=boxgray, colframe=boxgray, boxrule=0pt,
+  arc=3.5mm, left=7mm, right=7mm, top=6mm, bottom=5mm]
+{\sffamily\bfseries\LARGE Transfer-Stratified On-Policy Distillation\\[2pt]
+for RL-Improved Reasoning Teachers\par}
+\vspace{3mm}
+{\sffamily\bfseries\small Xiaoyu Chen$^{1,2,*}$, Bo Shao$^{2}$, Tiangang Zhu$^{2}$, Bintao Wu$^{3}$,
+Linjun Shou$^{2}$, Fengge Wu$^{1}$, Feng Sun$^{2}$, Wenbiao Ding$^{2}$\par}
+\vspace{2.5mm}
+{\small $^{1}$Institute of Software, Chinese Academy of Sciences,
+$^{2}$Microsoft, $^{3}$Northwestern Polytechnical University\par
+$^{*}$Work done during an internship at Microsoft\par}
+\vspace{4mm}
+{\small
+Reinforcement learning can substantially improve a reasoning teacher, but it is
+unclear which of those improvements survive when the teacher supervises a
+smaller on-policy student. We study this question in mathematical reasoning by
+comparing teacher lineages before and after GRPO, multiple student scales,
+direct GRPO, and several on-policy distillation objectives. The central finding
+is that transfer is structured rather than scalar: teacher strength alone does
+not make dense distillation competitive, while an RL-improved teacher creates
+useful but metric-dependent student gains. This motivates Transfer-Stratified
+On-Policy Distillation (\tsopd), which screens training problems by the joint
+sampled success of the student and teacher, routes acquisition problems to
+gated forward KL, routes consolidation problems to gated reverse KL, and adds an
+entropy brake to protect sampled coverage. Across the main comparison,
+\tsopd{} is the strongest student objective for macro average correctness with
+the GRPO-improved teacher, while pass@$K$ remains more mixed. Ablations show
+that the gains come from routing and token gating rather than skipping problems. These
+results support a transfer-aware view of OPD: stronger teachers help when the
+supervision direction and token budget match the student's observed ability,
+not merely because the teacher endpoint is stronger.\par}
+\vspace{4mm}
+{\footnotesize\sffamily\textbf{Correspondence:}}~{\small Wenbiao Ding
+(\href{mailto:wenbiaoding@microsoft.com}{wenbiaoding@microsoft.com})}%
+\hfill\includegraphics[width=4.68cm]{figures/logos/logos.png}
+\end{tcolorbox}
+\vspace{4mm}
+
+
+\section{Introduction}
+
+On-policy distillation (OPD) is the dominant paradigm for transferring
+reasoning capabilities from large models to smaller ones
+\citep{agarwal2024opd,gu2024minillm}. It trains students on their own generated
+states under token-level supervision from a frozen teacher, reducing the
+training--inference distribution mismatch. A teacher improved through
+reinforcement learning with verifiable rewards, such as GRPO
+\citep{shao2024deepseekmath,guo2025deepseekr1}, should therefore provide stronger
+supervision. Prior work indeed shows that a GRPO-trained teacher produces a
+stronger student than the original teacher \citep{sang2026beyond}. Yet our
+initial observations on MATH \citep{hendrycks2021math} show that student gains
+can fall short of the teacher's GRPO improvement. We call this shortfall the
+\textbf{transfer gap} and ask: \textbf{which teacher improvements transfer to
+the student, which do not, and how can more of them be made to transfer?}
+
+Our problem-level analysis on MATH shows that this gap is not uniform across
+training problems (Figure~\ref{fig:intro}). Whether a teacher improvement can
+transfer depends on how the GRPO-trained teacher (hereafter, the \emph{GRPO
+teacher}) and student perform on each problem. Where the teacher outperforms
+the student, two distinct learning needs arise. If the student never solves
+the problem, it faces a \textbf{knowledge gap}: it needs guidance toward
+correct choices it has never explored, yet standard OPD supervises only its
+own responses, making such gains especially difficult to transfer. If the
+student solves the problem only sometimes, it faces a \textbf{precision gap}:
+it needs targeted correction of specific bad choices, whereas indiscriminate
+distillation may transfer only part of the gain or suppress correct behavior
+already acquired.
+
+Conversely, when the GRPO teacher does not outperform the student, it has
+little improvement to transfer. When their performance is comparable or both
+fail, the teacher offers no better direction; when the student is stronger,
+matching the teacher may be harmful. Standard OPD nevertheless supervises
+these problems uniformly. Skipping them concentrates the training budget on
+problems where transfer is possible.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/figure1_v12.pdf}
+\caption{\textbf{Overview of the transfer gap and its problem-level
+decomposition.} \textbf{Left:} GRPO yields a teacher improvement $\Delta T$,
+but standard OPD transfers only part of it into a student gain $\Delta S$,
+leaving a transfer gap of $\Delta T-\Delta S$. \textbf{Middle:} Joint
+teacher--student pass rates identify knowledge gaps (teacher $>0$, student
+$=0$), precision gaps (teacher $>$ student $>0$), and problems with no
+transferable teacher advantage (teacher $\leq$ student). \textbf{Right:}
+TS-OPD routes these three strata to matched actions---discover, refine, and
+skip, respectively.}
+\label{fig:intro}
+\end{figure}
+
+Existing OPD methods adapt supervision at the problem or token level
+\citep{lin2026opdvr,xu2026tip,xu2026paced,zhang2026verifydistill}. Most closely
+related, Sparse-to-Dense distills from a GRPO-improved teacher using a common
+pipeline across problems \citep{sang2026beyond}. In contrast, we use the joint
+success of the teacher and raw student to identify each problem's learning
+need and match both its KL direction and token-level supervision.
+
+We therefore propose \textbf{Transfer-Stratified On-Policy Distillation
+(TS-OPD)}. It first stratifies problems by the joint pass rates of the GRPO
+teacher and student, then routes knowledge and precision gaps to matched
+objectives with stratum-specific token gating, skipping problems without a
+teacher advantage. We evaluate TS-OPD across two teacher lineages (Qwen3-8B
+before and after GRPO), three student scales (0.6B, 1.7B, and 4B), four
+distillation objectives, and teacher-free direct GRPO.
+
+Our contributions are as follows:
+\begin{enumerate}
+\item We characterize and decompose the transfer gap in distillation from
+GRPO-improved teachers into distinct problem-level learning needs.
+
+\item We propose \textbf{TS-OPD}, which stratifies and selects problems by observed
+teacher--student success, routes distillation objectives, and gates token-level
+supervision to address knowledge and precision gaps.
+
+\item Experiments with a GRPO-improved teacher show that TS-OPD
+achieves the highest macro-average correctness and smallest benchmark-averaged
+transfer gap among evaluated methods at all three student scales, while
+distilling only on selected problems.
+\end{enumerate}
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{RL-improved teachers.}
+DeepSeek-R1 distills an RL-trained model by fine-tuning on its responses
+\citep{guo2025deepseekr1}. Sparse-to-Dense \citep{sang2026beyond}
+applies GRPO \citep{shao2024deepseekmath} to a larger teacher, then a
+forward-KL warmup and reverse-KL OPD uniformly across problems, and shows that
+the RL-improved teacher yields a student stronger than direct GRPO; it compares
+final students, not how much of the teacher's GRPO gain is inherited, or where. Direct-OPD instead transfers the
+RL-induced policy shift, using the post-RL to pre-RL teacher log-ratio as a
+dense reward \citep{feng2026directopd}, while
+\citet{li2026rethinking} find that OPD requires compatible thinking patterns
+and teacher capabilities new to the student
+\citep{li2025small,zhang2025law,yue2025does}.
+
+\paragraph{On-policy objectives.}
+GKD trains the student on its own samples and admits divergences beyond forward
+KL \citep{agarwal2024opd}, and MiniLLM optimizes reverse KL on-policy
+\citep{gu2024minillm}. AKL, ToDi, EOPD, and TrOPD combine forward and reverse
+KL through adaptive weights, per-token probability ratios, teacher entropy, or
+token-level trust regions
+\citep{wu2025akl,jung2025todi,jin2026entropy,xing2026trust}; none chooses the
+direction from per-problem teacher and student performance
+\citep{ko2024distillm,ko2025distillm2,wang2025abkd}.
+
+\paragraph{Selective distillation.}
+PACED weights each problem by $p(1-p)$ of the student pass rate $p$ and applies
+a forward-then-reverse KL schedule to all problems \citep{xu2026paced}; TREK
+applies forward KL on verified teacher proposals for prompts the student rarely
+solves, then returns to GRPO \citep{xu2026trek,yan2025luffy}; TGOPD routes each prompt to OPD
+or GRPO using verifier-scored teacher probes \citep{zhang2026verifydistill}.
+Within responses, OPDVR gates the distillation reward by trajectory correctness
+\citep{lin2026opdvr}, and TIP selects tokens by student entropy and
+teacher--student divergence \citep{xu2026tip,wang2025beyond8020,lin2024rho1}.
+Unlike these student-only or teacher-only signals, \tsopd{} uses the joint
+success of the GRPO teacher and the raw student to choose each problem's
+KL direction (forward for knowledge gaps, reverse for precision gaps) and adds
+response-local token gating, rather than introducing problem-level selection
+itself.
+
+\section{Problem Definition and Transfer-Gap Diagnosis}
+\label{sec:diagnosis}
+
+Building on our observations on MATH, we formalize the transfer gap and identify
+knowledge and precision gaps on MATH training problems. We examine these strata
+alongside gain shortfalls on held-out competition benchmarks to motivate
+differentiated OPD supervision.
+
+\subsection{Evaluation Metrics and the GRPO Transfer Gap}
+
+For each problem $x_i$, we sample $K$ responses from model $M$ under fixed
+decoding settings and score them with a verifier $c_i(y)\in\{0,1\}$.
+The sampled success rate is
+$\widehat p_{M,i}=K^{-1}\sum_{j=1}^{K}c_i(y_{M,i,j})$.
+For a test set of $N$ problems, define
+\begin{equation}
+\operatorname{avg@}K(M)=\frac{1}{N}\sum_{i=1}^{N}\widehat p_{M,i},
+\qquad
+\operatorname{pass@}K(M)=\frac{1}{N}\sum_{i=1}^{N}\mathbf 1[\widehat p_{M,i}>0].
+\label{eq:metrics}
+\end{equation}
+\textbf{\avgk{} measures average single-response correctness}, our primary
+performance metric; \textbf{\passk{} measures solution coverage within the
+sampling budget} \citep{chen2021evaluating}.
+
+Let $T_0$ and $T_1$ denote the teacher before and after GRPO, $S_0$ the raw
+student, and $S_{\mathrm{OPD}}$ the student distilled from $T_1$. With test
+accuracy $a(M)=100\operatorname{avg@}K(M)$, define the teacher and student gains
+and the \textbf{transfer gap}:
+\begin{equation}
+\Delta_T=a(T_1)-a(T_0),\qquad
+\Delta_S=a(S_{\mathrm{OPD}})-a(S_0),\qquad
+G_{\mathrm{transfer}}=\Delta_T-\Delta_S.
+\label{eq:transfer}
+\end{equation}
+All three quantities are measured in percentage points (pp). A positive transfer
+gap means that the student's gain falls short of the teacher's GRPO gain,
+not that their final accuracies differ by this amount.
+Here $\Delta_S$ is the total student improvement from $S_0$, not the difference
+between students distilled from $T_1$ and $T_0$. It may include knowledge already
+present in $T_0$, so the gap does not isolate the loss of GRPO-acquired knowledge.
+With the teacher and student initialization fixed, our goal is to reduce this
+gap and outperform $S_{\mathrm{GRPO}}$, trained directly with GRPO from the same $S_0$.
+
+\subsection{Two Learning Gaps on Training Problems}
+
+We hypothesize that incomplete transfer partly reflects \textbf{supervision
+mismatched to problem-specific learning needs}.
+A stronger teacher need not outperform the student on every problem.
+Where it does, the guidance needed depends on whether the student can already
+generate a correct response.
+Before distillation, we therefore sample
+$K_{\mathrm{cal}}=8$ responses per training problem from both $T_1$ and $S_0$
+and classify their joint success rates.
+
+\textbf{A: knowledge gap}, $\widehat p_{S_0,i}=0<\widehat p_{T_1,i}$.
+The student needs to discover correct choices absent from its sampled rollouts,
+not merely increase the frequency of existing correct responses.
+Zero observed success at a finite budget does not imply zero ability.
+
+\textbf{C: precision gap}, $0<\widehat p_{S_0,i}<\widehat p_{T_1,i}$.
+The student already produces correct responses but less reliably, calling for
+targeted correction while preserving existing correct behavior.
+
+\textbf{P: student advantage}, $\widehat p_{S_0,i}>\widehat p_{T_1,i}$;
+\textbf{N: no observed gap}, equal rates, including joint failures.
+Neither shows an observed teacher advantage, so neither is prioritized for distillation.
+Let $\mathcal D_{\mathrm{train}}$ be the training-problem index set, with subsets
+$\mathcal D_A$ and $\mathcal D_C$ for the knowledge and precision gaps.
+Using $|\cdot|$ for set cardinality and $\mathbf 1[\cdot]$ for the indicator
+function, define the \textbf{teacher-advantage problem fraction}:
+\begin{equation}
+r_{\mathrm{adv}}=\frac{|\mathcal D_A|+|\mathcal D_C|}{|\mathcal D_{\mathrm{train}}|}
+=\frac{1}{|\mathcal D_{\mathrm{train}}|}\sum_{i\in\mathcal D_{\mathrm{train}}}
+\mathbf 1[\widehat p_{T_1,i}>\widehat p_{S_0,i}].
+\label{eq:advantage-fraction}
+\end{equation}
+This is the fraction of problems with an observed teacher advantage before
+training, not its magnitude. All four stratum fractions use the full training
+set as the denominator and sum to one.
+
+\subsection{Training Strata and Test Gain Shortfalls}
+
+We use Qwen3-8B before and after GRPO as the teacher and Qwen3-0.6B/1.7B as
+students \citep{yang2025qwen3}. Stratification uses 7{,}496 MATH training problems
+\citep{hendrycks2021math}, with eight responses per problem from each of $T_1$
+and $S_0$; test diagnosis uses AIME24/25 and HMMT-Feb/Nov25, totaling 120 problems
+with 16 responses per model per problem
+\citep{aopsAimeArchive,hmmt2025february,hmmt2025november}.
+
+\begin{table}[!htbp]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\caption{Training strata and test gain shortfalls. (a) Fractions of all 7{,}496
+MATH training problems, classified using eight responses per model before
+training. A/C denote knowledge/precision gaps; P/N denote student advantage/no
+observed gap. (b) Test avg@16 accuracy on AIME24/25 and HMMT-Feb/Nov25 (120 problems),
+with gains and transfer gaps in pp. Both students share the Qwen3-8B teacher
+checkpoints; $S_{\mathrm{OPD}}$ uses standard reverse-KL OPD from $S_0$ with $T_1$.
+Values are rounded independently to two decimal places.}
+\label{tab:diagnosis}
+\begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}rrrrr@{}}
+\toprule
+\multicolumn{6}{@{}l@{}}{\textit{(a) Training-problem fractions (\%); teacher $T_1$, student $S_0$}} \\
+Student & A & C & P & N & \textbf{A+C: $\boldsymbol{r_{\mathrm{adv}}}$} \\
+0.6B & 23.24 & 53.92 & 3.55 & 19.29 & \textbf{77.16} \\
+1.7B & 7.39 & 36.13 & 7.68 & 48.80 & \textbf{43.52} \\
+\midrule
+\multicolumn{6}{@{}l@{}}{\textit{(b) Test accuracy and gain shortfalls}; $G_{\mathrm{transfer}}=\Delta_T-\Delta_S$ (pp)} \\
+\multicolumn{6}{@{}l@{}}{Shared teacher: $a(T_0)=15.21\%$, $a(T_1)=41.15\%$, $\Delta_T=25.94$ pp} \\
+\multicolumn{2}{@{}l}{Student} & $a(S_0)$ (\%) & $a(S_{\mathrm{OPD}})$ (\%) & $\Delta_S$ (pp) & \textbf{$\boldsymbol{G_{\mathrm{transfer}}}$ (pp)} \\
+\multicolumn{2}{@{}l}{0.6B} & 1.04 & 8.91 & 7.87 & \textbf{18.08} \\
+\multicolumn{2}{@{}l}{1.7B} & 6.15 & 19.58 & 13.44 & \textbf{12.50} \\
+\bottomrule
+\end{tabular*}
+\end{table}
+
+Table~\ref{tab:diagnosis}(a) shows teacher-advantage fractions of 77.16\% and 43.52\%,
+while panel (b) reports the corresponding test gain shortfalls of 18.08 and
+12.50 pp for the 0.6B and 1.7B students, respectively.
+The larger fraction accompanies the larger shortfall, but student scale and
+stratum distribution both vary. The ordering also reverses across all eight
+test sets, where macro-average shortfalls are 5.49 and 6.14 pp.
+We therefore use the strata to describe supervision needs, not as an
+established predictor of test gain shortfalls.
+
+\subsection{Implications for OPD Supervision}
+
+For A, correct responses may be rare in student rollouts. Because OPD queries
+the teacher along student-generated prefixes \citep{agarwal2024opd,gu2024minillm},
+guidance along complete correct solutions may be limited. Feedback at incorrect
+prefixes remains available but may not suffice to reach a correct solution,
+motivating guidance toward teacher-preferred continuations the student rarely selects.
+
+For C, uniform supervision may miss decisive errors and spend limited budget
+on P and N, leaving learnable problems undertrained. This motivates targeted
+correction while preserving existing correct behavior.
+These mechanism hypotheses
+require fixed-budget stratification controls and token-level analysis.
+
+We therefore prioritize A and C with supervision matched to knowledge
+acquisition and precision improvement, deferring teacher matching on P and N.
+Strata are assigned before training from joint teacher--student samples;
+rollouts remain student-generated.
+
+\section{Transfer-Stratified On-Policy Distillation}
+\label{sec:method}
+
+\tsopd{} labels training problems by the teacher and student success observed
+before training and works at two levels (Figure~\ref{fig:overview}). At the
+\textbf{problem level}, it trains only on A and C problems (\textbf{filtering})
+and applies forward KL to A and reverse KL to C (\textbf{routing}). At the
+\textbf{token level}, it updates only selected positions within each response
+and adds an entropy brake on C (\textbf{gating}). \tsro{} keeps the problem
+level and drops the token level; \tsopd{} uses both.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\linewidth]{figures/fig_overview.png}
+\caption{Overview of \tsopd{}. Before training, each problem is labeled by the
+sampled success of the teacher and the student. Problem level: P and N problems
+are skipped, A problems use forward KL, and C problems use reverse KL. Token
+level: gates select positions within a response, and C adds an entropy brake.}
+\label{fig:overview}
+\end{figure}
+
+\subsection{Strata and KL Direction}
+\label{sec:strata-kl}
+
+\paragraph{Strata.} We use the labels $\mathcal D_A$ and $\mathcal D_C$ from
+Section~3, computed once per teacher--student pair from $K_{\mathrm{cal}}=8$
+samples of $T_1$ and $S_0$ and fixed during training. Filtering keeps only
+$\mathcal D_+=\mathcal D_A\cup\mathcal D_C$.
+
+\paragraph{Notation.} For a training problem $x$, the student generates a
+response $y=(y_1,\ldots,y_{|y|})$ of length $|y|$. The prefix before the $t$-th
+token is $s_t=(x,y_1,\ldots,y_{t-1})$. At $s_t$, the student and the teacher
+($T_1$) assign next-token probabilities $\pi_S(v\mid s_t)$ and
+$\pi_T(v\mid s_t)$ to each token $v$ in the vocabulary $\mathcal V$. OPD pulls
+$\pi_S$ toward $\pi_T$ on these prefixes \citep{agarwal2024opd,gu2024minillm}.
+
+\paragraph{Why forward KL for A and reverse KL for C.} At one position (we drop
+$s_t$), reverse KL is $D_{\mathrm R}=\sum_v\pi_S(v)\log\frac{\pi_S(v)}{\pi_T(v)}$
+and forward KL is $D_{\mathrm F}=\sum_v\pi_T(v)\log\frac{\pi_T(v)}{\pi_S(v)}$.
+Let $z_v$ be the student's logit for token $v$, so $\pi_S=\mathrm{softmax}(z)$.
+The gradients are
+\begin{equation}
+\frac{\partial D_{\mathrm R}}{\partial z_v}=\pi_S(v)\Bigl(\log\frac{\pi_S(v)}{\pi_T(v)}-D_{\mathrm R}\Bigr),
+\qquad
+\frac{\partial D_{\mathrm F}}{\partial z_v}=\pi_S(v)-\pi_T(v).
+\label{eq:kl}
+\end{equation}
+Training moves $z_v$ against its gradient. For a token the teacher prefers but
+the student almost never picks ($\pi_S(v)\approx0$), the reverse-KL gradient
+carries the factor $\pi_S(v)$ and barely moves it, while the forward-KL
+gradient is close to $-\pi_T(v)$ and raises it. A problems need behavior that
+has not appeared in the student's responses, so we use forward KL. C problems
+only need to drop choices the teacher rejects, so we use reverse KL
+\citep{jung2025todi}. This choice per stratum is the routing. This fixed-prefix argument only motivates the loss; it
+does not describe the gated update or guarantee a correct response
+\citep{sheng2026ier}.
+
+\paragraph{Token cells and position selection.} The token level (gating) works
+on a compressed teacher distribution. At each position we keep the
+teacher's top $K_{\mathrm{tok}}=512$ tokens plus one tail cell for the rest,
+indexed by $j$ in decreasing teacher probability. $P_{t,j}$ and $Q_{t,j}$ are the teacher and student probabilities
+of cell $j$ at position $t$. Both layers below select positions within a
+response. Let $\qt_\tau(u)$ be the $\tau$-quantile of a score $u$ over the
+positions of one response (so long responses cannot take most selections); with
+$\tau=0.8$, a position passes when its score is in the top 20\% of its response.
+
+\subsection{A Layer: Gated Forward KL}
+\label{sec:layer-a}
+
+Two kinds of positions help little on A problems. Where the student already
+matches the teacher, there is nothing to learn; where the teacher spreads its
+probability over many tokens, it cannot teach a definite choice. We
+measure disagreement by total variation
+$\mathrm{TV}_t=\frac12\sum_j|P_{t,j}-Q_{t,j}|\in[0,1]$, and teacher confidence
+by $\mathrm{mass@}n(t)=\sum_{j=1}^{n}P_{t,j}$, the probability the teacher puts
+on its top $n$ tokens. We keep a position only if both conditions hold, and the
+A loss averages the forward KL on the cells,
+$D(P_t\|Q_t)=\sum_j P_{t,j}\log(P_{t,j}/Q_{t,j})$, over the kept positions:
+\begin{equation}
+m^A_t=\mathbf 1\bigl[\mathrm{TV}_t\ge\qt_\tau(\mathrm{TV})\bigr]\cdot\mathbf 1\bigl[\mathrm{mass@}n(t)>0.9\bigr],
+\qquad
+\mathcal L^A=\frac{\sum_t m^A_t\,D(P_t\|Q_t)}{\sum_t m^A_t}.
+\label{eq:gate-a}
+\end{equation}
+Here $\mathbf 1[\cdot]$ is 1 if the condition holds and 0 otherwise. The first
+condition keeps the 20\% of positions with the largest disagreement. The second
+requires the teacher to put over 90\% of its probability on a few candidates,
+that is, to be confident. We do not use $n=1$ because a reasoning step often
+has several equivalent forms; we set $n=\max(\lfloor\ln K_{\mathrm{tok}}\rfloor,5)=6$.
+
+\subsection{C Layer: Gated Reverse KL and Entropy Brake}
+\label{sec:layer-c}
+
+On C problems, we only correct sampled tokens $y_t$ that the teacher rejects
+and leave the rest unchanged:
+\begin{equation}
+r_t=\log\frac{\pi_S(y_t\mid s_t)}{\pi_T(y_t\mid s_t)},\quad
+\rho_t=\max\Bigl(0,\,1-\frac{\pi_T(y_t\mid s_t)}{\pi_S(y_t\mid s_t)}\Bigr),\quad
+m^C_t=\mathbf 1\bigl[\rho_t\ge\qt_\tau(\rho)\bigr]\cdot\mathbf 1[\rho_t>0].
+\label{eq:gate-c}
+\end{equation}
+$r_t>0$ means the student is more confident in $y_t$ than the teacher;
+$\rho_t\in[0,1)$ is 0 when the teacher gives $y_t$ at least the student's
+probability and grows toward 1 as the teacher's falls below it.
+$m^C_t$ keeps the top 20\% of positions with $\rho_t>0$; the second factor is
+needed because over half of the $\rho_t$ are 0, so the quantile can be 0.
+
+\paragraph{Lowering reverse KL with sampled tokens.} Reverse KL is the average
+of $\log\frac{\pi_S(v)}{\pi_T(v)}$ over tokens drawn from the student, so $r_t$
+on the sampled token $y_t$ is a one-sample estimate of it. We use $r_t$ as a
+penalty: the larger $r_t$, the more we lower the probability of $y_t$. This
+needs only the student's own response and no correctness reward
+\citep{gu2024minillm} (derivation in Appendix~\ref{app:rkl}). With
+$\omega_t=-m^C_t r_t$ held constant, the reverse-KL loss is
+\begin{equation}
+\mathcal L^{\mathrm{RKL}}=-\frac{1}{|y|}\textstyle\sum_{t}\omega_t\,\log\pi_S(y_t\mid s_t).
+\label{eq:loss-c}
+\end{equation}
+Unselected positions have $\omega_t=0$ and are not updated.
+
+\paragraph{Entropy brake.} Reverse KL concentrates probability on a few tokens,
+which can remove other correct solutions and lower \passk{}. Let $H_S(t)=-\sum_jQ_{t,j}\log Q_{t,j}$ and
+$H_T(t)=-\sum_jP_{t,j}\log P_{t,j}$ be the student and teacher entropies. Where
+$H_S-H_T$ is largest, reverse KL sharpens the student the most, so we raise the
+student entropy there, at positions picked by $m^B_t$:
+\begin{equation}
+m^B_t=\mathbf 1\bigl[H_S(t)-H_T(t)\ge\qt_\tau(H_S-H_T)\bigr],\qquad
+\mathcal L^B=-\beta\,\frac{\sum_t m^B_t H_S(t)}{\sum_t m^B_t}.
+\label{eq:brake}
+\end{equation}
+We set $\beta$ once per pair before training so that the brake is about a
+tenth of the penalty in magnitude, a heuristic scale match rather than a
+gradient ratio, with 0.1 as a design choice (Appendix~\ref{app:beta}).
+
+\paragraph{Full objective and training loop.}\label{sec:objective} The C loss is
+$\mathcal L^C=\mathcal L^{\mathrm{RKL}}+\mathcal L^B$, and a response to problem $x$
+uses the loss of its stratum:
+\begin{equation}
+\mathcal L=\mathcal L^A\,\mathbf 1[x\in\mathcal D_A]+\mathcal L^C\,\mathbf 1[x\in\mathcal D_C].
+\label{eq:full}
+\end{equation}
+Problems outside $\mathcal D_+$ give no loss. Each step, the student answers a batch of problems from
+$\mathcal D_+$ once, the teacher scores the answers, and we make one update;
+gates get no gradient (Algorithm~\ref{alg:tsopd}). \tsro{} removes gating by
+setting $m^A_t\equiv m^C_t\equiv1$ and $\beta=0$: $\mathcal L^A$ becomes forward
+KL averaged over all positions, and $\mathcal L^C$ becomes the sampled reverse KL
+on all positions.
+
+
+\section{Experiments}
+\label{sec:experiments}
+
+\paragraph{Models and arms.} The teachers are $T_0$ (base-8B) and $T_1$
+(GRPO-8B); the students are Qwen3-0.6B, 1.7B, and 4B \citep{yang2025qwen3}.
+Every run trains for one epoch on the 7{,}496 MATH training problems
+\citep{hendrycks2021math}. Direct GRPO trains the same student with GRPO and no
+teacher; it is the $S_{\mathrm{GRPO}}$ that Section~3 sets out to beat. We
+compare it with OPD-r and OPD-f (uniform reverse and forward KL on all
+problems), and \tsro{} and \tsopd{}, which train on \AC{} only and so take about
+91, 51, and 27 of the 118 OPD steps. Three controls, Direct GRPO (\AC), OPD-r
+(\AC), and OPD-f (\AC), use the same problems and steps as \tsopd{}; only the
+loss differs. Details are in Appendix~\ref{app:setup}.
+
+\paragraph{Benchmarks and metrics.} We sample $K$ responses per problem on eight
+benchmarks: MATH-test (5{,}000 problems, $K=1$) and MATH500 ($K=8$)
+\citep{hendrycks2021math,lightman2023verify}, Minerva
+\citep{lewkowycz2022minerva} and OlympiadBench \citep{he2024olympiadbench}
+($K=8$), and AIME24/25 \citep{aopsAimeArchive} and HMMT-Feb/Nov25
+\citep{hmmt2025february,hmmt2025november} ($K=16$). We report macro \avgk{} and
+\passk{} over all eight. With $K=1$, a MATH-test problem is only right or wrong
+and cannot show a change in reliability, so $\Gt$ (Section~3) and the
+per-problem analysis use the other seven benchmarks (1{,}566 problems).
+
+\paragraph{Outcome categories.} To trace gains per test problem, we compare a
+model's sampled accuracy $p_0$ before and $p_1$ after training: $\tA$ if
+$p_0=0<p_1$ (newly solved), $\tC$ if $0<p_0<p_1$ (more reliable), $\tP$ if
+$p_0>p_1$ (worse), and $\tN$ otherwise (unchanged); ``before'' is $S_0$ for a
+student and $T_0$ for the teacher. Test problems are also split into strata by
+$S_0$ and $T_1$ with the rule of Section~3.
+
+\subsection{Teacher GRPO Is Necessary but Not Sufficient}
+\label{sec:exp-main}
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{3.4pt}
+\caption{Main results. \avgk{} and \passk{} are macro averages over the eight
+benchmarks (\%). $\Gt$ is the transfer gap in percentage points, computed on
+seven benchmarks. $\uparrow$/$\downarrow$: higher/lower is better. Direct GRPO
+uses no teacher. In each row, bold marks the best value and underline the second
+best.}
+\label{tab:main}
+\input{tables/tab_main}
+\end{table}
+
+With the base-8B teacher, every OPD objective trails Direct GRPO on both metrics
+at every size, and the transfer gap is 13 to 20 points (Table~\ref{tab:main}).
+The teacher bounds what OPD can reach: Direct GRPO at 1.7B and 4B (39.53 and
+51.57) already beats the base-8B teacher itself (38.03). With the GRPO-8B
+teacher, \tsopd{} has the best \avgk{} and the smallest gap at every size. It is
+2.84, 0.97, and 2.71 points above Direct GRPO, and its gap is 5.68, 5.77, and
+0.46 points. \passk{} is also highest for \tsopd{} or \tsro{} at every size.
+Uniform OPD does not reliably help: at 1.7B, both OPD-r and OPD-f fall below
+Direct GRPO and have a larger gap. The gap nearly closes at 4B because the raw
+4B student is almost as strong as $T_0$ (30.73 vs.\ 31.54).
+
+\subsection{Only Part of the Teacher's GRPO Gain Reaches the Student}
+\label{sec:exp-where}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/tracking/fig_where_gains.pdf}
+\caption{Outcome categories of test problems in each student. (a) The 567
+problems GRPO improves for the teacher. (b) Knowledge-gap (upper bar) and
+precision-gap (lower bar) problems. (c, d) Problems where $T_1$ is not better
+than $S_0$. Numbers: Tables~\ref{tab:app-rq3}, \ref{tab:rq4}, and~\ref{tab:rq2}.}
+\label{fig:where}
+\end{figure}
+
+$\Gt$ cannot tell whether what GRPO taught the teacher reaches the student
+(Section~3), so Figure~\ref{fig:where}(a) follows the 567 test problems
+that GRPO improves for the teacher. \tsopd{} improves 50.1\%, 62.1\%, and 68.4\%
+of them. Even at 4B, where the gap is almost zero, a third do not improve.
+The teacher is what makes the difference on these problems: Direct GRPO (\AC), trained
+on the same problems without a teacher, improves only 37.1\%, 59.5\%, and
+58.1\%, and \tsopd{} newly solves the largest share ($\tA$) at every size.
+
+Figure~\ref{fig:where}(b) shows where the teacher helps. Compared with Direct
+GRPO, \tsopd{} newly solves 7.0, 0.4, and 7.9 points more knowledge-gap
+problems. On precision-gap problems the picture is mixed: \tsopd{} is ahead at
+0.6B and 4B, but at 1.7B Direct GRPO makes the most problems reliable (81.6\%)
+and the fewest worse (9.7\%). This fits Section~3: GRPO can only sharpen what the
+student already samples, which is what a precision gap needs, and it explains
+why \tsopd{} leads Direct GRPO by only 0.97 points at 1.7B.
+
+The loss comparisons on the same \AC{} problems support the choice of KL
+direction in Section~\ref{sec:strata-kl}. Forward KL newly solves more
+knowledge-gap problems than reverse KL (OPD-f (\AC) 46.2\%, 54.5\%, 61.8\% vs.\
+OPD-r (\AC) 40.2\%, 50.4\%, 59.2\%), because it can raise tokens the student
+rarely picks. Reverse KL makes fewer precision-gap problems worse (13.0\%,
+11.0\%, 5.7\% vs.\ 16.9\%, 14.8\%, 6.5\%), because it only lowers tokens the
+teacher rejects and leaves the rest of the student's solution alone. Routing
+uses each loss where it helps and newly solves more knowledge-gap problems than
+either loss alone (47.0\%, 56.2\%, 71.7\%). Gates then mainly help precision-gap
+problems: \tsopd{} makes 5.4, 2.0, and 1.0 points more of them reliable than
+\tsro{}, which matches their design of correcting only a few rejected tokens.
+
+\subsection{Filtering Helps Only with Routing and Gating}
+\label{sec:exp-components}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Adding one component at a time: macro \avgk{} (\%) / $\Gt$ (points),
+GRPO-8B teacher. All \AC{} rows use the same problems and steps.}
+\label{tab:rq5}
+\input{tables/tab_rq5}
+\end{table}
+
+Figure~\ref{fig:where}(c, d) checks whether the skipped P and N problems matter. On
+the P stratum,
+where $S_0$ beats $T_1$, every method makes about half or more of the problems
+worse, including Direct GRPO without a teacher (49.2\% to 72.8\%). These
+problems were picked by samples on which $S_0$ did well, so much of this drop is
+regression to the mean; training on \AC{} only does not change it consistently. Gates lose more of them than \tsro{} (73.2\% vs.\ 65.9\% at
+0.6B), likely because they pull the student harder toward the teacher. On the larger N stratum, more than 89\% stay unchanged for every
+method, and skipping changes the share that gets worse by at most 1.3 points.
+
+Skipping, however, is not free. Table~\ref{tab:rq5} shows that filtering alone
+hurts: with the same problems and steps as \tsopd{}, OPD-r (\AC) and OPD-f
+(\AC) lose 1.3 to 5.6 points of \avgk{}, and their gap grows at every size.
+Figure~\ref{fig:where}(b) locates the loss. On knowledge-gap problems, filtering
+lowers the newly solved share for all three losses at 0.6B and 4B, by 7.9 to
+11.9 points at 4B, where the \AC{} runs take only 27 of 118 steps. On
+precision-gap problems, it does not hurt OPD: the share made reliable stays or
+rises (by 0.3 to 2.9 points), since the remaining updates fall on problems the
+student already partly solves. Direct GRPO (\AC) drops on both, because the student
+never succeeds on A problems and GRPO gets no reward there. Acquiring a new
+solution thus needs more supervision than sharpening an existing one.
+
+Routing makes up for this. Forward KL on A problems raises the newly solved share
+of knowledge-gap problems by 6.8, 5.8, and 12.5 points over OPD-r (\AC), and
+reaches the level of OPD on all problems at 1.7B and 4B with fewer steps. As a
+result, routing lowers the gap by 2.09, 2.69, and 5.78 points, and \tsro{} beats
+OPD-r on all problems in both \avgk{} and $\Gt$. Gating lowers the gap by another
+1.25, 0.66, and 1.63 points, mainly through precision-gap problems; the 0.6B
+ablations in Table~\ref{tab:ablation} show that each gate setting and the brake
+matter.
+
+\section{Conclusion}
+
+Teacher improvement and student transfer are different objects. In mathematical
+reasoning, a GRPO-improved teacher can provide useful dense supervision, but
+only when OPD distinguishes acquisition gaps from consolidation gaps and avoids
+spending budget on no-gap or student-advantage problems. \tsopd{} implements
+this transfer-aware view with problem-level routing, response-local token
+gates, and an entropy brake. Across two teacher lineages and three student
+sizes, the results show that the routed objective is most useful with a
+GRPO-improved teacher and that its gains depend on the full design. The broader
+lesson is that stronger teachers should be evaluated not only by endpoint
+accuracy, but by how their improvements decompose into teachable strata for the
+student.
+
+\section*{Limitations}
+
+\textsf{\textbf{Scope.}} All experiments use mathematical reasoning with verifiable
+answers, one model family (Qwen3), one teacher size (8B), and one RL algorithm
+(GRPO) for improving the teacher. The students go up to 4B. We have not tested
+whether the same strata and routing carry over to other domains, to students
+close to the teacher in size, or to teachers improved by other RL methods.
+
+\textsf{\textbf{Statistical strength.}} Most runs use a single training seed, so small
+differences may not be
+robust. We therefore read the per-problem outcome categories as
+trends rather than exact rates.
+
+\textsf{\textbf{Strata and budget.}} The strata come from $K_{\mathrm{cal}}=8$
+samples per training problem, taken once before training. With this budget, a
+problem with no observed student success may still be solvable, and a problem
+can move between strata as the student improves, but \tsopd{} does not relabel
+it.
+
+\textsf{\textbf{Design choices and cost.}} The hyperparameter ablations use only the
+0.6B student with the GRPO-8B teacher.
+Screening needs $2K_{\mathrm{cal}}$ sampled responses per training problem
+before training, and every update needs the teacher's top $K_{\mathrm{tok}}$
+probabilities at each position. Finally, $\Gt$ measures a gain shortfall; it
+does not isolate how much GRPO-acquired knowledge is lost (Section~3).
+
+\bibliography{paper_refs}
+\bibliographystyle{iclr2027_conference}
+
+\clearpage
+\appendix
+
+\section{Method Details}
+\label{app:method}
+
+\subsection{Calibrating the Entropy Brake}
+\label{app:beta}
+
+The coefficient $\beta$ in Eq.~\ref{eq:brake} is set by
+\begin{equation}
+\beta=0.1\cdot\frac{\mathrm{mean}_{\,m^B_t=1}\,|r_t|}{\mathrm{mean}_{\,m^B_t=1}\,H_S(t)}.
+\label{eq:beta}
+\end{equation}
+We compute it once before training for each teacher--student pair and keep it
+fixed. We take up to 50 student responses on C problems, use only the first
+400 tokens of each, and skip responses shorter than 40 tokens. No new text is
+generated. Both models score these responses in a forward pass: the teacher
+gives its top 512 tokens plus the tail cell, and the student gives its
+probabilities on the same 513 cells. From these we compute $H_S$, $H_T$,
+$H_S-H_T$, and $|r_t|$ at every position. We then take the positions whose
+$H_S-H_T$ is in the top 20\%, average $|r_t|$ and $H_S$ over them, and apply
+Eq.~\ref{eq:beta}. Because $H_S$ is computed on $K_{\mathrm{tok}}+1$ cells, a
+larger $K_{\mathrm{tok}}$ gives a larger $H_S$ and a smaller $\beta$; $\beta$
+therefore depends on both the pair and $K_{\mathrm{tok}}$.
+Table~\ref{tab:beta} lists the values used.
+
+\begin{table}[h]
+\centering
+\small
+\caption{Entropy-brake coefficient $\beta$ for each teacher--student pair.}
+\label{tab:beta}
+\begin{tabular}{lrr}
+\toprule
+Student & base-8B teacher & GRPO-8B teacher \\
+\midrule
+0.6B & 0.078 & 0.079 \\
+1.7B & 0.058 & 0.063 \\
+4B & 0.053 & 0.054 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Reverse KL from Sampled Tokens}
+\label{app:rkl}
+
+At one position, write $r(v)=\log\frac{\pi_S(v)}{\pi_T(v)}$, so
+$D_{\mathrm R}=\sum_v\pi_S(v)\,r(v)$ and $r_t=r(y_t)$. Let $\theta$ be the
+student parameters; the teacher is fixed. By the product rule,
+\begin{equation}
+\nabla_\theta D_{\mathrm R}=\sum_v\nabla_\theta\pi_S(v)\,r(v)+\sum_v\pi_S(v)\,\nabla_\theta r(v).
+\end{equation}
+The second term is zero. Because $\pi_T$ does not depend on $\theta$,
+$\nabla_\theta r(v)=\nabla_\theta\log\pi_S(v)$, and
+$\sum_v\pi_S(v)\nabla_\theta\log\pi_S(v)=\sum_v\nabla_\theta\pi_S(v)
+=\nabla_\theta\sum_v\pi_S(v)=\nabla_\theta 1=0$. In the first term we use
+$\nabla_\theta\pi_S=\pi_S\nabla_\theta\log\pi_S$, which gives
+\begin{equation}
+\nabla_\theta D_{\mathrm R}=\sum_v\pi_S(v)\,r(v)\,\nabla_\theta\log\pi_S(v)
+=\mathbb E_{v\sim\pi_S}\bigl[r(v)\,\nabla_\theta\log\pi_S(v)\bigr].
+\end{equation}
+So for a sampled token $y_t$, the product $r_t\nabla_\theta\log\pi_S(y_t\mid s_t)$
+is a one-sample estimate of $\nabla_\theta D_{\mathrm R}$. With $r_t$ held
+constant, Eq.~\ref{eq:loss-c} has exactly this gradient at the selected
+positions, so minimizing it lowers reverse KL there.
+
+\subsection{Training Algorithm}
+
+\begin{algorithm}[H]
+\caption{\tsopd{} training}
+\label{alg:tsopd}
+\begin{algorithmic}[1]
+\Require training set $\mathcal D_{\mathrm{train}}$, teacher $T_1$, raw student $S_0$
+\State Sample $K_{\mathrm{cal}}$ responses per problem from $T_1$ and $S_0$; build $\mathcal D_A$, $\mathcal D_C$, and $\mathcal D_+=\mathcal D_A\cup\mathcal D_C$
+\State Calibrate $\beta$ on student responses to C problems (Appendix~\ref{app:beta})
+\For{each step}
+  \State Draw a batch from $\mathcal D_+$; the student generates one response $y$ per problem
+  \State The teacher scores $y$: top-$K_{\mathrm{tok}}$ probabilities and the tail cell at each position
+  \If{$x\in\mathcal D_A$} compute $m^A_t$ and $\mathcal L^A$ (Eq.~\ref{eq:gate-a})
+  \Else\ compute $m^C_t$, $\omega_t$, $m^B_t$, and $\mathcal L^C$ (Eqs.~\ref{eq:gate-c}--\ref{eq:brake})
+  \EndIf
+  \State Stop gradients through the gates; average the losses over the batch and make one update
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\section{Experimental Setup and Compute}
+\label{app:setup}
+
+\paragraph{Models and data.}
+Students are Qwen3-0.6B, Qwen3-1.7B, and Qwen3-4B; the teachers are Qwen3-8B
+(base-8B) and the same model after one epoch of GRPO (GRPO-8B). All training
+runs use the MATH training set of 7{,}496 problems. Direct GRPO, OPD-r, and
+OPD-f train on the full set, and their (A$\cup$C) variants train on the same
+retained pool as \tsopd{}; \tsopd{} (routing only) and \tsopd{} train only on the
+retained pool $\mathcal D_{\mathrm A}\cup\mathcal D_{\mathrm C}$ of the
+corresponding teacher--student pair, screened with $K_{\mathrm{cal}}=8$
+samples per model. Every run makes one pass over its training data, and we
+evaluate the final checkpoint.
+
+\paragraph{Framework.}
+Training uses slime with a Megatron-LM training backend and SGLang for
+rollout and teacher scoring. The chat template is applied with thinking mode
+disabled for both training and evaluation.
+
+\paragraph{Evaluation.}
+MATH-test (5{,}000 problems) uses one sample per problem; MATH500, Minerva, and
+OlympiadBench use eight; AIME24, AIME25, HMMT-Feb25, and HMMT-Nov25 use
+sixteen. Sampling uses temperature 1.0 with a response limit of 8{,}192 tokens
+for the first four benchmarks and 16{,}384 tokens for the competition sets.
+Truncated or unparsable responses count as incorrect.
+
+\paragraph{Compute.}
+All training and evaluation runs in this paper used 1{,}728 NVIDIA B300 GPU
+hours in total.
+
+\section{Training Configurations}
+\label{app:config}
+
+\begin{table}[h]
+\centering
+\small
+\caption{Training hyperparameters. Shared settings apply to all runs.}
+\label{tab:app-config}
+\begin{tabular}{lp{0.55\linewidth}}
+\toprule
+\multicolumn{2}{l}{\textit{Shared}} \\
+Optimizer & Adam ($\beta_1=0.9$, $\beta_2=0.98$), weight decay 0.1 \\
+Learning rate & $1\times10^{-6}$, constant \\
+Responses per update & 64 \\
+Rollout & temperature 1.0, max response length 8{,}192 \\
+Policy clipping & $\epsilon_{\text{low}}=0.2$, $\epsilon_{\text{high}}=0.28$ \\
+KL / entropy regularizer & none (coefficients 0) \\
+\midrule
+\multicolumn{2}{l}{\textit{Direct GRPO}} \\
+Batch & 16 prompts $\times$ 4 responses \\
+Reward & binary answer correctness \\
+Steps & 469 (one epoch) \\
+\midrule
+\multicolumn{2}{l}{\textit{OPD-r and OPD-f}} \\
+Batch & 64 prompts $\times$ 1 response \\
+Objective & OPD-r: sampled-token reverse-KL penalty (coefficient 1.0);
+OPD-f: forward KL on the teacher top-$K_{\mathrm{tok}}$ partition \\
+Steps & 118 (one epoch) \\
+\midrule
+\multicolumn{2}{l}{\textit{\tsopd{} (routing only) and \tsopd{}}} \\
+Batch & 64 prompts $\times$ 1 response \\
+Training pool & $\mathcal D_{\mathrm A}\cup\mathcal D_{\mathrm C}$ of each pair, one epoch \\
+Objective & forward KL on $A$, sampled reverse KL on $C$; \tsopd{} adds token
+gates and the entropy brake \\
+Token support & teacher top $K_{\mathrm{tok}}=512$ plus one tail cell \\
+Gates (\tsopd{} only) & within-response quantile $0.8$; mass@$n>0.9$ with
+$n=\max(\lfloor\ln K_{\mathrm{tok}}\rfloor,5)=6$; brake coefficient $\beta$
+measured per pair (Eq.~\ref{eq:beta}) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\clearpage
+\section{Experimental Supplement}
+
+\begin{table}[h]
+\centering
+\small
+\caption{Training arms. All arms except the two Direct GRPO rows use the GRPO-8B
+teacher; Table~\ref{tab:main} also reports the four OPD objectives with the
+base-8B teacher.}
+\label{tab:arms}
+\begin{tabular}{lll}
+\toprule
+Arm & Training problems & Loss \\
+\midrule
+Direct GRPO & all & correctness reward, no teacher \\
+Direct GRPO (\AC) & \AC & same \\
+OPD-r & all & reverse KL \\
+OPD-f & all & forward KL \\
+OPD-r (\AC) & \AC & reverse KL \\
+OPD-f (\AC) & \AC & forward KL \\
+\tsro{} & \AC & forward KL on A, reverse KL on C; no gates, no brake \\
+\tsopd{} & \AC & same, plus token gates and the entropy brake \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\small
+\caption{Ablations with the 0.6B student and the GRPO-8B teacher (macro averages
+over eight benchmarks, \%). Each row changes one setting of the default
+\tsopd{}.}
+\label{tab:ablation}
+\begin{tabular}{lrr}
+\toprule
+Setting & \avgk{} & \passk{} \\
+\midrule
+$\tau=0.60$ & 27.17 & 41.45 \\
+$\tau=0.95$ & 24.71 & 36.41 \\
+20\% of positions by student entropy & 26.28 & 40.54 \\
+20\% of positions at random & 26.36 & 41.34 \\
+$\mathrm{mass@}n>0.0$ & 26.70 & 39.93 \\
+$\mathrm{mass@}n>0.5$ & 26.75 & 42.59 \\
+$\mathrm{mass@}n>0.7$ & 26.66 & 41.11 \\
+$n=1$ & 25.76 & 38.26 \\
+$n=3$ & 27.27 & 42.70 \\
+$n=10$ & 25.82 & 38.53 \\
+$\beta=0$ & 26.87 & 41.38 \\
+\midrule
+\tsopd{} (default) & \textbf{28.88} & \textbf{44.57} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/tracking/fig_acpn_all.pdf}
+\caption{Outcome categories of all 1{,}566 test problems after training.
+Students are compared with $S_0$; the first row shows the teacher from $T_0$ to
+$T_1$.}
+\label{fig:acpn-all}
+\end{figure}
+
+\input{tables/tab_app_acpn}
+\input{tables/tab_app_rq3}
+
+\begin{table}[h]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.8pt}
+\caption{Outcome categories (\%) of test problems where the teacher is not
+better (Figure~\ref{fig:where}(c, d)). P stratum: $S_0$ more accurate than $T_1$ (41,
+65, and 103 problems for 0.6B, 1.7B, and 4B). N stratum: equally accurate (453,
+711, and 909 problems). Each row sums to 100 within a size; ``-'' marks a
+category that cannot occur. All arms except the two Direct GRPO rows use the GRPO-8B
+teacher.}
+\label{tab:rq2}
+\input{tables/tab_rq2_en}
+\end{table}
+
+\begin{table}[h]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Outcome categories (\%) of knowledge-gap and precision-gap test
+problems (Figure~\ref{fig:where}(b)). All arms except the two Direct GRPO rows use the
+GRPO-8B teacher; the \AC{} rows share the same problems and steps. Knowledge-gap problems start at 0, so they can
+only be $\tA$ or $\tN$; precision-gap problems start above 0, so they can only
+be $\tC$, $\tP$, or $\tN$. There are 517 and 555 such problems for 0.6B, 264 and
+526 for 1.7B, and 152 and 402 for 4B.}
+\label{tab:rq4}
+\input{tables/tab_rq4_en}
+\end{table}
+\input{tables/tab_app_gap}
+\input{tables/tab_app_full_06B}
+\input{tables/tab_app_full_17B}
+\input{tables/tab_app_full_4B}
+\input{tables/tab_app_base}
+
+\end{document}

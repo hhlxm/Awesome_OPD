@@ -1,0 +1,181 @@
+\section{Experimental Setup}
+\label{app:experimental_setup}
+
+
+
+
+
+
+
+\subsection{Training Datasets.}
+\label{app:datasets}
+We provide information in detail of our training datasets including SFT dataset and RL dataset, which is following~\citet{demy}. For the prompts template for different benchmarks, please refer to~\cref{dataset_prompt}. We also provide statistical information of our training data in~\cref{tab:training_datasets}.
+
+
+\begin{itemize}
+
+\item \textbf{SFT dataset.} The SFT dataset is constructed from a mixture of curated and synthetic multi-turn problem-solving trajectories. Specifically, a teacher model (Qwen3-Coder-30B-A3B) is employed within an agent-based framework where the SandBoxFusion is used as the code interpreter to generate end-to-end interaction traces, where problems are drawn from three complementary sources: the s1-1k set~\citep{muennighoff2025s1}, a curated collection of 3k LeetCode problems, and a 2k multi-turn ReTool~\citep{feng2025retool} dataset. To ensure data quality, the generated trajectories for the latter two subsets are scored using ReasonFlux-PRM~\citep{zou2025reasonflux-prm}, and only the top-ranked subsets (1k each) are retained, together with the full s1-1k set, resulting in a final 3k high-quality SFT corpus.
+\item \textbf{RL dataset.} The RL dataset is designed to emphasize diversity across domains in order to study its impact on training dynamics. It comprises 30k samples aggregated from multiple sources, including 17k mathematical reasoning problems from DAPO-Math~\citep{yu2025dapo}, a mixture of 4,902 math and 3,586 code tasks from Skywork-or1~\citep{he2025skywork-or1}, and an additional 3k science problems from MegaScience~\citep{fan2025megascience}.
+
+\end{itemize}
+
+\begin{table*}[!t]
+\centering
+\caption{
+Summary of the training datasets used in our experiments.
+}
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{l l l c}
+\toprule
+\textbf{Dataset Type} & \textbf{Domain} & \textbf{Source} & \textbf{\# Samples} \\
+\midrule
+
+\multirow{3}{*}{\textbf{SFT Dataset}}
+& Mathematical %
+& s1-1k~\citep{muennighoff2025s1} 
+& 1k \\
+
+& Coding 
+& LeetCode~\citep{xia2025leetcodedataset}
+& 1k \\
+
+& Tool-use %
+& ReTool~\citep{feng2025retool} 
+& 1k \\
+
+\cmidrule(lr){2-4}
+& \multicolumn{2}{l}{\textbf{Total}} 
+& \textbf{3k} \\
+
+\midrule
+
+\multirow{3}{*}{\textbf{RL Dataset}}
+& \multirow{2}{*}{Mathematical %
+}
+& DAPO-Math~\citep{yu2025dapo} 
+& 17k \\
+
+& 
+& Skywork-or1 (Math)~\citep{he2025skywork-or1} 
+& 4,902 \\
+
+& Coding 
+& Skywork-or1 (Code)~\citep{he2025skywork-or1} 
+& 3,586 \\
+
+& Scientific %
+& MegaScience~\citep{fan2025megascience} 
+& 3k \\
+
+\cmidrule(lr){2-4}
+& \multicolumn{2}{l}{\textbf{Total}} 
+& $\sim \textbf{30k}$ \\
+
+
+\bottomrule
+\end{tabular}
+\label{tab:training_datasets}
+\end{table*}
+
+
+
+
+
+
+
+
+
+
+\subsection{Benchmarks}
+\label{app:benchmarks}
+We provide detailed descriptions of the four benchmarks used in our evaluation.
+
+\begin{itemize}
+
+\item \textbf{AIME 2024/2025.} The American Invitational Mathematics Examination (AIME) is a prestigious mathematics competition administered by the Mathematical Association of America (MAA). Each year's examination consists of two sessions (AIME I and AIME II), each containing 15 problems, for a total of 30 problems per year. All answers are integers in the range $[0, 999]$, which enables unambiguous automatic evaluation via exact match. The problems span advanced topics including algebra, number theory, combinatorics, and geometry, requiring multi-step reasoning chains and creative problem-solving strategies that go well beyond pattern matching. We use the 2024 and 2025 editions as benchmarks: AIME 2024 was administered in February 2024, and AIME 2025 in February 2025. The use of recent competition problems mitigates the risk of data contamination, as these problems are unlikely to appear in pre-training corpora of models with earlier knowledge cutoffs. 
+
+\item \textbf{GPQA-Diamond}~\citep{rein2024gpqa}. GPQA (Graduate-Level Google-Proof Q\&A) is a challenging multiple-choice question-answering benchmark consisting of questions authored by domain experts holding PhDs in biology, physics, and chemistry. The questions are deliberately designed to be ``Google-proof'', they cannot be answered through simple web searches, requiring instead genuine domain expertise and multi-step scientific reasoning. The dataset comprises three nested subsets: GPQA Extended (546 questions), GPQA Main (448 questions), and GPQA Diamond (198 questions). We adopt the Diamond subset, which is the highest-quality partition: it contains only questions where both independent domain expert validators answered correctly, while skilled non-expert validators (holding PhDs in other scientific fields, with unrestricted internet access) failed. Human performance baselines on the Diamond subset are approximately 65\% for domain experts and 34\% for non-experts, compared to a random baseline of 25\%. 
+
+\item \textbf{LiveCodeBench}~\citep{jainlivecodebench}. LiveCodeBench is a continuously updated benchmark for evaluating the coding capabilities of large language models. Unlike static benchmarks such as HumanEval, LiveCodeBench mitigates data contamination by continuously collecting new problems from competitive programming platforms (LeetCode, AtCoder, and Codeforces) and annotating each problem with its release date. This temporal annotation enables contamination-aware evaluation by restricting the test set to problems released after a model's training data cutoff. We use the v6 release, which contains 1,055 problems spanning May 2023 to April 2025. Following common practice, we evaluate on problems within a recent time window to ensure minimal overlap with training data. The benchmark assesses multiple code-related capabilities including code generation, self-repair (debugging given execution feedback), code execution prediction, and test output prediction. 
+
+\end{itemize}
+
+
+
+
+
+
+
+
+\subsection{Baselines}
+\label{app:baselines}
+
+
+We compare \ourmodel with a diverse set of baselines spanning supervised learning, reinforcement learning, and distillation-based approaches. These baselines are chosen to reflect different sources of supervision (offline vs. on-policy), as well as different granularities of learning signals (sequence-level vs. token-level).
+
+\begin{itemize}
+
+\item \textbf{Vanilla.}
+The base model without any additional task-specific training. This baseline reflects the zero-shot or instruction-tuned capability of the model.
+
+\item \textbf{SFT (Supervised Fine-Tuning).}
+A standard supervised learning baseline where the model is trained to maximize the likelihood of reference solutions. This approach corresponds to off-policy imitation learning, where the model learns from fixed expert trajectories. While simple and effective, SFT suffers from exposure bias due to the mismatch between training (on ground-truth prefixes) and inference (on model-generated prefixes).
+
+\item \textbf{GRPO (Group Relative Policy Optimization)}~\citep{grpo}.
+A reinforcement learning approach that optimizes the model using relative performance within a group of sampled responses. For each input, multiple candidate outputs are generated, and each is assigned a scalar reward based on task-specific correctness. Instead of learning a separate value function, GRPO computes advantages by normalizing rewards within the group, effectively measuring how much better or worse a response is compared to its peers. The model is then updated using a policy optimization objective with clipping to ensure stable training. While GRPO avoids the need for a learned critic and is relatively efficient, it relies on sparse, sequence-level rewards, assigning the same advantage to all tokens in a response and thus lacking fine-grained token-level supervision.
+
+\item \textbf{OPD (On-Policy Distillation)}~\citep{opd}.
+An on-policy distillation method where the model learns from its own generated trajectories while receiving dense token-level supervision from a teacher distribution. At each decoding step, the objective minimizes the divergence between the student and teacher token distributions along the student’s rollout. This approach mitigates exposure bias and provides richer supervision compared to RL, but relies on an external teacher policy.
+Following recent findings that combining OPD with GRPO stabilizes training and improves performance~\citep{srpo,sdrlvr,bousselham2025vold,wang2026openclaw,opd,skillsd}, our OPD baseline adopts the joint objective $\mathcal{L} = \mathcal{L}_{\mathrm{GRPO}} + \mathcal{L}_{\mathrm{OPD}}$ (see~\cref{eq:training_object} for the objective of \ourmodel). We additionally report results for naive OPD (without GRPO) in~\cref{app:naive_opd}.
+
+
+
+
+
+
+
+
+\item \textbf{OPSD$_{\mathrm{gt}}$ (On-Policy Self-Distillation with Ground Truth)}~\citep{opsd}.
+A self-distillation variant where the same model plays both teacher and student roles. The student generates responses conditioned only on the input, while the teacher is additionally conditioned on the full ground-truth solution, which is treated as privileged information. The training objective minimizes the token-level divergence between the teacher and student distributions along the student’s trajectory. This setting provides strong supervision but assumes access to complete reference solutions.
+
+\item \textbf{OPSD$_{\mathrm{hint}}$ (On-Policy Self-Distillation with Hints)}~\citep{opsd}.
+A more practical variant of OPSD where the privileged information is replaced with a hint derived from the ground-truth solution. Instead of directly exposing the full solution, the teacher conditions on a compressed or partial guidance signal (\ie a hint), which provides weaker but more realistic supervision. This setup evaluates whether partial information can effectively guide self-distillation. Please refer to~\cref{opsd_hint} for the specific prompt in generating hints.
+
+\end{itemize}
+
+
+
+
+
+
+
+
+
+\subsection{Implementation Details.}
+\label{app:implentation_details}
+
+All experiments are conducted using the VeRL framework~\citep{verl} and Open-AgentRL framework~\citep{demy}. To ensure a fair comparison, all methods share the same base training infrastructure, optimizer, and core hyperparameters unless otherwise noted.
+To promote reproducibility and better understanding the details of our implementation, we provide \textbf{an anonymous code link} at the end of the abstract.
+
+
+\begin{itemize}
+
+    \item  \textbf{Compute Resources.}
+All experiments are conducted on a single node with 8 NVIDIA H20 GPUs (96GB memory each). For RL and distillation-based methods, training runs for 1 epoch and typically takes 2-3 days for 0.6B and 1.7B student models (see~\cref{tab:cost}), while training with larger 4B and 14B teacher models requires approximately 5-6 days. 
+In contrast, supervised fine-tuning (SFT) is significantly more efficient, with 5 training epochs typically completed within a few hours under the same hardware setup. 
+To ensure robustness and statistical reliability, all experiments are repeated over 5 independent runs with different random seeds. These details provide sufficient information about hardware configuration, execution time, and experimental protocol for reproducibility.
+
+    \item  \textbf{Supervised Fine-Tuning (SFT).}
+We fine-tune the base Qwen3-0.6B and Qwen3-1.7B models on the 3K SFT corpus for 5 epochs with a global batch size of 128. We use the AdamW optimizer with a learning rate of 5e-5. The maximum sequence length is set to 32,768 tokens with right truncation.
+
+    \item  \textbf{Baselines \& Teacher Models(RL \& Distillation).}
+For all RL and distillation-based methods (GRPO, OPD, OPSD$_{\mathrm{gt}}$, OPSD$_{\mathrm{hint}}$) including the teacher models, we adopt a unified training configuration to isolate the effect of each algorithm. Specifically, we use the AdamW optimizer with a learning rate of 1e-6, a training batch size of 64, and a mini-batch size of 16. All RL \& Distillation baselines including \ourmodel are trained based on the SFT checkpoint. The maximum prompt length is set to 2,560 tokens and the maximum response length to 20,480 tokens. We sample 16 responses per prompt during training and 32 during validation. All methods are trained for at most 1 epoch (For the teacher models, we train for at most 2 epochs). The multi-turn agent interaction supports up to 16 tool-call turns. Rollout is performed asynchronously via vLLM with tensor parallelism of 4. For distillation-based methods (OPD and its variants), the teacher model (Qwen3-4B, further optimized with GRPO) provides token-level supervision along the student's on-policy rollouts.
+
+    \item  \textbf{\ourmodel.}
+\ourmodel adopts the same training configuration as the baselines described above. The only additional hyperparameters are those governing the step-wise adaptive weighting mechanism: the initial weight $w_1$ is fixed as 1, the numerical stability constant $\epsilon = 10^{-6}$ and the upper-bound offset $\delta = 0.2$ (allowing per-step weights $w_k \leq 1 + \delta$). These parameters control the adaptive distillation strength based on the per-step student--teacher divergence, enabling the model to automatically modulate learning intensity across reasoning steps.
+
+
+
+\end{itemize}

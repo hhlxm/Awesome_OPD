@@ -1,0 +1,72 @@
+\section{Preliminaries}
+
+\subsection{Multi-turn Tool-Integrated Reasoning}
+
+We consider the post-training of a small language model (SLM) for multi-turn tool-integrated reasoning (TIR). Given an input $x$, the model interacts with an external environment over multiple reasoning steps. At each step $k$, the model generates a response $y_k$, which may include natural-language reasoning, a tool invocation, or a final answer. If a tool is invoked, the environment returns an observation $o_k$, which is appended to the context and conditions subsequent generations.
+
+A trajectory is defined as:
+\begin{equation}
+    \tau = (x, y_1, o_1, \ldots, y_K, o_K, y_{K+1}),
+\end{equation}
+where $y_{K+1}$ denotes the final response. The policy $\pi_\theta$ generates only model tokens, while observations $\{o_k\}$ are provided by the environment. Let $y_t$ denote a generated token and $y_{<t}$ its prefix, which may include both model outputs and tool observations.
+
+
+\subsection{Group Relative Policy Optimization}
+
+Group Relative Policy Optimization (GRPO)~\citep{grpo} is a reinforcement learning algorithm that updates the policy using relative rewards within a group of sampled trajectories. We assume access to an outcome-level reward function $r(\tau)$ defined on complete trajectories. For each input $x$, a group of trajectories $\{\tau_i\}_{i=1}^G$ is sampled from the old policy $\pi_{\theta_{\mathrm{old}}}$, each receiving reward $r_i = r(\tau_i)$.
+
+The group-relative advantage is computed as:
+\begin{equation}
+    \hat{A}_i =
+    \frac{r_i - \mathrm{mean}(\{r_j\})}
+    {\mathrm{std}(\{r_j\}) + \epsilon_A}.
+\label{eq:advantage}
+\end{equation}
+
+Let $\rho_{i,t}(\theta) = \frac{\pi_\theta(y_{i,t} \mid y_{i,<t})}{\pi_{\theta_{\mathrm{old}}}(y_{i,t} \mid y_{i,<t})}$ denote the token-level importance ratio. The objective is defined as:
+\begin{equation}
+\mathcal{L}_{\mathrm{GRPO}}
+=
+-
+\mathbb{E}
+\left[
+\frac{1}{G}
+\sum_{i=1}^{G}
+\frac{1}{|\mathcal{T}_i|}
+\sum_{t \in \mathcal{T}_i}
+\min
+\left(
+\rho_{i,t}(\theta)\hat{A}_i,
+\mathrm{clip}(\rho_{i,t}(\theta), 1-\epsilon, 1+\epsilon)\hat{A}_i
+\right)
+\right],
+\label{eq:grpo}
+\end{equation}
+where $\mathcal{T}_i$ denotes model-generated token positions.
+This objective provides an on-policy learning signal based on relative trajectory performance, but supplies only sparse outcome-level rewards.
+
+\subsection{On-policy Distillation}
+
+On-policy distillation (OPD)~\citep{opd,lu2025onpolicydistillation} is a post-training paradigm that provides dense token-level supervision on student-generated trajectories by aligning the student policy with a teacher distribution. Given a trajectory $y \sim \pi_\theta$, the OPD objective is defined as:
+\begin{equation}
+\mathcal{L}_{\mathrm{OPD}}^{\mathrm{}}
+=
+\mathbb{E}
+\left[
+\sum_{t \in \mathcal{T}_i}
+\left(
+\log \pi_\theta(y_t \mid y_{<t})
+-
+\log \pi_{\mathrm{teacher}}(y_t \mid y_{<t})
+\right)
+\right],
+\end{equation}
+
+where $\pi_\theta$ is the student policy, $\pi_{\mathrm{teacher}}$ is the teacher model, and $\mathcal{T}_i$ denotes the set of model-generated token positions in the sampled trajectory. This objective corresponds to a sampled estimator of the reverse KL divergence between the student and teacher policies on student-visited states. 
+
+
+
+
+
+
+

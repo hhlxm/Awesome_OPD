@@ -1,0 +1,41 @@
+\section{Conclusion}
+
+We introduced \ours{}, a verifier-free selective intervention framework for multi-turn OPD. Instead of applying teacher supervision uniformly across all turns, \ours{} first estimates whether each student response requires intervention and then weights token-level distillation by teacher confidence, addressing both compounding errors across interaction steps and brittle token-level supervision in ambiguous states. Experiments on ALFWorld, ScienceWorld, and SearchQA show that \ours{} improves over base students, off-policy SFT, and vanilla OPD while remaining competitive with strong OPD variants. Ablation and training-dynamics analyses further demonstrate that intervention labels, teacher confidence weighting, and vanilla-scale normalization provide complementary benefits. Overall, our results suggest that effective multi-turn OPD should be on-policy but not necessarily dense: teacher supervision should be selectively allocated to turns where intervention is necessary and reliable.
+
+
+
+\section{Limitations}
+\label{sec:limitations}
+
+Although \ours{} relies on teacher judgment for turn-level intervention, we take several steps to validate that the intervention mechanism is not overly brittle.
+%
+We evaluate across different student and teacher sizes, multiple multi-turn agent benchmarks, and conduct case studies showing that the intervention labels distinguish acceptable, ambiguous, harmful, and deterministic-failure turns.
+%
+We also vary the teacher temperature to test the sensitivity of confidence estimation, finding that deterministic teacher confidence provides the strongest performance while higher temperatures degrade results.
+%
+Nevertheless, the intervention labels are still produced by the teacher rather than by an external oracle.
+%
+If the teacher systematically misjudges the student's behavior, \ours{} may skip harmful actions or over-correct acceptable alternatives.
+%
+Similarly, the confidence score is based on the sharpness of the teacher's token-level distribution, which is only a proxy for supervision reliability; a confident distribution does not always imply semantic correctness, especially on severely off-distribution histories.
+
+Our experiments focus on text-based multi-turn agent benchmarks, including embodied interaction, scientific task solving, and search-based question answering.
+%
+While these environments cover diverse forms of interaction, they are still more structured than many real-world tool-use and software-engineering settings.
+%
+Extending \ours{} to broader high-latency or open-ended agent domains may require task-specific intervention prompts, richer environment feedback, or different deterministic-failure detectors.
+%
+In addition, \ours{} introduces an extra teacher query for turn-level intervention.
+%
+In practice, this overhead is mitigated because most input tokens can be cached and the teacher only outputs a short intervention label, but it still increases data-collection cost compared with vanilla OPD.
+%
+Reducing this overhead, for example by training a lightweight intervention model or reusing cached teacher judgments, is an important direction for future work.
+
+\section{Ethical Considerations}
+We utilized GPT-based models \citep{openai2023gpt4} solely for language polishing and proofreading.
+%
+This work studies training methods for multi-turn LLM agents using public benchmark environments and does not introduce new datasets containing personal or sensitive information.
+%
+\ours{} relies on teacher judgments, so biases or unsafe preferences in the teacher model may be propagated to the student.
+%
+Practical deployment should therefore include appropriate action validation, safety constraints, logging, and human oversight.

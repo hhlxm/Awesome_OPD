@@ -1,0 +1,39 @@
+\begin{table}[!h]
+\centering
+\caption{Indices of solvable problems in AIME24 (starting from 0). An approximate subset relationship can be observed: most problems solved by the RL model are also solvable by the base model.}
+\label{tab:sovable_aime24}
+\resizebox{0.9\textwidth}{!}{
+\begin{tabular}{cc}
+\toprule
+\textbf{Models} & \textbf{Problem Indices} \\
+\midrule
+Qwen2.5-7B-Base & 0, 1, 4, 6, 7, 8, 9, 11, 12, 14, 15, 16, 17, 18, 19, 22, 23, 24, 25, 26, 27, 28, 29 \\
+\midrule
+SimpleRL-Qwen2.5-7B & 0, 1, 6, 7, 8, 9, 12, 14, 15, 16, 18, 22, 23, 24, 25, 26, 27, 28, 29 \\
+\bottomrule
+\end{tabular}
+}
+% \vspace{4mm}
+\end{table}
+
+
+
+\begin{table}[!h]
+\centering
+\caption{Indices of solvable problems in LiveCodeBench (ranging from 400 to 450, starting from 0). }
+\label{tab:solvable_livecodebench}
+\resizebox{0.7\textwidth}{!}{
+\begin{tabular}{cc}
+\toprule
+\textbf{Model} & \textbf{Solvable Problem Indices} \\
+\midrule
+Qwen2.5-7B-Instruct-1M & 
+\makecell[c]{400, 402, 403, 407, 409, 412, 413, 417, 418, 419, 422, 423, \\427, 432, 433, 436, 438, 439, 440, 444, 445, 448, 449} \\
+\midrule
+Coder-R1 & 
+\makecell[c]{400, 402, 403, 407, 412, 413, 417, 418, 419, 422, 423, \\427, 430, 433, 438, 439, 440, 444, 445, 449} \\
+\bottomrule
+\end{tabular}
+}
+\vspace{-3mm}
+\end{table}

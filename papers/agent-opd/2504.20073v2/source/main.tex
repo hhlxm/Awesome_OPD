@@ -1,0 +1,168 @@
+\documentclass[11pt, a4paper, logo, copyright, nonumbering]{style}
+\usepackage[authoryear, sort&compress, round]{natbib}
+\usepackage{graphicx}
+\usepackage{xspace}
+\usepackage{xcolor}
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{dblfloatfix}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{footmisc}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{xltabular}
+\usepackage{threeparttable}
+\usepackage{siunitx}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{dsfont}
+
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+
+\usepackage{cleveref}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true}
+
+\usepackage{todonotes}
+\usepackage{fontawesome5}
+\usepackage[most]{tcolorbox}
+\usepackage{CJKutf8}
+\usepackage{lipsum}
+\input{inc/inc_macros}
+
+\makeatletter
+\def\@BTrule[#1]{%
+  \ifx\longtable\undefined
+    \let\@BTswitch\@BTnormal
+  \else\ifx\hline\LT@hline
+    \nobreak
+    \let\@BTswitch\@BLTrule
+  \else
+     \let\@BTswitch\@BTnormal
+  \fi\fi
+  \global\@thisrulewidth=#1\relax
+  \ifnum\@thisruleclass=\tw@\vskip\@aboverulesep\else
+  \ifnum\@lastruleclass=\z@\vskip\@aboverulesep\else
+  \ifnum\@lastruleclass=\@ne\vskip\doublerulesep\fi\fi\fi
+  \@BTswitch}
+\makeatother
+
+\addto\extrasenglish{
+    \def\chapterautorefname{Chapter}%
+    \def\sectionautorefname{Section}%
+    \def\paragraphautorefname{Section}
+    \def\subparagraphautorefname{Section}
+    \def\paragraphautorefname{Paragraph}%
+    \def\tableautorefname{Table}%
+    \def\equationautorefname{Equation}%
+}
+
+\newenvironment{indentchunk}[1]%
+ {\begin{list}{}%
+         {\setlength{\leftmargin}{#1}}%
+         \item[]%
+ }
+ {\end{list}}
+ 
+
+\reportnumber{001} % Leave blank if n/a
+
+
+% \title{\centering RAGEN: Training Agents by Reinforcing Reasoning}
+% \title{\centering StarPO: Reinforcing Reasoning in LLM Agents via Trajectory-Centric Optimization}
+\title{\centering RAGEN: Understanding Self-Evolution in LLM Agents via Multi-Turn Reinforcement Learning
+% \manling{Keywords: Multi-turn, RL, LLM Agent}
+}
+\date{}
+
+\author[*]{
+Zihan Wang*$^1$, Kangrui Wang*$^1$, Qineng Wang*$^1$, Pingyue Zhang*$^1$, Linjie Li*$^{2}$, Zhengyuan~Yang$^4$, Xing Jin$^6$, Kefan Yu$^1$, Minh Nhat Nguyen$^7$, Licheng Liu$^1$, Eli Gottlieb$^1$, Yiping Lu$^1$, Kyunghyun~Cho$^5$, Jiajun Wu$^3$, Li Fei-Fei$^3$, Lijuan Wang$^4$, Yejin Choi$^3$, Manling Li$^{1}$
+\\
+\small $^1$Northwestern University~~~
+$^2$University of Washington~~~
+$^3$Stanford University~~~
+$^4$Microsoft~~~\\
+\small  $^5$New York University~~~
+$^6$University of British Columbia~~~
+$^7$Singapore Management University~~~\\
+\vspace{-10pt}
+% \small
+% \vspace{5pt}
+% \url{https://ragen-ai.github.io/}
+% \\
+% {\footnotesize
+%   \href{https://github.com/RAGEN-AI/RAGEN}{\faGithub~Code}
+%   \quad
+  
+  % \href{https://pypi.org/project/eai-eval/}{\faPython~PyPI }
+  % \quad
+  % \href{https://hub.docker.com/r/jameskrw/eai-eval}{\faDocker~Docker} 
+  % \quad 
+  % \href{https://github.com/embodied-agent-eval/embodied-agent-eval.github.io/raw/main/eai.mp4}{\faVideo~Video}
+  % \quad 
+  % \href{https://embodied-agent-eval.readthedocs.io}{\faBook~Docs}    %\texttt{\{manlingl,jiajunwu\}@stanford.edu}
+  }
+% \texttt{\{zihanw, kangruiwang2030, qinengwang2029, pingyuezhang2029\}@u.northwestern.edu} \\
+% \small \texttt{\{manling.li, yiping.lu\}@northwestern.edu, linjli@cs.washington.edu}
+% }
+\correspondingauthor{$~$Equal Contribution.}
+
+
+\input{commands.tex}
+
+\input{sections/00_abstract}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gbsn}
+
+\maketitle
+
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=.93\linewidth]{figures/horizontal_teaser.pdf}
+    \caption{\small 
+    % Comparison between RAGEN and existing LLM training frameworks. RAGEN provides a general reasoning agent training framework under an MDP formulation by leveraging the StarPO algorithm to optimize the entire trajectory distribution, learning multi-turn interactions in stochastic environments. 
+    Previous methods focus on non-interactive tasks such as math or code generation. \textbf{RAGEN} implements StarPO, a general agent RL framework that supports multi-turn rollouts, trajectory-level reward assignment, and policy updates, on agent tasks requiring multi-turn stochastic interaction.  
+    }
+    \label{fig:teaser}
+\end{figure}
+
+\newpage
+
+% \begin{spacing}{0.9}
+% % \tableofcontents
+% \end{spacing}
+
+\newpage
+\input{sections/01_intro}
+\input{sections/03_method}
+\input{sections/04_experiments}
+\input{sections/05_analysis}
+\input{sections/06_related_work}
+\input{sections/07_imp_lim_ccl}
+
+\bibliographystyle{abbrvnat}
+\bibliography{main}
+\input{sections/08_appendix}
+
+
+\end{CJK*}
+\end{document} 
+

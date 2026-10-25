@@ -1,0 +1,17 @@
+\section{Conclusion, Limitations, and Future Work}
+\label{sec:conclusion}
+\label{sec:limitations}
+
+\paragraph{Conclusion.} 
+Motivated by one-shot RLVR~\citep{wang2025oneshot}, we asked whether a single query is also enough for OPD, and it is: one-shot OPD keeps the student improving for hundreds of steps and recovers most of full-data OPD's gain, across model families and task domains. The data and the algorithm sides give one answer: OPD is data-overfed but algorithm-starved. A query acts on the student through the states its rollouts reach, and one query already covers most of the state space full-data OPD visits, while 16 semantically diverse queries match full-data training in single-domain OPD and in MOPD alike. What limits a run is the absorption rate: the proportion of the remaining teacher--student gap one update absorbs keeps falling, at the same pace on one query as on all 17k, so the optimizer rather than the training set sets how long a run takes. An input need only start the student reasoning, which turns data design from collecting problems into choosing teachers.
+
+\paragraph{Limitations.}
+State coverage is a semantic-level proxy measured against a reference space built from full-data rollouts, so it reports how much of that space a query set reaches rather than what it covers on its own, and it weights every cluster equally, however often the cluster is visited and however much teacher signal it still carries. What sets the absorption rate is still open. Our MOPD runs use three domains with one teacher each, leaving open how far the diversity result extends as teachers are added.
+
+\paragraph{Future work.}
+Three directions follow.
+\begin{itemize}[topsep=2pt, partopsep=0pt, leftmargin=12pt, itemsep=2pt]
+    \item Selecting data by state coverage: the question is no longer how many queries to collect but which states they induce, so state coverage becomes a selection criterion once it can be estimated from the queries themselves, without a full-data run to measure it against.
+    \item Making training more step-efficient, by reusing a batch for several epochs under a trust region on the per-token gap, or weighting tokens by how much teacher signal they still carry.
+    \item Growing the setting, to MOPD with more teachers and domains, and to larger students, agentic tool use, and long contexts, where training data is most expensive to collect.
+\end{itemize}

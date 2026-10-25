@@ -1,0 +1,22 @@
+\setlength{\aboverulesep}{0pt}\setlength{\belowrulesep}{0pt}\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{llrrrrrrrr|r}
+\toprule
+ & & \multicolumn{4}{c}{base-8B teacher} & \multicolumn{4}{c|}{GRPO-8B teacher} & \\
+\cmidrule(lr){3-6}\cmidrule(lr){7-10}
+ & & & & \multicolumn{2}{c}{TS-OPD} & & & \multicolumn{2}{c|}{TS-OPD} & Direct \\
+\cmidrule(lr){5-6}\cmidrule(lr){9-10}
+Student & Metric & OPD-r & OPD-f & routing only & full & OPD-r & OPD-f & routing only & full & GRPO \\
+\midrule
+0.6B & avg@$K$ $\uparrow$ & 19.61 & 19.15 & 20.60 & 21.27 & 27.00 & 26.57 & \underline{27.62} & \textbf{28.88} & 26.04 \\
+ & pass@$K$ $\uparrow$ & 32.80 & 32.91 & 34.14 & 36.22 & 44.11 & 41.96 & \textbf{44.83} & \underline{44.57} & 40.46 \\
+ & $G_{\mathrm{transfer}}$ $\downarrow$ & 15.10 & 15.51 & 13.84 & 13.06 & 7.39 & 8.22 & \underline{6.93} & \textbf{5.68} & 8.71 \\
+\midrule
+1.7B & avg@$K$ $\uparrow$ & 29.22 & 27.57 & 29.29 & 29.71 & 39.04 & 39.25 & \underline{39.84} & \textbf{40.50} & 39.53 \\
+ & pass@$K$ $\uparrow$ & 44.21 & 44.90 & 48.49 & 45.76 & 56.83 & 57.57 & \underline{59.34} & \textbf{59.78} & 57.33 \\
+ & $G_{\mathrm{transfer}}$ $\downarrow$ & 17.40 & 19.25 & 17.27 & 16.71 & 7.28 & 7.15 & \underline{6.43} & \textbf{5.77} & 6.94 \\
+\midrule
+4B & avg@$K$ $\uparrow$ & 36.07 & 36.12 & 36.53 & 36.79 & 52.27 & \underline{52.83} & 52.76 & \textbf{54.28} & 51.57 \\
+ & pass@$K$ $\uparrow$ & 53.93 & 54.06 & 52.81 & 53.31 & 70.71 & \underline{72.43} & \textbf{73.68} & 71.04 & 68.44 \\
+ & $G_{\mathrm{transfer}}$ $\downarrow$ & 20.06 & 19.99 & 19.53 & 19.21 & 2.65 & \underline{1.98} & 2.09 & \textbf{0.46} & 3.45 \\
+\bottomrule
+\end{tabular}

@@ -1,0 +1,48 @@
+% ACL requires an unnumbered "Limitations" section (excluded from the page limit).
+\section*{Limitations}
+\label{sec:limitations}
+
+\paragraph{Single student-model family and scale.} All trained student policies
+use Qwen3.5-4B. Generalization across student-model families and to larger scales
+(e.g.\ 8B) is future work.
+
+\paragraph{Benchmarks.} SGCD is evaluated on two benchmarks (AppWorld and
+$\tau^3$-airline). Broader coverage across additional agentic domains is future
+work.
+
+\paragraph{External-model dependence.} The credit reference is
+produced by \creditreferenceproviderphrase{} during training. Its cost,
+availability, and quality are practical constraints. The inference-time student has no
+such dependency, but training-time quality still matters because poor credit
+references can produce weak or noisy credit features. We do not claim that the
+reference model choice is immaterial. The credit-reference model family and the
+structured prompt used to elicit it are described in \suppref{sec:appendix}. The
+$\tau^3$ data generation, training environment, and held-out evaluation also use
+an external instruction-following user simulator shared across compared arms;
+this is an evaluation dependency, not a component of the deployed student.
+
+\paragraph{Credit reference is not formal ground truth.} SGCD approximates
+stepwise reference behavior from verified siblings. This is weaker than a
+benchmark-provided stepwise oracle and can miss valid alternative plans. The
+bounded credit weights reduce the risk of overcommitting to one interpretation,
+but they do not make the credit reference infallible.
+
+\paragraph{Training-run coverage.} AppWorld values are single-run point estimates because time and compute constraints prevented multi-seed reruns, so we make no AppWorld variance or significance claim. On $\tau^3$-airline, SGCD uses three independent training runs (Table~\ref{tab:seedrobust}), but Vanilla GRPO is a fixed single-run anchor; the reported dispersion is therefore SGCD-only and the comparison remains directional rather than variance-controlled.
+
+\paragraph{AppWorld recipe comparison.} The AppWorld arms match rollout,
+environment, and evaluation settings, but not their regularization term:
+only Vanilla GRPO includes reference-KL. SGCD instead uses detached dense
+divergence for credit weighting, so the result compares complete recipes and
+does not isolate the effect of removing reference-KL.
+
+\paragraph{Diagnostic and ablation scope.} The AppWorld SFT regression table is
+a diagnostic subset result, not a headline held-out result. The full SGCD result
+also depends on the exact external-LLM prompt and dynamic-sampling rollout set;
+we report the core controls but do not exhaustively sweep every prompt-builder
+or divergence variant.
+
+\paragraph{Artifact availability.} The review package does not include the full
+training/evaluation code, generated training trajectories and corrected task
+artifacts, or exact run-level manifests. The supplement reports the available
+settings, prompt template, and evaluation definitions, but the submitted
+materials do not support exact end-to-end replication.

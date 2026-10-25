@@ -1,0 +1,22 @@
+\subsection{Discussions}
+\label{supp_sec:discuss}
+
+% \paragraph{Limitations}
+% A key limitation of our study lies in the use of a LLM as the verifier for the correctness of reasoning CoTs, due to the prohibitive cost of manually checking a large volume of generated reasoning paths. To mitigate this, we present extensive case studies in Appendix~\ref{supp_sec:all_case_study} to demonstrate that DeepSeek-R1-0528-Qwen3-8B functions as a relatively robust verifier to detect mathematical reasoning errors in DAPO-Qwen-32B. Furthermore, we apply multiple verification calls to obtain CoT-Pass@K metrics under various criteria, including \emph{any-correct}, \emph{majority-correct}, and \emph{all-correct}, in order to balance between false positives and false negatives. Moreover, our theorem only explains the optimization process of RLVR but provides no guarantee for its generalization. We merely observe the generalization empirically. 
+
+\paragraph{Call for Live, Challenging Benchmarks}
+Static benchmarks developed prior to the release of modern base models are increasingly susceptible to contamination risks, potentially undermining the reliability of observed improvements. In response, we emphasize the need for \emph{live benchmarks} that evolve over time, as suggested in recent studies~\citep{Jain2025LiveCodeBench,white2025livebench}. Additionally, we agree with the viewpoint of~\citet{Yao2025SecondHalf} that future research advancements may rely more on designing new evaluations, benchmarks, and environments.
+
+\paragraph{Call for Lightweight yet Powerful CoT Verifiers}
+While DeepSeek-R1-0528-Qwen3-8B serves as a useful CoT verifier, it is not infallible. Conflicting verification results across multiple queries reveal the challenges of false-positive and false-negative verifications. To tackle this, we combine multiple verification strategies, including different voting rules, to improve robustness. Looking forward, there is a pressing need for light yet reliable CoT verifiers that can serve as standardized evaluators beyond the coarse-grained Pass@K metric. This direction also relates to previous studies on process reward modeling~\citep{lightman2023VerifyByStep,uesato2022ProcAndOutFeedback,wang2024MathShepherd}.
+
+\paragraph{Scaling RLVR or Scaling Pre-Training}
+While the scaling of pre-training has led to transformative progress in LLMs~\citep{kaplan2020ScalingLaws,liu2024deepseek-v3}, enabling the transition to the era of artificial general intelligence, we argue that scaling RLVR could be equally pivotal, given the empirical evidences and theoretical foundation that all demonstrate its real incentivization beyond base LLMs. As modern LLMs approach the limits of language token exposure, learning from experience~\citep{silver2025EraOfExp} may represent the next leap. Recent efforts by leading research teams suggest a growing emphasis on this direction~\citep{guo2025deepseek-r1,deepseek2025R1-0528,google2024Gemini2.0,xai2025GrokBeta3,openai2025o3-o4m,qwen2025Qwen3,google2025Gemini-2.5-Pro,anthropic2025Claude4,mistral2025Magistral}. For the broad open research community, understanding the foundations and limitations of current RLVR algorithms is crucial to push this direction further.
+
+
+\paragraph{New RLVR Algorithms and Beyond}
+With our insight that RLVR implicitly incentivizes correct reasoning in base LLMs, we anticipate the development of new algorithmic paradigms. These may include optimization formulations or objective functions, such as policy-gradient approaches~\citep{sutton1999PolicyGrad,schulman2017PPO}, new likelihood-based optimization objectives~\citep{chen2025NFT,zhu2025PosNegRLVR}, and preference optimization frameworks~\citep{rafailov2023DPO,su2025TRPA}. The key principle is that the new algorithms should be designed to more directly incentivize correct reasoning paths, alleviating inherent logical biases in base LLMs.
+
+
+
+

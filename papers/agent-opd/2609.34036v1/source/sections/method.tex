@@ -1,0 +1,133 @@
+\section{Uncertainty-Aware Intervention for On-Policy Distillation}
+\label{sec:method}
+
+\subsection{Notation and Preliminaries}
+\label{subsec:preliminary}
+
+We consider a multi-turn interaction starting from a task input $q$. Before turn $t$, the agent conditions on the interaction history $h_t=(q,a_0,o_1,\ldots,a_{t-1},o_t)$, with $h_0=q$. A policy $\pi$ samples an action response $a_t\sim\pi(\cdot\mid h_t)$. Executing the action in the environment produces an observation $o_{t+1}$ and updates the history to $h_{t+1}=(h_t,a_t,o_{t+1})$. A trajectory of $H$ turns is $\tau=(q,a_0,o_1,\ldots,a_{H-1},o_H)$.
+
+Let $\pi_\theta$ be the student policy and $\pi_T$ a frozen teacher. In standard OPD, the student generates every action, $a_t\sim\pi_\theta(\cdot\mid h_t)$. The teacher provides dense token-level supervision on the resulting rollouts. The OPD objective minimizes the reverse Kullback--Leibler (KL) divergence from student to teacher at the visited histories:
+\begin{equation}
+\mathcal L_{\mathrm{OPD}}(\theta)
+=\mathbb E_{\tau\sim\pi_\theta}\!\left[
+\sum_{t=0}^{H-1}
+\mathrm{KL}\!\left(
+\pi_\theta(\cdot\mid h_t)
+\,\middle\|\,
+\pi_T(\cdot\mid h_t)
+\right)
+\right].
+\label{eq:opd_loss}
+\end{equation}
+For a sampled student action $a_t$, we write $\ell_t^{\mathrm{OPD}}(a_t;\theta):=\log\pi_\theta(a_t\mid h_t)-\log\pi_T(a_t\mid h_t)$. Its expectation over $a_t\sim\pi_\theta(\cdot\mid h_t)$ equals the KL divergence at $h_t$ in Eq.~\ref{eq:opd_loss}.
+
+Motivated by the observations in Section~\ref{sec:motivation}, UOPD selectively replaces student actions with teacher corrections during rollout collection.
+
+\subsection{UOPD: Uncertainty-Aware Intervention for On-Policy Distillation}
+\label{subsec:said}
+
+UOPD consists of two components: an intervention rule that decides when to replace a student action with a teacher action, and a loss that specifies how the student learns at each turn.
+
+  \noindent{\textbf{Intervention Rule.}}
+  Let $\mathcal U(\pi_T,\pi_\theta;h,a)\in\mathbb R$ be an uncertainty
+  score for action $a$ given history $h$, with larger values indicating
+  greater uncertainty. The uncertainty score can be instantiated using
+  teacher confidence or a student--teacher confidence gap; we provide
+  the specific definitions in Appendix~\ref{app:training-config}.
+
+  Let $n$ index batches of episodes collected during training,
+  and let $r_n$ be the target intervention rate for batch $n$.
+  Given a buffer $\mathcal D_n$ of recent uncertainty scores of student
+  actions, UOPD sets the intervention threshold to
+  $\tau_n=\operatorname{Quantile}_{1-r_n}(\mathcal D_n)$.
+  The target rate controls how much the teacher
+  intervenes, while uncertainty determines where it intervenes.
+  We recompute the threshold at the start of each episode and hold it
+  fixed within the episode.
+  This design connects to uncertainty-guided expert intervention
+  \citep{menda2019ensembledagger} and budget-aware quantile thresholding
+  \citep{hoque2022thriftydagger} in interactive imitation learning.
+
+  At turn $t$, the student samples a proposed action
+  $a_t^S\sim\pi_\theta(\cdot\mid h_t)$ and UOPD computes its uncertainty
+  score $\delta_t=\mathcal U(\pi_T,\pi_\theta;h_t,a_t^S)$.
+  If $\delta_t>\tau_n$, UOPD samples a teacher action
+  $a_t^T\sim\pi_T(\cdot\mid h_t)$ and executes it in place of $a_t^S$;
+  otherwise, it executes the student action. The executed action $a_t$
+  is appended to the history along with the resulting observation.
+
+  We gradually decrease the target intervention rate to provide more
+  teacher guidance early in training and progressively shift rollout
+  control to the student:
+  \begin{equation}
+  r_n=r_{\mathrm{start}}
+  +(r_{\mathrm{end}}-r_{\mathrm{start}})
+  \min\!\left(\frac{n}{N_{\mathrm{decay}}},1\right),
+  \label{eq:intervention_schedule}
+  \end{equation}
+where $r_{\mathrm{start}}$ and $r_{\mathrm{end}}$ denote the initial and final target rates, and
+  $N_{\mathrm{decay}}$ denotes the decay duration.
+  
+
+\begin{algorithm}[t]
+\caption{UOPD}
+\label{alg:said}
+{\bfseries Input:} student $\pi_\theta$, frozen teacher $\pi_T$, environment $E$, uncertainty score $\mathcal U$, uncertainty score buffer $\mathcal D_0$, rate parameters $(r_{\mathrm{start}},r_{\mathrm{end}},N_{\mathrm{decay}})$, SFT weight $\beta$.
+\begin{algorithmic}[1]
+\FOR{each training iteration $n=0,1,\ldots$}
+  \STATE Compute target intervention rate $r_n$ using Eq.~\ref{eq:intervention_schedule}.
+  \FOR{each episode in the rollout batch, in parallel}
+    \STATE Set $\tau_n\gets\operatorname{Quantile}_{1-r_n}(\mathcal D_n)$; hold it fixed for this episode.
+    \STATE Reset $E$ for task input $q$; set $h_0\gets q$ and $t\gets0$.
+    \WHILE{the episode is not terminated}
+      \STATE Sample $a_t^S\sim\pi_\theta(\cdot\mid h_t)$; compute and record $\delta_t=\mathcal U(\pi_T,\pi_\theta;h_t,a_t^S)$.
+      \STATE If $\delta_t>\tau_n$, sample $a_t^T\sim\pi_T(\cdot\mid h_t)$ and set $a_t\gets a_t^T$; otherwise set $a_t\gets a_t^S$.
+      \STATE Compute $\ell_t^{\mathrm{UOPD}}$ using Eq.~\ref{eq:said_step}.
+      \STATE Execute $a_t$, observe $o_{t+1}$, and set $h_{t+1}\gets(h_t,a_t,o_{t+1})$; $t\gets t+1$.
+    \ENDWHILE
+    \STATE Update $\mathcal D_n$ with this episode's recorded uncertainty scores.
+  \ENDFOR
+  \STATE Update the student $\pi_\theta$ using the collected batch; carry the updated buffer to $\mathcal D_{n+1}$.
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\noindent{\textbf{Intervention-Conditioned Distillation.}} 
+At a non-intervened turn, the student receives the standard OPD supervision on $a_t^S$. At an intervened turn, the executed action $a_t^T$ is sampled from the teacher. The standard OPD term relies on student-policy samples and therefore cannot be applied directly to $a_t^T$: at a fixed history $h_t$, its expectation under teacher sampling becomes
+\begin{equation}
+\mathbb E_{a_t^T\sim\pi_T(\cdot\mid h_t)}\!\left[
+\log\frac{\pi_\theta(a_t^T\mid h_t)}{\pi_T(a_t^T\mid h_t)}
+\right]
+=-\mathrm{KL}\!\left(\pi_T(\cdot\mid h_t)\,\middle\|\,\pi_\theta(\cdot\mid h_t)\right).
+\label{eq:teacher_sampled_log_ratio}
+\end{equation}
+We instead minimize the \emph{forward} KL from teacher to student at intervened turns through SFT, since
+\begin{equation*}
+\mathbb E_{a_t^T\sim\pi_T(\cdot\mid h_t)}[-\log\pi_\theta(a_t^T\mid h_t)]
+=\mathcal{H}\!\left(\pi_T(\cdot\mid h_t)\right)
++\mathrm{KL}\!\left(\pi_T(\cdot\mid h_t)\,\middle\|\,\pi_\theta(\cdot\mid h_t)\right).
+\end{equation*}
+  Here $\mathcal H(p):=-\mathbb E_{a\sim p}[\log p(a)]$ denotes the entropy
+  of an action distribution $p$. The teacher entropy is independent of $\theta$, so SFT
+  and forward KL have the same expected gradient. Combining OPD on student
+  actions with SFT on teacher actions yields
+\begin{equation}
+\ell_t^{\mathrm{UOPD}}=
+\begin{cases}
+\ell_t^{\mathrm{OPD}}(a_t^S;\theta),
+& \delta_t\le\tau_n,\\[3pt]
+-\beta\log\pi_\theta(a_t^T\mid h_t),
+& \delta_t>\tau_n,
+\end{cases}
+\label{eq:said_step}
+\end{equation}
+  where $\beta$ controls the weight of the teacher-action SFT loss.
+  The intervention decision thus determines both the executed action
+  and the KL direction at each turn.
+
+  Appendix~\ref{app:mode_balance} illustrates the
+  mode-seeking and mode-covering tendencies of reverse and forward KL,
+  respectively.
+
+
+\input{sections/theory.tex}

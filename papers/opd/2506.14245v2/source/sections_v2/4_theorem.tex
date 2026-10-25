@@ -1,0 +1,78 @@
+\section{A Theoretical Understanding of RLVR for LLMs}
+\label{sec:theory}
+
+In addition to empirical evidences, we provide a theoretical understanding of how RLVR, as implemented in the GRPO algorithm~\citep{shao2024deepseekmath}, fundamentally incentivizes correct reasoning for pre-trained language models. We note a key distinction between RLVR for LLMs and traditional RL for randomly initialized models. Pre-trained LLMs, owing to their powerful likelihood estimation capabilities obtained during pre-training, can generate various CoTs and then produce possible answers. Some of them could coincidentally arrive at the ground truth, especially when the ground truth is in a simple format and can be easily guessed. In contrast, traditional RL simply optimizes for action trajectories that yield high rewards, without necessarily verifying the intrinsic correctness of each action along the path. For instance, in the Go game~\citep{silver2017AlphaGo}, every action is valid once the simulation environment is setup correctly. In the following, we start our theoretical analysis from a formal problem setup distinguishing CoT and answer tokens in LLM responses.
+
+% In the context of LLMs, we argue that the core principle of RLVR is fundamentally different. It is not merely about reaching a correct answer, but about exploring the immense reasoning space with broad prior knowledge and about identifying and reinforcing logically rigorous CoTs.
+% To formalize this principle, we now elaborate on our problem formulation, key assumptions, the resulting theorem, and some discussions of its implications.
+
+
+\paragraph{Problem Setup}
+Given a question prompt $q$ , we sample $G$ responses $\mathbf{Y} = \{y_1, y_2, \dots, y_G\}$ from policy $\pi_\theta$, where $\pi_\theta$ is a LLM model parameterized by $\theta$. Let $c_i$ be the CoT in response $y_i$, and $a_i$ the final answer. We define the following correctness indicators: 
+\begin{equation}
+     \mathcal{I}_{\text{CoT}}(c_i) = \begin{cases} 
+1 & \text{if } c_i \text{ is correct} \\ 
+0 & \text{otherwise}
+     \end{cases},
+     \quad
+     \mathcal{I}_{\text{Ans}}(a_i) =
+     \begin{cases} 
+1 & \text{if } a_i \text{ is correct} \\
+0 & \text{otherwise}
+     \end{cases}.
+\end{equation}
+In this study, we define the CoT correctness $\mathcal{I}_{\text{CoT}}(c_i)$ as the intermediate tokens of a response ($c_i$) expressing necessary and accurate logics that lead to the ground truth. We use $p_c^\theta = P_{\pi_\theta}(\mathcal{I}_{\text{CoT}}(c)=1)$ to denote the probability of generating a correct CoT.
+In practice, it is rather challenging to verify the CoT correctness because it is inherently unstructured, knowledge-intensive, and full of details.
+In contrast, the answer correctness $\mathcal{I}_{\text{Ans}}(a_i)$ is assumed to be verified programmatically.
+So we have a verifiable reward $R(y_i)$ that is binary and determined solely by answer correctness: $R(y_i) = \mathcal{I}_{\text{Ans}}(a_i)$.
+We calculate the standard GRPO advantage $\hat{A}(y_i)$ as:
+\begin{equation}
+\hat{A}(y_i) = \frac{R(y_i) - \mu_{\mathbf{Y}}}{\sigma_{\mathbf{Y}}}, \quad 
+\mu_{\mathbf{Y}} = \frac{1}{G}\sum_{j=1}^G R(y_j), \quad 
+\sigma_{\mathbf{Y}} = \sqrt{\frac{1}{G}\sum_{j=1}^G (R(y_j) - \mu_{\mathbf{Y}})^2} .
+\label{eq:grpo_advantage}
+\end{equation}
+Without loss of generality, we consider a policy gradient~\citep{sutton1999PolicyGrad} update:
+\begin{equation}
+\nabla_\theta J(\theta) \approx \frac{1}{G} \sum_{i=1}^G \hat{A}(y_i) \nabla_\theta \log \pi_\theta(y_i \mid q).
+\label{eq:gradient_update}
+\end{equation}
+% $\nabla_\theta J(\theta) \approx \frac{1}{G} \sum_{i=1}^G \hat{A}(y_i) \nabla_\theta \log \pi_\theta(y_i \mid q).$
+
+\paragraph{Assumptions}
+Given the problem setup decoupling CoT and answer correctness, we introduce a critical \emph{Logic Prior} assumption: compared with incorrect CoTs, correct CoTs have higher probabilities to induce correct answers. Thus we have
+\begin{equation}
+P(\mathcal{I}_{\text{Ans}}(a_i)=1 \mid \mathcal{I}_{\text{CoT}}(c_i)=1) = \alpha > 
+P(\mathcal{I}_{\text{Ans}}(a_i)=1 \mid \mathcal{I}_{\text{CoT}}(c_i)=0) = \beta .
+\label{eq:assumption_alpha}
+\end{equation}
+This assumption is based on the belief that pre-trained LLMs have established strong knowledge and logic priors.
+Besides, we also assume a learnable group ($\sigma_{\mathbf{Y}} > 0$) and a sufficiently large sampling number $G$ to ensure stable gradient updates.
+Then, we establish the following theorem.
+
+\begin{theorem}[GRPO Implicitly Incentivizes Correct Reasoning]
+\label{thm:grpo-incentive}
+For any prompt $q$ satisfying our assumptions, the expected GRPO advantage $\mathbb{E}[\hat{A}(y_i)]$ satisfies:
+\begin{align}
+\mathbb{E}\left[\hat{A}(y_i) \mid \mathcal{I}_{\text{CoT}}(c_i)=1\right] > 0,
+\quad
+\mathbb{E}\left[\hat{A}(y_i) \mid \mathcal{I}_{\text{CoT}}(c_i)=0\right] < 0,
+\label{eq:theorem_advantage_guarantee}
+\end{align}
+where $\hat{A}(y_i)$ is defined in \eqref{eq:grpo_advantage}.
+The GRPO policy gradient, as defined in \eqref{eq:gradient_update}, increase the probability of generating correct CoTs ($p^\theta_c$) in the next round, so $p^\theta_c$ increases monotonically.
+\end{theorem}
+
+Below we briefly illustrate our key perspectives on why GRPO works and when it may fail. Moreover, we include a complete proof for Theorem~\ref{thm:grpo-incentive} and more discussions in Appendix~\ref{supp_sec:theorem_proof}.
+
+\paragraph{Discussions on the effectiveness of GRPO}
+Theorem~\ref{thm:grpo-incentive} indicates that even though a base LLM may guess the ground truth with imperfect CoTs at the beginning (low initial $p^\theta_c$), GRPO could still work as long as the knowledge and logic priors have been established.
+The driving factor is the gap $\alpha - \beta > 0$, which amplifies the advantage difference between correct and incorrect CoTs.
+As training progresses and $\alpha$ increases (due to more sound reasoning across various question prompts) while $\beta$ decreases (reducing spurious correlations, model biases, incorrect knowledge or calculation, etc.), causing the gap to widen and further accelerating coherent reasoning.
+As $p_c \to 1$, $(\alpha-\beta)$ may approach $1$ in a faster pace because generating a few answer tokens is typically much easier than producing long correct CoTs, then $\mathbb{E}[\hat{A}(y_i) \mid \text{correct CoT}] \to 0$, ensuring convergence.
+
+\paragraph{Discussions on failure modes in GRPO}
+We note that the \emph{Logic Prior} assumption may not always hold, potentially leading to the reinforcement of incorrect CoTs, since base LLMs may retain inherent biases and possibly fatal knowledge errors from pre-training. These harmful information might exist in some CoTs that finally yield the correct answer. In such cases, improper model biases could be unintentionally reinforced. We suspect that these unexpectedly reinforced CoTs are the root cause of the challenges faced by the R1-Zero approach~\citep{guo2025deepseek-r1}, including poor readability and multi-lingual behaviors.
+
+
+% Consequently, we believe that additional techniques, such as learning from human feedback~\citep{ouyang2022InstructGPT} or off-policy-guided learning~\citep{yan2025OffPolicyGuide}, may prove essential in addressing these misalignments.

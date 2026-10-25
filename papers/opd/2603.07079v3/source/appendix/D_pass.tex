@@ -1,0 +1,49 @@
+\section{Pass@$k$ Experiments}
+\label{app:pass_others}
+\begin{figure*}[ht]
+  \centering
+
+  \begin{subfigure}{0.33\textwidth}
+    \includegraphics[width=\linewidth]{figure/pass_0.6B_AIME24.pdf}
+    \caption{AIME24}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.33\textwidth}
+    \includegraphics[width=\linewidth]{figure/pass_0.6B_AIME25.pdf}
+    \caption{AIME25}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.33\textwidth}
+    \includegraphics[width=\linewidth]{figure/pass_0.6B_AMC23.pdf}
+    \caption{AMC23}
+  \end{subfigure}
+
+  \caption{Pass@$k$ performance comparison between OPD and \method~on the AIME and AMC benchmarks with the Qwen3-0.6B-Base student.
+\method~achieves higher Pass@$k$ compared to OPD.}
+  \label{fig:pass_appendix_0.6B}
+\end{figure*}
+\begin{figure*}[ht]
+  \centering
+
+  \begin{subfigure}{0.33\textwidth}
+    \includegraphics[width=\linewidth]{figure/pass_4B_AIME24.pdf}
+    \caption{AIME24}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.33\textwidth}
+    \includegraphics[width=\linewidth]{figure/pass_4B_AIME25.pdf}
+    \caption{AIME25}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.33\textwidth}
+    \includegraphics[width=\linewidth]{figure/pass_4B_AMC23.pdf}
+    \caption{AMC23}
+  \end{subfigure}
+
+  \caption{Pass@$k$ performance comparison between OPD and \method~on the AIME and AMC benchmarks with the Qwen3-4B-Base student.
+\method~achieves higher Pass@$k$ compared to OPD, with the performance gap becoming more pronounced as $k$ increases.}
+  \label{fig:pass_appendix_4B}
+\end{figure*}
+\autoref{fig:pass_appendix_0.6B} and \autoref{fig:pass_appendix_4B} show the Pass@$k$ performance across different values of $k$ for the Qwen3-0.6B-Base and Qwen3-4B-Base models. Compared to OPD, \method~achieves better performance on AIME24/25~\cite{maa_aime} and AMC23~\cite{maa_amc}. On harder benchmarks such as AIME, the performance gap between the two methods widens as $k$ increases. This suggests that \method~more effectively explores diverse reasoning trajectories, thereby increasing the likelihood of reaching a correct solution.
+
+

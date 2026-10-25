@@ -1,0 +1,93 @@
+\usepackage{xspace}
+\newcommand{\nothink}{No-Think\xspace}
+\newcommand{\freethink}{Free-Think\xspace}
+\newcommand{\grd}{Grounding\xspace}
+\newcommand{\wm}{WorldModeling\xspace}
+\newcommand{\grdwm}{Grounding-WorldModeling\xspace}
+\newcommand{\nl}{Natural-Lanaguage\xspace}
+\newcommand{\symbolic}{Symbolic\xspace}
+\newcommand{\structured}{Structured\xspace}
+
+\definecolor{MyOrange}{rgb}{1.0, 0.4, 0.2}
+\definecolor{MyBlue}{rgb}{0.2, 0.2, 0.8}
+\newcommand{\showcomment}[3]{\textcolor{#1}{[#2: #3]}}
+\newcommand{\pingyue}[1]{\showcomment{MyOrange}{Pingyue}{#1}}
+\newcommand{\zihan}[1]{\showcomment{MyBlue}{Zihan}{#1}}
+
+\renewcommand\paragraph[1]{\vspace{0em}\noindent\textbf{#1}}
+\usepackage[font=footnotesize,labelfont=bf,aboveskip=2pt,belowskip=-13pt]{caption}
+\usepackage[most]{tcolorbox}
+% \tcbuselibrary{listings}
+% \tcbuselibrary{breakable}
+% \tcbuselibrary{skins}
+\usepackage{xcolor}
+
+\newcounter{promptcnt} % Define a global counter for prompts
+\newcounter{casecnt}
+\newcounter{surveycnt}
+
+
+\newtcblisting{prompt}[2][Prompt Template]{%
+    enhanced,
+    breakable,
+    colback=gray!5,
+    colframe=gray!40,
+    listing only,
+    listing options={
+        basicstyle=\ttfamily\small,
+        columns=flexible,
+        breaklines=true,
+        keepspaces=true,
+        breakindent=0em,
+        keepspaces=true,
+        escapechar=\%,
+        upquote=true
+    },
+    title={#1}, % Adds numbering to the title
+    attach boxed title to top left={xshift=0.5cm, yshift=-\tcboxedtitleheight/2},
+    before upper={\refstepcounter{promptcnt} \label{#2}}, % Increment counter & assign label
+}
+
+\newtcblisting{case}[2][Case Template]{%
+    enhanced,
+    breakable,
+    colback=red!8,
+    colframe=red!60,
+    coltitle=white,
+    colbacktitle=red!80!magenta!70,
+    listing only,
+    listing options={
+        basicstyle=\ttfamily\small,
+        columns=flexible,
+        breaklines=true,
+        keepspaces=true,
+        breakindent=0em,
+        keepspaces=true,
+        escapechar=\%,
+        upquote=true
+    },
+    title={#1}, % Adds numbering to the title
+    attach boxed title to top left={xshift=0.5cm, yshift=-\tcboxedtitleheight/2},
+    before upper={\refstepcounter{casecnt} \label{#2}}, % Increment counter & assign label
+}
+\usepackage{xcolor} % Make sure xcolor is loaded
+\definecolor{mybluetitle}{rgb}{0.2,0.4,0.7} % Example: A nice blue. Adjust RGB values as you like.
+\newtcolorbox{onebox}[2][]{
+    enhanced, 
+    % breakable,
+    center title,
+    left*=0pt, right*=0pt,
+    boxsep=2pt, left=5pt, right=5pt,
+    skin first=enhanced,
+    skin middle=enhanced,
+    skin last=enhanced,
+    colframe = mybluetitle!90,
+  colback  = mybluetitle!10,
+  % coltitle = mybluetitle!20!black,  
+    fonttitle=\bfseries\rmfamily\fontfamily{phv}\selectfont,
+    % fontupper=\scriptsize,
+    title={\footnotesize\strut{#2}  \refstepcounter{subsubsection} \addcontentsline{toc}{subsubsection}{\string\numberline{\thesubsubsection}#2}
+    %\subsubsection{}
+    },
+    #1
+    }

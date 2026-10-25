@@ -1,0 +1,116 @@
+\documentclass[]{fairmeta}
+% Option "twocolumn" available, but please prioritize single-column
+\usepackage{lineno}
+\usepackage{calc}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{amsfonts}
+\usepackage{xspace}
+% \usepackage{hyperref}
+% \usepackage[font=footnotesize]{subcaption}
+\usepackage{booktabs}
+\usepackage{pdfpages}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{enumitem}
+\usepackage{pifont}
+
+% For theorems and such
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{xspace}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{wrapfig}
+\usepackage{enumitem}
+
+\newcommand{\promptplaceholder}[1]{\texttt{\{#1\}}}
+\usepackage[export]{adjustbox}
+\newcommand{\MyEmoji}[1]{\includegraphics[width=1em,valign=t]{#1}}
+% \def\red#1{{\color{red}#1}}
+% \newcommand*{\red}{\textcolor{red}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\ours}{\textsc{SAGE-OPD}\xspace}
+
+\newcommand{\zz}[1]{{\color{magenta}[ZZ: {#1}]}}
+\newcommand{\yf}[1]{{\color{cyan}[YF: {#1}]}}
+
+\newcommand{\defref}[1]{Definition~\ref{#1}}
+\newcommand{\tabref}[1]{Table~\ref{#1}}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+\newcommand{\eqnref}[1]{\text{Eq.}~(\ref{#1})}
+\newcommand{\secref}[1]{\S\ref{#1}}
+\newcommand{\appref}[1]{Appendix~\ref{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{\ours: Selective Agent-Guided Intervention for Multi-Turn On-Policy Distillation}
+
+
+\author{Yuhang Zhou}
+\author{Lizhu Zhang}
+\author{Yifan Wu}
+\author{Mingyi Wang}
+\author{Bo Peng}
+\author{Jiayi Liu}
+\author{Xiangjun Fan}
+\author{Zhuokai Zhao}
+
+\affiliation{Meta AI}
+
+% \contribution[*]{Work done at Meta}
+% \contribution[\dagger]{Joint last author}
+
+\abstract{\input{arxiv/0_abstract}}
+
+\date{\today}
+\correspondence{Yuhang Zhou and Zhuokai Zhao at \email{\{zyhang, zhuokai\}@meta.com}\\}
+
+% You can add additional metadata fields as follows 
+% \metadata[Code]{\url{https://github.com/facebookresearch/repo}}
+% \metadata[Project Page]{\url{page holder url}}
+
+\begin{document}
+
+\maketitle
+
+
+\input{arxiv/1_introduction}
+\input{arxiv/2_related}
+\input{arxiv/3_method}
+\input{arxiv/4_theory}
+\input{arxiv/5_experiments}
+\input{arxiv/6_ablations}
+\input{arxiv/7_conclusion}
+
+\clearpage
+\newpage
+\bibliographystyle{assets/plainnat}
+\bibliography{custom}
+
+\clearpage
+\newpage
+\beginappendix
+\input{arxiv/8_appendix}
+
+\end{document}

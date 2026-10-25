@@ -1,0 +1,24 @@
+
+
+
+
+\input{./table/rq1.tex}
+
+
+\subsection{Overall Performance}
+
+We compare \ourmodel against six baselines on both 0.6B and 1.7B student models. The results are summarized in Table~\ref{tab:main}, from which we draw the following key observations. Note that we also provide training cost analysis in~\cref{app:cost}.
+
+\begin{itemize}[leftmargin=*]
+
+\item \textbf{Obs 1: \ourmodel consistently outperforms all baselines across every benchmark.}
+On both model scales, \ourmodel achieves the highest scores on all four tasks, surpassing the strongest baseline OPD by \textbf{20.86\%} (0.6B) and \textbf{18.50\%} (1.7B) in relative average improvement. Notably, SFT and GRPO both fail to outperform the Vanilla baseline at the 0.6B scale, indicating that sparse outcome-level rewards and static demonstrations are insufficient for guiding small models in TIR. In contrast, our step-wise reweighting mechanism provides dense yet reliability-modulated supervision, effectively preventing misleading gradients from corrupted tool-call states while preserving informative teacher guidance in well-aligned regions.
+
+\item \textbf{Obs 2: The improvements generalize across different model scales, demonstrating the scalability of \ourmodel.}
+Our 1.7B student recovers \textbf{69.8\%} of the 4B teacher's performance, compared to only 58.9\% for OPD, showing that \ourmodel substantially improves distillation efficiency. Furthermore, even our 0.6B model surpasses several 1.7B baselines, suggesting that step-wise reweighting can partially compensate for the capacity gap between model scales. %
+
+\end{itemize}
+
+
+
+

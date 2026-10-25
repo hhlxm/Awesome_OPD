@@ -1,0 +1,39 @@
+\section{Other Baselines}
+\label{app:other_baselines}
+In this section, we compare \method~with BD-KD~\cite{amara2022bd}, AKL~\cite{wu2025rethinking}, and ToDi~\cite{jung2025todi}. These methods adapt the divergence objective based on teacher-student discrepancy measures. Specifically, BD-KD adjusts KL weighting based on entropy difference, AKL uses head-tail distribution mismatch, and ToDi performs token-wise divergence weighting based on vocabulary-level discrepancy.
+For a fair comparison, we use the official implementations for ToDi and AKL, while BD-KD is implemented following the original formulation. We also align key hyperparameters, including batch size, across all methods.\\
+As shown in Table~\ref{tab:other_baselines}, \method~achieves superior or comparable performance to existing adaptive KL-based methods across most benchmarks. This suggests that teacher-entropy-based selective forward KL effectively mitigates instability and diversity degradation caused by reverse KL in on-policy distillation. In addition, unlike other baselines, \method~applies forward KL only at necessary positions, reducing additional computational overhead.
+
+\begin{table}[ht]
+\centering
+\caption{
+Comparison with adaptive KL-based baselines. \textbf{Bold} indicates the best performance and \underline{underline} indicates the second-best performance.}
+\resizebox{0.45\textwidth}{!}{
+\begin{tabular}{c c c c c c}
+\toprule
+\textbf{Benchmark} & \textbf{Metric} & \textbf{BD-KD} & \textbf{AKL} & \textbf{ToDi} & \textbf{\method} \\
+\midrule
+\multirow{2}{*}{MATH500}
+& Avg@8  & \underline{67.45} & 66.43 & 67.43 & \cellcolor{blue!10}\textbf{68.73} \\
+& Pass@8 & \underline{86.80} & 85.20 & \underline{86.80} & \cellcolor{blue!10}\textbf{87.60} \\
+\addlinespace
+\midrule
+\multirow{2}{*}{AMC23}
+& Avg@8  & \underline{38.75} & 37.81 & \underline{38.75} & \cellcolor{blue!10}\textbf{41.88} \\
+& Pass@8 & \underline{72.50} & 70.00 & \textbf{75.00} & \cellcolor{blue!10}\textbf{75.00} \\
+\addlinespace
+\midrule
+\multirow{2}{*}{AIME24}
+& Avg@8  & \underline{9.17} & 7.50 & 8.33 & \cellcolor{blue!10}\textbf{10.42} \\
+& Pass@8 & \underline{20.00} & 16.67 & \underline{20.00} & \cellcolor{blue!10}\textbf{23.33} \\
+\addlinespace
+\midrule
+\multirow{2}{*}{AIME25}
+& Avg@8  & \underline{4.58} & \underline{4.58} & \textbf{5.83} & \cellcolor{blue!10}\textbf{5.83} \\
+& Pass@8 & \textbf{16.67} & \underline{13.33} & \textbf{16.67} & \cellcolor{blue!10}\textbf{16.67} \\
+\bottomrule
+\end{tabular}
+}
+%\vspace{-0.4cm}
+\label{tab:other_baselines}
+\end{table}

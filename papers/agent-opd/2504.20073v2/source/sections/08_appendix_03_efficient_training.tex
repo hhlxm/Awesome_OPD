@@ -1,0 +1,27 @@
+\section{Efficient Training with Low-Rank Adaptation (LoRA)}
+\paragraph{Motivation.}
+While the main body of the paper reports results obtained by full‑parameter fine–tuning, in practice such a setting may be prohibitive when scaling to larger models or longer‐horizon tasks.  We therefore implement a parameter‑efficient variant of RAGEN based on Low‑Rank Adaptation~\citep{hu2021lora}.\footnote{We set rank~$r{=}64$, $\alpha{=}64$, and inject adapters into all linear projections of the transformer blocks. We also increased learning rate by $10\times$ for both actor and critic.}
+
+\noindent\textbf{Performance parity.}~~
+Despite updating only a fraction of the model parameters, LoRA reaches a validation success rate comparable to that achieved by full fine‑tuning of the entire network for the SimpleSokoban task, achieving approximately a $0.2\%$ success rate on the validation set.
+
+\noindent\textbf{Resource savings.}~~
+We compare the hardware footprint of LoRA with full fine‑tuning.  Across an 80‑minute training horizon we measure:
+
+\begin{itemize}[nosep,leftmargin=*]
+    \item \textbf{GPU memory.}  LoRA stabilizes at $\mathbf{\approx 23\%}$ of device memory versus $\mathbf{\approx 48\%}$ for full updates, cutting the peak allocation by \textgreater50\,\%.
+    \item \textbf{GPU utilization.}  Average GPU utilization drops from \(\sim\!34\%\) to \(\sim\!14\%\).
+    \item \textbf{Power consumption.}  Mean power draw decreases from \(\sim\!22\%\) to \(\sim\!12\%\), a \(\approx45\%\) reduction.
+\end{itemize}
+
+% These gains translate into lower cost per training step and enable experimentation on commodity hardware without sacrificing performance.
+
+\noindent\textbf{Take‑aways.}~~
+Parameter‑efficient fine‑tuning provides a practically viable alternative for RAGEN: it attains comparable policy quality while more than halving memory, compute, and power demands.  Consequently, future work that scales StarPO to larger backbones or longer contexts can adopt LoRA (or other adapter‑based methods) as the default optimization strategy without re‑engineering the training loop.
+
+\section{PPO Failure Mode in Frozen Lake}
+\label{app:frozenlake-grpo}
+Among the three evaluated environments, we observe an interesting divergence on Frozen Lake: PPO tends to collapse earlier or converge less stably than GRPO. This contrasts with the general trend where PPO demonstrates better performance, prompting further analysis.
+
+One possible explanation lies in the environment’s long-horizon stochasticity. In Frozen Lake, agent actions always lead to highly non-deterministic transitions, and intermediate states can appear similar while leading to very different outcomes. This makes value estimation challenging. As PPO relies on a learned value function, instability in critic learning may amplify optimization noise and contribute to early collapse.
+GRPO, by contrast, does not rely on explicit value learning. Its reward-weighted update procedure may be more tolerant to uncertainty in these settings, leading to comparatively more stable training on Frozen Lake—even if it remains less effective in other tasks. Overall, we summarize environments with high stochasticity may pose greater challenges for value-based methods, and that critic-free approaches can serve as a useful baseline in such cases.

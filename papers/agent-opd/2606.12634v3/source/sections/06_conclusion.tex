@@ -1,0 +1,13 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+In the recipes studied here, naive self-distillation can collapse multi-turn
+tool use: on $\tau^3$-airline,
+easy information-only behavior remains while state-changing action success falls
+to zero. SGCD instead uses distillation only to construct bounded credit weights
+for the policy-gradient term and adds no teacher-matching actor gradient. AppWorld supplies the main
+positive held-out result; $\tau^3$-airline supplies a directional held-out
+comparison and the diagnosis of the direct-SD failure mode. The evidence
+supports a narrow design recommendation: use distillation to shape
+verifier-grounded credit while avoiding a competing teacher-matching imitation
+path in these settings.

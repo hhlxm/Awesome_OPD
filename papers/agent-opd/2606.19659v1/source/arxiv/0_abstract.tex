@@ -1,0 +1,22 @@
+On-policy distillation (OPD) improves student models by training them on trajectories induced by their own policy, making it a promising approach for mitigating exposure bias in agent training.
+%
+However, most OPD studies focus on single-turn settings, while realistic LLM agents interact with environments over multiple turns.
+%
+% \zz{
+In this regime, early errors can alter future observations and compound across the trajectory, and standard dense token-level OPD becomes brittle, as it may over-penalize semantically valid alternatives, reinforce local degeneracies such as repeated actions, and propagate unreliable teacher supervision on off-distribution histories.
+% }
+%
+We propose \textbf{\ours}, a verifier-free selective intervention framework specifically designed for multi-turn OPD.
+%
+Instead of applying teacher supervision uniformly across all turns, \ours first observes environment feedback and uses teacher judgment to decide whether each student response should be skipped or intervened on.
+%
+To further address compounding errors, \ours weights token-level distillation by teacher confidence, reducing the influence of uncertain teacher distributions on corrupted or ambiguous histories.
+%
+Finally, \ours applies loss normalization to preserve the overall loss scale of standard OPD while retaining selective turn-level weighting.
+%
+Experiments on agent tasks show that \ours consistently improves over baselines, achieving up to a $13.3\%$ relative improvement in ALFWorld unseen success rate over standard OPD.
+%
+Ablation studies further demonstrate that turn-level intervention, teacher confidence weighting, and loss normalization provide complementary benefits.
+%
+Our results suggest that effective multi-turn OPD should remain on-policy, but teacher supervision should be selectively allocated to turns where intervention is necessary and reliable.
+%

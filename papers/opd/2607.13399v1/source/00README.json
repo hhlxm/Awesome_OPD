@@ -1,0 +1,53 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "acl_latex.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "README.md"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "acl_latex.bbl"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "acl_natbib.bst"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "anthology.bib.txt"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "custom.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "figs/failure_modes_accuracy_mean_clip_ratio_mean.pdf"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "figs/signal_regulation_v3.pdf"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "formatting.md"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "signal_regulation.pdf"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "teaser_toy.pdf"
+      }
+   ],
+   "spec_version" : 1,
+   "texlive_version" : "2025",
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}

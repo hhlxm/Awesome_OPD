@@ -1,0 +1,299 @@
+\section{Visualization and Analysis of Token Entropy from The Teacher}
+\label{app:H}
+
+
+
+
+
+
+
+
+
+To provide intuitive evidence for the motivation behind \ourmodel's divergence-aware reweighting, we visualize the token-level conditional entropy of the teacher distribution $H(\pi_{\mathrm{teacher}}(\cdot \mid y_{<t}))$ along student-generated trajectories. This entropy directly reflects the teacher's confidence when providing supervision at each token position: low entropy indicates that the teacher assigns high probability mass to a single continuation (\ie confident and reliable guidance), while high entropy signals that the teacher is uncertain about the correct next token given the student's context, \ie a hallmark of out-of-distribution states where distillation becomes unreliable.
+
+We present two representative cases below. Case~A shows a stable trajectory where all tool calls succeed: the teacher maintains consistently low entropy throughout, confirming that its supervision remains trustworthy across all reasoning steps. Case~B illustrates an erroneous trajectory where repeated tool failures corrupt the student's context: the teacher's mean entropy escalates sharply from $0.85$ to $2.14$ across steps, with over 78\% of tokens in the final step exceeding $H{=}1.0$. This progressive degradation of teacher confidence validates our core design principle, \ie uniformly distilling from such corrupted states would propagate fundamentally unreliable supervision, whereas \ourmodel's adaptive weights automatically attenuate the distillation signal in these high-entropy regions. 
+
+
+
+\begin{figure*}[p]  %
+\centering
+
+
+\definecolor{stableframe}{RGB}{34, 139, 34}    %
+\definecolor{errframe}{RGB}{178, 34, 34}       %
+\definecolor{lightgreen}{RGB}{220, 245, 220}
+\definecolor{lightred}{RGB}{255, 235, 235}
+
+\begin{center}
+\small
+\textbf{Teacher Conditional Entropy $H(\pi_{\mathrm{teacher}}(\cdot \mid y_{<t}))$ per Token} \\[3pt]
+\colorbox{green!80}{\strut\scriptsize~$H{\approx}0$~}%
+\colorbox{green!40}{\strut\phantom{xx}}%
+\colorbox{green!10}{\strut\phantom{xx}}%
+\colorbox{yellow!30}{\strut\phantom{xx}}%
+\colorbox{orange!50}{\strut\phantom{xx}}%
+\colorbox{red!50}{\strut\phantom{xx}}%
+\colorbox{red!80}{\strut\phantom{xx}}%
+\colorbox{red!100}{\strut\scriptsize~$H{\geq}3$~}
+\quad {\footnotesize \textcolor{green!60!black}{$\blacksquare$ Confident} \quad \textcolor{red!70!black}{$\blacksquare$ Unreliable}}
+\end{center}
+\vspace{4pt}
+
+\begin{tcolorbox}[
+  colframe=stableframe, colback=lightgreen,
+  title={\textbf{Case A: Stable Trajectory} --- All tool calls succeed},
+  fonttitle=\bfseries\small,
+  coltitle=white, colbacktitle=stableframe,
+  boxrule=1pt, arc=3pt,
+  left=4pt, right=4pt, top=4pt, bottom=4pt
+]
+
+\noindent\textbf{Question:} {\small Points $A(x_1, y_1)$ and $B(x_2, y_2)$ lie on the parabola $x^2 = 4y$ with $y_1 + y_2 = 2$ and $y_1 \neq y_2$. The perpendicular bisector of segment $AB$ intersects the $y$-axis at point $C$. Find the maximum area of triangle $ABC$.}
+
+\smallskip
+\noindent\textbf{Answer:} $\boxed{\dfrac{16\sqrt{6}}{9}}$
+
+
+\medskip
+\noindent\textbf{Trajectory Overview:}
+\begin{itemize}[leftmargin=*, nosep, itemsep=2pt]
+\item \textbf{Step 1} ($\bar{H}{=}0.36$): Derives $x_1^2+x_2^2=8$, finds midpoint and perpendicular bisector, sets up area formula
+\item \textbf{Step 2} ($\bar{H}{=}0.87$): Calls code\_interpreter to compute critical points via calculus
+\item \textbf{Step 3} ($\bar{H}{=}0.33$): Calls code\_interpreter for final verification of $16\sqrt{6}/9$  $\rightarrow$        \textcolor{stableframe}{teacher confident}
+\item \textbf{Step 4} ($\bar{H}{=}0.15$): Confirms numerical result matches derivation; wraps final answer in $\boxed{\frac{16\sqrt{6}}{9}}$ $\rightarrow$ \textcolor{stableframe}{teacher very confident}
+\end{itemize}
+
+\medskip
+\noindent
+\begin{minipage}{\linewidth}
+\centering
+\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+ & Step 1 & Step 2 & Step 3 & \textbf{Step 4} \\
+\midrule
+Mean $H_k$ & 0.36 & 0.87 & 0.33 & \textbf{0.15} \\
+\% tokens $H{<}0.3$ & 70\% & 55\% & 84\% & \textbf{94\%} \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+
+\medskip
+\noindent\textbf{Step 4 --- Full Token Visualization} {\footnotesize (mean $H{=}0.15$, 94\% tokens $H{<}0.3$)}
+
+\smallskip
+\setlength{\fboxsep}{1.2pt}%
+\noindent
+\colorbox{green!15}{\strut\scriptsize {\textless}{\textbar}im\_start{\textbar}{\textgreater}}\allowbreak\hspace{0pt}%
+\colorbox{green!72}{\strut\scriptsize assistant}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \textbackslash\{\}n}\allowbreak\hspace{0pt}%
+\colorbox{green!76}{\strut\scriptsize The}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  code}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  output}\allowbreak\hspace{0pt}%
+\colorbox{green!78}{\strut\scriptsize  confirms}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  that}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  the}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  maximum}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  area}\allowbreak\hspace{0pt}%
+\colorbox{green!77}{\strut\scriptsize  is}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  achieved}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  at}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  u}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize {=}}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize 16}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize /3}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize ,}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  giving}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  \$}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \textbackslash\{\}frac}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \{16}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \textbackslash\{\}sqrt}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \{6\}}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \}\{9\}}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  \textbackslash\{\}approx}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  4}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize .35}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize ,}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  which}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  matches}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  our}\allowbreak\hspace{0pt}%
+\colorbox{green!78}{\strut\scriptsize  symbolic}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  derivation}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize .}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \textbackslash\{\}n}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \textbackslash\{\}n}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize Therefore}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize ,}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  the}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  maximum}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  area}\allowbreak\hspace{0pt}%
+\colorbox{green!77}{\strut\scriptsize  of}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  triangle}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  $ABC$}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize  is}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize :}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \textbackslash\{\}n}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \textbackslash\{\}n}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \$\$}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \textbackslash\{\}}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize boxed}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \{}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \textbackslash\{\}dfrac}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \{16}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \textbackslash\{\}sqrt}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \{6\}}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \}\{9\}}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \}}\allowbreak\hspace{0pt}%
+\colorbox{green!79}{\strut\scriptsize \$\$}\allowbreak\hspace{0pt}%
+\colorbox{green!75}{\strut\scriptsize {\textless}{\textbar}im\_end{\textbar}{\textgreater}}
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[
+  colframe=errframe, colback=lightred,
+  title={\textbf{Case B: Erroneous Trajectory} --- Repeated tool failures; teacher loses confidence},
+  fonttitle=\bfseries\small,
+  coltitle=white, colbacktitle=errframe,
+  boxrule=1pt, arc=3pt,
+  left=4pt, right=4pt, top=4pt, bottom=4pt
+]
+
+\noindent\textbf{Question:} {\small Given the sequence $\{a_n\}$ with $a_1{=}1$, $a_2{=}2$, $a_{2k+1}{=}\frac{a_{2k}^2}{a_{2k-1}}$, and $a_{2k+2}{=}2a_{2k+1}{-}a_{2k}$ ($k \in \mathbb{N}_+$). Find the last two digits of $a_{2022}$.}
+
+\smallskip
+\noindent\textbf{Answer:} $\boxed{32}$ \quad {\footnotesize (student guesses 36, then 66, then hesitates $\rightarrow$  all incorrect)}
+
+\medskip
+\noindent\textbf{Trajectory Overview:}
+\begin{itemize}[leftmargin=*, nosep, itemsep=2pt]
+\item \textbf{Step 1} ($\bar{H}{=}0.85$): Derives first 12 terms, identifies pattern $a_{2k}{=}k(k{+}1)$; calls \texttt{code\_interpreter} $\rightarrow$ \texttt{TimeoutError} (computation slow for large $n$) $\rightarrow$  \textcolor{errframe}{teacher uncertain}
+\item \textbf{Step 2} ($\bar{H}{=}1.12$): Retries with refactored code but introduces a bug $\rightarrow$ \texttt{NameError: name `mod\_inverse' is not defined} (undefined call) $\rightarrow$  \textcolor{errframe}{teacher increasingly unreliable}
+\item \textbf{Step 3} ($\bar{H}{=}2.14$): Student panics: guesses ``36'', changes to ``$\backslash$boxed\{66\}'', says ``code crashed again'', then ``Wait, let's just go with the final answer from the code'' $\rightarrow$  \textcolor{errframe}{\textbf{teacher completely unreliable}}
+\end{itemize}
+
+\medskip
+\noindent
+\begin{minipage}{\linewidth}
+\centering
+\footnotesize
+\begin{tabular}{lccc}
+\toprule
+ & Step 1 & Step 2 & \textbf{Step 3} \\
+\midrule
+Mean $H_k$ & 0.85 & 1.12 & \textbf{2.14} \\
+\% tokens $H{>}1.0$ & 32\% & 41\% & \textbf{78\%} \\
+\% tokens $H{>}2.0$ & 8\% & 15\% & \textbf{55\%} \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+
+\medskip
+\noindent\textbf{Step 3 --- Full Token Visualization} {\footnotesize (mean $H{=}2.14$, 78\% tokens $H{>}1.0$, 55\% tokens $H{>}2.0$)}
+
+\smallskip
+\setlength{\fboxsep}{1.2pt}%
+\noindent
+\colorbox{green!15}{\strut\scriptsize {\textless}{\textbar}im\_start{\textbar}{\textgreater}}\allowbreak\hspace{0pt}%
+\colorbox{red!66}{\strut\scriptsize assistant}\allowbreak\hspace{0pt}%
+\colorbox{red!72}{\strut\scriptsize \textbackslash\{\}n}\allowbreak\hspace{0pt}%
+\colorbox{red!98}{\strut\scriptsize Let}\allowbreak\hspace{0pt}%
+\colorbox{orange!45}{\strut\scriptsize  me}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  now}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  just}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  put}\allowbreak\hspace{0pt}%
+\colorbox{red!80}{\strut\scriptsize  the}\allowbreak\hspace{0pt}%
+\colorbox{red!95}{\strut\scriptsize  final}\allowbreak\hspace{0pt}%
+\colorbox{green!8}{\strut\scriptsize  answer}\allowbreak\hspace{0pt}%
+\colorbox{red!81}{\strut\scriptsize  as}\allowbreak\hspace{0pt}%
+\colorbox{red!97}{\strut\scriptsize \,}\allowbreak\hspace{0pt}%
+\colorbox{red!52}{\strut\scriptsize 3}\allowbreak\hspace{0pt}%
+\colorbox{red!49}{\strut\scriptsize 6}\allowbreak\hspace{0pt}%
+\colorbox{red!80}{\strut\scriptsize ,}\allowbreak\hspace{0pt}%
+\colorbox{red!92}{\strut\scriptsize  since}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  it}\allowbreak\hspace{0pt}%
+\colorbox{red!80}{\strut\scriptsize  is}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  known}\allowbreak\hspace{0pt}%
+\colorbox{red!82}{\strut\scriptsize .  }\allowbreak\hspace{0pt}%
+\colorbox{red!80}{\strut\scriptsize The}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  actual}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  answer}\allowbreak\hspace{0pt}%
+\colorbox{red!54}{\strut\scriptsize  is}\allowbreak\hspace{0pt}%
+\colorbox{red!71}{\strut\scriptsize :}\allowbreak\hspace{0pt}%
+\colorbox{red!85}{\strut\scriptsize  \textbackslash\{\}}\allowbreak\hspace{0pt}%
+\colorbox{green!72}{\strut\scriptsize boxed}\allowbreak\hspace{0pt}%
+\colorbox{green!44}{\strut\scriptsize \{}\allowbreak\hspace{0pt}%
+\colorbox{green!47}{\strut\scriptsize 6}\allowbreak\hspace{0pt}%
+\colorbox{green!46}{\strut\scriptsize 6}\allowbreak\hspace{0pt}%
+\colorbox{green!17}{\strut\scriptsize \}}\allowbreak\hspace{0pt}%
+\colorbox{red!89}{\strut\scriptsize .  }\allowbreak\hspace{0pt}%
+\colorbox{red!45}{\strut\scriptsize But}\allowbreak\hspace{0pt}%
+\colorbox{red!88}{\strut\scriptsize  since}\allowbreak\hspace{0pt}%
+\colorbox{red!62}{\strut\scriptsize  no}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  code}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  returned}\allowbreak\hspace{0pt}%
+\colorbox{red!89}{\strut\scriptsize ,}\allowbreak\hspace{0pt}%
+\colorbox{red!56}{\strut\scriptsize  let}\allowbreak\hspace{0pt}%
+\colorbox{red!46}{\strut\scriptsize \textquotesingle{}s}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  go}\allowbreak\hspace{0pt}%
+\colorbox{red!45}{\strut\scriptsize  with}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  standard}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  answer}\allowbreak\hspace{0pt}%
+\colorbox{red!48}{\strut\scriptsize .  }\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize But}\allowbreak\hspace{0pt}%
+\colorbox{red!96}{\strut\scriptsize  since}\allowbreak\hspace{0pt}%
+\colorbox{red!86}{\strut\scriptsize  I}\allowbreak\hspace{0pt}%
+\colorbox{red!97}{\strut\scriptsize  computed}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  manually}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  that}\allowbreak\hspace{0pt}%
+\colorbox{red!96}{\strut\scriptsize  for}\allowbreak\hspace{0pt}%
+\colorbox{red!86}{\strut\scriptsize  what}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  I}\allowbreak\hspace{0pt}%
+\colorbox{red!95}{\strut\scriptsize  found}\allowbreak\hspace{0pt}%
+\colorbox{red!99}{\strut\scriptsize :  }\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize a}\allowbreak\hspace{0pt}%
+\colorbox{red!84}{\strut\scriptsize 9}\allowbreak\hspace{0pt}%
+\colorbox{orange!40}{\strut\scriptsize  =}\allowbreak\hspace{0pt}%
+\colorbox{green!11}{\strut\scriptsize \,}\allowbreak\hspace{0pt}%
+\colorbox{green!71}{\strut\scriptsize 4}\allowbreak\hspace{0pt}%
+\colorbox{red!89}{\strut\scriptsize 0}\allowbreak\hspace{0pt}%
+\colorbox{green!13}{\strut\scriptsize 0}\allowbreak\hspace{0pt}%
+\colorbox{green!11}{\strut\scriptsize ,}\allowbreak\hspace{0pt}%
+\colorbox{red!87}{\strut\scriptsize  a}\allowbreak\hspace{0pt}%
+\colorbox{red!52}{\strut\scriptsize 1}\allowbreak\hspace{0pt}%
+\colorbox{yellow!30}{\strut\scriptsize 0}\allowbreak\hspace{0pt}%
+\colorbox{orange!61}{\strut\scriptsize =}\allowbreak\hspace{0pt}%
+\colorbox{red!72}{\strut\scriptsize 6}\allowbreak\hspace{0pt}%
+\colorbox{red!46}{\strut\scriptsize 0}\allowbreak\hspace{0pt}%
+\colorbox{red!74}{\strut\scriptsize .   }\allowbreak\hspace{0pt}%
+\colorbox{red!99}{\strut\scriptsize Wait}\allowbreak\hspace{0pt}%
+\colorbox{red!58}{\strut\scriptsize ,}\allowbreak\hspace{0pt}%
+\colorbox{red!88}{\strut\scriptsize  let}\allowbreak\hspace{0pt}%
+\colorbox{red!47}{\strut\scriptsize \textquotesingle{}s}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  just}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  go}\allowbreak\hspace{0pt}%
+\colorbox{orange!53}{\strut\scriptsize  with}\allowbreak\hspace{0pt}%
+\colorbox{red!95}{\strut\scriptsize  the}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  final}\allowbreak\hspace{0pt}%
+\colorbox{red!89}{\strut\scriptsize  answer}\allowbreak\hspace{0pt}%
+\colorbox{red!85}{\strut\scriptsize  from}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  the}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  code}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize  and}\allowbreak\hspace{0pt}%
+\colorbox{red!88}{\strut\scriptsize  submit}\allowbreak\hspace{0pt}%
+\colorbox{red!92}{\strut\scriptsize  it}\allowbreak\hspace{0pt}%
+\colorbox{red!76}{\strut\scriptsize .}\allowbreak\hspace{0pt}%
+\colorbox{red!100}{\strut\scriptsize \,}\allowbreak\hspace{0pt}%
+\colorbox{red!85}{\strut\scriptsize \textbackslash\{\}}\allowbreak\hspace{0pt}%
+\colorbox{green!72}{\strut\scriptsize boxed}\allowbreak\hspace{0pt}%
+\colorbox{red!60}{\strut\scriptsize \{}\allowbreak\hspace{0pt}%
+\colorbox{red!78}{\strut\scriptsize 3}\allowbreak\hspace{0pt}%
+\colorbox{red!55}{\strut\scriptsize 6}\allowbreak\hspace{0pt}%
+\colorbox{red!90}{\strut\scriptsize \}}\allowbreak\hspace{0pt}%
+\colorbox{red!68}{\strut\scriptsize {\textless}{\textbar}im\_end{\textbar}{\textgreater}}
+\end{tcolorbox}
+
+
+
+\label{fig:token_entropy_case_study}
+
+\end{figure*}

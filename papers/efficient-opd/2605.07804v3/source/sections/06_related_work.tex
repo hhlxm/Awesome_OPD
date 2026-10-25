@@ -1,0 +1,15 @@
+\section{Related Work}
+
+
+\noindent\textbf{On-policy distillation.}
+MiniLLM formalized OPD for LLMs under a reverse-KL objective optimized by policy gradient, emphasizing the mode-seeking behavior of reverse KL \citep{gu2024minillm}.
+GKD broadened this view by interpolating between on-policy and off-policy data under multiple divergences \citep{agarwal2024policy}.
+More recent theory frames OPD as dense KL-constrained RL, where the teacher's per-token log-ratio can be interpreted as an implicit reward and can even be extrapolated beyond the teacher's standard strength \citep{yang2026learning}.
+OPD has since appeared in major reasoning and post-training recipes \citep{yang2025qwen3,lu2025onpolicydistillation,zeng2026glm,xiao2026mimo,ko2026scaling,jin2026entropy,jang2026stable,fu2026revisiting,yang2026learning,gu2026coevolvingpolicydistillation}.
+It has also been extended to self-distillation and online experiential learning, where a model acts as its own teacher under privileged information, feedback, or sample routing \citep{hubotter2026reinforcement,zhao2026self,he2026far,shenfeld2026self,ye2026policy,sang2026crispcompressedreasoningiterative,kim2026does,ye2026online,yang2026self,li2026unifying,zhao2026selfdistillationmultitokenprediction,ding2026hdpo,song2026ehrag}.
+These works establish OPD as a strong post-training primitive.
+\method~addresses a complementary reliability problem: even when dense teacher rewards are available on-policy, long rollouts may contain prefixes where the teacher's local signal is no longer exploitable. More discussions of OPD are provided in Appendix~\ref{app:related} 
+
+
+
+\vspace{-5mm}

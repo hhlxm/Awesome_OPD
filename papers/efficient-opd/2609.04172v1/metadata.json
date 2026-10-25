@@ -1,0 +1,47 @@
+{
+  "arxiv_id": "2609.04172v1",
+  "title": "Rethinking On-Policy Distillation of Large Language Models II: One Training Example",
+  "authors": [
+    "Fu, Zixuan",
+    "He, Bingxiang",
+    "Zuo, Yuxin",
+    "Huang, Haohuan",
+    "Zhang, Jinqian",
+    "Xiao, Ruhang",
+    "Qian, Cheng",
+    "Luo, Qinyu",
+    "Gao, Huan-ang",
+    "Wang, Yudong",
+    "Liu, Zhiyuan",
+    "Ding, Ning",
+    "Xiao, Chaojun"
+  ],
+  "submitted_date": "2026/09/03",
+  "abs_url": "https://arxiv.org/abs/2609.04172v1",
+  "schema_version": 1,
+  "requested_input": "2609.04172",
+  "requested_id": "2609.04172",
+  "source_url": "https://arxiv.org/src/2609.04172v1",
+  "downloaded_at": "2026-10-08T07:24:10.595969+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "c8e8b6ce958a5b0865e44eb5564c33689ebeb687c259d2bc729fac50e0227345",
+  "tex_files": [
+    "Sections/0_Abstract.tex",
+    "Sections/1_Introduction.tex",
+    "Sections/2_Preliminaries.tex",
+    "Sections/3_One-shot.tex",
+    "Sections/4_Mechanism-Data.tex",
+    "Sections/5_Mechanism-Algo.tex",
+    "Sections/6_MOPD.tex",
+    "Sections/7_Discussion.tex",
+    "Sections/8_Related-work.tex",
+    "Sections/9_Conclusion.tex",
+    "Sections/Appendix.tex",
+    "main.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 34
+}

@@ -1,0 +1,31 @@
+\begin{table*}[t!]
+\caption{Evaluation accuracy on four math reasoning benchmarks in the strong-to-weak distillation setting. Teacher model is Qwen3-30B-A3B-Instruct-2507. The numerical subscript indicates the absolute \textcolor{lightgreen}{\textbf{improvement}} or \textcolor{myred}{\textbf{degradation}} \textbf{compared to the standard OPD}.}
+\label{tab: math results on different-sized models}
+% \vskip 0.05in
+\centering
+% \small
+% \setlength{\tabcolsep}{2.25pt}
+\begin{tabular}{lccccc}
+\toprule
+  Method
+& \phantom{0}AIME24\phantom{0} & \phantom{0}AIME25\phantom{0}  & HMMT25 (Feb.) & HMMT25 (Nov.) & \phantom{0}\phantom{0}Avg.\phantom{0}\phantom{0} \\
+\midrule
+Teacher  & 74.7 & 62.8 & 44.2 & 57.2 & 59.7 \\
+\midrule
+\multicolumn{6}{l}{\emph{\quad \textbf{Student: Qwen3-1.7B-Non-Thinking}}} \\ 
+Base & 12.3 & 11.4 & \phantom{0}6.8 & \phantom{0}4.5 & \phantom{0}8.8 \\
+SFT & 18.1 & 20.5 & \phantom{0}9.2 & \phantom{0}6.3 & 13.5 \\
+OPD & 33.0 & 28.7 & 15.7 & 14.9  & 23.1  \\
+\rowcolor{cyan!10} ExOPD & \cimp{\textbf{37.3}}{+4.3} & \cimp{\textbf{31.5}}{+2.8} & \cimp{\textbf{16.2}}{+0.5} & \cimp{\textbf{16.5}}{+1.6} & \cimp{\textbf{25.4}}{+2.3} \\
+\midrule
+\multicolumn{6}{l}{\emph{\quad \textbf{Student: Qwen3-4B-Non-Thinking}}} \\ 
+Base &  21.5 & 21.9 & 10.0 & \phantom{0}8.0 & 15.4 \\
+SFT & 45.4 & 40.9 & 22.4 & 31.6 & 35.1 \\
+OPD & 55.0 & 48.0 & 29.8 & 37.7& 42.6  \\
+\rowcolor{cyan!10} ExOPD & \cimp{\textbf{58.7}}{+3.7} & \cimp{\textbf{50.8}}{+2.8} & \cimp{\textbf{33.0}}{+3.2} & \cimp{\textbf{38.8}}{+1.1} & \cimp{\textbf{45.3}}{+2.7} \\ 
+\bottomrule
+\end{tabular}
+% \vskip -0.1in
+\end{table*}
+
+

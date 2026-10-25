@@ -1,0 +1,185 @@
+
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2026_conference,times}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{subfigure}
+\usepackage{amssymb}
+
+\usepackage[english]{babel}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proof}{Proof}
+
+% \usepackage[most]{tcolorbox}
+% \usepackage{lmodern}  % Better font rendering
+
+
+\title{Reinforcement Learning with Verifiable Rewards Implicitly Incentivizes Correct Reasoning in Base LLMs}
+
+% Authors must not appear in the submitted version. They should be hidden
+% as long as the \iclrfinalcopy macro remains commented out below.
+% Non-anonymous submissions will be rejected without review.
+
+% \iffalse
+\author{Xumeng Wen\thanks{These authors contributed equally: Xumeng Wen, Zihan Liu, Shun Zheng.} $~^1$,
+Zihan Liu\footnotemark[1] ~\thanks{Work done during the internship at Microsoft Research Asia.} $~^2$,
+Shun Zheng\footnotemark[1] ~\thanks{Correspondence to shun.zheng@microsoft.com.} $~^1$,
+Shengyu Ye\footnotemark[2] $~^1$, 
+Zhirong Wu$^1$,
+Yang Wang$^1$,
+\\
+\textbf{
+Zhijian Xu\footnotemark[2] $~^3$,
+Xiao Liang\footnotemark[2] $~^4$,
+Junjie Li$^1$,
+Ziming Miao$^1$,
+Jiang Bian$^1$,
+Mao Yang$^1$} \\
+$^1$Microsoft Research Asia
+$^2$Peking University \\
+$^3$The Chinese University of Hong Kong
+$^4$University of California, Los Angeles
+}
+% \fi
+
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+
+\usepackage[most]{tcolorbox} % 加载tcolorbox宏包
+\usepackage{xcolor} % 颜色支持
+\usepackage{caption}
+\usepackage{subcaption}
+
+
+% 定义Question标题栏样式
+\newtcolorbox{questionbox}[2][]{
+    colback=orange!10, % 文本框背景色（浅橙）
+    colframe=orange!80!black, % 边框颜色
+    colbacktitle=orange!50, % 标题背景色（橙色）
+    title={#2}, % 标题内容
+    sharp corners, % 直角
+    boxrule=1pt, % 边框粗细
+    titlerule=0pt, % 标题下划线粗细（0表示无）
+    fonttitle=\bfseries\color{black}, % 标题黑色加粗
+    #1 % 可选参数
+}
+% 定义Answer标题栏样式
+\newtcolorbox{answerbox}[2][]{
+    colback=magenta!10, % 文本框背景色（浅橙）
+    colframe=magenta!80!black, % 边框颜色
+    colbacktitle=magenta!50, % 标题背景色（橙色）
+    title={#2}, % 标题内容
+    sharp corners, % 直角
+    boxrule=1pt, % 边框粗细
+    titlerule=0pt, % 标题下划线粗细（0表示无）
+    fonttitle=\bfseries\color{black}, % 标题黑色加粗
+    #1 % 可选参数
+}
+% 定义Verifier标题栏样式
+\newtcolorbox{verifierbox}[2][]{
+    colback=green!5!blue!5, % 文本框背景色（浅橙）
+    colframe=green!40!blue!30, % 边框颜色
+    colbacktitle=green!20!blue!10, % 标题背景色（橙色）
+    title={#2}, % 标题内容
+    sharp corners, % 直角
+    boxrule=1pt, % 边框粗细
+    titlerule=0pt, % 标题下划线粗细（0表示无）
+    fonttitle=\bfseries\color{black}, % 标题黑色加粗
+    #1 % 可选参数
+}
+
+\lstset{
+    backgroundcolor=\color{gray!10},    % 背景色
+    basicstyle=\ttfamily\small,        % 基本字体样式
+    keywordstyle=\color{blue},         % 关键词颜色
+    commentstyle=\color{green!50!black}, % 注释颜色
+    stringstyle=\color{red},           % 字符串颜色
+    breaklines=true,                   % 自动换行
+    frame=single,                      % 单线边框
+    tabsize=4                          % 制表符宽度
+}
+
+
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+Recent advancements in long chain-of-thought (CoT) reasoning, particularly through the Group Relative Policy Optimization algorithm used by DeepSeek-R1, have led to significant interest in the potential of Reinforcement Learning with Verifiable Rewards (RLVR) for Large Language Models (LLMs). While RLVR promises to improve reasoning by allowing models to learn from free exploration, there remains debate over whether it truly enhances reasoning abilities or simply boosts sampling efficiency. This paper systematically investigates the impact of RLVR on LLM reasoning. We revisit Pass@K experiments and demonstrate that RLVR can extend the reasoning boundary for both mathematical and coding tasks. This is supported by our introduction of a novel evaluation metric, CoT-Pass@K, which captures reasoning success by accounting for both the final answer and intermediate reasoning steps. Furthermore, we present a theoretical framework explaining RLVR’s incentive mechanism, demonstrating how it can encourage correct reasoning even when rewards are based solely on answer correctness. Our analysis of RLVR’s training dynamics reveals that it incentivizes correct reasoning early in the process, with substantial improvements in reasoning quality confirmed through extensive evaluations. These findings provide strong evidence of RLVR’s potential to enhance LLM reasoning, offering valuable insights into its mechanisms and performance improvements.
+\end{abstract}
+
+% Reinforcement Learning with Verifiable Rewards (RLVR) has emerged as a promising paradigm for advancing the reasoning capabilities of Large Language Models (LLMs). However, a critical paradox clouds its efficacy: RLVR-tuned models often underperform their base models on the $Pass@K$ metric for solution-finding, leading to the hypothesis that RLVR merely re-weights existing reasoning paths at the cost of reasoning diversity. In this work, we resolve this contradiction by identifying the source of the problem: the $Pass@K$ metric itself is a flawed measure of reasoning, as it credits correct final answers that probably arise from inaccurate or incomplete chains of thought (CoTs). To address this, we introduce a more precise evaluation metric, $CoT$-$Pass@K$, which mandates that both the reasoning path and the final answer be correct. We provide a new theoretical foundation that formalizes how RLVR, unlike traditional RL, is uniquely structured to incentivize logical integrity. Our empirical results are supportive: using $CoT$-$Pass@K$, we observe that RLVR can incentivize the generalization of correct reasoning for all values of $K$. Furthermore, by analyzing the training dynamics, we find that this enhanced reasoning capability emerges early in the training process and smoothly generalizes. Our work provides a clear perspective on the role of RLVR, offers a more reliable method for its evaluation, and confirms its potential to genuinely advance machine reasoning.
+
+
+\input{sections_v2/1_intro}
+\input{sections_v2/2_related_work}
+\input{sections_v2/3_benchmark_analysis}
+\input{sections_v2/4_theorem}
+\input{sections_v2/5_training_analysis}
+\input{sections_v2/6_cot_quality}
+\input{sections_v2/7_conclu}
+
+% \input{sections/1_intro}
+% \input{sections/2_related_work}
+% % rearrange the logic to 1. theory 2. validation 3. training analysis
+% \input{sections/5_theory}
+% \input{sections/3_benchmark_analysis}
+% \input{sections/4_training_analysis}
+% \input{sections/6_discuss}
+% \input{sections/7_conclusion}
+
+\raggedbottom
+\bibliography{main}
+\bibliographystyle{iclr2026_conference}
+
+% \newpage
+\appendix
+\section{Appendix}
+% You may include other additional sections here.
+% please use subsection in your separated files
+% please also assign a label to your subsection such as
+
+% \subsection{LLM Usages}
+
+% We have used LLMs to polish the writing of some paragraphs and sentences. We do not use them for research ideation in this study.
+
+\input{supp_sections/contributions}
+
+\input{supp_sections/data_sources}
+\input{supp_sections/verification_details}
+\input{supp_sections/skywork_or1_benchmark_analysis}
+\input{supp_sections/proof}
+\input{supp_sections/dapo_repro_details}
+\input{supp_sections/discuss}
+\input{supp_sections/all_case_study}
+
+% \input{supp_sections/contributions}
+% \input{supp_sections/data_sources}
+% \input{supp_sections/multiverify}
+% \input{supp_sections/r1_verify_template}
+% % \input{supp_sections/aime24_eval_stats}
+% % \input{supp_sections/aime25_eval_stats}
+
+\end{document}

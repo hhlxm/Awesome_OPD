@@ -1,0 +1,231 @@
+\documentclass{article}
+
+
+\PassOptionsToPackage{numbers,compress}{natbib}
+
+\usepackage[preprint]{format}
+
+\usepackage{verbatim}
+
+\usepackage{comment}
+
+\usepackage[utf8]{inputenc} %
+\usepackage[T1]{fontenc}    %
+
+
+\usepackage[colorlinks=true,
+            citecolor=blue,
+            linkcolor=red,
+            anchorcolor=green]{hyperref}
+
+
+\usepackage{url}            %
+\usepackage{booktabs}       %
+\usepackage{amsfonts}       %
+\usepackage{nicefrac}       %
+\usepackage{microtype}      %
+\usepackage{xcolor}         %
+
+\usepackage{xcolor}
+
+\usepackage{booktabs}
+
+\usepackage{comment}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{adjustbox}
+\usepackage[table]{xcolor}
+\usepackage{colortbl}
+\usepackage{url}
+\usepackage{xspace}
+\usepackage{xcolor}
+\usepackage{colortbl}
+
+
+
+\usepackage[ruled,vlined]{algorithm2e}
+
+
+\usepackage{multirow}
+\usepackage{balance}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{mdframed}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage[noabbrev,capitalise]{cleveref}
+
+\usepackage{booktabs}
+\usepackage{caption}   %
+\usepackage{float}    %
+
+\crefname{appendix}{Appendix}{appendices}
+\Crefname{appendix}{Appendix}{Appendices}
+\crefname{equation}{Eq.}{Eqs.}
+
+\Crefname{equation}{Eq.}{Eqs.}
+
+
+
+
+\usepackage{amsthm} 
+\usepackage{amsthm}
+\newtheorem{proposition}{Proposition}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{bm}
+\usepackage{ragged2e}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{amsmath, amssymb}
+\usepackage{tcolorbox}
+\usepackage{pifont}  %
+
+\usepackage{xcolor} 
+\usepackage{booktabs}
+\usepackage{xcolor, booktabs, tcolorbox, amsmath, enumitem}
+\tcbuselibrary{skins, breakable}
+
+\usepackage{xcolor, booktabs, tcolorbox, amsmath, enumitem}
+\tcbuselibrary{skins, breakable}
+
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{listings}
+
+
+
+
+\usepackage{fontawesome5}
+
+\definecolor{linkpink}{HTML}{E83E8C}
+
+\newcommand{\ourmodel}{SOD\xspace}
+
+
+\newcommand{\tbd}{\textcolor{red}{To be determined / polished / addded / etc.}\xspace}
+
+
+\newcommand{\ie}{\emph{i.e.,}\xspace}
+\newcommand{\eg}{\emph{e.g.,}\xspace}
+\newcommand{\aka}{\emph{a.k.a.,}\xspace}
+\newcommand{\etal}{\emph{et al.}\xspace}
+\newcommand{\wrt}{w.r.t.\xspace}
+
+
+
+
+
+\title{\ourmodel: Step-wise On-policy Distillation for \\
+ Small Language Model Agents}
+
+
+
+
+\author{%
+\begin{minipage}{\textwidth}
+\centering
+\textbf{Qiyong Zhong}$^{1}$\thanks{Equal contribution.}  \ \thanks{This work was done during an internship at Tencent.} \quad
+\textbf{Mao Zheng}$^{2}$\footnotemark[1] \quad
+\textbf{Mingyang Song}$^{2}$\footnotemark[1] \quad
+\textbf{Xin Lin}$^{1}$\footnotemark[1] \quad
+\textbf{Jie Sun}$^{3}$ \quad \\[0.35em]
+\textbf{Yiqi Zhao}$^{2}$ \quad
+\textbf{Xiaodi Wang}$^{2}$ \quad
+\textbf{Houcheng Jiang}$^{3}$\thanks{Corresponding authors.} \quad
+\textbf{Xiang Wang}$^{3}$ \quad
+\textbf{Junfeng Fang}$^{4}$\footnotemark[3] \\
+%
+\vspace{0.8em}
+%
+{\normalfont
+$^{1}$Zhejiang University \quad
+$^{2}$Large Language Model Department, Tencent \\
+$^{3}$University of Science and Technology of China \quad
+$^{4}$National University of Singapore \\
+}
+%
+\vspace{0.8em}
+%
+{\normalfont\small
+\texttt{\{youngzhong,linxin2\}@zju.edu.cn} ;
+\texttt{\{moonzheng,nickmysong\}@tencent.com} \\
+\texttt{\{sunjie2019,jianghc\}@mail.ustc.edu.cn} ;
+\texttt{\{yiqizhao02,wxd13305645488,xiangwang1223\}@gmail.com; fangjf@nus.edu.sg}
+\\[0.5em]
+\href{https://github.com/YoungZ365/SOD}{\textcolor{black}{\faGithub}\;\textcolor{linkpink}{\texttt{github.com/YoungZ365/SOD}}}
+\\[0.25em]
+\href{https://huggingface.co/collections/youngzhong/sod}{\raisebox{-0.18em}{\includegraphics[height=1.15em]{pic/HF.png}}\;\textcolor{linkpink}{\texttt{huggingface.co/collections/youngzhong/sod}}}
+}
+\end{minipage}
+}
+
+
+
+
+
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{datetime}  % 
+
+\fancypagestyle{firstpagestyle}{%
+  \fancyhf{}  
+  \fancyhead[L]{\includegraphics[height=0.66cm]{pic/logo.png}}
+  \fancyhead[R]{\textcolor{gray}{\fontsize{11pt}{10pt}\selectfont May 8, 2026}}
+  \renewcommand{\headrulewidth}{0.8pt}  
+  \renewcommand{\footrulewidth}{0pt}
+}
+
+\begin{document}
+
+
+\maketitle
+\thispagestyle{firstpagestyle} 
+\input{./chapter/abstract.tex}
+
+\input{./chapter/introduction.tex}
+
+
+
+
+
+\input{./chapter/related.tex}
+
+\input{./chapter/preliminaries.tex}
+
+\input{./chapter/method.tex}
+
+\input{./chapter/experiment.tex}
+
+\input{./chapter/limitations.tex}
+
+\input{./chapter/conclusion.tex}
+
+
+
+
+
+\newpage
+
+\bibliographystyle{unsrtnat}   %
+\bibliography{reference}
+
+
+
+\input{./chapter/appendix.tex}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

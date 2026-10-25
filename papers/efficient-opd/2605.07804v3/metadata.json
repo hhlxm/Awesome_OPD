@@ -1,0 +1,46 @@
+{
+  "arxiv_id": "2605.07804v3",
+  "title": "Prune-OPD: Efficient and Reliable On-Policy Distillation for Long-Horizon Reasoning",
+  "authors": [
+    "Yang, Zhicheng",
+    "Guo, Zhijiang",
+    "Song, Yifan",
+    "Xu, Minrui",
+    "Wang, Yongxin",
+    "Wang, Yiwei",
+    "Liang, Xiaodan",
+    "Tang, Jing"
+  ],
+  "submitted_date": "2026/05/08",
+  "abs_url": "https://arxiv.org/abs/2605.07804v3",
+  "schema_version": 2,
+  "requested_input": "2605.07804",
+  "requested_id": "2605.07804",
+  "source_url": "https://arxiv.org/src/2605.07804v3",
+  "downloaded_at": "2026-10-25T09:45:01.498805+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "836bcc9a73caa5e648adf93583f14a4deb7cae1568647a344e63ec03a7908e09",
+  "tex_files": [
+    "main_arxiv.tex",
+    "math_commands.tex",
+    "sections/01_introduction.tex",
+    "sections/02_background.tex",
+    "sections/03_method.tex",
+    "sections/04_experiments.tex",
+    "sections/06_limitations_conclusion.tex",
+    "sections/06_related_work.tex",
+    "sections/appendix.tex"
+  ],
+  "main_tex_candidates": [
+    "main_arxiv.tex"
+  ],
+  "source_file_count": 21,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2605.07804v3",
+    "sha256": "78778584aa5fdf08930cfd8d2a2fafbf5ff0ae6080d50f9a6e8132a34c7ba10b",
+    "downloaded_at": "2026-10-25T09:45:03.006138+00:00",
+    "content_type": "application/pdf"
+  }
+}

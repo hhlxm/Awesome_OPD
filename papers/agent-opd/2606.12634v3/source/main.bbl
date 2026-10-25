@@ -1,0 +1,192 @@
+\begin{thebibliography}{24}
+\providecommand{\natexlab}[1]{#1}
+
+\bibitem[{Agarwal et~al.(2023)Agarwal, Vieillard, Zhou, Stanczyk, Ramos, Geist,
+  and Bachem}]{agarwal2024onpolicykd}
+Rishabh Agarwal, Nino Vieillard, Yongchao Zhou, Piotr Stanczyk, Sabela Ramos,
+  Matthieu Geist, and Olivier Bachem. 2023.
+\newblock \href {https://arxiv.org/abs/2306.13649} {On-policy distillation of
+  language models: Learning from self-generated mistakes}.
+\newblock \emph{Preprint}, arXiv:2306.13649.
+
+\bibitem[{Barres et~al.(2025)Barres, Dong, Ray, Si, and
+  Narasimhan}]{tau2bench2025}
+Victor Barres, Honghua Dong, Soham Ray, Xujie Si, and Karthik Narasimhan. 2025.
+\newblock \href {https://arxiv.org/abs/2506.07982} {{$\tau^2$-Bench}:
+  Evaluating conversational agents in a dual-control environment}.
+\newblock \emph{Preprint}, arXiv:2506.07982.
+
+\bibitem[{Barres et~al.(2026)Barres, Shi, Zytek, Ray, Dhandhania, and
+  Razavi}]{tau3bench2026}
+Victor Barres, Ben Shi, Ola Zytek, Soham Ray, Keshav Dhandhania, and Pedram
+  Razavi. 2026.
+\newblock \href
+  {https://sierra.ai/uk/blog/bench-advancing-agent-benchmarking-to-knowledge-and-voice}
+  {{$\tau^3$-Bench}: Advancing agent benchmarking to knowledge and voice}.
+
+\bibitem[{Fu et~al.(2026)Fu, Huang, Jiang, Liu, Jiang, Zhu, and
+  Zhao}]{revisitopd2026}
+Yuqian Fu, Haohuan Huang, Kaiwen Jiang, Jiacai Liu, Zhuo Jiang, Yuanheng Zhu,
+  and Dongbin Zhao. 2026.
+\newblock \href {https://arxiv.org/abs/2603.25562} {Revisiting on-policy
+  distillation: Empirical failure modes and simple fixes}.
+\newblock \emph{Preprint}, arXiv:2603.25562.
+
+\bibitem[{Hinton et~al.(2015)Hinton, Vinyals, and Dean}]{hinton2015}
+Geoffrey Hinton, Oriol Vinyals, and Jeff Dean. 2015.
+\newblock \href {https://arxiv.org/abs/1503.02531} {Distilling the knowledge in
+  a neural network}.
+\newblock \emph{Preprint}, arXiv:1503.02531.
+
+\bibitem[{H\"ubotter et~al.(2026)H\"ubotter, L\"ubeck, Behric, Baumann,
+  Bagatella, Marta, Hakimi, Shenfeld, Kleine~Buening, Guestrin, and
+  Krause}]{sdpo2026}
+Jonas H\"ubotter, Frederike L\"ubeck, Lejs Behric, Anton Baumann, Marco
+  Bagatella, Daniel Marta, Ido Hakimi, Idan Shenfeld, Thomas Kleine~Buening,
+  Carlos Guestrin, and Andreas Krause. 2026.
+\newblock \href {https://arxiv.org/abs/2601.20802} {Reinforcement learning via
+  self-distillation}.
+\newblock \emph{Preprint}, arXiv:2601.20802.
+
+\bibitem[{Li et~al.(2026{\natexlab{a}})Li, Huang, Liu, Li, Fu, Zhao, Bian,
+  Zhang, Zhang, and Wang}]{gear2026}
+Sijia Li, Yuchen Huang, Zifan Liu, Yanping Li, Jingjing Fu, Li~Zhao, Jiang
+  Bian, Ling Zhang, Jun Zhang, and Rui Wang. 2026{\natexlab{a}}.
+\newblock \href {https://arxiv.org/abs/2605.11853} {{GEAR}:
+  Granularity-adaptive advantage reweighting for {LLM} agents via
+  self-distillation}.
+\newblock \emph{Preprint}, arXiv:2605.11853.
+
+\bibitem[{Li et~al.(2026{\natexlab{b}})Li, Zuo, He, Zhang, Xiao, Qian, Yu, Gao,
+  Yang, Liu, and Ding}]{thunlpopd2026}
+Yaxuan Li, Yuxin Zuo, Bingxiang He, Jinqian Zhang, Chaojun Xiao, Cheng Qian,
+  Tianyu Yu, Huan-ang Gao, Wenkai Yang, Zhiyuan Liu, and Ning Ding.
+  2026{\natexlab{b}}.
+\newblock \href {https://arxiv.org/abs/2604.13016} {Rethinking on-policy
+  distillation of large language models: Phenomenology, mechanism, and recipe}.
+\newblock \emph{Preprint}, arXiv:2604.13016.
+
+\bibitem[{Lin(1991)}]{lin1991jsd}
+Jianhua Lin. 1991.
+\newblock \href {https://doi.org/10.1109/18.61115} {Divergence measures based
+  on the {Shannon} entropy}.
+\newblock \emph{IEEE Transactions on Information Theory}, 37(1):145--151.
+
+\bibitem[{Lu et~al.(2026)Lu, Yao, Han, Wang, Wu, Gu, Cai, Lu, Xiao, Zhuang, and
+  Shen}]{sdar2026}
+Zhengxi Lu, Zhiyuan Yao, Zhuowen Han, Zi-Han Wang, Jinyang Wu, Qi~Gu, Xunliang
+  Cai, Weiming Lu, Jun Xiao, Yueting Zhuang, and Yongliang Shen. 2026.
+\newblock \href {https://arxiv.org/abs/2605.15155} {Self-distilled agentic
+  reinforcement learning}.
+\newblock \emph{Preprint}, arXiv:2605.15155.
+
+\bibitem[{Schulman et~al.(2017)Schulman, Wolski, Dhariwal, Radford, and
+  Klimov}]{ppo2017}
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
+  2017.
+\newblock \href {https://arxiv.org/abs/1707.06347} {Proximal policy
+  optimization algorithms}.
+\newblock \emph{Preprint}, arXiv:1707.06347.
+
+\bibitem[{Shao et~al.(2024)Shao, Wang, Zhu, Xu, Song, Bi, Zhang, Zhang, Li, Wu,
+  and Guo}]{deepseekmath2024}
+Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei
+  Zhang, Mingchuan Zhang, Y.~K. Li, Y.~Wu, and Daya Guo. 2024.
+\newblock \href {https://arxiv.org/abs/2402.03300} {{DeepSeekMath}: Pushing the
+  limits of mathematical reasoning in open language models}.
+\newblock \emph{Preprint}, arXiv:2402.03300.
+
+\bibitem[{Stein et~al.(2026)Stein, Huang, and Goldstein}]{gates2026}
+Alex Stein, Furong Huang, and Tom Goldstein. 2026.
+\newblock \href {https://arxiv.org/abs/2602.20574} {{GATES}: Self-distillation
+  under privileged context with consensus gating}.
+\newblock \emph{Preprint}, arXiv:2602.20574.
+
+\bibitem[{Sutton et~al.(1999)Sutton, McAllester, Singh, and
+  Mansour}]{sutton1999policy}
+Richard~S. Sutton, David~A. McAllester, Satinder~P. Singh, and Yishay Mansour.
+  1999.
+\newblock \href
+  {https://proceedings.neurips.cc/paper_files/paper/1999/hash/464d828b85b0bed98e80ade0a5c43b0f-Abstract.html}
+  {Policy gradient methods for reinforcement learning with function
+  approximation}.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~12.
+
+\bibitem[{Trivedi et~al.(2024)Trivedi, Khot, Hartmann, Manku, Dong, Li, Gupta,
+  Sabharwal, and Balasubramanian}]{appworld2024}
+Harsh Trivedi, Tushar Khot, Mareike Hartmann, Ruskin Manku, Vinty Dong, Edward
+  Li, Shashank Gupta, Ashish Sabharwal, and Niranjan Balasubramanian. 2024.
+\newblock \href {https://doi.org/10.18653/v1/2024.acl-long.850} {{AppWorld}: A
+  controllable world of apps and people for benchmarking interactive coding
+  agents}.
+\newblock In \emph{Proceedings of the 62nd Annual Meeting of the Association
+  for Computational Linguistics (Volume 1: Long Papers)}, pages 16022--16076.
+  Association for Computational Linguistics.
+
+\bibitem[{Vapnik and Izmailov(2015)}]{vapnik2015lupi}
+Vladimir Vapnik and Rauf Izmailov. 2015.
+\newblock \href {https://www.jmlr.org/papers/v16/vapnik15b.html} {Learning
+  using privileged information: Similarity control and knowledge transfer}.
+\newblock \emph{Journal of Machine Learning Research}, 16(61):2023--2049.
+
+\bibitem[{Wang et~al.(2026)Wang, Wang, Xiao, Zhou, Pan, Wang, Xu, Wen, Ruan,
+  Chen, and Qi}]{skillsd2026}
+Hao Wang, Guozhi Wang, Han Xiao, Yufeng Zhou, Yue Pan, Jichao Wang, Ke~Xu,
+  Yafei Wen, Xiaohu Ruan, Xiaoxin Chen, and Honggang Qi. 2026.
+\newblock \href {https://arxiv.org/abs/2604.10674} {{Skill-SD}:
+  Skill-conditioned self-distillation for multi-turn {LLM} agents}.
+\newblock \emph{Preprint}, arXiv:2604.10674.
+
+\bibitem[{Wang and Ammanabrolu(2025)}]{multiturnguide2025}
+Ruiyi Wang and Prithviraj Ammanabrolu. 2025.
+\newblock \href {https://arxiv.org/abs/2510.01132} {A practitioner's guide to
+  multi-turn agentic reinforcement learning}.
+\newblock \emph{Preprint}, arXiv:2510.01132.
+
+\bibitem[{Williams(1992)}]{williams1992reinforce}
+Ronald~J. Williams. 1992.
+\newblock \href {https://doi.org/10.1007/BF00992696} {Simple statistical
+  gradient-following algorithms for connectionist reinforcement learning}.
+\newblock \emph{Machine Learning}, 8(3--4):229--256.
+
+\bibitem[{Yang et~al.(2026)Yang, Ma, Huang, Hu, Wang, and Chu}]{coevolve2026}
+Shidong Yang, Ziyu Ma, Tongwen Huang, Yiming Hu, Yong Wang, and Xiangxiang Chu.
+  2026.
+\newblock \href {https://arxiv.org/abs/2604.15840} {{CoEvolve}: Training {LLM}
+  agents via agent-data mutual evolution}.
+\newblock \emph{Preprint}, arXiv:2604.15840.
+
+\bibitem[{Yao et~al.(2024)Yao, Shinn, Razavi, and Narasimhan}]{taubench2024}
+Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan. 2024.
+\newblock \href {https://arxiv.org/abs/2406.12045} {{$\tau$-bench}: A benchmark
+  for tool-agent-user interaction in real-world domains}.
+\newblock \emph{Preprint}, arXiv:2406.12045.
+
+\bibitem[{Yu et~al.(2025)Yu, Zhang, Zhu, Yuan, Zuo, Yue, Dai, Fan, Liu, Liu,
+  Liu, Lin, Lin, Ma, Sheng, Tong, Zhang, Zhang, Zhang, Zhu, Zhu, Chen, Chen,
+  Wang, Yu, Song, Wei, Zhou, Liu, Ma, Zhang, Yan, Qiao, Wu, and
+  Wang}]{dapo2025}
+Qiying Yu, Zheng Zhang, Ruofei Zhu, Yufeng Yuan, Xiaochen Zuo, Yu~Yue, Weinan
+  Dai, Tiantian Fan, Gaohong Liu, Lingjun Liu, Xin Liu, Haibin Lin, Zhiqi Lin,
+  Bole Ma, Guangming Sheng, Yuxuan Tong, Chi Zhang, Mofan Zhang, Wang Zhang,
+  and 16 others. 2025.
+\newblock \href {https://arxiv.org/abs/2503.14476} {{DAPO}: An open-source
+  {LLM} reinforcement learning system at scale}.
+\newblock \emph{Preprint}, arXiv:2503.14476.
+
+\bibitem[{Zhao et~al.(2026)Zhao, Xie, Liu, Huang, Pang, Chen, and
+  Grover}]{opsd2026}
+Siyan Zhao, Zhihui Xie, Mengchen Liu, Jing Huang, Guan Pang, Feiyu Chen, and
+  Aditya Grover. 2026.
+\newblock \href {https://arxiv.org/abs/2601.18734} {Self-distilled reasoner:
+  On-policy self-distillation for large language models}.
+\newblock \emph{Preprint}, arXiv:2601.18734.
+
+\bibitem[{Zhu et~al.(2026)Zhu, Ye, Lu, Shi, and Liu}]{manyfaces2026}
+Siqi Zhu, Xuyan Ye, Hongyu Lu, Weiye Shi, and Ge~Liu. 2026.
+\newblock \href {https://arxiv.org/abs/2605.11182} {The many faces of on-policy
+  distillation: Pitfalls, mechanisms, and fixes}.
+\newblock \emph{Preprint}, arXiv:2605.11182.
+
+\end{thebibliography}

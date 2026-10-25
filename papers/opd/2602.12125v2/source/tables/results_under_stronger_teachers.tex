@@ -1,0 +1,31 @@
+\begin{table*}[t]
+\caption{Distillation results under stronger teachers with sufficient RL trainings. Each numerical subscript indicates the absolute \textcolor{lightgreen}{\textbf{improvement}} or \textcolor{myred}{\textbf{degradation}} \textbf{compared to the domain teacher model}.}
+\label{tab: results under stronger teachers}
+% \vskip 0.05in
+\centering
+\small
+\setlength{\tabcolsep}{2.0pt}
+\begin{tabular}{lccccccccc}
+\toprule
+\multirow{2.5}{*}{\begin{tabular}[c]{@{}l@{}}\textbf{Method} \end{tabular}} & \multicolumn{5}{c}{\textbf{Math Reasoning}} & \multicolumn{4}{c}{\textbf{Code Generation}}  \\
+\cmidrule(lr){2-6}
+\cmidrule(lr){7-10}
+& AIME24 & AIME25  & HMMT25 (Feb.) & HMMT25 (Nov.) & \phantom{0}\phantom{0}Avg.\phantom{0}\phantom{0} & HumanEval+ & \phantom{0}MBPP+\phantom{0} & \phantom{0}\phantom{0}LCB\phantom{0}\phantom{0} & \phantom{0}\phantom{0}Avg.\phantom{0}\phantom{0}
+\\
+\midrule
+\makecell[l]{Teacher}  &  68.2 & 59.3 & 37.3 & 42.9 & 51.9 & 88.9 & 72.5 & 28.0 &  63.1 \\
+\makecell[l]{Student} & 21.5 & 21.9 & 10.0 & \phantom{0}8.0 & 15.4 & 74.7 & 64.7 & 17.9 & 52.4 \\
+\midrule
+\multicolumn{6}{l}{\emph{\quad \textbf{Single-Teacher Distillation}}} \\ 
+OPD & \cimp{68.3}{+0.1} & \cdec{58.7}{-0.6} & \cimp{\textbf{38.7}}{+1.4} & \cdec{41.2}{-1.7} & \cdec{51.7}{-0.2} & \cimp{89.3}{+0.4} & \cdec{71.3}{-1.2} & \cimp{28.0}{+0.0} &  \cdec{62.9}{-0.2} \\
+\rowcolor{cyan!10} ExOPD & \cimp{\textbf{68.4}}{+0.2} & \cdec{\textbf{59.2}}{-0.1} & \cimp{38.2}{+0.9} & \cdec{\textbf{42.8}}{-0.1} & \cimp{\textbf{52.2}}{+0.3} & \cimp{\textbf{89.9}}{+1.0} & \cimp{\textbf{73.7}}{+1.2} & \cimp{\textbf{29.3}}{+1.3} &  \cimp{\textbf{64.3}}{+1.2}  \\
+\midrule
+\multicolumn{6}{l}{\emph{\quad \textbf{Multi-Teacher Distillation}}} \\ 
+OPD & \cimp{68.2}{+0.0} & \cimp{\textbf{60.2}}{+0.9} & \cimp{\textbf{38.5}}{+1.2} & \cdec{40.8}{-2.1} & \cimp{51.9}{+0.0} & \cdec{86.4}{-2.5} & \cdec{72.1}{-0.4} &  \cdec{27.6}{-0.4} & \cdec{62.0}{-1.1}  \\
+\rowcolor{cyan!10} ExOPD & \cimp{\textbf{70.1}}{+1.9} & \cimp{59.6}{+0.3} & \cimp{37.5}{+0.2} & \cdec{\textbf{42.7}}{-0.2} & \cimp{\textbf{52.5}}{+0.6} & \cimp{\textbf{89.5}}{+0.6} & \cimp{\textbf{73.9}}{+1.4} & \cimp{\textbf{29.7}}{+1.7} &  \cimp{\textbf{64.4}}{+1.3}  \\
+\bottomrule
+\end{tabular}
+% \vskip -0.1in
+\end{table*}
+
+

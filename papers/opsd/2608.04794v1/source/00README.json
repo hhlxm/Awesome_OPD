@@ -1,0 +1,21 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "SDPO_NeurIPS.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "aaai2027.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "aaai2027.bst"
+      }
+   ],
+   "spec_version" : 1,
+   "texlive_version" : "2025",
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}

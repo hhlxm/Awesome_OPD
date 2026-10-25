@@ -1,0 +1,126 @@
+\documentclass{article}
+\usepackage{leaplab}
+
+\input{config}
+
+\definecolor{paleviolet}{HTML}{E1EEFC}
+\definecolor{lightgrey}{RGB}{247, 247, 247}
+\definecolor{darkgrey}{rgb}{0.5, 0.5, 0.5}
+\definecolor{darkgreen}{rgb}{0, 0.5, 0}
+\newenvironment{leapabstract}{
+  \begin{tcolorbox}[
+    colback=lightgrey,
+    colframe=white,
+    boxrule=0pt,
+    arc=10pt,
+    left=16pt,
+    right=16pt,
+    top=12pt,
+    bottom=12pt,
+    width=\textwidth,
+    enlarge left by=0mm,
+    before skip=10pt,
+    after skip=10pt
+  ]
+  % \normalsize
+  % \sffamily
+}{
+  \end{tcolorbox}
+}
+
+
+
+
+
+\begin{document}
+
+
+% Define and set date
+\makeatletter
+\def\icmldate#1{\gdef\@icmldate{#1}}
+\icmldate{\today}
+\makeatother
+
+% Define page style
+\makeatletter
+\fancypagestyle{fancytitlepage}{
+  \fancyhead{}  % clear all headers
+  \lhead{\includegraphics[height=1.5cm]{figures/logos/leap.png}}
+  \rhead{\it \@icmldate}
+  \cfoot{}
+}
+\makeatother
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+
+% \icmltitle{Reasoning LLMs Are Just Efficient Samplers: RL Training Elicits No Transcending Capacity}
+% \icmltitle{Reasoning LLMs Are Just Efficient Samplers: Reinforcement Learning Elicits No Transcending Capacity}
+\icmltitle{Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?}
+
+\begin{icmlauthorlist}
+\mbox{Yang Yue$^{\,1\,*\,\dagger\,}$},
+\mbox{Zhiqi Chen$^{\,1\,*}$}, 
+\mbox{Rui Lu$^{\,1\,}$}, 
+\mbox{Andrew Zhao$^{\,1\,}$}, 
+\mbox{Zhaokai Wang$^{\,2\,}$}, 
+\mbox{Yang Yue$^{\,1\,}$}, 
+\mbox{Shiji Song$^{\,1\,}$}, 
+and \mbox{Gao Huang$^{\,1\,\textrm{\Letter}}$}
+\end{icmlauthorlist}
+
+$^{1\,}$LeapLab, Tsinghua University  \quad $^{2\,}$Shanghai Jiao Tong University
+
+$^{*}$ Equal Contribution \quad $^{\dagger}$ Project Lead \quad $^{\textrm{\Letter}}$ Corresponding Author
+
+\icmlcorrespondingauthor{\{le-y22, zq-chen23\}@mails.tsinghua.edu.cn, gaohuang@tsinghua.edu.cn}
+
+
+
+% \printAffiliations{}
+\vskip .3in
+
+\printNotice{
+% The first author \href{https://yueyang130.github.io/}{Yang Yue \begin{CJK}{UTF8}{gbsn}(乐洋)\end{CJK}} and the sixth author \href{https://scholar.google.com/citations?user=Q9cLkdcAAAAJ&hl=en}{Yang Yue \begin{CJK}{UTF8}{gbsn}(乐阳)\end{CJK}} are two distinct individuals sharing the same English name but different Chinese names.
+The first author \href{https://yueyang130.github.io/}{Yang Yue \begin{CJK}{UTF8}{gbsn}(乐洋)\end{CJK}}  and the sixth author \href{https://scholar.google.com/citations?user=Q9cLkdcAAAAJ&hl=en}{Yang Yue \begin{CJK}{UTF8}{gbsn}(乐阳)\end{CJK}} share the same English name but different Chinese names.
+} % otherwise use the standard text.
+
+\begin{leapabstract}
+    \input{tex/0-abs}
+        \makebox[\linewidth]{
+        ~~
+    }
+    \makebox[\linewidth]{
+        \textit{Project Page}: \href{https://limit-of-RLVR.github.io}{ \ttfamily https://limit-of-RLVR.github.io}
+    }
+\end{leapabstract}
+
+% ------------------------------ 
+\input{tex/1-intro}
+% ------------------------------ 
+\input{tex/3-method}
+% ------------------------------ 
+\input{tex/4-experiments}
+% ------------------------------ 
+\input{tex/2-related.tex}
+% ------------------------------
+\input{tex/7-conclusion}
+
+
+\newpage
+
+
+\bibliography{main}
+\bibliographystyle{icml2025}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+\appendix
+\input{tex/5-appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}

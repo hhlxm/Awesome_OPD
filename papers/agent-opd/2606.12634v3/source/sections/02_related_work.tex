@@ -1,0 +1,47 @@
+\section{Background and Related Work}
+\label{sec:related}
+
+\paragraph{Group-relative RL for tool-use agents.} Policy-gradient RL builds on
+score-function estimators and clipped optimization
+\citep{williams1992reinforce,sutton1999policy,ppo2017}. GRPO
+\citep{deepseekmath2024} estimates advantages from rollout groups without a
+value function, and DAPO \citep{dapo2025} adds dynamic sampling over
+mixed-outcome groups; GRPO-style policy-gradient recipes are now practical
+backbones for reasoning and tool-use RL \citep{coevolve2026,multiturnguide2025}.
+SGCD keeps this backbone
+intact, reshaping token credit inside the surrogate without replacing the reward
+or training a value model.
+
+\paragraph{Knowledge distillation and privileged information.} Distillation
+transfers a teacher's predictive distribution to a student \citep{hinton2015};
+privileged-information learning conditions training on signals absent at
+inference \citep{vapnik2015lupi}, and on-policy distillation reduces exposure
+mismatch via the student's own samples \citep{agarwal2024onpolicykd}. GATES
+\citep{gates2026} applies a same-model teacher under privileged context for
+trajectory-level self-distillation. SGCD instead uses the privileged comparison
+only as detached credit weighting inside the policy gradient.
+
+\paragraph{Self-distillation for RL.} Recent LLM post-training uses
+self-distillation to replace scalar reward or augment group-relative RL. SDPO
+\citep{sdpo2026}, OPSD \citep{opsd2026}, Skill-SD \citep{skillsd2026}, and SDAR
+\citep{sdar2026} cover feedback-conditioned self-teachers, label-privileged
+forward-KL/JSD variants (JSD; \citealp{lin1991jsd}), skill-summary teachers,
+and gap-gated token-level SD auxiliaries; GEAR \citep{gear2026} is closest,
+using reverse-KL and entropy for
+adaptive token/segment weights. \supptabref{tab:sdfamily} contrasts these with
+SGCD, whose distinguishing choices are mixed successful/failed siblings, a
+training-only external-LLM credit reference with no inference-time dependency,
+and dense reverse-KL/entropy used for bounded advantage weights rather than a
+standalone SD auxiliary. These methods motivate SGCD's teacher-side evidence and
+dense comparisons. Our negative result motivates a narrower role in the studied
+long-horizon tool-use settings: transferring teacher-side information through
+detached weights on verified advantages rather than through a teacher-matching
+actor loss.
+
+\paragraph{Self-distillation instability.} Prior work reports instability from
+unreliable, instance-specific, or prefix-conditioned teacher guidance
+\citep{sdar2026,manyfaces2026,revisitopd2026}. Separately, OPD success depends
+on teacher--student thinking-pattern compatibility and transferable novelty
+\citep{thunlpopd2026}. We add a tool-use instance: zero-tool collapse on $\tau^3$-airline
+(\S\ref{sec:diagnosis}), where a locally plausible teacher action can be
+unreproducible under the clean deployment prompt.

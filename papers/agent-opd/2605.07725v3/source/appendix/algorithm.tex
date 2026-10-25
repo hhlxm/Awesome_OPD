@@ -1,0 +1,43 @@
+\section{Algorithmic Details of \ourmodel}
+\label{app:algorithm}
+
+We present the complete training procedure of \ourmodel{} in Algorithm~\ref{alg:step_opd}. At each iteration, the student generates on-policy trajectories with tool interactions, computes step-level divergence against the teacher, derives adaptive distillation weights, and updates the policy with a combined GRPO and step-wise OPD objective.
+
+\begin{algorithm}[h]
+\caption{\ourmodel: Step-wise On-policy Distillation for Small Language Model Agents}
+\label{alg:step_opd}
+\KwIn{Student policy $\pi_\theta$, teacher policy $\pi_{\mathrm{teacher}}$, tool environment $\mathcal{E}$, prompt set $\mathcal{X}$, group size $G$, smoothing constant $\epsilon$, weight cap $\delta$, clipping range $\epsilon_{\mathrm{clip}}$.}
+\KwOut{Trained student policy $\pi_\theta$.}
+
+\vspace{0.5 em}
+\BlankLine
+\textbf{Stage I: On-Policy Rollout with Tool Interaction} \\
+\For{each prompt $x \in \mathcal{X}$}{
+    \begin{itemize}[nosep,leftmargin=1.5em]
+        \item For $i = 1, \ldots, G$: sample trajectory $\tau_i = (y_1, o_1, \ldots, y_K, o_K, y_{K+1})$ from $\pi_{\theta_{\mathrm{old}}}$ by interacting with $\mathcal{E}$.
+        \item Compute outcome reward $r_i = r(\tau_i)$ for each trajectory.
+        \item Compute group-relative advantage $\hat{A}_i$ via~\cref{eq:advantage}.
+    \end{itemize}
+}
+\vspace{0.5 em}
+\BlankLine
+\textbf{Stage II: Student-teacher Divergence and Step-wise Reweighting} \\
+\For{each trajectory $\tau_i$}{
+    \begin{itemize}[nosep,leftmargin=1.5em]
+        \item Partition model-generated tokens into reasoning steps $\{\mathcal{I}_k\}_{k=1}^{K+1}$ (excluding tool observation tokens).
+        \item For each step $k = 1, \ldots, K{+}1$, compute step-level divergence $d_k$ via~\cref{eq:step_div}.
+        \item Set $w_1 \leftarrow 1$.
+        \item For $k = 2, \ldots, K{+}1$, compute adaptive weight $w_k$ via~\cref{eq:adaptive_weight}.
+    \end{itemize}
+}
+\BlankLine
+\vspace{0.5 em}
+\textbf{Stage III: Combined Optimization} 
+\begin{itemize}[nosep,leftmargin=1.5em]
+    \item Compute GRPO loss $\mathcal{L}_{\mathrm{GRPO}}$ with clipped surrogate objective (~\cref{eq:grpo}) using advantages $\{\hat{A}_i\}$.
+    \item Compute step-wise OPD loss $\mathcal{L}_{\mathrm{OPD}}^{\mathrm{step}}$ via~\cref{eq:step_opd} using weights $\{w_k\}$.
+    \item Update policy parameters: \\[2pt]
+        $\theta \leftarrow \theta - \eta \nabla_\theta \big( \mathcal{L}_{\mathrm{GRPO}} + \mathcal{L}_{\mathrm{OPD}}^{\mathrm{step}} \big)$.
+    \item Synchronize old policy: $\theta_{\mathrm{old}} \leftarrow \theta$.
+\end{itemize}
+\end{algorithm}

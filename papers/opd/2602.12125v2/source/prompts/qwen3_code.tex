@@ -1,0 +1,22 @@
+% \begin{samepage}
+\begin{prompt}[title={Training and Evaluation Prompt Template for Code Generation}]
+\label{prompt: qwen3 code}
+$<|$im\_start$|>$user
+\\
+\{question\}
+\\
+Write Python code to solve the problem. Present the code in 
+\\
+\texttt{```}python
+\\
+Your code
+\\
+\texttt{```}
+\\
+at the end.
+\\
+You need to think first then write the Python code.$<|$im\_end$|>$
+\\
+$<|$im\_start$|>$assistant
+\end{prompt}
+% \end{samepage}

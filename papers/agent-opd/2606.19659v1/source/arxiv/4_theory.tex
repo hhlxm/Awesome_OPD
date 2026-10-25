@@ -1,0 +1,187 @@
+\section{Theoretical Analysis}
+\label{sec:theory}
+In this section, we provide a theoretical analysis to analyze the role of selective weighting in \ours.
+%
+Our goal is not to prove that the teacher intervention gate is always correct, but to show how the proposed weights affect noisy teacher supervision and how the selective objective relates to an ideal oracle intervention objective.
+%
+Throughout this section, let $\ell_t(\theta)$ denote the per-turn OPD loss at turn $t$, and let the final selective weight be
+\begin{equation}
+    s_t = i_t \cdot c_t \in [0,1],
+\end{equation}
+where $i_t$ is the intervention weight and $c_t$ is the teacher confidence score, as in \eqnref{eq:selective_opd_weight}.
+%
+And the normalized selective OPD objective is
+\begin{equation}
+    \mathcal{L}_{\ours}
+    =
+    Z
+    \sum_{t=0}^{T-1}
+    s_t \ell_t(\theta),
+    \quad
+    \mathrm{where~}
+    Z =
+    \frac{N}{
+    \max\left(
+    \sum_{t=0}^{T-1} s_t |a_t|,
+    \epsilon
+    \right)
+    }.
+\end{equation}
+
+\paragraph{Selective Reweighting of Supervision Noise.}
+We first analyze how selective weighting changes the relative influence of noisy teacher signals.
+%
+Suppose the observed per-turn OPD loss decomposes as
+\begin{equation}
+    \ell_t(\theta)
+    =
+    \ell_t^\star(\theta) + \xi_t,
+\end{equation}
+where $\ell_t^\star$ is the ideal supervision loss and $\xi_t$ is zero-mean noise caused by teacher uncertainty, token-level mismatch, or off-distribution histories.
+%
+Assume
+% \begin{equation}
+$
+    \mathbb{E}[\xi_t]=0,
+    % \qquad
+    \mathrm{Var}[\xi_t]\leq \sigma_t^2$.
+% \end{equation}
+
+\begin{proposition}[Relative Suppression of Noisy Supervision]
+For a fixed batch, define the normalized effective turn weight as
+% \begin{equation}
+$
+    \widetilde{s}_t = Zs_t$.
+% \end{equation}
+Then the contribution of turn $t$ to the variance of the noisy component in the normalized selective objective is bounded by
+% \begin{equation}
+$
+    \widetilde{s}_t^2 \sigma_t^2$.
+% \end{equation}
+Moreover, for any two turns $p$ and $q$, their relative variance contributions satisfy
+\begin{equation}
+    \frac{\widetilde{s}_p^2 \sigma_p^2}
+         {\widetilde{s}_q^2 \sigma_q^2}
+    =
+    \frac{s_p^2 \sigma_p^2}
+         {s_q^2 \sigma_q^2}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The noisy component of the normalized selective objective is
+\begin{equation}
+    Z\sum_{t=0}^{T-1}s_t\xi_t
+    =
+    \sum_{t=0}^{T-1}\widetilde{s}_t\xi_t.
+\end{equation}
+The variance contribution of turn $t$ is therefore
+\begin{equation}
+    \mathrm{Var}[\widetilde{s}_t\xi_t]
+    =
+    \widetilde{s}_t^2\mathrm{Var}[\xi_t]
+    \leq
+    \widetilde{s}_t^2\sigma_t^2.
+\end{equation}
+For two turns $p$ and $q$, the common normalization factor $Z$ cancels:
+\begin{equation}
+    \frac{\widetilde{s}_p^2 \sigma_p^2}
+         {\widetilde{s}_q^2 \sigma_q^2}
+    =
+    \frac{Z^2s_p^2 \sigma_p^2}
+         {Z^2s_q^2 \sigma_q^2}
+    =
+    \frac{s_p^2 \sigma_p^2}
+         {s_q^2 \sigma_q^2}.
+\end{equation}
+\end{proof}
+
+\paragraph{Remark.}
+This proposition does not claim that the total variance of \ours is always smaller than that of standard OPD.
+%
+Because vanilla-scale normalization may produce $Z>1$, the absolute variance of the normalized objective can increase in some batches.
+%
+Instead, the result shows that normalization preserves the relative suppression induced by $s_t$: turns assigned smaller selective weights contribute quadratically less noise than turns assigned larger weights.
+%
+Thus, when unreliable or unnecessary turns receive smaller $s_t$, their noisy teacher supervision is reduced relative to more reliable intervention turns.
+%
+
+\paragraph{Connection to Oracle Intervention.}
+We next relate the selective objective to an ideal oracle intervention objective.
+%
+Let
+% \begin{equation}
+$
+    m_t^\star \in \{0,1\}$
+% \end{equation}
+denote an unobserved oracle intervention indicator, where $m_t^\star=1$ means that teacher supervision is useful at turn $t$ and $m_t^\star=0$ means that the turn should be skipped.
+%
+The corresponding oracle objective is
+\begin{equation}
+    \mathcal{L}_{\mathrm{oracle}}(\theta)
+    =
+    \sum_{t=0}^{T-1}
+    m_t^\star \ell_t(\theta).
+\end{equation}
+%
+Our method can be viewed as replacing this binary oracle mask with the verifier-free soft weight $s_t=i_tc_t$.
+%
+The following proposition gives a simple error decomposition for this approximation.
+
+\begin{proposition}[Approximation Error of Selective Intervention]
+Assume the per-turn OPD loss is bounded:
+\begin{equation}
+    0 \leq \ell_t(\theta) \leq B.
+\end{equation}
+Then, for any trajectory, the approximation error of the selective objective relative to the oracle objective is bounded as
+\begin{equation}
+    \left|
+    \sum_{t=0}^{T-1}
+    s_t \ell_t(\theta)
+    -
+    \sum_{t=0}^{T-1}
+    m_t^\star \ell_t(\theta)
+    \right|
+    \leq
+    B
+    \sum_{t=0}^{T-1}
+    |s_t - m_t^\star|.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+By the triangle inequality,
+\begin{align}
+    \left|
+    \sum_{t=0}^{T-1}
+    s_t \ell_t(\theta)
+    -
+    \sum_{t=0}^{T-1}
+    m_t^\star \ell_t(\theta)
+    \right|
+    &=
+    \left|
+    \sum_{t=0}^{T-1}
+    (s_t-m_t^\star)\ell_t(\theta)
+    \right| \\
+    &\leq
+    \sum_{t=0}^{T-1}
+    |s_t-m_t^\star|\,|\ell_t(\theta)|
+    \leq
+    B
+    \sum_{t=0}^{T-1}
+    |s_t-m_t^\star|.
+\end{align}
+\end{proof}
+
+\paragraph{Remark.}
+This proposition should be interpreted as an error decomposition rather than a guarantee that \ours recovers the oracle mask.
+%
+It shows that the deviation from oracle selective supervision is controlled by how closely the soft weights $s_t$ approximate the ideal intervention decisions $m_t^\star$.
+%
+In \ours, deterministic environment failures provide high-precision positive intervention signals, while teacher judgments approximate the oracle decision for executable but ambiguous turns.
+%
+Teacher confidence further softens the intervention weight when the token-level teacher distribution is uncertain.
+%
+Therefore, the analysis highlights the intended role of the intervention mechanism: it should identify turns where teacher supervision is both necessary and reliable, rather than applying dense OPD uniformly across the entire trajectory.
+%

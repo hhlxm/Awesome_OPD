@@ -1,0 +1,21 @@
+\begin{table*}[t]
+\caption{Comparison against the math domain teacher with continued RL. Each numerical subscript indicates the absolute \textcolor{lightgreen}{\textbf{improvement}} or \textcolor{myred}{\textbf{degradation}} \textbf{compared to the teacher model}.}
+\label{tab: comparison with teacher with additional training}
+% \vskip 0.05in
+\centering
+% \small
+% \setlength{\tabcolsep}{2.0pt}
+\begin{tabular}{lccccc}
+\toprule
+\multirow{1}{*}{\begin{tabular}[c]{@{}l@{}}\textbf{Method} \end{tabular}}   & AIME24 & AIME25  & HMMT25 (Feb.) & HMMT25 (Nov.) & \phantom{0}\phantom{0}Avg.\phantom{0}\phantom{0}
+\\
+\midrule
+\makecell[l]{Teacher}  &  58.0 & 54.6 & 32.5 & 38.9  & 46.0 \\
+ ~~ \scriptsize{+ continued RL (100 steps)} & \cimp{60.9}{+2.9} & \cimp{55.6}{+0.5} & \cimp{32.8}{+0.3} &  \cdec{38.4}{-0.5} & \cimp{46.9}{+0.9} \\
+\rowcolor{cyan!10} ExOPD (50 steps) & \cimp{\textbf{62.7}}{+4.7} & \cimp{\textbf{56.1}}{+1.5} & \cimp{\textbf{33.9}}{+1.4} & \cimp{\textbf{39.3}}{+0.4} & \cimp{\textbf{48.0}}{+2.0}  \\
+\bottomrule
+\end{tabular}
+% \vskip -0.1in
+\end{table*}
+
+

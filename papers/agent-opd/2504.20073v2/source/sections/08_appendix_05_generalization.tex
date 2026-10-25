@@ -1,0 +1,378 @@
+
+\begin{figure}[t]
+\centering
+\small
+\begin{tcolorbox}[colback=gray!2, colframe=black, boxrule=0.5pt, arc=2pt, width=0.95\linewidth, title=Sokoban – Spurious Reasoning Case (3 Turns)]
+\textbf{Turn 1:} \\
+\textbf{State:}
+\begin{verbatim}
+######
+#___O#
+#__X_#
+###P##
+######
+######
+\end{verbatim}
+\textbf{Output:}  
+\texttt{<think>}I've reached the target on the right. I need to move right and push the target.\texttt{</think>}  
+\texttt{<answer>}Right || Right || Up\texttt{</answer>}  
+Reward: -0.3
+
+\vspace{4pt}
+\textbf{Turn 2:} \\
+\textbf{State:}
+\begin{verbatim}
+######
+#__XO#
+#__P_#
+###_##  
+######  
+######  
+\end{verbatim}
+\textbf{Output:}  
+\texttt{<think>}Now I need to move left and push the box on the left.\texttt{</think>}  
+\texttt{<answer>}Left || Left || Up\texttt{</answer>}  
+Reward: -0.3
+
+\vspace{4pt}
+\textbf{Turn 3:} \\
+\textbf{State:}
+\begin{verbatim}
+######
+#P_XO#
+#____#
+###_##  
+######  
+######  
+\end{verbatim}
+\textbf{Output:}  
+\texttt{<think>}Now I need to move right and push the box on the right.\texttt{</think>}  
+\texttt{<answer>}Right || Right || Up\texttt{</answer>}  
+Reward: +1.0
+\end{tcolorbox}
+
+\vspace{4pt}
+\caption{\textbf{A rollout with spurious reasoning.} The final outcome is successful, but the reasoning traces across turns are inconsistent and sometimes factually incorrect. This reflects a common failure mode where the model optimizes for final rewards while bypassing coherent reasoning, resulting in noisy and potentially misleading supervision during RL training.}
+\label{fig:sokoban-spurious}
+\vspace{-10pt}
+\end{figure}
+
+
+\section{Generalization Evaluation Environments}
+\label{app:generalization-task}
+
+To evaluate generalization beyond the training distribution, we design two new test environments besides the three training environments that vary along different axes:
+
+\begin{itemize}
+    \item \textbf{SokobanDifferentGridVocab} modifies the visual vocabulary used to represent the grid. Instead of using the standard symbols (\#, \_, O, X, etc.), it maps grid cells to a new vocabulary such as \texttt{W}, \texttt{G}, \texttt{C}, etc. This tests whether the model generalizes across symbol variations while retaining underlying spatial semantics.
+    
+    \item \textbf{LargerSokoban} increases the grid size from $6 \times 6$ to $8 \times 8$ and the number of boxes from 1 to 2, introducing greater spatial complexity and longer-horizon planning demands. This setting evaluates whether the policy trained on small puzzles can scale up to more complex configurations.
+\end{itemize}
+
+These environments are not seen during training and serve to probe the agent's generalization capability under symbol shift, size scaling, and environment shift, respectively.
+
+
+
+
+
+
+\section{Case Study: Spurious Reward from Incorrect Reasoning}
+\label{app:case-study-spurious}
+
+While evaluating reasoning behavior in Sokoban, we observe that the model may occasionally receive non-negative or even high rewards despite exhibiting flawed or misleading reasoning traces. Figure~\ref{fig:sokoban-spurious} presents a 3-turn rollout where the model successfully pushes the box onto the target, yet its intermediate decisions reflect incorrect assumptions about the game dynamics.
+
+In Turn 1 and 2, the agent provides plausible but ultimately incoherent plans, such as "pushing the target" or “moving toward the box on the left,” which are either redundant or directionally incorrect. Despite these errors, the final action sequence still manages to reach the goal. Such cases increase reward signal noise, making it harder for RL training to distinguish between genuinely useful plans and coincidentally effective ones.
+
+This highlights a key challenge in multi-turn RL with reasoning agents: \textit{outcome-based reward alone may not sufficiently penalize poor reasoning traces}, especially in environments with sparse or delayed feedback.
+
+
+\section{Extended Case Studies}
+
+To better understand how reasoning quality evolves across model scales and environments, we present representative rollout cases across six settings: Bandit (Figure~\ref{fig:bandit-multiscale}), Sokoban (Figure~\ref{fig:sokoban-multiscale}), FrozenLake (Figure~\ref{fig:frozenlake-multiscale}), and WebShop (Figure~\ref{fig:webshop-multiscale}), each at 0.5B and 7B model scales. We observe that \textbf{larger models tend to generate longer and more coherent reasoning chains, especially in semantic-rich decision tasks like Bandit and WebShop}. However, in grid-based environments like Sokoban and stochastic ones like FrozenLake, \textbf{both small and large models struggle with planning and alignment}, often resorting to brittle heuristics or spurious correlations. These cases align with the experiments in Section~\ref{app:largermodelabaltion} that Sokoban and Frozen Lake does not have a significant performance gain from larger model scales unlike Bandit and WebShop, illustrating how reasoning quality interacts with environment structure, and highlight the challenges of stabilizing reward-grounded reasoning in stochastic or under-specified settings.
+
+\begin{figure}[t]
+\centering
+\begin{tcolorbox}[colback=gray!2, colframe=black, boxrule=0.5pt, arc=2pt, width=0.95\linewidth, title=0.5B Bandit]
+\textbf{Prompt:} Choose the better arm based on symbolic meaning: \texttt{Dragon} vs. \texttt{Phoenix}.
+
+\textbf{Model Output:} \\
+\texttt{<think>}Dragon has a higher symbolic meaning compared to Phoenix, suggesting it might have a more significant impact on one's character or fate.\texttt{</think} \\
+\texttt{<answer>}Dragon\texttt{</answer>} \\
+Reward: +1.0
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!2, colframe=black, boxrule=0.5pt, arc=2pt, width=0.95\linewidth, title=7B Bandit]
+\textbf{Prompt:} Choose the better arm based on symbolic meaning: \texttt{Dragon} vs. \texttt{Phoenix}.\\
+
+\textbf{Model Output:} \\
+\texttt{<think>}Based on the symbolic meanings of the names "Dragon" and "Phoenix," we can make educated guesses about their reward distributions. The name "Dragon" often symbolizes something powerful, majestic, and long-lived, which could imply a higher average reward and a more stable reward distribution. On the other hand, the name "Phoenix" is often associated with rebirth, transformation, and resilience after destruction or adversity. This could suggest a higher variability in rewards, with the potential for very high rewards but also the risk of lower rewards.
+
+Given these interpretations, the Dragon might be more likely to give higher rewards on average, as its name suggests a more powerful and stable source of rewards. However, it's important to note that this is based on symbolic meanings and not on empirical data. In the bandit game, we will need to gather evidence through pulling the arms to make a more informed decision.\texttt{</think>} \\
+\texttt{<answer>}Dragon\texttt{</answer>} \\
+Reward: +1.0
+\end{tcolorbox}
+\caption{\textbf{Reasoning-based arm selection in Bandit tasks across model scales.} 
+In both cases, the model must infer reward tendencies of symbolic arms (\texttt{Dragon} vs. \texttt{Phoenix}) based on prior knowledge. The 0.5B model offers a short justification rooted in symbolic association. The 7B model generates a more elaborate reasoning chain comparing stability and variance, reflecting its stronger prior knowledge and interpretive capacity. Both ultimately select \texttt{Dragon}, but through different levels of reasoning depth.}
+\label{fig:bandit-multiscale}
+\end{figure}
+
+
+
+
+
+
+\begin{figure}[t]
+\centering
+\small
+\begin{tcolorbox}[colback=gray!2, colframe=black, boxrule=0.5pt, arc=2pt, width=0.95\linewidth, title=0.5B Sokoban – Multi-Turn Rollout]
+\textbf{Turn 1:} \\
+\textbf{State:}
+\begin{verbatim}
+######
+#__###
+#O####
+#__XP#
+#____#
+######
+\end{verbatim}
+\textbf{Output:} \\
+\texttt{<think>}Pushing all boxes to targets.\texttt{</think>} \\
+\texttt{<answer>}Left || Left || Down\texttt{</answer>} \\
+Reward: -0.3
+
+\vspace{4pt}
+\textbf{Turn 2:} \\
+\textbf{State:}
+\begin{verbatim}
+######
+#__###
+#O####
+#X___#
+#_P__#
+######
+\end{verbatim}
+\textbf{Output:} \\
+\texttt{<think>}Clearing a wall to make progress.\texttt{</think>} \\
+\texttt{<answer>}Right || Down || Left\texttt{</answer>} \\
+Reward: -0.3
+
+\vspace{4pt}
+\textbf{Turn 3:} \\
+\textbf{State:}
+\begin{verbatim}
+######
+#__###
+#O####
+#X___#
+#_P__#
+######
+\end{verbatim}
+\textbf{Output:} \\
+\texttt{<think>}Pushing another box.\texttt{</think>} \\
+\texttt{<answer>}Left || Down || Up\texttt{</answer>} \\
+Reward: -0.3
+\end{tcolorbox}
+\vspace{4pt}
+\end{figure}
+
+\begin{figure}[t]
+\begin{tcolorbox}[colback=gray!2, colframe=black, boxrule=0.5pt, arc=2pt, width=0.95\linewidth, title=7B Sokoban – Multi-Turn Rollout]
+\textbf{Turn 1:} \\
+\textbf{State:}
+\begin{verbatim}
+######
+##_P_#
+##_X_#
+##__O#
+###__#
+######
+\end{verbatim}
+\textbf{Output:} \\
+\texttt{<think>}First, move the box to target.\texttt{</think>} \\
+\texttt{<answer>}Up || Right || Up\texttt{</answer>} \\
+Reward: -0.3
+
+\vspace{4pt}
+\textbf{Turn 2:} \\
+\textbf{State:}
+\begin{verbatim}
+######
+##__P#
+##_X_#
+##__O#
+###__#
+######
+\end{verbatim}
+\textbf{Output:} \\
+\texttt{<think>}Now move second box to target.\texttt{</think>} \\
+\texttt{<answer>}Left || Down || Left || Down\texttt{</answer>} \\
+Reward: -0.4
+
+\vspace{4pt}
+\textbf{Turn 3:} \\
+\textbf{State:}
+\begin{verbatim}
+######
+##___#
+##___#
+##PXO#
+###__#
+######
+\end{verbatim}
+\textbf{Output:} \\
+\texttt{<think>}Finally, move last box to target.\texttt{</think>} \\
+\texttt{<answer>}Right || Up || Right || Up\texttt{</answer>} \\
+Reward: +1.0
+\end{tcolorbox}
+\caption{\textbf{Sokoban rollouts across model scales.} At 0.5B, the model performs minimal reasoning and often issues locally valid but suboptimal actions. The 7B model demonstrates more structured planning and symbolic alignment across turns, though still exhibits inefficiencies and heuristic moves in long-horizon settings.}
+\label{fig:sokoban-multiscale}
+\vspace{-10pt}
+\end{figure}
+
+
+\begin{figure}[t]
+\centering
+\small
+\begin{tcolorbox}[colback=gray!2, colframe=black, boxrule=0.5pt, arc=2pt, width=0.95\linewidth, title=0.5B FrozenLake – Multi-Turn Rollout]
+\textbf{State:}
+\begin{verbatim}
+_P_G
+____
+O_OO
+O___
+\end{verbatim}
+
+\textbf{Model Output \textcolor{red}{(repeated each turn)}:} \\
+\texttt{<think>}Forbid the hole and go to the target, I should go left then go up.\texttt{</think>} \\
+\texttt{<answer>}Left || Up\texttt{</answer>} \\
+Reward: 0.0 (repeated for 4 turns)
+
+\vspace{4pt}
+\textbf{Final Turn (Turn 5):} \\
+\textbf{State:}
+\begin{verbatim}
+P__G
+____
+O_OO
+O___
+\end{verbatim} \\
+\textbf{Model Output:} \\
+\texttt{<think>}Forbid the hole and go to the target, I should go left then go up.\texttt{</think>} \\
+\texttt{<answer>}Left || Up\texttt{</answer>} \\
+Reward: 0.0
+\end{tcolorbox}
+\vspace{4pt}
+\begin{tcolorbox}[colback=gray!2, colframe=black, boxrule=0.5pt, arc=2pt, width=0.95\linewidth, title=7B FrozenLake – Multi-Turn Rollout]
+\textbf{Turn 1:} \\
+\textbf{State:}
+\begin{verbatim}
+____
+_P__
+OGO_
+____
+\end{verbatim} \\
+\textbf{Model Output:} \\
+\texttt{<think>}Fill holes, then go target.\texttt{</think>} \\
+\texttt{<answer>}Left || Up\texttt{</answer>} \\
+Reward: +1.0 (due to slipping into goal)
+
+\textit{Note: although the action was incorrect, the agent reached the goal due to stochastic slipping.}
+\end{tcolorbox}
+\caption{\textbf{FrozenLake rollouts across model scales.} At 0.5B, the agent repeats a fixed plan regardless of outcome, suggesting limited adaptation or planning. The 7B agent receives high reward despite issuing a suboptimal command, due to stochastic transitions—highlighting the difficulty of credit assignment in such environments and the risk of reinforcing spurious patterns.}
+\label{fig:frozenlake-multiscale}
+\vspace{-10pt}
+\end{figure}
+
+
+
+
+
+\begin{figure}[t]
+\begin{tcolorbox}[colback=gray!2, colframe=black, boxrule=0.5pt, arc=2pt, width=0.95\linewidth, title=0.5B WebShop – Multi-Turn Rollout]
+\textbf{Turn 1:} \\
+\textbf{State:}
+Instruction: Find me super soft decorative pillows for living room with color: beige latte, and size: 20''x20'', and price lower than 30.00 dollars.We must buy a product within 10 actions. It doesn't have to match perfectly with description.
+Search term should not include details like size, ...\\
+\textbf{Model Output:} \\
+\texttt{<think>}To find a super soft decorative pillows for the living room with a beige latte color and a size of 20''x20'', I will start with a search for pillows with a beige color and a size of 20''x20''.\texttt{</think>} \\
+\texttt{<answer>}search[bisque pillow with beige color 20''x20']\texttt{</answer>} \\
+Reward: 0.0
+
+
+\vspace{4pt}
+\textbf{Turn 2:} \\
+\textbf{State:}
+Instruction: [SEP] Find me super soft decorative pillows for living room with color: beige latte, and size: 20''x20'', and price lower than 30.00 dollars [SEP] Back to Search [SEP] Page 1 (Total results: 50) [SEP] Next \texttt{>} [SEP] B08L2ZDWN2 [SEP] PAVILIA Decorative Sherpa Throw Pillow Covers, ... click[b08qvdnjc7], click[b07p24zmxk], click[b07n33bpq6], click[b09nrf2qgd],\\
+\textbf{Model Output:} \\
+\texttt{<think>}Searching for pillows with beige color and 20''x20'' size, and price lower than \$30.\texttt{</think>} \\
+\texttt{<answer>}click[b08l2zdwn2]\texttt{</answer>} \\
+Reward: 0.0
+
+
+\vspace{4pt}
+\textbf{Turn 3:} \\
+\textbf{State:}
+Instruction: [SEP] Find me super soft decorative pillows for living room with color: beige latte, and size: 20''x20'', and price lower than 30.00 dollars [SEP] Back to Search [SEP] \texttt{<} Prev [SEP] color [SEP] beige latte [SEP] black [SEP] blush pink [SEP] dusty blue [SEP] emerald green [SEP] ... grey], click[mustard yellow], click[teal blue], click[white], click[18''x18''],\\
+\textbf{Model Output:} \\
+\texttt{<think>}Searching for pillows with beige color and 20''x20'' size, and price lower than \$30.\texttt{</think>} \\
+\texttt{<answer>}click[beige latte]\texttt{</answer>} \\
+Reward: 0.0
+...
+
+\textbf{Turn 9:} \\
+\textbf{State:}
+Instruction: [SEP] Find me super soft decorative pillows for living room with color: beige latte, and size: 20''x20'', and price lower than 30.00 dollars [SEP] Back to Search [SEP] \texttt{<} Prev [SEP] color [SEP] beige latte [SEP] black [SEP] blush pink [SEP] dusty blue [SEP] emerald green [SEP] ... grey], click[mustard yellow], click[teal blue], click[white], click[18''x18''],\\
+\textbf{Model Output:} \\
+\texttt{<think>}Searching for pillows with beige color and 20''x20'' size, and price lower than \$30.\texttt{</think>} \\
+\texttt{<answer>}click[black]\texttt{</answer>} \\
+Reward: 0.0
+
+
+\end{tcolorbox}
+\end{figure}
+
+
+\begin{figure}[t]
+\small
+\begin{tcolorbox}[colback=gray!2, colframe=black, boxrule=0.5pt, arc=2pt, width=0.95\linewidth, title=3B WebShop – Multi-Turn Rollout]
+\textbf{Turn 1:} \\
+\textbf{State:}
+Instruction: Find me wall mounted, white item, easy clean tv stands for living room with color: white+brown, and price lower than 130.00 dollars.We must buy a product within 10 actions. It doesn't have to match perfectly with description.
+Search term should not include details like size, ... \\
+\textbf{Model Output:} \\
+\texttt{<think>}Let's start by searching for the items within the given criteria and narrow down the options. The search term will be 'white+brown tv stand living room' to find wall-mounted, easy-clean TV stands with the specified colors and in the living room category.\texttt{</think>} \\
+\texttt{<answer>}search[white+brown tv stand living room]\texttt{</answer>} \\
+Reward: 0.0
+
+
+\vspace{4pt}
+\textbf{Turn 2:} \\
+\textbf{State:}
+Instruction: [SEP] Find me wall mounted, white item, easy clean tv stands for living room with color: white+brown, and price lower than 130.00 dollars [SEP] Back to Search [SEP] Page 1 (Total results: 50) [SEP] Next \texttt{>} [SEP] B09F6SCW47 [SEP] hongxinq Floating TV Stand with Storage Shelves, ... click[b079n3vlrj], click[b0924pklq4], click[b09lhm4wqs], click[b08k7ldm7q],\\
+\textbf{Model Output:} \\
+\texttt{<think>}After reviewing the search results, the first item that seems to match the criteria is the 'Floating TV Stand with Storage Shelves, Chipboard Wall Mounted Hanging Television Cabinet' from 'B09F6SCW47'. It is white with brown accents, fits the living room and bedroom category, and is priced at \$90.79, which is lower than the \$130.00 limit. It's also the closest match in terms of color and style. Since it's the first matching option, I will prioritize clicking on it to move forward with the purchase. However, I'll make sure to click [size] and then [color] if they are available and required to finalize the purchase.\texttt{</think>} \\
+\texttt{<answer>}click[b09f6scw47]\texttt{</answer>} \\
+Reward: 0.0
+
+
+\vspace{4pt}
+
+...
+
+\textbf{Turn 7:} \\
+\textbf{State:}
+Instruction: [SEP] Find me wall mounted, white item, easy clean tv stands for living room with color: white+brown, and price lower than 130.00 dollars [SEP] Back to Search [SEP] \texttt{<} Prev [SEP] color [SEP] brown [SEP] concrete gray [SEP] grey [SEP] white [SEP] white+brown [SEP] hongxinq ... click[buy now], click[brown], click[concrete gray], click[grey], click[white],\\
+\textbf{Model Output:} \\
+\texttt{<think>}With the 'Floating TV Stand with Storage Shelves, Chipboard Wall Mounted Hanging Television Cabinet' from 'B09F6SCW47' confirmed to have the correct white and brown color options and the required size of 12Inx11.8Inx35.4In, I will now proceed to click the 'buy now' button to finalize the purchase. Given that we have 3 actions left and the product matches the criteria closely, I will click on 'buy now' to complete the transaction. This ensures that we stay within the action limit and make a purchase that closely aligns with the specified requirements.\texttt{</think>} \\
+\texttt{<answer>}click[buy now]\texttt{</answer>} \\
+Reward: 1.0
+\end{tcolorbox}
+\caption{\textbf{WebShop rollouts illustrate the impact of model scale on long-context decision making.} 
+At 0.5B, the agent becomes stuck in a loop, repeatedly selecting irrelevant options despite rich contextual information—
+indicating difficulty in long-horizon memory and goal tracking. In contrast, the 3B model executes a successful multi-step 
+reasoning chain: narrowing search queries, navigating product options, selecting attributes, and finalizing purchase. 
+This highlights the importance of scale for compositional planning in realistic, open-domain environments.}
+\label{fig:webshop-multiscale}
+\end{figure}
+
+

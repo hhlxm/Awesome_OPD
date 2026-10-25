@@ -1,0 +1,170 @@
+% \yj{push to right}
+\section{\methodfullname}\label{sec:main_method}
+
+
+To address the limitations of reverse KL in on-policy distillation, we propose \methodfullname~(\method). 
+Our key insight is that reverse KL and forward KL offer complementary strengths: reverse KL enables efficient, stable learning on confident teacher predictions, while forward KL's mode-covering property %reliably 
+transfers the teacher's uncertainty and global structure. 
+However, naively applying forward KL forces the student to cover the teacher's full distribution, including low-probability tails. This can degrade training efficiency, especially for students with limited capacity~\cite{gu2024minillm, cha2025knowledge}.
+% However, naively applying forward KL everywhere is problematic. Forward KL forces the student to cover the teacher's entire distribution, including its tails, which can degrade training efficiency and stability, particularly when the student has limited capacity~\cite{gu2023minillm, cha2025knowledge}.
+
+
+
+
+To leverage the best of both objectives, we propose an \emph{entropy-aware} strategy that selectively applies forward KL based on the teacher's token-level uncertainty. Specifically, we define our token-level objective as:
+\begin{equation}
+\label{eq:eaopd}
+\begin{aligned}
+\mathcal{L}_t^{\text{EOPD}}(\theta;\mathbf{c}_t)  = ~ 
+\mathcal{L}_t^{\text{OPD}} (\theta;\mathbf{c}_t) + \alpha \cdot \mathbb{I}\!\left[ H_t^{\text{te}} > \tau \right] 
+\mathcal{L}^{\text{FKL}}_t (\theta;\mathbf{c}_t),
+% \mathbb{E}_{\pi_{\theta_{\textrm{old}}}}\left[\mathbb{I}\!\left[ H_t^{\text{te}} > \tau \right] 
+% \mathcal{L}^{\text{FKL}}_t (\theta;\mathbf{c}_t)\right],
+\end{aligned}
+\end{equation}
+% \begin{equation}
+% \label{eq:eaopd}
+% \begin{aligned}
+% \mathcal{L}_t^{\text{EOPD}}(\theta)  = & ~ \mathbb{E}_{x_t \sim \pi_\theta(\cdot \mid \mathbf{c}_t)}
+% \Big[
+% \mathcal{L}^{\text{C-RKL}}_t (\theta) \Big]\\
+% &+ \mathbb{I}\!\left[ H_t^{\text{te}} > \tau \right]\mathbb{E}_{x_t \sim \pi_{\tt te}(\cdot \mid \mathbf{c}_t)} \Big[ 
+% \mathcal{L}^{\text{FKL}}_t (\theta)\Big],
+% \end{aligned}
+% \end{equation}
+where $H_t^{{\tt te}} = -\sum_{x\in\mathcal{V}} \pi_{\tt te}(x|\mathbf{c}_t)\log \pi_{\tt te}(x|\mathbf{c}_t)$ denotes the teacher's token-level entropy at position $t$, $\mathcal{V}$ denotes the vocabulary, and the forward KL divergence is 
+\[
+\mathcal{L}_{t}^{\textrm{FKL}}(\theta;\mathbf{c}_t) = \mathrm{KL}(\pi_{\tt{te}}(\cdot\mid\mathbf{c}_t) \,\|\, \pi_{\theta}(\cdot\mid\mathbf{c}_t)).
+\]
+% $\mathcal{L}^{\text{OPD}}_t$ is the on-policy distillation loss defined in Eq.~\eqref{eq:opd}, and $\mathcal{L}^{\text{FKL}}_t (\theta)$ is the forward KL loss. 
+
+\begin{algorithm}[!t]
+\caption{\methodfullname}
+\label{alg:eaopd}
+\begin{algorithmic}[1]
+
+\REQUIRE Teacher policy $\pi_{\tt{te}}$, student policy $\pi_\theta$
+\REQUIRE Entropy threshold $\tau$, Top-$k$ size $k$
+\REQUIRE PPO clip $\epsilon$, learning rate $\eta$
+\REQUIRE Training dataset $\mathcal{D}$
+
+\FOR{each training iteration}
+
+    \STATE Set $\pi_{\theta_{\text{old}}} \leftarrow \pi_\theta$
+    \STATE Sample a prompt batch
+    $\mathcal{B} = \{\mathbf{q}_i\}_{i=1}^{B} \subset \mathcal{D}$
+
+    \STATE Rollout buffer
+    $\mathcal{R} \leftarrow \emptyset$
+
+    \FOR{each prompt $\mathbf{q} \in \mathcal{B}$}
+        \STATE Sample $\mathbf{x}=(x_1,\dots,x_{\mid \mathbf{x} \mid})
+        \sim \pi_{\theta_{\text{old}}}(\cdot \mid \mathbf{q})$
+
+        \FOR{$t=1$ to $\mid\mathbf{x}\mid$}
+            \STATE Context
+            $\mathbf{c}_t = (\mathbf{q}, x_{<t})$
+            \STATE Query teacher $Q_t$: $(\log\pi_{\tt{te}}(x_t \mid \mathbf{c}_t),
+            H^{\tt{te}}_t,
+            \mathcal{S}^k_t)$
+        \ENDFOR
+        \STATE Store trajectory-level data:
+        \[
+        \begin{aligned}
+        \left(\mathbf{q},\mathbf{x},
+        \{Q_t\}_{t=1}^{\mid\mathbf{x}\mid}\right)\rightarrow\; \mathcal{R}
+        \end{aligned}
+        \]
+        % \[
+        % \begin{aligned}
+        % (q,\mathbf{x},
+        % \{\log\pi_{\theta_{\text{old}}}(x_t \mid \mathbf{c}_t)\}_{t=1}^{\mid\mathbf{x}\mid}, 
+        % \{H^{\tt{te}}_t\}_{t=1}^{\mid\mathbf{x}\mid},
+        % \{\mathcal{S}^k_t\}_{t=1}^{\mid\mathbf{x}\mid}) \\
+        % \;\rightarrow\; \mathcal{R}
+        % \end{aligned}
+        % \]
+    \ENDFOR
+
+    \FOR{each mini-batch gradient step}
+        \STATE Sample a mini-batch of prompts
+        $\mathcal{B}_{\text{mini}} \subset \mathcal{R}$
+
+        % \FOR{each $\left( \mathbf{q},\mathbf{x}, \{Q_t\}_{t=1}^{\mid\mathbf{x}\mid} \right) \in \mathcal{B}_{\text{mini}}$}
+            % \FOR{$t=1$ to $\mid\mathbf{x}\mid$}
+                % \STATE Set entropy mask
+                % $m_t \leftarrow \mathbb{I}[H^{\tt{te}}_t > \tau]$
+                % \STATE Compute $\mathcal{L}^{\text{OPD}}_t(\theta;\mathbf{c}_t)$
+                % using~\eqref{eq:opd}
+                % \STATE Compute $\mathcal{L}^{\text{FKL}}_t(\theta;\mathbf{c}_t)$
+                % using~\eqref{eq:fkl}
+                % \STATE Compute $\mathcal{L}^{\text{EOPD}}_t(\theta;\mathbf{c}_t)$
+                % using~\eqref{eq:eaopd}
+            % \ENDFOR
+        % \ENDFOR
+        \STATE
+        $\begin{aligned}
+        \mathcal{L}(\theta)
+        =
+        \frac{1}{\sum_{(\mathbf{q},\mathbf{x}) \in \mathcal{B}_{\text{mini}}} |\mathbf{x}|}
+        \sum_{(\mathbf{q},\mathbf{x}) \in \mathcal{B}_{\text{mini}}}
+        \sum_{t=1}^{|\mathbf{x}|}
+        \mathcal{L}^{\text{EOPD}}_t(\theta;\mathbf{c}_t)
+        \end{aligned}$ using~\eqref{eq:eaopd}
+        
+        % \[
+        % \begin{aligned}
+        % \mathcal{L}(\theta)
+        % =
+        % \frac{1}{|\mathcal{B}_{\text{mini}}|N}
+        % \sum_{(q,\mathbf{x}) \in \mathcal{B}_{\text{mini}}} 
+        % \sum_{t=1}^{N}
+        % \Big(
+        % \mathcal{L}^{\text{C-RKL}}_t(\theta)
+        % + \\
+        % m_t \mathcal{L}^{\text{FKL}}_t(\theta)
+        % \Big)
+        % \end{aligned}
+        % \]
+        \STATE Update parameters:
+        $\theta \leftarrow \theta - \eta \nabla_\theta \mathcal{L}(\theta)$
+    \ENDFOR
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+% \vspace{-3.5cm}
+
+The first term $\mathcal{L}^{\text{OPD}}_t (\theta;\mathbf{c}_t)$ in~\eqref{eq:eaopd} corresponds to the clipped reverse KL loss defined in~\eqref{eq:clipped}. The second term $\mathcal{L}^{\text{FKL}}_t (\theta;\mathbf{c}_t)$ is activated only when $H_t^{{\tt te}} > \tau$, encouraging the student to preserve probability mass over multiple plausible continuations. In low-entropy regions where the teacher is confident, the objective reduces to standard reverse KL, retaining its efficiency and fast convergence. In high-entropy regions, forward KL prevents mode collapse and preserves the teacher's distributional diversity. The hyperparameters $\tau$ and $\alpha$ control this transition; we study their effects in \autoref{app:ablations}. In our experiments, we use $\tau = 0.8$ and $\alpha = 1.0$.
+
+% The first term $\mathcal{L}^{\text{OPD}}_t (\theta)$ in~\eqref{eq:eaopd} corresponds to the standard on-policy distillation objective defined in~\eqref{eq:opd}. The second term $\mathcal{L}^{\text{FKL}}_t (\theta)$ is activated only when $H_t^{{\tt te}} > \tau$, preventing the student from collapsing onto a single mode and encouraging it to preserve probability mass over multiple plausible reasoning paths considered by the teacher. 
+% $\tau$ is a hyperparameter that sets the entropy threshold for activating the forward-KL term; we ablate its effect in Section~\ref{sec:additional_ablations}.
+% In low-entropy regions where the teacher provides confident predictions, the objective reduces to standard reverse KL, retaining its efficiency and fast convergence. Conversely, in high-entropy regions where the teacher expresses meaningful uncertainty, forward KL ensures that the student maintains the distributional diversity of the teacher.
+
+The full objective function for EOPD is like \eqref{eq:opd_ideal}, where we bring back the expectations over prompts $\mathbf{q}$ and generated tokens $\mathbf{x}$, but with $\mathcal{L}_t^{\text{RKL}}(\theta;\mathbf{c}_t)$ replaced by $\mathcal{L}_t^{\text{EOPD}}(\theta;\mathbf{c}_t)$ in \eqref{eq:eaopd}. 
+We use Algorithm~\ref{alg:eaopd} to optimize this objective. 
+The expectations over $\mathbf{q}$ and $\mathbf{x}$ are approximated by sampling batches $\mathcal{B}$ (line 3 in Algorithm~\ref{alg:eaopd}) and generating rollouts using the behavior policy $\pi_{\text{old}}$ (line 6). 
+The teacher is then queried to collect quantities needed to compute the objective (line 9). 
+% In Algorithm~\ref{alg:eaopd}, the on-policy distillation loss $\mathcal{L}^{\text{OPD}}_t (\theta)$ is approximated from a single sampled student token $x_t$, corresponding to $\mathcal{L}^{\text{C-RKL}}_t(\theta;\mathbf{c}_t)$ in~\eqref{eq:clipped}. 
+For the $\mathcal{L}^{\text{OPD}}_t (\theta; \mathbf{c}_t)$ term in~\eqref{eq:eaopd}, the expectation in \eqref{eq:opd} is approximated by a single-sample Monte Carlo estimate as discussed previously. In effect, the clipped reverse KL loss \eqref{eq:clipped} is evaluated at the token $x_t$ sampled during the rollouts. 
+The forward KL $\mathcal{L}^{\text{FKL}}_t(\theta; \mathbf{c}_t)$ is approximated not by sampling, but as an expectation computed over the teacher's top-$k$ tokens $\mathcal{S}_t^k$:
+\begin{equation}
+\label{eq:fkl}
+\mathcal{L}^{\text{FKL}}_t (\theta;\mathbf{c}_t)
+\approx
+\sum_{x \in \mathcal{S}_t^k}
+\tilde\pi_{\text{te}}(x \mid \mathbf{c}_t) 
+\log \frac{\tilde\pi_{\text{te}}(x \mid \mathbf{c}_t)}{\pi_\theta(x \mid \mathbf{c}_t)},
+\end{equation}
+where $\tilde{\pi}_{\tt te}(\cdot\mid c_t)$ denotes the teacher distribution renormalized over the top-$k$ tokens $\mathcal{S}_t^k$, defined as
+\[
+\tilde{\pi}_{\tt te}(x\mid \mathbf{c}_t)
+=
+\frac{\pi_{\tt te}(x\mid \mathbf{c}_t)}
+{\sum_{x'\in \mathcal{S}_t^k}\pi_{\tt te}(x'\mid \mathbf{c}_t)},
+\qquad x\in \mathcal{S}_t^k.
+\]
+We restrict to the teacher's top-$k$ tokens to ensure that the student does not have to learn from the low-probability tails of the teacher, along with improving computational efficiency~\cite{shum2024first, peng2025pre}. {In ~\autoref{app:tradeoff}, we analyze the tradeoff between cumulative probability mass and memory cost across different $k$, and show that $k=16$ offers a practical balance between the two.}
+
+
+
+By adapting to the teacher's local uncertainty, \method~balances training stability with diversity preservation, enabling effective knowledge transfer across both confident and ambiguous regions of the output distribution.

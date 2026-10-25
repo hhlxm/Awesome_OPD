@@ -1,0 +1,127 @@
+% --- Paper Overview (horizontal three-pillar, full-width) ---
+% Requires: \usepackage[most]{tcolorbox}, \usepackage{stfloats}
+
+% Pillar colors
+\definecolor{rolebg}{HTML}{EFF6FF}
+\definecolor{roleframe}{HTML}{4A90D9}
+\definecolor{pathbg}{HTML}{FEF3F2}
+\definecolor{pathframe}{HTML}{D94F4F}
+\definecolor{regbg}{HTML}{EEFBF3}
+\definecolor{regframe}{HTML}{27AE60}
+
+\begin{figure*}[t]
+\begin{tcolorbox}[
+  enhanced,
+  colback=white,
+  colframe=black!30,
+  boxrule=0.5pt,
+  arc=2.5mm,
+  left=2mm, right=2mm,
+  top=0.5mm, bottom=1.5mm,
+  fonttitle=\small\bfseries,
+  title={Paper Overview},
+  coltitle=black!80,
+  colbacktitle=white,
+  attach boxed title to top center={yshift=-2mm},
+  boxed title style={colframe=black!30, boxrule=0.4pt, arc=1.5mm, left=4mm, right=4mm},
+]
+\vspace{0.5mm}
+\noindent
+%%% ─── Left: Role ───
+\begin{minipage}[c]{0.30\linewidth}
+\centering{\scriptsize\color{black!50}\textit{What does OPD do?}}\\[-2.5pt]
+\begin{tcolorbox}[
+  enhanced,
+  colback=rolebg,
+  colframe=roleframe,
+  fonttitle=\bfseries\footnotesize,
+  title={Role (\S\ref{sec:role})},
+  coltitle=white,
+  colbacktitle=roleframe,
+  toptitle=1mm, bottomtitle=1mm,
+  boxrule=0.4pt,
+  arc=1.5mm,
+  top=1mm, bottom=1mm, left=1.5mm, right=1.5mm,
+  fontupper=\scriptsize,
+  equal height group=overviewpillar,
+]
+\textbf{Exploration Catalyst}\\[2pt]
+{\scriptsize\color{black!70}%
+\textbullet~Dense Token-Level Guidance\\
+\textbullet~Not a Capacity Expander\\
+\textbullet~Prompt Diversity Elevates Exploration}
+\end{tcolorbox}
+\end{minipage}%
+\hfill
+%%% ─── Arrow 1→2 with transition text ───
+\begin{minipage}[c]{0.03\linewidth}
+\centering
+{\color{black!30}\large$\rightarrow$}\\[1pt]
+{\color{black!50}\footnotesize\itshape but}
+\end{minipage}%
+\hfill
+%%% ─── Middle: Pathologies ───
+\begin{minipage}[c]{0.30\linewidth}
+\centering{\scriptsize\color{black!50}\textit{When does it fail?}}\\[-2.5pt]
+\begin{tcolorbox}[
+  enhanced,
+  colback=pathbg,
+  colframe=pathframe,
+  fonttitle=\bfseries\footnotesize,
+  title={Pathologies (\S\ref{sec:diagnosis})},
+  coltitle=white,
+  colbacktitle=pathframe,
+  toptitle=1mm, bottomtitle=1mm,
+  boxrule=0.4pt,
+  arc=1.5mm,
+  top=1mm, bottom=1mm, left=1.5mm, right=1.5mm,
+  fontupper=\scriptsize,
+  equal height group=overviewpillar,
+]
+\textbf{Signal Misalignment $\to$ Collapse}\\[2pt]
+{\scriptsize\color{black!70}%
+\textbullet~Student-Teacher Mismatch\\
+\textbullet~Endless Exploration\\
+\textbullet~Abrupt Degeneration}
+\end{tcolorbox}
+\end{minipage}%
+\hfill
+%%% ─── Arrow 2→3 with transition text ───
+\begin{minipage}[c]{0.03\linewidth}
+\centering
+{\color{black!30}\large$\rightarrow$}\\[1pt]
+{\color{black!50}\footnotesize\itshape fix}
+\end{minipage}%
+\hfill
+%%% ─── Right: Regulations ───
+\begin{minipage}[c]{0.30\linewidth}
+\centering{\scriptsize\color{black!50}\textit{How to fix it?}}\\[-2.5pt]
+\begin{tcolorbox}[
+  enhanced,
+  colback=regbg,
+  colframe=regframe,
+  fonttitle=\bfseries\footnotesize,
+  title={Regulations (\S\ref{sec:signal-regulation})},
+  coltitle=white,
+  colbacktitle=regframe,
+  toptitle=1mm, bottomtitle=1mm,
+  boxrule=0.4pt,
+  arc=1.5mm,
+  top=1mm, bottom=1mm, left=1.5mm, right=1.5mm,
+  fontupper=\scriptsize,
+  equal height group=overviewpillar,
+]
+\textbf{Signal Quality $>$ Teacher Scale}\\[2pt]
+{\scriptsize\color{black!70}%
+\textbullet~Hard: $\tilde{a}_t{=}\mathrm{clip}(\Delta\ell_t,\,c_{\min},\,c_{\max})$\\
+\textbullet~Soft: $\tilde{a}_t{=}\mathrm{sgn}(\Delta\ell_t)\!\cdot\!\log(1{+}|\Delta\ell_t|)$
+}
+\end{tcolorbox}
+\end{minipage}
+\end{tcolorbox}
+\vspace{-5mm}
+\caption{Overview. We characterize OPD's role as an exploration catalyst (\S\ref{sec:role}), diagnose pathologies (\S\ref{sec:diagnosis}), and propose lightweight signal regulations that restore stability without additional compute (\S\ref{sec:signal-regulation}). 
+}
+\label{fig:overview}
+\vspace{-4mm}
+\end{figure*}

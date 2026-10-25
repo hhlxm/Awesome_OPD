@@ -1,0 +1,86 @@
+
+\section{Implementation Details}
+\label{app:implementation_details}
+\textbf{Off-policy Training.} We perform off-policy distillation using DistillKit~\cite{distillkit2024}. The hyperparameters for all off-policy distillation experiments are summarized in \autoref{tab:offpolicy_details}. In this setting, we first sample a response from the teacher model for each question, and then train the student model on the resulting teacher context using a combination of cross-entropy loss and forward KL loss.
+\begin{table}[H]
+\centering
+\vspace{0.2cm}
+\caption{Hyperparameters used for Off-policy distillation.}
+\begin{tabular}{cc}
+    \toprule
+    \textbf{Hyperparameter} & \textbf{Value} \\
+    \midrule
+    Learning rate           & 1e-5 \\
+    LR scheduler type       & cosine \\
+    Optimizer               & AdamW \\
+    CE loss weight          & 0.5 \\
+    KL loss weight          & 0.5 \\
+    Training Batch size              & 128 \\
+    Training epoch          & 3 \\
+    Cutoff length           & 4096 \\
+    Top-$k$ (for FKL)       & 16 \\
+    \bottomrule
+\end{tabular}
+\label{tab:offpolicy_details}
+\end{table}
+
+
+\textbf{On-policy Training.} On-policy distillation and GRPO are implemented using the \texttt{verl}~\cite{sheng2024hybridflow} framework. As shown in \autoref{tab:verl_details}, we use a batch size of $B = 128$ and a mini-batch size of $B_{\text{mini}} = 32$, which results in four gradient update steps per training iteration.
+For on-policy distillation, we generate a single rollout per problem during training. In contrast, for GRPO, we generate eight rollouts per problem to enable relative comparison among trajectories.
+
+\begin{table}[H]
+\centering
+\vspace{0.2cm}
+\caption{Hyperparameters used for On-policy distillation and GRPO.}
+\begin{tabular}{c|c|c}
+\toprule
+\textbf{Hyperparameter} & \textbf{OPD, \method} & \textbf{GRPO} \\
+\midrule
+Learning rate           & 3e-6              & 3e-6 \\
+LR scheduler type       & cosine            & cosine \\
+Optimizer               & AdamW             & AdamW \\
+Training batch size     & 128               & 128 \\
+Mini batch size         & 32                & 32 \\
+Samples per prompt      & 1                 & 8 \\
+Top-$p$                 & 1.0 (Qwen), 0.8 (Llama) & 1.0 (Qwen), 0.8 (Llama) \\
+Max response length     & 4096              & 4096 \\
+Top-$k$ (for FKL)       & 16                & - \\
+Training temperature    & 1.0               & 1.0 \\
+Training epoch          & 3 (MATH), 2 (DAPO)& 3 (MATH), 2 (DAPO) \\
+\bottomrule
+\end{tabular}
+\label{tab:verl_details}
+\end{table}
+\textbf{Computational Overhead and Efficiency Analysis.}
+All experiments were conducted on a 4$\times$A100 80GB GPU setup. In addition, to analyze the additional computational overhead introduced by \method, we measure the cost of each component separately as follows.
+
+\begin{enumerate}
+    \item \textbf{Teacher Query.}
+    \method~does not require additional teacher forward passes compared to OPD. Both methods query the teacher once for each student-generated token position.
+
+    \item \textbf{Training Time.}
+    The additional cost of \method~mainly comes from top-k extraction, renormalization, and forward KL loss computation. Empirically, \method~ introduces an average overhead of 2.16 seconds per training step, which corresponds to approximately 4.5\% of the average step time (47.8 seconds). Since most of the computation time is spent on student on-policy generation ($\sim$37.7 seconds), the additional overhead remains limited.
+
+    \item \textbf{Memory Usage.}
+    For forward KL computation, tensors corresponding to selected tokens are stored per microbatch, resulting in an average additional memory usage of 219.3 MB under selective application. In contrast, applying forward KL to all token positions requires an average of 1617.5 MB of additional memory. This demonstrates that selective entropy-aware routing is approximately 7.37$\times$ more memory-efficient than full forward KL application.
+\end{enumerate}
+
+\textbf{Chat Template.} During model training, for knowledge distillation, we used the same chat template as the teacher model to effectively learn the teacher distribution. Since the teacher model used in our experiments was the Qwen3-Instruct~\cite{yang2025qwen3} model in non-thinking mode, the chat template was defined as follows:\\ \texttt{<|im\_start|>user\textbackslash n\{query\}<|im\_end|>\textbackslash n<|im\_start|>assistant\textbackslash n<think>\textbackslash n\textbackslash n</think>}
+
+For GRPO training, we used the default chat template of the Qwen3-Base model. The template used is as follows:\\\texttt{<|im\_start|>user\textbackslash n\{query\}<|im\_end|>\textbackslash n<|im\_start|>assistant\textbackslash n}
+
+
+\textbf{Entropy Bonus.} Entropy Bonus~\cite{schulman2017proximal} adds the policy entropy directly to the optimization objective, discouraging premature policy convergence and encouraging stochastic action selection during training.
+
+\textbf{Advantage Shaping.} Advantage Shaping~\cite{cheng2025reasoning} augments the advantage function by adding a gradient-detached entropy term shaped by $\psi(\cdot)$:
+\[
+A_t \leftarrow A_t + \psi(\mathcal{H}_t).
+\]
+This mechanism encourages the model to reinforce uncertain decisions when $A_t > 0$ by providing additional reward, while reducing the penalty for uncertain decisions when $A_t < 0$, thereby promoting more exploratory reasoning behavior.
+
+Here, the shaping function $\psi(\cdot)$ is defined as
+\begin{equation}
+    \psi\left(\mathcal{H}_t\right) = \min \left(\alpha \mathcal{H}_t^{\text{detach}}, \dfrac{|A_t|}{\kappa}\right),
+\end{equation}
+where $\alpha > 0$ and $\kappa > 1$ are hyperparameters. In the experiment described in \S\ref{sec:comparison_entropy_driven}, we follow the setup of~\cite{cheng2025reasoning} and set $\alpha = 0.1$ and $\kappa = 2$.
+

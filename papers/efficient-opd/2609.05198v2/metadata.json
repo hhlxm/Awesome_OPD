@@ -1,0 +1,43 @@
+{
+  "arxiv_id": "2609.05198v2",
+  "title": "What Matters in On-Policy Distillation? A Perspective on Data Efficiency and Data Selection",
+  "authors": [
+    "Hou, Zhinan",
+    "Zhang, Jiaqi",
+    "Cai, Xunliang",
+    "You, Keyou"
+  ],
+  "submitted_date": "2026/09/04",
+  "abs_url": "https://arxiv.org/abs/2609.05198v2",
+  "schema_version": 2,
+  "requested_input": "2609.05198",
+  "requested_id": "2609.05198",
+  "source_url": "https://arxiv.org/src/2609.05198v2",
+  "downloaded_at": "2026-10-25T12:42:47.429951+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "bbd3c6742bfaf1abdcb4a988d753635f3123b90272c86d75734febb692ffddde",
+  "tex_files": [
+    "data/appendix.tex",
+    "data/conclusion.tex",
+    "data/effiency.tex",
+    "data/introduction.tex",
+    "data/pilot.tex",
+    "data/preliminary.tex",
+    "data/related_work.tex",
+    "data/selection.tex",
+    "math_commands.tex",
+    "opd.tex"
+  ],
+  "main_tex_candidates": [
+    "opd.tex"
+  ],
+  "source_file_count": 24,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2609.05198v2",
+    "sha256": "ebba6220638d79480f08bd72b2af63a80fcc3f7065ad1f6eeb0603f08ed031ff",
+    "downloaded_at": "2026-10-25T12:42:50.493795+00:00",
+    "content_type": "application/pdf"
+  }
+}

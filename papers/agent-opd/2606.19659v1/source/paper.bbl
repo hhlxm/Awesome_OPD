@@ -1,0 +1,186 @@
+\begin{thebibliography}{35}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Agarwal et~al.(2024)Agarwal, Vieillard, Zhou, Stanczyk, Garea, Geist, and Bachem]{agarwal2024policy}
+Rishabh Agarwal, Nino Vieillard, Yongchao Zhou, Piotr Stanczyk, Sabela~Ramos Garea, Matthieu Geist, and Olivier Bachem.
+\newblock On-policy distillation of language models: Learning from self-generated mistakes.
+\newblock In \emph{The twelfth international conference on learning representations}, 2024.
+
+\bibitem[Chan et~al.(2025)Chan, Chowdhury, Jaffe, Aung, Sherburn, Mays, Starace, Liu, Maksin, Patwardhan, et~al.]{chan2025mle}
+Jun~Shern Chan, Neil Chowdhury, Oliver Jaffe, James Aung, Dane Sherburn, Evan Mays, Giulio Starace, Kevin Liu, Leon Maksin, Tejal Patwardhan, et~al.
+\newblock Mle-bench: Evaluating machine learning agents on machine learning engineering.
+\newblock In \emph{International Conference on Learning Representations}, volume 2025, pages 50466--50494, 2025.
+
+\bibitem[Chen et~al.(2025)Chen, Zhao, Zhang, Liu, Qi, Wu, Kalluri, Cao, Xiong, Tong, et~al.]{chen2025scaling}
+Zhaorun Chen, Zhuokai Zhao, Kai Zhang, Bo~Liu, Qi~Qi, Yifan Wu, Tarun Kalluri, Sara Cao, Yuanhao Xiong, Haibo Tong, et~al.
+\newblock Scaling agent learning via experience synthesis.
+\newblock \emph{arXiv preprint arXiv:2511.03773}, 2025.
+
+\bibitem[Gur et~al.(2024)Gur, Furuta, Huang, Safdari, Matsuo, Eck, and Faust]{gur2024real}
+Izzeddin Gur, Hiroki Furuta, Austin Huang, Mustafa Safdari, Yutaka Matsuo, Douglas Eck, and Aleksandra Faust.
+\newblock A real-world webagent with planning, long context understanding, and program synthesis.
+\newblock In \emph{International Conference on Learning Representations}, volume 2024, pages 52690--52717, 2024.
+
+\bibitem[Hao et~al.(2026)Hao, Shang, Long, Zhao, and Liang]{hao2026self}
+Guangya Hao, Yitong Shang, Yunbo Long, Zhuokai Zhao, and Hanxue Liang.
+\newblock Self-policy distillation via capability-selective subspace projection.
+\newblock \emph{arXiv preprint arXiv:2605.22675}, 2026.
+
+\bibitem[He et~al.(2026)He, Kaur, Bhaskar, Yang, Liu, Ri, Fowl, Panigrahi, Chen, and Arora]{he2026self}
+Yinghui He, Simran Kaur, Adithya Bhaskar, Yongjin Yang, Jiarui Liu, Narutatsu Ri, Liam Fowl, Abhishek Panigrahi, Danqi Chen, and Sanjeev Arora.
+\newblock Self-distillation zero: Self-revision turns binary rewards into dense supervision.
+\newblock \emph{arXiv preprint arXiv:2604.12002}, 2026.
+
+\bibitem[H{\"u}botter et~al.(2026)H{\"u}botter, L{\"u}beck, Behric, Baumann, Bagatella, Marta, Hakimi, Shenfeld, Buening, Guestrin, et~al.]{hubotter2026reinforcement}
+Jonas H{\"u}botter, Frederike L{\"u}beck, Lejs Behric, Anton Baumann, Marco Bagatella, Daniel Marta, Ido Hakimi, Idan Shenfeld, Thomas~Kleine Buening, Carlos Guestrin, et~al.
+\newblock Reinforcement learning via self-distillation.
+\newblock \emph{arXiv preprint arXiv:2601.20802}, 2026.
+
+\bibitem[Jin et~al.(2025)Jin, Zeng, Yue, Yoon, Arik, Wang, Zamani, and Han]{jin2025search}
+Bowen Jin, Hansi Zeng, Zhenrui Yue, Jinsung Yoon, Sercan Arik, Dong Wang, Hamed Zamani, and Jiawei Han.
+\newblock Search-r1: Training llms to reason and leverage search engines with reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:2503.09516}, 2025.
+
+\bibitem[Jin et~al.(2026)Jin, Min, Yang, Kadhe, Zhou, Wei, Baracaldo, and Lee]{jin2026entropy}
+Woogyeol Jin, Taywon Min, Yongjin Yang, Swanand~Ravindra Kadhe, Yi~Zhou, Dennis Wei, Nathalie Baracaldo, and Kimin Lee.
+\newblock Entropy-aware on-policy distillation of language models.
+\newblock \emph{arXiv preprint arXiv:2603.07079}, 2026.
+
+\bibitem[Li et~al.(2026)Li, Zuo, He, Zhang, Xiao, Qian, Yu, Gao, Yang, Liu, et~al.]{li2026rethinking}
+Yaxuan Li, Yuxin Zuo, Bingxiang He, Jinqian Zhang, Chaojun Xiao, Cheng Qian, Tianyu Yu, Huan-ang Gao, Wenkai Yang, Zhiyuan Liu, et~al.
+\newblock Rethinking on-policy distillation of large language models: Phenomenology, mechanism, and recipe.
+\newblock \emph{arXiv preprint arXiv:2604.13016}, 2026.
+
+\bibitem[Li et~al.(2025)Li, Shen, Yao, Ding, Miao, Krishnan, and Padman]{li2025beyond}
+Yubo Li, Xiaobin Shen, Xinyu Yao, Xueying Ding, Yidi Miao, Ramayya Krishnan, and Rema Padman.
+\newblock Beyond single-turn: A survey on multi-turn interactions with large language models.
+\newblock \emph{arXiv preprint arXiv:2504.04717}, 2025.
+
+\bibitem[Lu and Lab(2025)]{lu2025onpolicydistillation}
+Kevin Lu and Thinking~Machines Lab.
+\newblock On-policy distillation.
+\newblock \emph{Thinking Machines Lab: Connectionism}, 2025.
+\newblock \doi{10.64434/tml.20251026}.
+\newblock https://thinkingmachines.ai/blog/on-policy-distillation.
+
+\bibitem[Luo et~al.(2026)Luo, Chuang, Wang, Xu, Han, Zhang, and Braverman]{luo2026demystifying}
+Feng Luo, Yu-Neng Chuang, Guanchu Wang, Zicheng Xu, Xiaotian Han, Tianyi Zhang, and Vladimir Braverman.
+\newblock Demystifying opd: Length inflation and stabilization strategies for large language models.
+\newblock \emph{arXiv preprint arXiv:2604.08527}, 2026.
+
+\bibitem[Luo et~al.(2025)Luo, Jain, Singh, Tan, Patel, Wu, Ariyak, Cai, Venkat, Zhu, Athiwaratkun, Roongta, Zhang, Li, Popa, Sen, and Stoica]{deepswe2025}
+Michael Luo, Naman Jain, Jaskirat Singh, Sijun Tan, Ameen Patel, Qingyang Wu, Alpay Ariyak, Colin Cai, Tarun Venkat, Shang Zhu, Ben Athiwaratkun, Manan Roongta, Ce~Zhang, Li~Erran Li, Raluca~Ada Popa, Koushik Sen, and Ion Stoica.
+\newblock Deepswe: Training a state-of-the-art coding agent from scratch by scaling rl.
+\newblock \url{https://pretty-radio-b75.notion.site/DeepSWE-Training-a-Fully-Open-sourced-State-of-the-Art-Coding-Agent-by-Scaling-RL-22281902c1468193aabbe9a8c59bbe33}, 2025.
+\newblock Notion Blog.
+
+\bibitem[Shao et~al.(2024)Shao, Wang, Zhu, Xu, Song, Bi, Zhang, Zhang, Li, Wu, et~al.]{shao2024deepseekmath}
+Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei Zhang, Mingchuan Zhang, YK~Li, Y~Wu, et~al.
+\newblock Deepseekmath: Pushing the limits of mathematical reasoning in open language models.
+\newblock \emph{arXiv preprint arXiv:2402.03300}, 2024.
+
+\bibitem[Shridhar et~al.(2020)Shridhar, Yuan, C{\^o}t{\'e}, Bisk, Trischler, and Hausknecht]{shridhar2020alfworld}
+Mohit Shridhar, Xingdi Yuan, Marc-Alexandre C{\^o}t{\'e}, Yonatan Bisk, Adam Trischler, and Matthew Hausknecht.
+\newblock Alfworld: Aligning text and embodied environments for interactive learning.
+\newblock \emph{arXiv preprint arXiv:2010.03768}, 2020.
+
+\bibitem[Song and Zheng(2026)]{song2026survey}
+Mingyang Song and Mao Zheng.
+\newblock A survey of on-policy distillation for large language models.
+\newblock \emph{arXiv preprint arXiv:2604.00626}, 2026.
+
+\bibitem[Team et~al.(2025)Team, Li, Zhang, Zhang, Huang, Li, Chen, Yin, Wu, Zhou, et~al.]{team2025tongyi}
+Tongyi~DeepResearch Team, Baixuan Li, Bo~Zhang, Dingchu Zhang, Fei Huang, Guangyu Li, Guoxin Chen, Huifeng Yin, Jialong Wu, Jingren Zhou, et~al.
+\newblock Tongyi deepresearch technical report.
+\newblock \emph{arXiv preprint arXiv:2510.24701}, 2025.
+
+\bibitem[Teng et~al.(2024)Teng, Song, Ye, and Ouyang]{teng2024fine}
+Zeyu Teng, Yong Song, Xiaozhou Ye, and Ye~Ouyang.
+\newblock Fine-tuning llms for multi-turn dialogues: optimizing cross-entropy loss with kl divergence for all rounds of responses.
+\newblock In \emph{Proceedings of the 2024 16th International Conference on Machine Learning and Computing}, pages 128--133, 2024.
+
+\bibitem[Wang et~al.(2026{\natexlab{a}})Wang, Zhang, Shi, Li, and Cheng]{wang2026tcod}
+Jiaqi Wang, Wenhao Zhang, Weijie Shi, Yaliang Li, and James Cheng.
+\newblock Tcod: Exploring temporal curriculum in on-policy distillation for multi-turn autonomous agents.
+\newblock \emph{arXiv preprint arXiv:2604.24005}, 2026{\natexlab{a}}.
+
+\bibitem[Wang et~al.(2022)Wang, Jansen, C{\^o}t{\'e}, and Ammanabrolu]{wang2022scienceworld}
+Ruoyao Wang, Peter Jansen, Marc-Alexandre C{\^o}t{\'e}, and Prithviraj Ammanabrolu.
+\newblock Scienceworld: Is your agent smarter than a 5th grader?
+\newblock In \emph{Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing}, pages 11279--11298, 2022.
+
+\bibitem[Wang et~al.(2026{\natexlab{b}})Wang, Chen, Jin, Wang, and Yang]{wang2026openclaw}
+Yinjie Wang, Xuyang Chen, Xiaolong Jin, Mengdi Wang, and Ling Yang.
+\newblock Openclaw-rl: Train any agent simply by talking.
+\newblock \emph{arXiv preprint arXiv:2603.10165}, 2026{\natexlab{b}}.
+
+\bibitem[Wei et~al.(2025)Wei, Yao, Liu, Zhang, Lu, Qiu, Yu, Xu, Zhang, Yin, et~al.]{wei2025webagent}
+Zhepei Wei, Wenlin Yao, Yao Liu, Weizhi Zhang, Qin Lu, Liang Qiu, Changlong Yu, Puyang Xu, Chao Zhang, Bing Yin, et~al.
+\newblock Webagent-r1: Training web agents via end-to-end multi-turn reinforcement learning.
+\newblock In \emph{Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing}, pages 7920--7939, 2025.
+
+\bibitem[Yang et~al.(2025{\natexlab{a}})Yang, Li, Yang, Zhang, Hui, Zheng, Yu, Gao, Huang, Lv, et~al.]{yang2025qwen3}
+An~Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo~Zheng, Bowen Yu, Chang Gao, Chengen Huang, Chenxu Lv, et~al.
+\newblock Qwen3 technical report.
+\newblock \emph{arXiv preprint arXiv:2505.09388}, 2025{\natexlab{a}}.
+
+\bibitem[Yang et~al.(2025{\natexlab{b}})Yang, Gui, Yang, Veitch, Zhang, and Zhao]{yang2025let}
+Chenghao Yang, Lin Gui, Chenxiao Yang, Victor Veitch, Lizhu Zhang, and Zhuokai Zhao.
+\newblock Let it calm: Exploratory annealed decoding for verifiable reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:2510.05251}, 2025{\natexlab{b}}.
+
+\bibitem[Yang et~al.(2024)Yang, Jimenez, Wettig, Lieret, Yao, Narasimhan, and Press]{yang2024swe}
+John Yang, Carlos~E Jimenez, Alexander Wettig, Kilian Lieret, Shunyu Yao, Karthik Narasimhan, and Ofir Press.
+\newblock Swe-agent: Agent-computer interfaces enable automated software engineering.
+\newblock \emph{Advances in Neural Information Processing Systems}, 37:\penalty0 50528--50652, 2024.
+
+\bibitem[Yang et~al.(2026)Yang, Liu, Xie, Yang, Yang, and Lin]{yang2026learning}
+Wenkai Yang, Weijie Liu, Ruobing Xie, Kai Yang, Saiyong Yang, and Yankai Lin.
+\newblock Learning beyond teacher: Generalized on-policy distillation with reward extrapolation.
+\newblock \emph{arXiv preprint arXiv:2602.12125}, 2026.
+
+\bibitem[Yao et~al.(2022)Yao, Zhao, Yu, Du, Shafran, Narasimhan, and Cao]{yao2022react}
+Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, and Yuan Cao.
+\newblock React: Synergizing reasoning and acting in language models.
+\newblock \emph{arXiv preprint arXiv:2210.03629}, 2022.
+
+\bibitem[Yao et~al.(2024)Yao, Shinn, Razavi, and Narasimhan]{yao2024tau}
+Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan.
+\newblock tau-bench: A benchmark for tool-agent-user interaction in real-world domains.
+\newblock \emph{arXiv preprint arXiv:2406.12045}, 2024.
+
+\bibitem[Zhang et~al.(2025)Zhang, Wang, Chen, Zhou, Wang, and Yan]{zhang2025agentracer}
+Guibin Zhang, Junhao Wang, Junjie Chen, Wangchunshu Zhou, Kun Wang, and Shuicheng Yan.
+\newblock Agentracer: Who is inducing failure in the llm agentic systems?
+\newblock \emph{arXiv preprint arXiv:2509.03312}, 2025.
+
+\bibitem[Zhao et~al.(2026)Zhao, Xie, Liu, Huang, Pang, Chen, and Grover]{zhao2026self}
+Siyan Zhao, Zhihui Xie, Mengchen Liu, Jing Huang, Guan Pang, Feiyu Chen, and Aditya Grover.
+\newblock Self-distilled reasoner: On-policy self-distillation for large language models.
+\newblock \emph{arXiv preprint arXiv:2601.18734}, 2026.
+
+\bibitem[Zhou et~al.(2025{\natexlab{a}})Zhou, Zhang, Li, Wang, Liu, Wang, Liu, Liu, Li, Li, et~al.]{zhou2025mixture}
+Yuhang Zhou, Mingrui Zhang, Ke~Li, Mingyi Wang, Qiao Liu, Qifei Wang, Jiayi Liu, Fei Liu, Serena Li, Weiwei Li, et~al.
+\newblock Mixture-of-minds: Multi-agent reinforcement learning for table understanding.
+\newblock \emph{arXiv preprint arXiv:2510.20176}, 2025{\natexlab{a}}.
+
+\bibitem[Zhou et~al.(2025{\natexlab{b}})Zhou, Zhu, Qian, Zhao, Wang, Liu, Li, Xu, Ai, and Huang]{zhou2025disco}
+Yuhang Zhou, Jing Zhu, Shengyi Qian, Zhuokai Zhao, Xiyao Wang, Xiaoyu Liu, Ming Li, Paiheng Xu, Wei Ai, and Furong Huang.
+\newblock Disco balances the scales: Adaptive domain-and difficulty-aware reinforcement learning on imbalanced data.
+\newblock \emph{arXiv preprint arXiv:2505.15074}, 2025{\natexlab{b}}.
+
+\bibitem[Zhou et~al.(2026{\natexlab{a}})Zhou, Zhang, Wu, Liu, Fan, Zhao, and Yan]{zhou2026synthetic}
+Yuhang Zhou, Lizhu Zhang, Yifan Wu, Jiayi Liu, Xiangjun Fan, Zhuokai Zhao, and Hong Yan.
+\newblock Synthetic sandbox for training machine learning engineering agents.
+\newblock \emph{arXiv preprint arXiv:2604.04872}, 2026{\natexlab{a}}.
+
+\bibitem[Zhou et~al.(2026{\natexlab{b}})Zhou, Zhang, Wu, Wang, Bo, Liu, Fan, and Zhao]{zhou2026omniopd}
+Yuhang Zhou, Lizhu Zhang, Yifan Wu, Mingyi Wang, Peng Bo, Jiayi Liu, Xiangjun Fan, and Zhuokai Zhao.
+\newblock Omniopd: Logit-free on-policy distillation via speculative verification.
+\newblock \emph{arXiv preprint arXiv:2606.01476}, 2026{\natexlab{b}}.
+
+\end{thebibliography}

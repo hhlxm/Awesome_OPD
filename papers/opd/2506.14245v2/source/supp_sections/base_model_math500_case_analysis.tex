@@ -1,0 +1,71 @@
+\subsubsection{Case Studies on MATH-500}
+\label{supp_sec:math500_case}
+
+% we use the same model as for the aime24 case to answer and verify.
+
+\begin{questionbox}{ Question }
+\textbf{MATH500 unique\_id test/intermediate\_algebra/582}
+
+
+The equation
+\[x^{10}+(13x-1)^{10}=0\,\]has 10 complex roots $r_1,$ $\overline{r}_1,$ $r_2,$ $\overline{r}_2,$ $r_3,$ $\overline{r}_3,$ $r_4,$ $\overline{r}_4,$ $r_5,$ $\overline{r}_5,$ where the bar denotes complex conjugation. Find the value of
+\[\frac 1{r_1\overline{r}_1}+\frac 1{r_2\overline{r}_2}+\frac 1{r_3\overline{r}_3}+\frac 1{r_4\overline{r}_4}+\frac 1{r_5\overline{r}_5}.\]
+
+\end{questionbox}
+
+\begin{answerbox}{Qwen2.5-32B Answer}
+
+To solve the given problem, let's first analyze the equation $x^{10} + (13x - 1)^{10} = 0$. This can be rewritten as:
+\[x^{10} = -(13x - 1)^{10}.\]
+Taking the 10th root on both sides, we get:
+\textcolor{red}{\[x = \pm i (13x - 1).\]
+This gives us two cases to consider:
+1. $x = i (13x - 1)$
+2. $x = -i (13x - 1)$
+Let's solve each case separately.}
+\begin{tcolorbox}[
+    colback=blue!5!white,         % 浅蓝色内容背景
+    colframe=blue!40!white,       % 柔和的蓝色边框
+]
+DeepSeek-R1-0528-Qwen3-8B verify:  - **Calculation Error**: The solution incorrectly assumes that the equation has only two roots, but the equation is of degree 10, \textcolor{blue}{so it should have 10 roots. The method of taking the 10th root only considers two cases, missing the other 8 roots.}
+
+\end{tcolorbox}
+
+For the first case:
+\[x = i (13x - 1)  \implies x - 13ix = -i \implies x(1 - 13i) = -i \implies x = \frac{-i}{1 - 13i}.\]
+For the second case:
+\[x = -i (13x - 1) \implies x + 13ix = i \implies x(1 + 13i) = i \implies x = \frac{i}{1 + 13i}.\]
+So, the roots of the equation are of the form $\frac{-i}{1 - 13i}$ and $\frac{i}{1 + 13i}$. Notice that these roots come in conjugate pairs, so we can pair them up as $r_1 = \frac{-i}{1 - 13i}$, $\overline{r}_1 = \frac{i}{1 + 13i}$, $r_2 = \frac{i}{1 + 13i}$, $\overline{r}_2 = \frac{-i}{1 - 13i}$, and so on.
+
+
+
+Now, we need to find the value of $\frac{1}{r_1\overline{r}_1} + \frac{1}{r_2\overline{r}_2} + \frac{1}{r_3\overline{r}_3} + \frac{1}{r_4\overline{r}_4} + \frac{1}{r_5\overline{r}_5}$. Since $r_1\overline{r}_1 = \left(\frac{-i}{1 - 13i}\right)\left(\frac{i}{1 + 13i}\right) = \frac{1}{1 + 169} = \frac{1}{170}$, we have:
+\[\frac{1}{r_1\overline{r}_1} = 170.\]
+Similarly, $\frac{1}{r_2\overline{r}_2} = 170$, $\frac{1}{r_3\overline{r}_3} = 170$, $\frac{1}{r_4\overline{r}_4} = 170$, and $\frac{1}{r_5\overline{r}_5} = 170$. Therefore, the sum is:
+\[170 + 170 + 170 + 170 + 170 = 850.\]
+Thus, the final answer is:
+\[\boxed{850}.\]
+
+\end{answerbox}
+
+\begin{questionbox}{ Question }
+\textbf{MATH500 unique\_id test/intermediate\_algebra/2196}
+
+Find the maximum value of
+\[\frac{x - y}{x^4 + y^4 + 6}\]over all real numbers $x$ and $y.$
+
+\end{questionbox}
+
+\begin{answerbox}{Qwen2.5-32B Answer}
+
+To find the maximum value of the expression \(\frac{x - y}{x^4 + y^4 + 6}\), we can start by analyzing the denominator. Since \(x^4\) and \(y^4\) are always non-negative, \textcolor{red}{the denominator is always at least 6. This means that the expression is always less than or equal to \(\frac{x - y}{6}\). Now, let's consider the numerator \(x - y\). If we set \(x = 1\) and \(y = -1\), then the numerator is \(1 - (-1) = 2\). Substituting these values into the expression, we get \(\frac{2}{1^4 + (-1)^4 + 6} = \frac{2}{8} = \frac{1}{4}\). Therefore, the maximum value of the expression is \(\boxed{\frac{1}{4}}\).}
+\begin{tcolorbox}[
+    colback=blue!5!white,         % 浅蓝色内容背景
+    colframe=blue!40!white,       % 柔和的蓝色边框
+]
+DeepSeek-R1-0528-Qwen3-8B verify:  - **Omission / Incompleteness** - \textcolor{blue}{The solution does not provide a complete justification for why the point (1, -1) gives the maximum value}. It only evaluates one specific point and claims it is the maximum without comparing it to other points or demonstrating that the expression cannot be larger elsewhere. For example, it does not consider points where \(x^4 + y^4\) is minimized while \(x - y\) is positive and non-zero, or points where the numerator and denominator balance differently.
+
+
+\end{tcolorbox}
+
+\end{answerbox}

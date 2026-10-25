@@ -1,0 +1,705 @@
+
+\documentclass[]{servicenow} % For LaTeX2e
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage[inline]{enumitem}
+\usepackage{graphicx}
+\usepackage{url}
+% \usepackage{subfig}
+\usepackage{nicefrac}
+\usepackage{cleveref}
+\usepackage[table]{xcolor} % for row colors
+\usepackage{array}         % for column formatting
+\usepackage{booktabs}      % for better rules
+
+
+
+\usepackage{fvextra}
+\usepackage{wrapfig}
+% \makeatletter
+% \AddToHook{cmd/appendix/before}{\def\cref@section@alias{appendix}}
+% \makeatother
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+\usepackage{subcaption}
+\newcommand{\wpm}[1]{\tiny{\color{gray}~$\pm$ #1}}
+
+\definecolor{MethodColor}{HTML}{6442D3}
+\definecolor{MethodYellow}{HTML}{f9b40d}
+\definecolor{OurGreen}{HTML}{7BC952}
+\definecolor{Student}{HTML}{E69800}
+\definecolor{Teacher}{HTML}{6442D3}
+
+\newcommand{\piT}{\textcolor{Teacher}{\pi^{\mathrm{T}}}}
+\newcommand{\piS}{\textcolor{Student}{\pi^{\text{S}}}}
+\newcommand{\piTbase}{\textcolor{Teacher}{\pi^{\mathrm{T}}_{\text{base}}}}
+\newcommand{\piSbase}{\textcolor{Student}{\pi^{\text{S}}_{\text{base}}}}
+\newcommand{\piTtheta}{\textcolor{Teacher}{\pi^{\mathrm{T}}_\theta}}
+% \newcommand{\piT}{\textcolor{Teacher}{\pi^{\mathrm{T}}_\theta}}
+\newcommand{\piStheta}{\textcolor{Student}{\pi^{\text{S}}_\theta}}
+\newcommand{\piSphi}{\textcolor{Student}{\pi^{\text{S}}_\phi}}
+% \newcommand{\piTthetafull}{\color{Teacher}{\pi^{\mathrm{T}}_\theta(\mathbf{o}|s, \mathbf{I})}}
+\newcommand{\piTthetafull}{\textcolor{Teacher}{\pi^{\mathrm{T}}_\theta(\mathbf{o}\mid s, \mathbf{I})}}
+\newcommand{\piSthetafull}{\textcolor{Student}{\pi^{\text{S}}_\theta(\mathbf{o}|s)}}
+
+\usepackage[most]{tcolorbox}
+
+% Define the custom finding box
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+% Define the hex color properly
+\definecolor{findingpurple}{HTML}{6442D3}
+
+\newtcolorbox{finding}[2][]{
+  enhanced,
+  colback=findingpurple!5,
+  colframe=black,
+  colbacktitle=findingpurple,
+  coltitle=white,
+  size=small,
+  arc=8pt,
+  boxrule=1.5pt,
+  titlerule=0pt,
+  left=8pt,
+  right=8pt,
+  top=10pt,
+  bottom=8pt,
+  fonttitle=\bfseries,
+  title={#2},
+  attach boxed title to top left={xshift=3pt, yshift=-\tcboxedtitleheight/2},
+  boxed title style={
+    arc=8pt,
+    boxrule=1.5pt,
+    colframe=black,
+  },
+  #1
+}
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,            % Wraps long lines
+    columns=fullflexible,
+    keepspaces=true,
+    frame=none, 
+    tabsize=2
+}
+
+% 3. Define the breakable prompt box
+\newtcolorbox{prompt}[2][]{
+  colback=blue!5,
+  colframe=blue,
+  coltitle=white,
+  size=small,
+  arc=1pt,
+  boxrule=0.5pt,
+  left=6pt,
+  right=6pt,
+  top=4pt,
+  bottom=4pt,
+  fonttitle=\bfseries,
+  title={#2},
+  breakable,     % <--- ALLOWS PAGE BREAKING
+  enhanced,      % Improves the look of split boxes
+  #1
+}
+\newtcolorbox{promptbox}{
+  colback=gray!10,
+  colframe=gray!35,
+  boxrule=0.5pt,
+  arc=2pt,
+  left=6pt,right=6pt,top=6pt,bottom=6pt
+}
+% Source - https://tex.stackexchange.com/a
+% Posted by Dirk Gorissen, modified by community. See post 'Timeline' for change history
+% Retrieved 2026-01-22, License - CC BY-SA 4.0
+\newcommand{\EP}[1]{\textcolor{blue}{\textbf{EP:} #1}}
+\usepackage{soul}
+
+
+
+\title{Privileged Information Distillation \\ for Language Models}
+
+\author[1,2,3]{Emiliano Penaloza}
+\author[1,2,4]{Dheeraj Vattikonda}
+\author[1]{Nicolas Gontier}
+\author[1]{\\Alexandre Lacoste}
+\author[2,5]{Laurent Charlin}
+\author[1]{Massimo Caccia}
+
+\affiliation[1]{ServiceNow}
+\affiliation[2]{Mila Quebec}
+\affiliation[3]{Université de Montréal}
+\affiliation[4]{McGill University}
+\affiliation[5]{HEC Montréal}
+% \affiliation[6]{Canada CIFAR AI Chair}
+
+
+
+% \contribution[*]{Equal contribution}
+% \contribution[\dagger]{Work done at ServiceNow}
+
+\abstract{
+Training-time privileged information (PI) can enable language models to succeed on tasks they would otherwise fail, making it a powerful tool for Reinforcement Learning (RL) in hard, long-horizon settings. However, transferring capabilities learned with PI to policies that must act without it at inference time remains a fundamental challenge.
+We study this problem in the context of distilling frontier models for multi-turn agentic environments, which typically hide their internal reasoning and expose only action trajectories.  This breaks standard distillation pipelines, since successful behavior is observable, but the reasoning process is not. 
+For this, we introduce $\pi$-Distill, a joint teacher-student objective that trains a PI-conditioned teacher and an unconditioned student simultaneously using the same model. Additionally, we also introduce On-Policy Self-Distillation (OPSD), an alternative approach that trains using RL with a reverse KL-penalty between the student and the PI-conditioned teacher.
+We show that both of these algorithms effectively distill frontier agents using action-only PI. Specifically, we find that $\pi$-Distill and, in some cases, OPSD, outperform industry standard practices (Supervised finetuning followed by RL) that assume access to full Chain-of-Thought supervision across multiple agentic benchmarks, models, and forms of PI. 
+We complement our results with extensive analysis that characterizes the factors enabling effective learning with PI, focusing primarily on $\pi$-Distill and characterizing when OPSD is competitive.
+}
+% \date{\today}
+% \github{\url{https://github.com/Emilianopp/Privileged-Information-Distillation}}
+% \youtube{\url{www.youtube.com/watch?v=dQw4w9WgXcQ}} % please don't click
+\correspondence{\email{emilianopp550@gmail.com}}
+
+% You can add additional metadata fields as follows 
+% \morelinks{\url{https://youtu.be/dQw4w9WgXcQ}}
+
+\begin{document}
+
+
+\maketitle
+
+
+\begin{figure*}[b!]
+    \centering
+    \begin{minipage}{0.6\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/main_diagram.pdf}
+        \caption{\textbf{Overview of the $\pi$-Distill framework.}
+(1) Successful trajectories (not shown) are collected from a frontier agent that exposes only actions while hiding its Chain-of-Thought.
+(2) These trajectories are transformed into training-time privileged information (PI) and used to sample using a PI-conditioned teacher policy $\piTthetafull$.
+(3) The PI-conditioned teacher and an unconditioned student $\piSthetafull$ share parameters and are trained jointly, enabling transfer of privileged knowledge to a test-time policy that acts without PI.
+}
+        \label{fig:figure1}
+    \end{minipage}
+    \hspace{0.02\linewidth}
+    \begin{minipage}{0.35\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/qwen3_8b_benchmark_results.pdf}
+       \caption{\textbf{Results for \texttt{Qwen3-8B} on TravelPlanner and $\tau$-Bench retail.}
+The dashed line separating SFT w/ CoT + RL denotes that this method is not a required baseline, as all other methods do not rely on frontier-model CoT traces. 
+We find that \textit{both} $\pi$-Distill and OPSD substantially outperform all baselines in this setting.}
+        \label{fig:figure2}
+    \end{minipage}
+\end{figure*}
+
+%___________________________________________________________________
+\section{Introduction}
+%___________________________________________________________________
+\label{sec:introduction}
+
+
+
+Language Models (LMs) have the unique ability to converse, which provides a superior user interface and more straightforward interactions than other machine learning systems. 
+Crafting good prompts, or equivalently, conditioning on the right context, remains essential to obtain the best possible performance from an LM. This raises the question of whether LMs can learn from informative prompts to generalize to less informative prompts. In other words, how can an LM learn to transfer training-time privileged information (PI)~\citep{vapnik2009_learning_privileged} to test tasks (that do not contain PI)?
+
+Training-time PI can be particularly useful for Reinforcement Learning (RL) with LMs, where learning is contingent on the model's ability to first succeed on a task~\citep{yue2025doesreinforcementlearningreally}. That is, the model can leverage train-time PI to succeed at tasks it would otherwise fail, effectively enabling it to bootstrap its learning from these successful experiences. As noted above, the underlying challenge is transfer: training a model with PI and obtaining a test-time policy that retains those enhanced capabilities without PI.
+
+In this work, we show that leveraging train-time PI is highly effective under certain conditions. For instance, conditioning a policy on PI can drastically shift the sampling distribution away from the unconditioned one, making transfer significantly harder. Additionally, we find that non-frontier models often struggle to accurately leverage PI and must explicitly learn to use it. 
+To enable effective training in this setting, we introduce two complementary distillation objectives: Privileged Information Distillation ($\pi$-Distill), our main method, and On-Policy Self-Distillation (OPSD), an on-policy alternative.
+$\pi$-Distill adapts the typical teacher-student setup by using a single shared-parameter model in which the teacher has access to PI.
+Importantly, $\pi$-Distill trains the teacher and student jointly, enabling the teacher to learn how to use PI while actively mitigating distribution shift during transfer.~OPSD similarly allows the teacher and student to share parameters, regularizing on-policy RL with a reverse KL penalty between the student and a PI-conditioned teacher.
+
+We ground our work in the task of distilling frontier models for complex multi-turn agentic settings. Typically, the industry standard for these tasks involves Supervised Fine-Tuning (SFT) on frontier model outputs followed by Reinforcement Learning (RL). Unfortunately, some model providers restrict important information, most notably the model's full Chain-of-Thought (CoT) reasoning traces~\citep{openai2024openaio1card}, providing only a summary alongside the action they intend to take. This opacity undermines standard distillation methods, as we can observe what successful agents do but not how they reason about it.
+
+We find that $\pi$-Distill is highly effective at mitigating the lack of CoT, outperforming industry standards that assume full CoT access, with this holding for OPSD in some cases. We demonstrate this on two agentic tool-use environments, Travel Planner \citep{xie2024travelplannerbenchmarkrealworldplanning} and $\tau$-Bench retail \citep{yao2024taubenchbenchmarktoolagentuserinteraction}, while showing proficient Out-of-Domain generalization on the 7 tool-use environments provided by GEM \citep{liu2025gemgymagenticllms} and $\tau$-Bench airline. Our findings are consistent across three models from two distinct families.
+
+Finally, we transform frontier model trajectories into three varying types of PI, each with different information density, providing varying amounts of utility and inducing different degrees of distributional shift between student and teacher. We use this variation to analyze the critical factors for training with PI, finding that for $\pi$-Distill, maximizing PI utility while simultaneously mitigating the student-teacher distributional gap and preventing collapse is essential for effective learning. While information content is more important for OPSD.
+
+\begin{finding}{Contributions}
+    \begin{enumerate}
+        \item \textbf{Algorithms for Privileged Information:} We introduce $\pi$-Distill and On-Policy Self-Distillation (OPSD), two methods for training policies using train-time privileged information.
+        \item \textbf{Distilling without CoT:} We show that our methods effectively distill frontier models using \emph{actions alone}, bypassing the need for frontier model CoT traces. Notably, $\pi$-Distill consistently outperforms standard SFT+RL baselines that rely on full Chain-of-Thought data.
+        \item \textbf{Generalization:} We demonstrate significant gains over baselines on $\tau$-Bench and Travel Planner, with strong generalization to eight additional out-of-distribution (OOD) on GEM tool-use tasks.
+    \end{enumerate}
+\end{finding}
+
+
+
+%___________________________________________________________________
+\section{Background}
+%___________________________________________________________________
+\label{sec:background}
+
+\paragraph{Agentic Interaction as an MDP.}
+We formalize long-horizon, multi-turn agentic environments as a Markov Decision Process (MDP). In this setting, a policy $\pi_\theta(\cdot \mid \mathbf{s})$ interacts with an environment over extended sequences of actions. 
+To simplify notation, we let $\mathbf{s}$ represent the \emph{evolving interaction context}, which aggregates all information available to the model at a given point: the initial user prompt, the model’s past outputs, and all environment responses. 
+As the agent acts, the context updates via a transition function $\mathbf{s}_{t+1} \sim P(\cdot \mid \mathbf{s}_t, \mathbf{o}_t)$, where the environment appends its response to the current sequence to form the next state. 
+As $\mathbf{s}$ encapsulates the interaction history, we use the following to simplify notation:
+\begin{equation*}
+\pi_\theta(\mathbf{o} \mid \mathbf{s}) = \prod_{i=0}^{T} \pi_\theta(\mathbf{z}_i, \mathbf{a}_i \mid \mathbf{s}_{<i})
+\end{equation*}
+where $\mathbf{o} = (\mathbf{z}, \mathbf{a})$ consists of reasoning tokens $\mathbf{z}$ and action tokens $\mathbf{a}$.
+
+\paragraph{Reinforcement learning.}
+RL seeks to maximize the expected return obtained through interaction with an environment~\citep{sutton1999policy}:
+\begin{equation*}
+J(\pi_\theta) = \mathbb{E}_{\substack{\mathbf{o} \sim \pi_\theta(\cdot \mid \mathbf{s}) \\ \mathbf{s} \sim P}} \Big[ R(\mathbf{o}, \mathbf{s}) \Big].
+\end{equation*}
+Here, $R(\mathbf{o}, \mathbf{s}) \in [-1, 1]$ denotes the reward assigned by the environment to the generated trajectory.
+
+\paragraph{Policy Optimization.}
+We optimize $J(\pi_\theta)$ using Group Relative Policy Optimization (GRPO) \citep{shao2024deepseekmathpushinglimitsmathematical,deepseekr1}, with the adjustments recommended by \citet{yu2025dapo} and \citet{liu2025understandingr1zeroliketrainingcritical}. For each state $\mathbf{s}_i$, we sample a group of $G$ trajectories $\{\mathbf{o}_{g}\}_{g=1}^G$ according to the current sampling policy $\mu$ and the transition function $P$. For each token $k$ in trajectory $g$, we define the token-level importance ratio:
+
+\begin{equation*}
+    \rho_{g,k}(\theta)
+= \frac{\pi_\theta(o_{g,k} \mid \mathbf{s}_i, \mathbf{o}_{g,<k})}{\mu(o_{g,k} \mid \mathbf{s}_i, \mathbf{o}_{g,<k})}.
+\end{equation*}
+
+We define a group-relative advantage $A_{s,g}$ by comparing the return of trajectory $g$ to the average return of the sampled group, and use it to scale clipped importance-weighted policy updates.
+The GRPO objective then is:
+\begin{equation}
+\label{eq:grpo}
+J_{\text{GRPO}}(\theta) = \mathbb{E}_{\substack{\mathbf{o} \sim \pi_\theta(\cdot \mid \mathbf{s}) \\ \mathbf{s} \sim P}} \Bigg[ \frac{1}{\sum_g K_g} \sum_{g, k} \min \Big( \rho_{g,k} A_{s,g}, \operatorname{clip}(\rho_{g,k}, 1{-}\epsilon, 1{+}\epsilon) A_{s,g} \Big) \Bigg]
+\end{equation}
+where $K_g$ is the length of trajectory $g$ in tokens and $\epsilon$ is the clipping parameter. While the original GRPO objective typically employs a KL-penalty with respect to the base model, we drop this term as recent work shows it can hinder performance \citep{shah2026comedyestimatorsklregularization}.
+
+
+
+
+
+
+% \section{Train Time Privileged Information}
+
+% It is well known that LM performance can be greatly improved by conditioning on additional context \cite{nekoei2025justintimeepisodicfeedbackhinter,lewis2021retrievalaugmentedgenerationknowledgeintensivenlp}. While context such as documents \cite{lewis2021retrievalaugmentedgenerationknowledgeintensivenlp} or user profiles \cite{wu2024understandingroleuserprofile} remain relevant at inference, other sources such as task-specific hints \cite{zelikman2022starbootstrappingreasoningreasoning} and successful agent trajectories are relevant only to specific training tasks. Such training-time PI contains task-relevant information, allowing the model to succeed at tasks it could not otherwise succeed at. Distilling such PI into a policy that must act without it at inference time could provide substantial performance gains. 
+ 
+
+
+
+\section{Methods}
+
+
+
+\label{sec:pi-distill}
+In this section, we introduce and motivate two algorithms for leveraging PI during training. Both methods use a teacher–student framework inspired by traditional distillation. However, the teacher and student share parameters, and only the teacher is conditioned on PI.
+
+Privileged Information Distillation ($\pi$-Distill) learns from teacher-generated traces by jointly improving both the teacher and the student. In contrast, on-policy self-distillation (OPSD)~\footnote{We adopt the naming ''self-distillation'' following concurrent work \citep{shenfeld2026selfdistillationenablescontinuallearning,zhao2026selfdistilledreasoneronpolicyselfdistillation,hubotter2026reinforcementlearningselfdistillation} that propose the same objective. } samples trajectories from the student policy and uses a reverse KL divergence between the student and the PI-conditioned teacher as a training penalty. Both algorithms are derived using a variational perspective, which we outline in detail in App.~\ref{app:connections} and App.~\ref{app:self-distill-obj}.
+
+\newpage
+\subsection{Privileged Information Distillation ($\pi$-Distill)}
+
+\paragraph{Motivation}
+A straightforward way to use PI for distillation is to condition a policy on PI to generate successful trajectories, which are then used for fine-tuning. However, this approach has two key limitations. First, base models do not automatically know how to exploit PI (see \cref{sec:hint-ablations}), needing to learn how to use it, before providing benefit. Second, even once the policy can exploit PI, we still need to transfer this behavior to a policy that must act without PI at test time.
+
+A naive solution is to first train a PI-conditioned policy and then distill its behavior into an unconditioned one. In practice, this sequential pipeline introduces several issues. It is unclear which checkpoint of the conditioned policy should be distilled, learning from its trajectories is off-policy and can be unstable, and training the two policies separately is computationally inefficient. Our early experiments confirm that this setup leads to suboptimal performance (see \cref{fig:em-plots}).
+
+To address these challenges, we propose Privileged Information Distillation (\textsc{$\pi$-Distill}), which trains both policies jointly within a single parameter-shared model. This allows the model to learn to exploit PI while simultaneously learning to act without it.
+\newcommand{\stopgrad}[1]{\operatorname{sg}\!\left(#1\right)}
+\paragraph{Algorithm.}
+Our approach uses a single model with shared parameters $\theta$ that acts as both a teacher $\piTthetafull$ (conditioned on PI $\mathbf{I}$) and a student $\piSthetafull$ (operating without PI). We train both simultaneously using two objectives.
+The teacher objective trains the conditioned policy to maximize reward while maintaining proximity to the student policy:
+\begin{equation}
+    \small
+    J_{\text{Teacher}}(\theta)
+    = \mathbb{E}_{\substack{\mathbf{o} \sim \piTthetafull \\ \mathbf{s} \sim P}}
+    \Big[
+        R(\mathbf{o}, \mathbf{s})\Big]
+        - \beta D_{\mathrm{KL}}\!\left(\piTthetafull \,\|\,\stopgrad\piSthetafull \right)
+    .
+\end{equation}
+
+
+This objective samples trajectories from the teacher policy and updates it to increase reward while subject to a reverse KL penalty $D_{\mathrm{KL}}\!\left(\piTtheta\,\|\,\piStheta \right)$ controlled by $\beta$, where $\stopgrad.$ indicates the stop gradient operator. This objective serves two purposes: (i) it encourages the teacher to fit high-reward modes familiar to the student, making learning from its traces easier, and (ii) shared parameters promote transfer of the teacher’s knowledge to the student, even without directly training the student. 
+
+The student objective trains the unconditioned policy to learn from the teacher's trajectories:
+\begin{equation}
+\label{eq:j_student}
+J_{\text{Student}}(\theta)
+= \mathbb{E}_{\substack{\mathbf{o} \sim \piTthetafull \\ \mathbf{s} \sim P}}
+\Big[
+\dfrac{\piSthetafull}{\stopgrad{\piTthetafull}}R(\mathbf{o}, \mathbf{s})\Big]
+-\beta D_{\mathrm{KL}}\!\left(\stopgrad{\piTthetafull} \,\|\,\piSthetafull\right).
+\end{equation}
+This objective samples trajectories from the teacher (which has access to PI) but updates the student policy (which does not). This teaches the student to replicate the teacher's high-reward behavior without needing PI.
+
+
+Combining the student and teacher terms gives us our final objective:
+\begin{equation}
+    J_{\text{$\pi$-Distill}}(\theta) 
+    = \alpha J_{\text{Teacher}}(\theta) 
+    + (1-\alpha) J_{\text{Student}}(\theta),
+\end{equation}
+where $\alpha \in [0, 1]$ controls the balance between student and teacher focused learning. 
+
+When $\alpha=1$, optimization focuses entirely on the teacher, although the student may still improve through shared parameters. When $\alpha=0$, training is focused on student learning from the teacher’s current behavior. Where, we observe that under certain conditions, parameter sharing can still lead to improvements in the teacher without explicit teacher updates. When $\alpha=0.5$, both are optimized jointly. Shared parameters allow representations learned for using PI to transfer to the student, while student updates keep those representations effective without PI. The full algorithm is given in \cref{alg:pi_distill}.
+
+
+\paragraph{Connection to Variational EM.}
+This approach can be viewed as a form of Variational Expectation-Maximization (EM), where one uses an approximate posterior $\piT$ to approximate a target distribution $\pi^*$. Here the E-step first improves $\piT$ and the M-step distills this into the student policy $\piS$. Traditionally this can be trained sequentially or in alternating loops with separate models (see \citet{zhou2025variationalreasoninglanguagemodels}). We discuss this connection more in depth in App.~\ref{app:derivation-j-pi-h} and App.~\ref{app:em-failure}, characterizing the target distribution $\pi^*$, derive $\pi$-Distill from this perspective and compare against sequential setups (similar to \citet{zhou2025variationalreasoninglanguagemodels}). 
+
+
+\subsection{On-Policy Self Distillation}
+
+\paragraph{Motivation.}
+$\pi$-Distill can be viewed as off-policy learning, where the student is trained on trajectories generated by the PI-conditioned teacher. A complementary line of work studies on-policy distillation, in which the student acts as the sampling policy and knowledge is transferred by minimizing the reverse KL between the student and teacher~\citep{agarwal2024onpolicydistillationlanguagemodels,yang2026learningteachergeneralizedonpolicy}. Prior work typically utilizes a larger model as the teacher. 
+% We instantiate this objective using the same model, with an additional conditioning on PI. 
+We introduce this objective in our PI setting by instantiating it with the same shared-parameter model, where the teacher is additionally conditioned on PI.
+We refer to this objective as On-Policy Self-Distillation (OPSD).
+
+\paragraph{Algorithm.} 
+The above intuition yields the following objective:
+\begin{equation}
+\label{eq:opcd}
+    J_{\text{OPSD}}(\theta) =
+    \mathbb{E}_{\substack{\mathbf{o} \sim \piSthetafull \\ \mathbf{s} \sim P}}
+    \Big[
+      R(\mathbf{o}, \mathbf{s})\Big]
+      - \beta \, D_{\text{KL}}\!\left(
+        \piSthetafull
+        \, \parallel\,
+        \stopgrad\piTthetafull
+      \right)
+    .
+\end{equation}
+
+Note that the updates are on-policy as the expectation is taken over $\piS$. Where the reverse KL acts as a dense per-token reward measuring how closely the student matches the teacher. The full algorithm is given in \cref{alg:self_distill_on_policy}.
+We analyze OPSD in greater depth in App~\ref{app:self-distill-obj} and characterize the specific target distribution that the algorithm implicitly fits. Concurrent work also propose this objective, demonstrating its effectiveness in settings such as having access to ground truth answers~\citep{zhao2026selfdistilledreasoneronpolicyselfdistillation}, conditioning on reflective self-feedback \citep{hubotter2026reinforcementlearningselfdistillation}, and continual learning~\citep{shenfeld2026selfdistillationenablescontinuallearning}. 
+In this work, we introduce and evaluate OPSD for PI transfer without ground truth and characterize it across a variety of PI types, identifying settings in which it fails.
+
+\section{Experimental Setting}
+
+While learning with PI is applicable to many settings, we ground our work in the task of distilling frontier models within multi-turn tool-calling environments. We focus on this domain for two primary reasons. First, non-frontier models often lack the capabilities required for such settings, whereas frontier models demonstrate proficient performance~\citep{singh2025openaigpt5card,geminiteam2025geminifamilyhighlycapable}. Consequently, weaker models struggle to independently sample successful trajectories, making the PI derived from a frontier model's actions highly valuable. Second, frontier models typically occlude their CoT reasoning~\citep{openai2024openaio1card}. This renders standard distillation methods infeasible, a gap our proposed algorithms are designed to fill.
+
+\subsection{Benchmarks}
+To evaluate our approach, we first employ $\tau$-Bench \citep{yao2024taubenchbenchmarktoolagentuserinteraction}, which simulates customer service interactions where agents book flights (airline domain) or assist shoppers (retail domain) by calling tools and gathering user information. To reduce computational costs, we substitute the GPT-4o user simulator with Qwen-14B. The most substantial change is that we remove the \texttt{transfer\_to\_human\_agents} tool, as it consistently led to reward hacking. The resulting dataset consists of 500 training tasks restricted to the retail domain; we evaluate on 115 held-out retail tasks and 50 airline tasks, utilizing the latter to test Out-Of-Domain (OOD) generalization. Next, we utilize Travel Planner \citep{xie2024travelplannerbenchmarkrealworldplanning}, a benchmark focusing on tool use for planning. While the original repository\footnote{\hyperlink{https://github.com/OSU-NLP-Group/TravelPlanner}{https://github.com/OSU-NLP-Group/TravelPlanner}} employs a rubric-based evaluation that prioritizes "easy" constraints before checking "hard" ones, we found this setup causes policies to collapse onto undesired behaviors (see App.~\ref{app:tp-hack}). To address this, we decouple the rewards so that easy constraints are tied directly to their corresponding hard constraints, for example, verifying dietary restrictions immediately after booking a restaurant. We train on the 45 training tasks and report results on the 180 publicly available held-out tasks. Finally, to probe whether training on these environments enhances tool usage to scopes far beyond the training domains, we evaluate on the GEM QA multi-turn tool-usage environment suite \citep{liu2025gemgymagenticllms}. This suite equips agents with a search tool consisting of seven environments (2Wiki~\citep{xanh2020_2wikimultihop}, PopQA~\citep{mallen2023llm_memorization}, TriviaQA~\citep{joshi2017triviaqalargescaledistantly}, HotpotQA~\citep{hotpotqa}, Bamboogle~\citep{bamboogle}, NaturalQuestions~\citep{naturalquestions}, and Musique~\citep{trivedi2022musiquemultihopquestionssinglehop}).
+
+\subsection{Sources of Privileged Information}
+\label{ssuc:priv_sources}
+To show the benefits of leveraging train-time PI, we aim to distill a frontier model using only its raw output trajectories. For this, we mine trajectories from \texttt{DeepSeek-chat-v3.1} as it is open-source and allows access to its reasoning tokens. Having access to these tokens allows us to benchmark against standard settings that assume access to CoT. This is an important detail, as baselines that assume access to this information should act as a \textit{soft}-upper bound.
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{figures/PI_Types.drawio.pdf}
+    \caption{\textbf{Deriving PI from frontier model traces.} The left panel illustrates sampling trajectories from a frontier model, where full CoT reasoning is occluded \citep{openai2024openaio1card}. We transform these raw traces into three types of PI with varying information density: (1) \textbf{Tool Calls \& Arguments}, retaining the exact actions invoked by the frontier model; (2) \textbf{Tool Calls Only}, where arguments are stripped; and (3) \textbf{Self-Generated Hints}, where the student model summarizes the frontier trajectory into a concise hint.}
+    \label{fig:piTypes}
+    \vspace{-30pt}
+\end{wrapfigure}
+\paragraph{Types of Privileged Information.}
+\label{sec:piTypes}We transform the raw trajectories into three distinct forms of PI to analyze how varying information density impacts performance.
+\begin{enumerate}[leftmargin=*, wide=0pt, itemsep=2pt, topsep=0pt]
+\item \textbf{Tool calls \& arguments.} The complete sequence of actions executed by the frontier model, including function names and input arguments, e.g. \texttt{GetUserDetails(Name:"Kevin Lau")}.
+\item \textbf{Tool calls only.} We provide only the function names like \texttt{GetUserDetails} and require the model to infer the correct arguments from the context.
+\item \textbf{Self-generated hints.} We prompt the \textit{trained} model to summarize a successful trajectory produced by the frontier model. This process can help filter inefficient actions and suggest ways to improve upon the expert’s behavior (see App.~\ref{app:self-generated-prompt} for an example).
+\end{enumerate}
+
+Leveraging these three formats enables us to identify what properties allow successful transfer between teacher and student. We analyze this in \cref{sec:hint-ablations}, finding that the optimal configuration depends on the value of $\alpha$ and the specific attributes of the PI (e.g. KL between teacher and student).
+
+Using this setup, we collect 15,885 successful traces for $\tau$-Bench retail and 1,986 for Travel Planner, evenly sampled across tasks. From these traces, for each training task, we select the successful trajectory with the least number of steps to build the PI. In total, we obtain PI for all $45$ tasks in Travel Planner and $300/500$ tasks in $\tau$-Bench. We note we exclude the self-generated hints for \texttt{R1-Deepseek-Distill-LLama-8B} as it consistently returns the raw input trace or tool calls as the hint.
+
+ 
+\subsection{Models and Baselines}
+\paragraph{Models.}We employ \texttt{Qwen3-4B} and \texttt{Qwen3-8B} \citep{yang2025qwen3technicalreport} being strong reasoning models. We also evaluate \texttt{R1-Distill-Llama-8B} to cover a distinct model family. We find this model fails to generate correct trajectories even when conditioned on PI in both benchmarks, making direct RL training unfeasible. Thus, exclusively for \texttt{R1-Distill-Llama-8B}, we warm-start it using SFT w/ CoT from expert traces. This setup allows us to determine if PI remains beneficial even when the model has already seen it during training.
+
+\paragraph{Baselines.} We instantiate $\pi$-Distill with $\alpha \in \{0, 0.5, 1\}$ and OPSD. We compare against (i) standard RL, (ii) SFT on expert trajectories with and without CoT, and (iii) SFT followed by RL. We utilize the GRPO objective outlined in \cref{eq:grpo} for all RL-based algorithms. Following \citet{vattikonda2025trainllmwebagent}, we sweep over multiple SFT checkpoints for SFT+RL baselines and report results using the checkpoint that yields the strongest final performance. We use the full set of collected successful traces for all SFT baselines, as this maximized performance. For $\pi$-Distill and OPSD in $\tau$-Bench, we utilize PI whenever available otherwise, we sample the traces with the student and perform regular RL for that goal.
+
+
+
+
+\paragraph{Implementation Details.} 
+
+We run all experiments using 2 H100 GPUs with a context limit of $25$k tokens (with one exception, see App.~\ref{app:imp-details}). We found initially that traces often exceeded this limit, thus adopting a length penalty reward that penalizes trajectories exceeding $15$k tokens (full details in App.~\ref{app:length-penalty}). Additionally, we observed during training that a few tokens referencing the PI consistently exhibited very high KL (e.g., the token ``hint''). We thus incorporate a penalty on the frequency of these tokens. Our final experiments incorporate this penalty, though we found in practice it makes little difference for final performance (see App.~\ref{app:leakage_ablation} for full details). All PI is added to the task description in the system prompt, using the prompts in App.~\ref{app:priv-prompts}.  We thoroughly sweep over relevant HPs for all baselines, for a full list see App.~\ref{app:hps}. Using the best performing set, we run three seeds of this set and report their average.  In experiments, we score models using the best running average over three subsequent checkpoints, capturing both performance and stability. 
+
+
+
+
+
+
+\begin{table*}[t]
+\centering
+\caption{\textbf{Evaluation results on Travel Planner, $\tau$-Bench (Retail), and $\tau$-Bench (Airline)}. Shaded rows denote our methods. \textbf{Bold} values indicate the best performance within each model category, while \underline{underlined} values indicate the second-best. Results show mean $\pm$ standard deviation across three random seeds. We find that both $\pi$-Distill and OPSD effectively leverage PI, consistently outperforming all baselines that lack access to frontier reasoning traces. Furthermore, both methods can surpass SFT w/ CoT + RL on TravelPlanner, with $\pi$-Distill also achieving superior performance on $\tau$-Bench.}
+\label{tab:combined-results}
+\vskip 0.15in
+\begin{small}
+\renewcommand{\arraystretch}{1}
+\resizebox{0.85\textwidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+ & \textbf{Travel Planner} & \textbf{$\tau$-Bench Retail} & \textbf{$\tau$-Bench Airline (OOD)} \\
+\midrule
+
+\rowcolor{MethodYellow!15} \multicolumn{4}{l}{\textit{DeepSeek V3.1 Chat-671B}} \\
+Base & 45.0\% \wpm{3.78} & 51.3\% \wpm{0.212} & 40.0\% \wpm{0.161} \\
+
+\rowcolor{MethodYellow!15} \multicolumn{4}{l}{\textit{R1-Distill-Llama-8B}} \\
+Base & 0.00\% \wpm{0.00} & 0.00\% \wpm{0.00} & 0.00\% \wpm{0.00} \\
+SFT w/ CoT & 6.35\% \wpm{1.27} & 15.2\% \wpm{0.44} & 8.00\% \wpm{5.29} \\
+SFT w/o CoT & 2.40\% \wpm{0.86} & 0.680\% \wpm{0.17} & 0.670\% \wpm{1.15} \\
+SFT w/ CoT + RL & 12.4\% \wpm{1.56} & 16.3\% \wpm{1.49} & 7.33\% \wpm{4.16} \\
+\rowcolor{MethodColor!5} SFT w/ CoT + On-Policy Self Distillation 
+& 13.1\% \wpm{1.09} & 14.5\% \wpm{0.00} & 2.00\% \wpm{0.00} \\
+\rowcolor{MethodColor!5} SFT w/ CoT + $\pi$-Distill $\piS$ ($\alpha=0$) 
+& 7.86\% \wpm{1.75} & \textbf{18.6\%} \wpm{0.50} & \textbf{10.0\%} \wpm{2.00} \\
+\rowcolor{MethodColor!5} SFT w/ CoT + $\pi$-Distill $\piS + \piT$ ($\alpha=0.5$) 
+& \underline{14.0\%} \wpm{1.63} & \underline{18.3\%} \wpm{0.77} & \underline{9.33\%} \wpm{3.06} \\
+\rowcolor{MethodColor!5} SFT w/ CoT + $\pi$-Distill $\piT$ ($\alpha=1$) 
+& \textbf{14.1\%} \wpm{3.27} & 17.7\% \wpm{0.77} & 7.33\% \wpm{4.16} \\
+
+\midrule
+\rowcolor{MethodYellow!15} \multicolumn{4}{l}{\textit{QWEN3-4B}} \\
+Base & 17.6\% \wpm{2.16} & 5.03\% \wpm{1.88} & 2.21\% \wpm{1.99} \\
+SFT w/ CoT & 21.1\% \wpm{1.94} & 12.4\% \wpm{0.60} & 2.67\% \wpm{1.15} \\
+SFT w/o CoT & 20.8\% \wpm{1.82} & 15.2\% \wpm{1.70} & 4.00\% \wpm{5.29} \\
+RL & 25.1\% \wpm{3.75} & 15.2\% \wpm{0.17} & 5.33\% \wpm{3.06} \\
+SFT w/o CoT + RL & 23.3\% \wpm{1.33} & 17.6\% \wpm{2.69} & 5.33\% \wpm{2.31} \\
+\rowcolor{MethodColor!5} On-Policy Self Distillation 
+& 29.8\% \wpm{1.14} & 23.1\% \wpm{0.04} & \underline{10.6\%} \wpm{6.57} \\
+\rowcolor{MethodColor!5} $\pi$-Distill $\piS$ ($\alpha=0$) 
+& \underline{28.5\%} \wpm{4.35} & \textbf{25.3\%} \wpm{0.60} & 8.00\% \wpm{5.29} \\
+\rowcolor{MethodColor!5} $\pi$-Distill $\piS + \piT$ ($\alpha=0.5$) 
+& \textbf{33.8\%} \wpm{6.85} & 22.6\% \wpm{0.93} & 6.00\% \wpm{2.00} \\
+\rowcolor{MethodColor!5} $\pi$-Distill $\piT$ ($\alpha=1$) 
+& 28.2\% \wpm{6.27} & 22.5\% \wpm{0.93} & \textbf{12.0\%} \wpm{5.29} \\
+
+\midrule
+SFT w/ CoT + RL 
+& 26.4\% \wpm{1.16} & \underline{23.3\%} \wpm{3.02} & 6.67\% \wpm{5.77} \\
+
+\midrule
+\rowcolor{MethodYellow!15} \multicolumn{4}{l}{\textit{QWEN3-8B}} \\
+Base & 23.6\% \wpm{2.23} & 3.35\% \wpm{1.47} & 6.40\% \wpm{3.02} \\
+SFT w/ CoT & 26.0\% \wpm{2.27} & 16.5\% \wpm{4.66} & 5.33\% \wpm{1.15} \\
+SFT w/o CoT & 29.8\% \wpm{1.71} & 12.8\% \wpm{0.77} & 6.00\% \wpm{4.00} \\
+RL & 27.5\% \wpm{0.95} & 23.9\% \wpm{0.44} & 6.67\% \wpm{3.06} \\
+SFT w/o CoT + RL & 31.3\% \wpm{2.79} & 23.5\% \wpm{4.27} & 6.00\% \wpm{2.00} \\
+\rowcolor{MethodColor!5} On-Policy Self Distillation 
+& 37.5\% \wpm{1.53} & 27.3\% \wpm{0.33} & \textbf{14.0\%} \wpm{5.66} \\
+\rowcolor{MethodColor!5} $\pi$-Distill $\piS$ ($\alpha=0$) 
+& 40.7\% \wpm{1.14} & \textbf{31.1\%} \wpm{0.73} & \underline{12.0\%} \wpm{6.00} \\
+\rowcolor{MethodColor!5} $\pi$-Distill $\piS + \piT$ ($\alpha=0.5$) 
+& \underline{41.1\%} \wpm{7.24} & \underline{30.6\%} \wpm{0.67} & 7.33\% \wpm{1.15} \\
+\rowcolor{MethodColor!5} $\pi$-Distill $\piT$ ($\alpha=1$) 
+& \textbf{44.1\%} \wpm{2.16} & 29.7\% \wpm{0.33} & 9.33\% \wpm{3.06} \\
+
+\midrule
+SFT w/ CoT + RL 
+& 32.3\% \wpm{1.10} & 29.1\% \wpm{2.14} & 8.00\% \wpm{3.46} \\
+\bottomrule
+\end{tabular}%
+}
+\end{small}
+\vskip -0.1in
+\end{table*}
+\section{Main Results}
+\label{sec:main-results}
+
+In this section, we demonstrate that leveraging PI provides a potent learning signal on held-out tasks, proving effective even when full CoT supervision is available. \Cref{tab:combined-results} details performance metrics for Travel Planner and $\tau$-Bench. Our primary finding is that $\pi$-Distill variants achieve superior performance across all but a single setting.  With \texttt{Qwen3-4B} we find that $\pi$-Distill using $\alpha=0$ can outperform SFT + RL w/ CoT, with other variants approximating its performance. Notably,  in \texttt{Qwen3-8B}, $\pi$-Distill consistently outperforms the industry standard (SFT w/ CoT + RL) regardless of $\alpha$. In the best-case scenarios, $\pi$-Distill achieves substantial improvements: 11.8\% on Travel Planner, and 2.08\% and 6.00\% on the retail and airline subsets of $\tau$-Bench, respectively.  These results are substantial as they confirm that $\pi$-Distill effectively distills frontier models even when CoT traces are hidden, enabling non-frontier models to become proficient at complex multi-step agentic tasks. Moreover, $\pi$-Distill achieves this with significantly greater efficiency. Unlike  SFT w/ CoT + RL, which requires sweeping over multiple SFT checkpoints to achieve peak performance \citep{vattikonda2025trainllmwebagent}, $\pi$-Distill requires only a single training phase, greatly simplifying the training process.
+
+Regarding $\alpha$, we observe that there is no definitive best value, rather the best-performing $\alpha$ varies by setting. We analyze this nuance further in \S~\ref{sec:hint-ablations}. When analyzing other methods that do not assume access to full CoT, we find  RL and SFT w/o CoT + RL perform similarly, while RL requires significantly less compute, but find both fail to yield substantial gains, significantly lagging behind SFT w/ CoT + RL. Additionally, we find that OPSD, can substantially outperform these baselines in $\tau-$Bench, while performing similarly in Travel Planner. We also observe that when OPSD succeeds, it provides substantial gains in OOD settings ($\tau$-Bench Airline), scaling with model capacity, being the second best in \texttt{Qwen3-4B} and best in \texttt{Qwen3-8B}.
+Finally, our results on \texttt{R1-Distill-Llama-8B} show that $\pi$-Distill remains useful even if the model has previously been SFTd on traces containing the PI.
+
+% We attribute this to the PI not being initially useful and requiring learning from the teacher, which we explore in detail in \Cref{sec:hint-ablations}.
+
+
+ 
+\begin{finding}{Takeaways: }
+    \begin{enumerate}
+        \item \textbf{$\pi$-Distill effectively substitutes for CoT:} Our method consistently outperforms the standard SFT w/ CoT + RL baseline, demonstrating that raw actions can serve as a potent learning signal to distill frontier models even when reasoning traces are observable.
+        \item \textbf{Superior Efficiency:} Unlike SFT that requires expensive sweeps over multiple SFT checkpoints, $\pi$-Distill requires only a single training phase and yields superior performance gains even on models that have already undergone SFT w/ CoT.
+        \item \textbf{OPSD is a potent alternative when CoT is not available: } We find OPSD can substantially outperform base RL and  SFT w/o CoT + RL being a potent alternative when CoTs are not available.
+    \end{enumerate}
+\end{finding}
+
+
+
+\begin{figure*}[t]
+    \centering
+    \begin{tabular}{@{}c c c@{}}
+        \includegraphics[width=0.98\textwidth]{figures/pass_at_k_all_models.pdf}
+    \end{tabular}
+    \caption{\textbf{Evaluation on Out-of-Domain Environments.} We report Pass@1 and Pass@10 on the GEM search-tool benchmark suite (7 datasets) for \texttt{Qwen 3} models and \texttt{R1-Distill-Llama-8B}, using the best checkpoint selected on $\tau$-Bench Retail. Bars show mean $\pm$ standard errors over three seeds per dataset, comparing $\pi$-Distill variants ($\piT$ ($\alpha=1$), $\piS$ ($\alpha=0$), $\piT + \piS$ ($\alpha=0.5$)) and OPSD against SFT w/ CoT + RL, $\pi_{\text{Base}}$, and standard RL. The dashed line separating SFT w/ CoT + RL denotes that this method is not considered a required baseline, as all PI methods avoid relying on frontier-model CoT traces. We consistently find that both algorithms exhibit substantially less forgetting than standard RL. Moreover, we find $\pi$-Distill and OPSD generalize significantly better than SFT w/ CoT + RL when using \texttt{Qwen 3-8B}. }
+    \label{fig:search-comparison}
+\end{figure*}
+
+\section{Out of Domain Experiments (OOD)}
+In this section, we demonstrate that  $\pi$-Distill  generalizes effectively to OOD tasks, consistently outperforming standard RL and the base model, with this holding true for OPSD on \texttt{Qwen3-8B}. We report Pass@1 and Pass@10 metrics on the GEM \citep{liu2025gemgymagenticllms} search-tool benchmark suite which consists of 7 datasets. To simulate a realistic deployment scenario, we select the single best-performing checkpoint in $\tau$-Bench retail for each model. We then evaluate these checkpoints across the suite using three random seeds and report the aggregated mean and standard errors in \cref{fig:search-comparison}.
+
+
+We find that for both \texttt{Qwen3} models, $\pi$-Distill variants consistently outperform the base model and standard RL holding true for OPSD under more capable models. When compared to SFT w/ CoT + RL, we observe differences based on model size. On \texttt{Qwen3-4B}, SFT w/ CoT + RL is consistently the top performer with OPSD showing significant degradation. For \texttt{Qwen3-8B}, however, we find that $\alpha=0$ and $\alpha=0.5$ variants of $\pi$-Distill as well as OPSD can significantly outperform SFT w/ CoT + RL. For $\pi$-Distill, this aligns with our findings in \cref{sec:main-results}. Where for \texttt{Qwen3-4B} not all $\pi$-Distill variants show substantial improvements over SFT w/ CoT + RL, whereas for \texttt{Qwen3-8B}, the opposite trend is observed. We observe a similar trend for OPSD, where it shows significant degradation on \texttt{Qwen3-4B}, while on \texttt{Qwen3-8B} it shows significant improvements. We attribute this to the possibility that on smaller models, OPSD may overfit the teacher supervision for the task, while the more potent reasoners can provide more generalizable feedback. Overall, results on both $\pi$-Distill and OPSD imply that explicit supervision from frontier model's CoT is more important for smaller models, where stronger reasoners benefit from being more on-policy via self-generated CoT. Additionally, we observe deterioration in \texttt{R1-Distill-Llama-8B} under SFT w/ CoT + RL, where performance drops below the base model. While $\pi$-Distill and OPSD do not improve over the base model in this specific case, they avoid significant deterioration. Finally, raw RL consistently exhibits degradation relative to the base model across all evaluations. Overall, these results indicate that $\pi$-Distill is highly effective for distillation in OOD settings when CoT traces are occluded, preventing performance from regressing below the base model. Moreover, both $\pi$-Distill and OPSD show significant improvements as model size scales.
+\begin{finding}{Takeaways: OOD Generalization}
+    \begin{enumerate}
+        \item \textbf{Scaling Benefits for Stronger Reasoners:} While SFT w/ CoT + RL is effective for \texttt{Qwen3-4B}, $\pi$-Distill and OPSD significantly outperform SFT w/ CoT + RL on \texttt{Qwen3-8B}. This suggests that as model capacity grows, transfer can be enhanced by staying more on-policy.
+        \item \textbf{Prevention of RL Degradation:} Across all benchmarks, standard RL consistently performs worse than the base model. In contrast, OPSD avoids degradation
+        in stronger reasoners, with $\pi$-Distill avoiding it in all cases.
+    \end{enumerate}
+\end{finding}
+
+
+
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/kl-grid.pdf}
+    \caption{\textbf{Impact of PI Types and Algorithms on Performance}.
+We compare held-out performance on $\tau$-Bench (top row) and Travel Planner (bottom row) across three base models and three PI types (colors). The scatter plots map final scores against the initial teacher-student divergence ($D_{\mathrm{KL}}(\pi^T_{\text{base}} \,\|\, \pi^S_{\text{base}})$), while the bar-charts display the PI utility ($\Delta$) on training tasks. Key observations:
+(1) Higher initial KL divergence generally correlates with decreased final performance.
+(2) Joint training ($\alpha=0.5$, $\triangle$) is the most stable configuration, performing best in 6/16 scenarios and worst in a single one.
+(3) Student-only training ($\alpha=0$, $\square$) requires low KL and positive utility (note the failure in Planner QWEN3 8B where $\Delta < 0$). Conversely, Teacher-only training ($\alpha=1$, $\bigcirc$) degrades as KL increases or fails due to policy collapse when KL is negligible.}
+    \label{fig:pi-analysis}
+\end{figure*}
+\section{What Matters When Using Train-Time PI }
+\label{sec:hint-ablations}
+While prior sections focused on the best-performing configurations, here we analyze how varying the type of PI affects final performance. Our goal is to isolate the factors that determine success when training with PI. We identify two primary drivers: (i) the divergence between the conditioned and unconditioned base policies ( \(D_{\mathrm{KL}}(\piTbase \,\|\, \piSbase)\) for $\pi$-Distill  and  \(D_{\mathrm{KL}}(\piSbase \,\|\, \piTbase)\) for OPSD), and (ii) the usefulness of the privileged signal, captured by the utility \(\Delta = \text{score}(\piTbase) - \text{score}(\piSbase)\) on \textit{training tasks}. 
+Additionally, in \cref{fig:delta-max} we report the maximum attainable utility on \(\Delta_{\max} = \max_t \text{score}(\pi^{\text{PI}}_t) - \max_t \text{score}(\pi^{\text{RL}}_t)\), defined as the difference between the best scores on \textit{training tasks} achieved with PI and without PI (pure RL), which measures how effectively each algorithm converts access to PI into performance gains. 
+
+
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/delta_max_combined.pdf}
+    \caption{\textbf{Maximum Improvement ($\Delta_{\text{max}}$) across PI Types and Algorithms.} We compare the peak performance gain over baselines for different PI variants (x-axis) and training configurations ($\alpha$) on TravelPlanner (bottom) and $\tau$-Bench (top). We find that PI types which initially underperform (e.g., self-generated hints on Planner, \texttt{Qwen3-8B}) can yield substantial gains when the teacher is trained to utilize them ($\alpha > 0$), confirming that learning to leverage PI is an important factor in transferring from teacher $\piT$ to student $\piS$.}
+    \label{fig:delta-max}
+\end{figure}
+\label{app:delta-max}
+\newpage
+\subsection{What matters for $\pi$-Distill}
+
+\begin{wrapfigure}{r}{0.45\textwidth}
+    \centering
+    \vspace{-37pt}
+    \includegraphics[width=\linewidth]{figures/Images_priv/grid_priv_train_q_current_default_overlay_betas_kl.pdf}
+    \caption{\textbf{Training KL between $\piT$ and $\piS$ during training the teacher $\piS (\alpha = 1)$ on $\tau$-Bench}. We observe an early KL collapse making $\piS\approx\piT$. We attribute the underperformance of $\piT$ on low KL settings to this collapse.}
+    \label{fig:kl_grad}
+    \vspace{-20pt}
+\end{wrapfigure}
+
+\Cref{fig:pi-analysis} displays held-out performance on both $\tau$-Bench Retail and Travel Planner across the types of PI defined in \Cref{sec:piTypes}. Each subplot maps final performance against the initial divergence $D_{\mathrm{KL}}(\piTbase \,\|\, \piSbase)$, with accompanying bar plots showing the utility $\Delta$ for each type of PI. The most prominent pattern is that as the initial KL increases, final performance tends to decrease, though the full picture requires a more nuanced, $\alpha$-dependent analysis.
+
+
+
+
+\paragraph{Teacher only training $\mathbf{\alpha=1}$.}In this setting, we find performance generally declines or maintains as KL divergence increases. The primary exception occurs when using only tool calls in $\tau$-Bench, where this variant underperforms. We trace this failure mode to an early collapse in KL divergence. \Cref{fig:kl_grad} displays the KL as training progresses. We observe that even when $\beta=0$ the KL drops to near zero, indicating teacher and student have collapsed onto each other ($\piT \approx \piS$). As a consequence, we find the teacher $\piT$ learns to ignore the P,I causing it to underperform even the RL baseline. We attempted to mitigate this by using $\pi_{\text{base}}$ instead of $\piS$ when calculating the KL, but found this further degraded results (see App.~\ref{app:ref-model-ablation}).
+
+
+In addition, our results confirm that training the teacher is an important part of leveraging PI. We can see this from the observation that even when the initial utility is negative ($\Delta<0$), training the teacher allows the policy to learn to leverage the PI, consistently showing positive $\Delta_{\max}$  values in such cases. We find that effectively learning to use the PI is a significant contributing factor to transfer when only training the teacher.
+
+\paragraph{Joint training $\mathbf{\alpha=0.5}$.} We identify $\alpha=0.5$ as the most robust configuration. It achieves the best performance in 7 out of 16 scenarios and effectively avoids the failure modes of the other variants, ranking as the worst performer only once. By balancing both teacher and student objectives, $\alpha=0.5$ is able to mitigate the failure cases of independent training. We believe more granular tuning of $\alpha$ can likely lead to optimal performance in most settings, leaving this as future work. 
+
+
+\paragraph{Student only training $\mathbf{\alpha=0}$.}Here, low KL divergence is a strong predictor of success. In $\tau$-Bench, for example, setting $\alpha=0$ with only tool calls consistently yields the best results, as the minimal distribution shift makes learning from the conditioned traces significantly easier. As KL divergence rises, performance generally drops, though high-utility PI can occasionally reverse this trend.
+
+Further, we find that PI utility $\Delta$ can play a large role in the success of this variant. For instance, on Travel Planner with \texttt{Qwen3-8B}, $\alpha=0$ underperforms significantly because the PI provides negative utility ($\Delta < 0$), actively degrading performance. Furthermore, as seen in \cref{fig:delta-max}, we find that $\Delta_{\max} \approx 0$ in these failure cases, confirming that the algorithm cannot extract value from the PI when the signal itself offers no initial advantage over the base model. On the other hand, we find that when the teacher-student KL is low, student-only training effectively transfers knowledge back onto the teacher. This allows the teacher to learn how to leverage PI even though it is not being directly trained. We observe this behavior in \texttt{Qwen3-8B} on Travel Planner when using only tool calls as PI. While the initial $\Delta < 0$, the low KL allows transfer to occur from the student to the teacher and enables the teacher to sample improved traces.
+
+% \paragraph{Summary}Generally, we observe that the effectiveness of Training with PI is predictable using just the base model's statistics. The best indicator of final performance is the KL divergence between the teacher and student policies. Specifically, lower divergence enhances student only learning $(\alpha=0)$, while the teacher only learning $(\alpha=1)$ needs slightly higher divergence to avoid  collapsing onto the student policy. Furthermore, while high initial utility ($\Delta$) is helpful, it works poorly if the KL between the student and teacher is too big. In the end, success relies on managing these factors, we find that the most reliable way is by using $\alpha=0.5$ performing most consistently across settings.
+
+% Overall, we find that useful low–expected-KL privileged signals are easiest to exploit with $\alpha=1$, that preventing collapse of $\pi^h$ onto $\pi$ is critical when $\alpha=0$, and that $\alpha=0.5$ provides the most robust performance when ablations and configuration sweeps are limited.
+% % Overall our recommendations are as follows: 
+
+\begin{finding}{Takeaways: Analysis on Privileged Information }
+\begin{itemize}
+
+\item \textbf{Student only training.}  Useful-low KL PI is easy to learn from using $ \piS (\alpha=0)$. Higher KL or low utility PI leads to suboptimal performance.  
+\item \textbf{Teacher only training.} We find teacher-training, $\piT (\alpha=1)$,  provides performance gains under two factors. (1) Ensuring that PI is useful or  can be \textit{learned} (see \cref{fig:delta-max}). (2) Avoiding teacher and student collapse $\piS \not\approx \piT$.
+\item \textbf{Joint training.} We find joint training, $\piS +\piT (\alpha=0.5)$, to be the most stable mitigating failure cases of independent training. Never \textit{significantly} working the worst.  We recommend this approach when lacking multiple types of PI or sweeping values of $\alpha$ is unfeasible. 
+\end{itemize}
+\end{finding}
+
+\subsection{What Matters for OPSD}
+
+
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=0.85\linewidth]{figures/Images_priv/kl-grid_self_distill.pdf}
+   \caption{\textbf{Performance and Stability Analysis of OPSD.}
+We compare held-out performance on $\tau$-Bench (top row) and Travel Planner (bottom row) across three base models and three PI types (colors). The scatter plots map final scores against the student-teacher KL divergence ($D_{\text{KL}}(\piS \| \piT)$), while the bar-charts display the PI utility ($\Delta$). Key observations:
+(1) Unlike $\pi$-Distill, higher KL are not always detrimental, rather, information richness of PI is most important, finding (\textbf{Tool Calls \& Arguments}) often performs best (e.g., all results on Travel Planner and \texttt{Qwen3-4B} on $\tau-$Bench ).
+(2) Excessive KL can override positive utility (note \texttt{Qwen3-8B} on $\tau$-Bench, where $\Delta > 0$ but the high KL degrades performance).
+(3) \texttt{R1-Distill-Llama-8B} consistently struggles, which we attribute to either extreme KL divergence ($\tau$-Bench) or negative PI utility (TravelPlanner).}
+    \label{fig:self-distill-grid}
+\end{figure*}
+
+
+\Cref{fig:self-distill-grid} similarly to \cref{fig:pi-analysis} displays performance on $\tau$-Bench retail and Travel Planner across PI types outlined in \cref{sec:piTypes}. 
+
+\paragraph{Findings.}
+Our main finding is that, contrary to $\pi$-Distill, high-KL PI types do not necessarily indicate worse performance. Instead, the information content of the PI is the strongest predictor of successful transfer. For example, Tool Calls \& Arguments, being the richest in information, consistently performs best for both \texttt{Qwen3} models on Travel Planner, and also achieves the best performance for \texttt{Qwen3-4B} on $\tau$-Bench.
+
+Interestingly, although we find that high-information PI is generally best suited for transfer, we observe exceptions. In particular, for \texttt{Qwen3-8B} on $\tau$-Bench, Tool Calls \& Arguments performs the worst and exhibits the highest KL. In this case, we observe that $\Delta_{\max}$ is negative, indicating that the reverse-KL penalty can inhibit training. Additionally, regarding the failure on \texttt{R1-Distill-Llama-8B}, while this could be due to the SFT phase prior to OPSD, we find that on $\tau$-Bench the KL for both PI types is exceptionally high. While on Travel Planner, the PI utility, $\Delta$ is low or negative, possibly explaining the diminished results. Overall, we find that the strongest predictor of performance for OPSD is the information content of the PI. While using the richest form of PI can lead to the best results, careful consideration is required to ensure the KL does not become excessive and hinder training.
+
+\section{ Ablation on $\beta$}
+
+In this section, we analyze $\beta$, the term controlling the regularization between the student and teacher, finding it important for achieving the best performance in 17/21 ablated configurations.  We conduct extensive ablations on $\beta$ keeping all other parameters fixed, sweeping over $\beta = \{0,0.1,0.25,0.5\}$. We analyze \emph{all} values of $\alpha$ and PI types for both $\pi$-Distill and OPSD on $\tau$-Bench using both \texttt{Qwen3} models, as well as the best-performing PI type for Travel Planner. All results are reported over three random seeds.
+
+\Cref{fig:beta-plots} shows a subset of the learning curves on held-out data for the best-performing PI type and $\alpha$ value in $\tau$-Bench Retail and Travel Planner, while \cref{fig:beta-full} provides the full set for $\tau$-Bench. For $\pi$-Distill, we consistently find that $\beta>0$ aids in obtaining the best performance, particularly when the teacher is being trained ($\alpha> 0$). While $\beta$ can be sensitive, with no single value being the best in all settings, setting $\beta$ higher than $0$ generally allows for better or matching performance, with only four cases showing inferior results. For OPSD, we find that the value of $\beta$ is less important with our results on \cref{sec:hint-ablations} showing that information granularity and student-teacher KL are more important factors.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/stacked_taubench_planner_t.pdf}
+    \caption{ \textbf{Evaluation performance throughout training for $\pi$-Distill variants across varying KL penalties ($\beta$)}. Runs that deteriorate significantly early are truncated for visual clarity. We observe that for settings involving teacher updates ($\alpha > 0$), a non-zero penalty ($\beta > 0$) is crucial for stabilizing training and achieving peak performance. Here error bars indicate standard errors. Discrepancies between plot and table values are addressed in App.~\ref{app:example-discreptency}}
+    \label{fig:beta-plots}
+\end{figure}
+\newpage
+\section{Related Work}
+
+% \paragraph{Leveraging LLM Agents.}
+% Several recent works explore leveraging training-time privileged information (PI) to improve LLM agents. \cite{choudhury2024betterteacherllmagents} use privileged AI feedback to guide student agents beyond teacher performance. \cite{fu2024autoguideautomatedgenerationselection} generates structured, context-aware guidelines from offline experience to support agent behavior in novel settings. \cite{qu2026popelearningreasonhard} uses privileged oracle solutions as on-policy exploration signals for hard reasoning tasks. \cite{li2025startselftaughtreasonertools} and related tool-reasoning frameworks exploit expert tool trajectories as auxiliary supervision, while \cite{nekoei2025justintimeepisodicfeedbackhinter} distills offline trajectories into compact episodic hints for adaptive agent behavior. In contrast to these approaches, our setting focuses on distilling \emph{action-only} privileged trajectories from frontier agents when internal reasoning is inaccessible.
+\paragraph{Latent Reasoning and Variational Perspectives.}
+Recent work increasingly frames LM reasoning as a latent-variable inference problem \citep{hu2024amortizingintractableinferencelarge, sordoni2023jointpromptoptimizationstacked, luo2025languagemodelslearnverbal, li2025startselftaughtreasonertools}.
+Within this framework, the most popular approach is STaR \citep{li2025startselftaughtreasonertools}, which uses a hint when the model is unable to correctly answer the question and then uses SFT to fit onto the generated reasoning trace. This is similar to student-only training in $\pi$-Distill ($\alpha = 0$), where, rather than a KL-regularized off-policy RL objective, SFT is used, and the teacher is not trained. Most similar to $\pi$-Distill is the work by \citep{zhou2025variationalreasoninglanguagemodels}, which proposes variational reasoners. This approach can be seen as a modified version of STaR, where both teacher and student are being trained iteratively. The main difference between variational reasoning and our work is that they assume access to oracle answers and perform an iterative version of variational EM using separate parameters for the teacher and student. In comparison, we simplify the training objective by allowing the teacher and student to share parameters and do not assume access to ground truth answers. We compare against a similar setup with minor modifications due to not having access to ground truth solutions in App.~\ref{app:em-failure}. 
+
+\paragraph{Self-Bootstrapping, Privileged Signals, and Guided Exploration.}
+Complementary work focuses on using privileged or auxiliary signals to enable learning in hard regimes. \cite{chen2025nudgingboundariesllmreasoning} injects self-generated high-level hints into online RL to overcome zero-reward exploration barriers, while \cite{qu2026popelearningreasonhard} uses privileged oracle solutions as structured on-policy exploration signals for hard reasoning tasks. Both these algorithms can be viewed as training the teacher to use PI with implicit transfer via parameter sharing. Additionally, other lines of work explore distilling certain skills/behaviors in the model via contextualized sampling \citep{didolkar2025metacognitivereuseturningrecurring, didolkar2024metacognitivecapabilitiesllmsexploration,yang-etal-2025-distilling,qu2025rladtrainingllmsdiscover}. We believe our proposed methods could be used to distill desired skills/behaviors into model weights in a more effective manner compared to traditional SFT.
+
+
+\paragraph{Context Distillation.}
+Both our proposed methods can be seen as a form of context distillation. This growing line of work studies how to train models to internalize context-dependent reasoning so that the benefits of rich contexts (e.g., instructions, demonstrations, auxiliary computations) are distilled into the model’s weights \citep{caccia2025trainingplugnplayknowledgemodules,snell2022learningdistillingcontext,huang2022incontextlearningdistillationtransferring}. Other works analyze this problem by performing SFT answers they give when having access to context \cite{snell2022learningdistillingcontext}. Moreover, other works also try to encapsulate such knowledge into adapters that can be plugged and played at test time \citep{caccia2025trainingplugnplayknowledgemodules}. 
+
+
+% \section{Discussion \& Conclusions}
+
+% Our work shows that by modifying the Variational EM objective one can obtain a significantly more efficient and strong set of algorithms.
+
+% We demonstrate this by focusing on distilling frontier models when their CoT is occluded, finding that using $\pi$-Distill one can consistently outperform training even when CoT traces are available. Moreover, we ablate over different components such as the KL-regularizer term $\beta$ and how to set the reference model $\pi_{\text{ref}}$. Additionally, we analyze how training with different types of PI affects the final model's performance. We observe that predicting whether training with PI will be successful is complicated, with multiple factors at play. We identify a soft pattern where as the KL divergence between the conditioned and unconditioned policies rises, performance generally decreases, although we find many exceptions to this rule. Specifically, we observe that multiple factors matter, such as the utility of the PI, whether the model requires learning how to use the PI, and ensuring conditioned and unconditioned policies do not collapse onto each other.
+
+% Overall, our results highlight the benefits of training with PI, effectively enabling models to distill this knowledge and act without it at test time. We believe there are plenty of future directions worth exploring. For instance, while our results for OPCD were not the strongest, we believe this setting was not a right fit for the algorithm (see App~\ref{todo}). We believe tasks that require models to act without conditioning on a general form of context may be more beneficial, e.g., a static set of tools. Moreover, our studies on the effect of PI are observational, where a more controlled setting with fine-grained control over each variable could be beneficial. Finally, in this work we obtain PI from a larger model to analyze performance differences when we have access to CoT traces. We believe studying other settings, such as obtaining PI from the same model or curriculum-guided PI, could be useful directions for future work.
+\section{Limitations \& Future Work}
+
+While we show that both $\pi$-Distill and OPSD are effective algorithms when CoT is not available, all our PI is transformed from frontier model traces. Exploring how to efficiently obtain useful PI when neither frontier model actions nor ground-truth answers are available is an interesting direction.  Concurrent work by \citet{hubotter2026reinforcementlearningselfdistillation} explores this direction by mining PI through self-reflection. Additionally, our experiments are limited to models with $\le8$B parameters. Further scaling of both $\pi$-Distill and OPSD can shine light on additional important factors to enable these algorithms. Moreover, our analysis in \cref{sec:hint-ablations} is limited to observational studies, where we do not systematically control for all variables, but rather observe properties of different configurations. A study that systematically controls for these factors could help in mitigating failure cases and obtaining the most useful PI.
+
+
+\section{Conclusion}
+We introduce $\pi$-Distill and On-Policy Self-Distillation, two algorithms that leverage PI at training time to produce an improved policy even when that information is lacking at test time. By grounding our work in the distillation of frontier models where CoT reasoning is inaccessible, we demonstrate that the absence of these proprietary traces is not a limiting factor. In fact, our approach remains effective even when compared to industry standards that assume access to full CoT reasoning. Through evaluations across two training domains and eight OOD datasets, we find that $\pi$-Distill and OPSD are highly effective in all explored settings. Finally, we characterize the factors driving the distillation of training-time PI, showing that its success can often be predicted using only base-model statistics.
+
+\section{Acknowledgments} 
+We thank and credit Siddarth Venkatraman for the idea to view learning from PI from a variational perspective, which led to the final version of $\pi$-Distill. We thank Vedant Shah for helpful discussion and proof reading initial drafts of the paper. Additionally, we thank Michael Noukhovitch for valuable feedback that substantially aided the final draft of this work. We also thank Alexandre Piché for their valuable discussions. 
+
+EP acknowledges the support of the NSERC PGS-D grant, the
+Bourse en intelligence artificielle provided by Université
+de Montréal and the MITACS Accelerate grant. DV acknowledges the support of the MITACS Accelerate grant. LC recognizes the support of NSERC, the Canada CIFAR
+AI Chair Program, the Canada First Research Excellence
+Fund and IVADO.
+
+
+\section{Author Contributions}
+
+\textbf{Emiliano Penaloza} proposed the idea of leveraging PI, led the project, implemented all algorithms and the RL environments, conducted most experiments, and was the primary writer of the paper. 
+
+\textbf{Dheeraj Vattikonda} was a core part of the project, with the final version heavily improved by their contributions. Specifically, they provided substantial support on all experiments over the course of the project, implemented and conducted experiments on OOD environments, and provided heavy contributions to paper writing and figures.  
+
+
+\textbf{Nicolas Gontier} helped in advising the project and providing detailed feedback that substantially improved experimental rigor. 
+
+\textbf{Alexandre Lacoste} advised the project, providing valuable insights to the goal and purpose of leveraging PI, helped improve experimental rigor and analysis, and assisted in paper writing.
+
+\textbf{Laurent Charlin} advised the project, helping influence the framing and perspective of the project, and provided help with writing, with a substantial portion of the introduction written by them. 
+
+% \textbf{Massimo Caccia} was a core member of the project, with the final version heavily improved by their contributions. Specifically they providing detailed advising at all points of the project, came up with the idea for self-distillation, pushed for extensive ablation studies and was a substantial contributor to paper writing and figures. 
+%% chatGPT polished:
+\textbf{Massimo Caccia} was a core member of the project. They helped shape the research direction, proposed the on-policy self-distillation component, guided the design of extensive ablation studies, and provided detailed technical guidance across all stages. They also contributed substantially to writing and figures. (They are also responsible for the green outline in the abstract when it should have been purple.)
+
+\newpage
+\bibliography{servicenow}
+\bibliographystyle{servicenow}
+
+\appendix
+\input{appendix}
+
+\end{document}

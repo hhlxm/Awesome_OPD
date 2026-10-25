@@ -1,0 +1,36 @@
+\subsection{Experimental Setup}
+
+
+
+
+
+
+
+
+
+\paragraph{Datasets \& Benchmarks.} Following~\citet{demy}, our training data comprises a 3k high-quality SFT corpus of multi-turn reasoning trajectories curated from s1-1k~\citep{muennighoff2025s1}, LeetCode, and ReTool~\citep{feng2025retool}, along with a 30k diverse RL dataset covering mathematical reasoning from DAPO-Math~\citep{yu2025dapo}, math and coding tasks from Skywork-or1~\citep{he2025skywork-or1}, and scientific problem solving from MegaScience~\citep{fan2025megascience}. Please refer to~\Cref{app:datasets} for more details. We evaluate on 4 challenging benchmarks: AIME 2024/2025, GPQA-Diamond~\citep{rein2024gpqa}, and LiveCodeBench~\citep{jainlivecodebench} (See~\cref{app:benchmarks} for details).
+
+
+
+
+
+\paragraph{Evaluation Setups.}
+
+The temperature is fixed at 1.0 with nucleus sampling parameter top\_p=0.6. For each problem, 32 independent samples are generated to enable a more thorough evaluation, from which average@32 are computed and finally reported (percentage). %
+The teacher model is a Qwen3-4B model~\citep{qwen2025qwen3} further optimized with GRPO on the RL datasets.
+If not otherwise specified, the teacher of subsequent experiments is the 4B model. %
+We use Qwen3-0.6B and Qwen3-1.7B as student models.
+
+
+\paragraph{Baselines \& Implementation Details.}
+For the baselines,
+we evaluate \ourmodel against a set of supervised, RL, and distillation baselines.
+For each student, we compare \ourmodel with the following baselines:
+(1) Vanilla.
+(2) SFT.
+(3) GRPO~\citep{grpo}.
+(4) OPD~\citep{opd}.
+(5) OPSD$_{\mathrm{gt}}$~\citep{opsd} (On-policy self-distillation with groundtruth).
+(6) OPSD$_{\mathrm{hint}}$~\citep{opsd} (On-policy self-distillation with hints).
+For more details about the baselines, please refer to~\Cref{app:baselines}.
+For implementation details, please refer to~\Cref{app:implentation_details}.

@@ -1,0 +1,393 @@
+\begin{figure*}[t]
+
+
+
+
+\section{Case Study}
+\label{app:casestudy}
+
+
+
+To further illustrate the behavior of \ourmodel, we present 3 representative trajectories corresponding to the distillation patterns discussed in the following. 
+Each case study highlights how step-wise divergence estimation and adaptive weighting influence the learning process. $\delta$ in~\cref{eq:adaptive_weight} is fixed as 0.2. In addition to $d_k$ and $w_k$, we also report the mean teacher conditional entropy $\bar{H}_k = \frac{1}{|\mathcal{I}_k|}\sum_{t \in \mathcal{I}_k} H(\pi_{\mathrm{teacher}}(\cdot \mid y_{<t}))$ at each step, which independently indicates teacher confidence: low $\bar{H}_k$ means reliable supervision, while high $\bar{H}_k$ signals uncertainty under corrupted context.
+
+
+
+
+
+\centering
+
+
+\begin{tcolorbox}[
+  colback=white, colframe=black!70, boxrule=0.6pt,
+  title={\textbf{Case A: Stable Pattern --- Adaptive Weights Preserve Full Distillation}},
+  fonttitle=\bfseries\small,
+  coltitle=white, colbacktitle=black!70,
+  top=4pt, bottom=4pt, left=6pt, right=6pt
+]
+
+\noindent\colorbox{gray!10}{\parbox{0.97\linewidth}{\small
+\textbf{Question:} Suppose 5 different integers are randomly chosen from between 20 and 69, inclusive. What is the probability that they each have a different tens digit? The answer is in the form $\frac{m}{n}$, where $\gcd(m, n) = 1$. Provide the value of $m + n$.
+
+ \textbf{Ground-truth Answer:} $m + n = 55469$
+}}
+
+\vspace{6pt}
+
+\renewcommand{\arraystretch}{1.3}
+{\small
+\begin{tabular}{@{} c p{0.64\linewidth} c c c @{}}
+\toprule
+\textbf{Step} & \textbf{Student Reasoning Trace (Abbreviated)} & $\boldsymbol{d_k}$ & $\boldsymbol{w_k}$ & $\boldsymbol{\bar{H}_k}$ \\
+\midrule
+
+$s_1$ &
+\textit{Analyze the range 20--69: the tens digits are $\{2, 3, 4, 5, 6\}$, so there are 5 groups, each containing exactly 10 integers (\eg 20--29, 30--39, \ldots, 60--69). Total pool size: $50$.}
+\newline
+\textit{``We need to choose one number from each of the 5 tens groups.''}
+& 0.497 & \cellcolor{green!18} 1.00 & 0.41 \\
+
+\midrule
+
+$s_2$ &
+\textit{Count favorable outcomes: since we must pick exactly one integer from each of the 5 groups, and each group has 10 choices, the number of favorable selections is $10^5 = 100{,}000$.}
+\newline
+\textit{``The total combinations is $\binom{50}{5}$. Let me compute this with the tool.''}
+& 0.278 & \cellcolor{green!22} 1.20 & 0.33 \\
+
+\midrule
+
+$s_3$ &
+\texttt{[Tool Call]} \texttt{code\_interpreter}: compute $\binom{50}{5}$
+\newline
+\texttt{[Tool Response]} \texttt{2118760}
+\newline
+\textit{``Probability $= \frac{100{,}000}{2{,}118{,}760}$. Now I need to simplify this fraction.''}
+& 0.216 & \cellcolor{green!22} 1.20 & 0.27 \\
+
+\midrule
+
+$s_4$ &
+\textit{Factor the numerator: $100{,}000 = 2^5 \times 5^5$.}
+\newline
+\textit{Factor the denominator: $2{,}118{,}760 = 2^3 \times 5 \times 7^2 \times 1{,}081$.}
+\newline
+\textit{$\gcd = 2^3 \times 5 = 40$, so $\frac{100{,}000}{2{,}118{,}760} = \frac{2{,}500}{52{,}969}$.}
+\newline
+\texttt{[Tool Call]} \texttt{code\_interpreter}: \texttt{52969 \% 7} $\rightarrow$ \texttt{0}; \texttt{52969 // 7} $\rightarrow$ \texttt{7567}
+& 0.277 & \cellcolor{green!22} 1.20 & 0.31 \\
+
+\midrule
+
+$s_5$ &
+\textit{Verify co-primality: $2{,}500 = 2^2 \times 5^4$ and $52{,}969 = 7^2 \times 1{,}081$. No shared prime factors.}
+\newline
+\texttt{[Tool Call]} \texttt{code\_interpreter}:\texttt{7567 \% 3}$\rightarrow$\texttt{1}; \texttt{1081 \% 3} $\rightarrow$\texttt{1}
+& 0.348 & \cellcolor{green!22} 1.20 & 0.38 \\
+
+\midrule
+
+$s_6$ &
+\textit{Confirmed $\gcd(2500, 52969) = 1$. Therefore $m = 2500$, $n = 52969$.}
+\newline
+\textbf{Final answer: $m + n = 2500 + 52969 = \boxed{55469}$} \hfill \textcolor{green!60!black}{\ding{51} \textbf{Correct}}
+& 0.262 & \cellcolor{green!22} 1.20 & 0.24 \\
+
+\bottomrule
+\end{tabular}
+}
+
+\vspace{8pt}
+
+\begin{tcolorbox}[
+  colback=green!4, colframe=green!50!black, boxrule=0.5pt,
+  left=5pt, right=5pt, top=4pt, bottom=4pt,
+  title={\small\textbf{Analysis}}, fonttitle=\bfseries\small,
+  coltitle=green!50!black, colbacktitle=green!10
+]
+\small
+In this example, the student model produces a fully correct solution: it correctly identifies the combinatorial structure (5 groups of 10), computes the favorable and total outcomes, and uses the code interpreter to verify intermediate calculations.
+The per-step divergence $d_k$ remains moderate throughout (range: $0.22$--$0.50$), with no sudden spikes, indicating that the student's token-level distribution closely tracks the teacher's at every reasoning step. Correspondingly, the teacher conditional entropy $\bar{H}_k$ stays consistently low (range: $0.24$--$0.41$), confirming that the teacher maintains high confidence when supervising this well-aligned trajectory.
+
+As a result, the adaptive weight $w_k$ stays at or near the upper bound ($1.2$) for all steps after $s_1$.
+This demonstrates a key property of \ourmodel: \textbf{when the student's reasoning trajectory is well-aligned with the teacher's, the method preserves full distillation strength and does not unnecessarily suppress the supervision signal.} The low $\bar{H}_k$ values independently validate that the teacher's guidance is indeed reliable at every step, justifying the high weights assigned by our reweighting mechanism.
+In contrast, a na\"ive uniform-weight approach would assign the same weight regardless of alignment quality, while a trajectory-level filtering method might discard this trajectory entirely if it happened to share a batch with poorly-performing samples.
+\ourmodel's per-step granularity ensures that \textit{every reliable step receives maximal teacher guidance}.
+\end{tcolorbox}
+
+\end{tcolorbox}
+
+
+\label{fig:case-study-a}
+\end{figure*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{figure*}[t]
+\centering
+
+\begin{tcolorbox}[
+  colback=white, colframe=black!70, boxrule=0.6pt,
+  title={\textbf{Case B: Erroneous Pattern --- Adaptive Weights Suppress Harmful Distillation}},
+  fonttitle=\bfseries\small,
+  coltitle=white, colbacktitle=black!70,
+  top=4pt, bottom=4pt, left=6pt, right=6pt
+]
+
+\noindent\colorbox{gray!10}{\parbox{0.97\linewidth}{\small
+\textbf{Question:} Let $P(x) = x^3 + 8x^2 - x + 3$ and let the roots of $P$ be $a, b,$ and $c$. The roots of a monic polynomial $Q(x)$ are $ab - c^2,\; ac - b^2,\; bc - a^2$. Find $Q(-1)$.
+
+\textbf{Ground-truth Answer:} $Q(-1) = 1536$
+}}
+
+\vspace{6pt}
+
+\renewcommand{\arraystretch}{1.3}
+{\small
+\begin{tabular}{@{} c p{0.64\linewidth} c c c @{}}
+\toprule
+\textbf{Step} & \textbf{Student Reasoning Trace (Abbreviated)} & $\boldsymbol{d_k}$ & $\boldsymbol{w_k}$ & $\boldsymbol{\bar{H}_k}$ \\
+\midrule
+
+$s_1$ &
+\textit{Identify the problem structure: by Vieta's formulas, $a+b+c = -8$, $ab+ac+bc = -1$, $abc = -3$. Need to compute $Q(-1) = (-1 - r_1)(-1 - r_2)(-1 - r_3)$ where $r_i$ are the roots of $Q$.}
+\newline
+\textit{``I'll try to compute the roots numerically using \texttt{numpy.roots}, then evaluate $Q(-1)$ directly.''}
+\newline
+\texttt{[Tool Call]} \texttt{code\_interpreter}: \texttt{import numpy as np; roots = np.roots([1, 8, -1, 3]); ...}
+\newline
+\texttt{[Tool Response]} \textcolor{red!70!black}{\texttt{OpenBLAS blas\_thread\_init: pthread\_create failed for thread 1 of 2: Resource temporarily unavailable ... please exit the numpy source tree ...}}
+& 0.218 & \cellcolor{green!18} 1.00 & 0.32 \\
+
+\midrule
+
+$s_2$ &
+\textit{``The numpy import failed. Let me try again with a slightly different code structure.''}
+\newline
+\texttt{[Tool Call]} \texttt{code\_interpreter}: \texttt{import numpy as np; c = np.roots([1, 8, -1, 3]); ...}
+\newline
+\texttt{[Tool Response]} \textcolor{red!70!black}{\texttt{OpenBLAS blas\_thread\_init: pthread\_create failed ... Resource temporarily unavailable ...}}
+\newline
+\textit{The student repeats essentially the same \texttt{numpy}-based approach, unaware that the failure is an environment issue, not a code bug.}
+& 0.305 & \cellcolor{yellow!25} 0.71 & 0.74 \\
+
+\midrule
+
+$s_3$ &
+\textit{``Let me try once more with numpy.''}
+\newline
+\texttt{[Tool Call]} \texttt{code\_interpreter}: \texttt{import numpy as np; t = np.roots([1, 8, -1, 3]); ...}
+\newline
+\texttt{[Tool Response]} \textcolor{red!70!black}{\texttt{OpenBLAS blas\_thread\_init: pthread\_create failed ... Resource temporarily unavailable ...}}
+\newline
+\textit{Third identical failure. The student has now exhausted all tool-call attempts with the same flawed strategy (relying on \texttt{numpy} in a broken environment), instead of falling back to a pure-Python or algebraic approach.}
+& 0.476 & \cellcolor{orange!25} 0.46 & 1.23 \\
+
+\midrule
+
+$s_4$ &
+\textit{``Since the code keeps giving errors, let me just assume the answer from the process. I'll go to the final answer.''}
+\newline
+\textit{The student abandons systematic computation and begins guessing: ``From the shared Python code, I'll do the final answer. I'll assume that from the code, the result is $-15$. But let me just give the final. The only way is to be confident. So I'll just say the answer is $\boxed{15}$.''}
+\newline
+\textit{The reasoning degenerates into incoherent hedging: ``I think it's 15. But I'll do what is the. Let me run the code once again.''}
+& 0.713 & \cellcolor{red!20} 0.31 & 1.87 \\
+
+\midrule
+
+$s_5$ &
+\textit{The student attempts yet another tool call but the response is truncated (generation limit reached).}
+\newline
+\textbf{Final answer: $\boxed{15}$} \hfill \textcolor{red!70!black}{\ding{55} \textbf{Incorrect} (correct: 1536)}
+& 1.284 & \cellcolor{red!40} 0.17 & 2.38 \\
+
+\bottomrule
+\end{tabular}
+}
+
+\vspace{8pt}
+
+
+
+
+
+\begin{tcolorbox}[
+  colback=red!3, colframe=red!50!black, boxrule=0.5pt,
+  left=5pt, right=5pt, top=4pt, bottom=4pt,
+  title={\small\textbf{Analysis}}, fonttitle=\bfseries\small,
+  coltitle=red!50!black, colbacktitle=red!8
+]
+\small
+The student repeatedly calls \texttt{numpy.roots} in a broken sandbox, receiving the same error three times, then degenerates into incoherent guessing and outputs $15$---off by two orders of magnitude from the correct answer $1536$.
+The divergence $d_k$ increases ${\sim}6{\times}$ ($0.22 \to 1.28$) and the teacher entropy $\bar{H}_k$ escalates from $0.32$ to $2.38$, confirming that the teacher becomes fundamentally uncertain under the corrupted context. The adaptive weight $w_k$ drops correspondingly from $1.00$ to $0.17$, \textbf{automatically suppressing distillation where teacher supervision is unreliable}. Without this mechanism, the KL loss from such irrecoverable states would inject noisy gradients into training.
+\end{tcolorbox}
+
+
+
+\end{tcolorbox}
+
+
+\label{fig:case-study-b}
+\end{figure*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{figure*}[t]
+\centering
+
+\begin{tcolorbox}[
+  colback=white, colframe=black!70, boxrule=0.6pt,
+  title={\textbf{Case C: Recovery Pattern --- Step-wise Weights Capture Mid-Trajectory Correction}},
+  fonttitle=\bfseries\small,
+  coltitle=white, colbacktitle=black!70,
+  top=4pt, bottom=4pt, left=6pt, right=6pt
+]
+
+\noindent\colorbox{gray!10}{\parbox{0.97\linewidth}{\small
+\textbf{Question:} Let $[x]$ denote the greatest integer $\le x$. How many positive integers $n \le 1000$ satisfy the condition that $\left[\tfrac{998}{n}\right]+\left[\tfrac{999}{n}\right]+\left[\tfrac{1000}{n}\right]$ is \emph{not} divisible by~$3$?
+
+\textbf{Ground-truth Answer:} $22$
+}}
+
+\vspace{6pt}
+
+\renewcommand{\arraystretch}{1.3}
+{\small
+\begin{tabular}{@{} c p{0.64\linewidth} c c c @{}}
+\toprule
+\textbf{Step} & \textbf{Student Reasoning Trace (Abbreviated)} & $\boldsymbol{d_k}$ & $\boldsymbol{w_k}$ & $\boldsymbol{\bar{H}_k}$ \\
+\midrule
+
+$s_1$ &
+\textit{Analyze the problem: for each $n$, compute $S(n) = \lfloor 998/n \rfloor + \lfloor 999/n \rfloor + \lfloor 1000/n \rfloor$ and check $3 \nmid S(n)$. Observe that for most $n$, the three floor values are nearly equal, so $S(n) \approx 3\lfloor 1000/n \rfloor$, which is divisible by 3. Exceptions occur near divisors of 999 and 1000.}
+\newline
+\textit{``Let me write code to enumerate all $n$ from 1 to 1000 and count.''}
+& 0.216 & \cellcolor{green!18} 1.00 & 0.28 \\
+
+\midrule
+
+$s_2$ &
+\texttt{[Tool Call]} \texttt{code\_interpreter}: enumerate and count valid $n$
+\newline
+\texttt{[Tool Response]} \textcolor{red!70!black}{\texttt{IndentationError: expected an indented block after `if' statement on line 11}}
+\newline
+\textit{First attempt fails due to a Python indentation error in the generated code.}
+& 0.298 & \cellcolor{yellow!25} 0.73 & 0.62 \\
+
+\midrule
+
+$s_3$ &
+\texttt{[Tool Call]} \texttt{code\_interpreter}: retry with minor edit
+\newline
+\texttt{[Tool Response]} \textcolor{red!70!black}{\texttt{IndentationError: expected an indented block after `if' statement on line 12}}
+\newline
+\textit{Second attempt reproduces the same indentation bug. The student has not identified the root cause.}
+& 0.385 & \cellcolor{orange!20} 0.56 & 0.89 \\
+
+\midrule
+
+$s_4$ &
+\texttt{[Tool Call]} \texttt{code\_interpreter}: third retry
+\newline
+\texttt{[Tool Response]} \textcolor{red!70!black}{\texttt{IndentationError: expected an indented block after `if' statement on line 16}}
+\newline
+\textit{Third consecutive failure. The student keeps generating the same structural error (\texttt{print(print(f"..."))}) without recognizing the nested-call mistake.}
+& 0.527 & \cellcolor{red!20} 0.41 & 1.15 \\
+
+\midrule
+
+$s_5$ &
+\texttt{[Tool Call]} \texttt{code\_interpreter}: rewritten from scratch
+\newline
+\texttt{[Tool Response]} \textcolor{green!50!black}{\texttt{n=2, s=1498; n=3, s=998; ... Total values where sum is not divisible by 3: \textbf{22}}}
+\newline
+\textit{The student finally rewrites the code cleanly, removing the nested \texttt{print} bug. The code runs successfully and outputs 22.}
+& 0.285 & \cellcolor{yellow!25} 0.76 & 0.53 \\
+
+\midrule
+
+$s_6$ &
+\texttt{[Tool Call]} \texttt{code\_interpreter}: verification run listing all 1000 values
+\newline
+\texttt{[Tool Response]} \textcolor{green!50!black}{\texttt{n=1, sum=2997; n=2, sum=1498; ... Total count: \textbf{22}}}
+\newline
+\textit{Verification confirms the answer. The student cross-checks edge cases ($n=999$: $s=2$; $n=1000$: $s=1$).}
+& 0.193 & \cellcolor{green!18} 1.12 & 0.34 \\
+
+\midrule
+
+$s_7$ &
+\textit{``The code output shows 22 cases. Let me verify a few manually: $n=100$: $s = 9+9+10 = 28$, $28 \bmod 3 = 1 \neq 0$. Confirmed.''}
+\newline
+\textbf{Final answer: $\boxed{22}$} \hfill \textcolor{green!50!black}{\ding{51} \textbf{Correct}}
+& 0.158 & \cellcolor{green!18} 1.20 & 0.21 \\
+
+\bottomrule
+\end{tabular}
+}
+
+\vspace{8pt}
+
+\begin{tcolorbox}[
+  colback=blue!3, colframe=blue!50!black, boxrule=0.5pt,
+  left=5pt, right=5pt, top=4pt, bottom=4pt,
+  title={\small\textbf{Analysis}}, fonttitle=\bfseries\small,
+  coltitle=blue!50!black, colbacktitle=blue!8
+]
+\small
+This trajectory demonstrates \textbf{error recovery}---the defining advantage of step-wise over trajectory-level weighting.
+Three consecutive \texttt{IndentationError} failures ($s_2$--$s_4$) cause $d_k$ to spike to $0.53$ and $\bar{H}_k$ to peak at $1.15$, while $w_k$ drops to $0.41$. At $s_5$, the student rewrites the code from scratch and succeeds; both $d_k$ and $\bar{H}_k$ immediately recover ($0.29$, $0.53$), and by $s_7$ they reach their lowest values ($0.16$, $0.21$) with $w_k$ returning to $1.20$.
+
+The $w_k$ curve traces a clear \textbf{V-shape}: $1.00 \to 0.73 \to 0.56 \to 0.41 \to 0.76 \to 1.12 \to 1.20$, mirrored by $\bar{H}_k$: $0.28 \to 0.62 \to 0.89 \to 1.15 \to 0.53 \to 0.34 \to 0.21$.
+A trajectory-level method would assign a single uniform weight to all 7~steps, either over-penalizing the correct final steps or under-penalizing the erroneous middle steps.
+\ourmodel \textbf{precisely localizes the error window} ($s_2$--$s_4$) while \textbf{fully leveraging teacher guidance} on the recovered steps ($s_5$--$s_7$).
+\end{tcolorbox}
+
+\end{tcolorbox}
+
+
+\label{fig:case-study-c}
+\end{figure*}

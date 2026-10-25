@@ -1,0 +1,106 @@
+\subsection{Understanding Intervention and Imitation}
+\label{sec:theory}
+
+The intervention mechanism in Section~\ref{subsec:said} gives each teacher correction two roles: an action to execute and a target to imitate. We first characterize how executing selected corrections changes rollout return. We then show how teacher-action imitation can improve the student's decision at a step where reverse-KL supervision would reduce return.
+
+\subsubsection{Improving Rollout Quality}
+\label{sec:theory_execution}
+
+We measure rollout quality by the expected episode return $J(\pi)$ and write $\pi_S:=\pi_\theta$ for the current student. During collection, fix $\pi_S$ and the intervention threshold $\tau_n$. The student proposes $a_t^S\sim\pi_S(\cdot\mid h_t)$, and $I_t=\mathbf{1}\{\mathcal U(\pi_T,\pi_S;h_t,a_t^S)>\tau_n\}$ determines whether a teacher action $a_t^T\sim\pi_T(\cdot\mid h_t)$ replaces it. Let $\pi_G$ denote this assisted execution policy and $N_{\mathrm{int}}:=\sum_t I_t$. The student and assisted policies interact with the same environment and initial task distribution. Write $Q_t^{\pi_S}(h,a)$ for the expected remaining return from taking $a$ at $(t,h)$ and then following the student. Expectations under $\pi_G$ include the student proposals as well as the executed actions.
+
+\begin{assumption}[Average recoverability]
+\label{ass:average_recoverability}
+Whenever $\mathbb E_{\pi_G}[N_{\mathrm{int}}]>0$, teacher actions have average advantage of at least $\gamma>0$ at the selected turns:
+\begin{equation}
+\frac{
+\mathbb E_{\pi_G}\!\left[\sum_t I_t
+\bigl(Q_t^{\pi_S}(h_t,a_t^T)-Q_t^{\pi_S}(h_t,a_t^S)\bigr)\right]
+}{\mathbb E_{\pi_G}[N_{\mathrm{int}}]}
+\ge \gamma.
+\label{eq:average_recoverability}
+\end{equation}
+\end{assumption}
+
+This condition averages over the selected turns and the histories reached by $\pi_G$; it does not require every teacher correction to improve return.
+
+\begin{theorem}[Return improvement under selective intervention]
+\label{thm:return_decomposition}
+For any uncertainty intervention rule and teacher policy in a finite-horizon environment,
+\begin{equation}
+J(\pi_G)-J(\pi_S)
+=\mathbb E_{\pi_G}\!\left[
+\sum_t I_t
+\bigl(Q_t^{\pi_S}(h_t,a_t^T)-Q_t^{\pi_S}(h_t,a_t^S)\bigr)
+\right].
+\label{eq:return_decomposition}
+\end{equation}
+Under Assumption~\ref{ass:average_recoverability}, this identity gives
+\begin{equation}
+J(\pi_G)-J(\pi_S)
+\ge \gamma\,\mathbb E_{\pi_G}[N_{\mathrm{int}}]\ge0.
+\label{eq:return_lower_bound}
+\end{equation}
+\end{theorem}
+
+Theorem~\ref{thm:return_decomposition} relates rollout improvement to the downstream value of the selected corrections. Each term compares a teacher action with the student proposal it replaces, while the expectation accounts for the histories reached after earlier interventions. Under average recoverability, the gain is at least $\gamma$ per intervention in expectation. This is the execution benefit illustrated by Fig.~\ref{fig:motivation}(c): an action correction improves the subsequent rollout before any student update. The proof is in Appendix~\ref{app:proof_return_improvement}.
+
+\subsubsection{Learning from Teacher Corrections}
+\label{sec:theory_supervision}
+
+Beyond changing the rollout, intervention supplies a teacher action as the learning target at the current turn. We examine how this changes the student's update at a decision step. Reverse KL can penalize an overproduced action without directing the resulting probability change toward higher-return actions. We show that teacher-action SFT can improve the update direction even when the student can represent the teacher exactly. 
+At a fixed turn $t$ and history $h$, let $J_{t,h}(\pi):=\mathbb E_{a\sim\pi(\cdot\mid h)}[Q_t^{\pi_S}(h,a)]$ measure the return of an action distribution, keeping $\pi_S$ as the continuation policy.
+
+\begin{proposition}[Benefit of teacher-action imitation]
+\label{prop:corrective_supervision}
+There exist a one-step, three-action decision problem with binary terminal rewards, full-support student and teacher policies with $J_{t,h}(\pi_T)>J_{t,h}(\pi_S)$, and an unrestricted softmax student $\pi_\theta(\cdot\mid h)=\operatorname{softmax}(\theta)$ initialized at $\pi_S$. Let $\pi_{\mathrm{OPD}}^+$ and $\pi_{\mathrm{SFT}}^+$ result from one ordinary gradient step on the action logits, starting from the same student and using the same step size $\alpha$, with the population gradients of reverse KL and teacher-action SFT at $h$, respectively. For all sufficiently small $\alpha>0$,
+\begin{equation}
+J_{t,h}(\pi_{\mathrm{OPD}}^+)
+<J_{t,h}(\pi_S)
+<J_{t,h}(\pi_{\mathrm{SFT}}^+).
+\label{eq:corrective_supervision_separation}
+\end{equation}
+\end{proposition}
+
+\begin{table}[!t]
+\centering
+\caption{\textbf{Main results on ALFWorld and WebShop.} We report success rate (SR, \%) on ALFWorld, and mean task score, SR (\%) on WebShop. We also include average number of turns. Results are means $\pm$ standard deviations over three evaluation seeds. Bold indicates the best result among distillation methods.}
+\label{tab:exp-agentic}
+\small
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l cccc ccc@{}}
+\toprule
+& \multicolumn{4}{c}{\textbf{ALFWorld}} & \multicolumn{3}{c}{\textbf{WebShop}} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-8}
+& \multicolumn{2}{c}{Seen} & \multicolumn{2}{c}{Unseen} & \multicolumn{3}{c}{Test} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-8}
+Method & SR $\uparrow$ & Turns $\downarrow$ & SR $\uparrow$ & Turns $\downarrow$ & Score $\uparrow$ & SR $\uparrow$ & Turns $\downarrow$ \\
+\midrule
+\multicolumn{8}{c}{\textit{RL-Qwen2.5-7B teacher $\rightarrow$ Qwen2.5-3B student}} \\
+\addlinespace[2pt]
+Student (zero-shot) & 21.0\,\scriptsize{$\pm$0.8} & 43.8\,\scriptsize{$\pm$0.3} & 15.9\,\scriptsize{$\pm$3.4} & 46.0\,\scriptsize{$\pm$1.1} & 12.2\,\scriptsize{$\pm$2.1} & 1.0\,\scriptsize{$\pm$0.5} & 13.6\,\scriptsize{$\pm$0.3} \\
+Teacher (zero-shot) & 97.4\,\scriptsize{$\pm$0.4} & 9.1\,\scriptsize{$\pm$0.1} & 92.8\,\scriptsize{$\pm$0.4} & 12.3\,\scriptsize{$\pm$0.4} & 85.4\,\scriptsize{$\pm$0.6} & 77.9\,\scriptsize{$\pm$1.2} & 6.6\,\scriptsize{$\pm$0.3} \\
+\midrule
+OPD & 88.1\,\scriptsize{$\pm$1.8} & 14.2\,\scriptsize{$\pm$0.3} & 85.3\,\scriptsize{$\pm$1.6} & 16.3\,\scriptsize{$\pm$0.6} & 77.5\,\scriptsize{$\pm$2.2} & 66.9\,\scriptsize{$\pm$3.0} & 7.4\,\scriptsize{$\pm$0.3} \\
+TCOD-F2B & 85.7\,\scriptsize{$\pm$1.2} & 14.2\,\scriptsize{$\pm$0.2} & 87.1\,\scriptsize{$\pm$0.9} & 15.6\,\scriptsize{$\pm$0.7} & 76.4\,\scriptsize{$\pm$1.8} & 64.3\,\scriptsize{$\pm$1.2} & 7.4\,\scriptsize{$\pm$0.2} \\
+TCOD-B2F & 86.4\,\scriptsize{$\pm$2.1} & 14.1\,\scriptsize{$\pm$0.6} & 85.6\,\scriptsize{$\pm$1.1} & 15.9\,\scriptsize{$\pm$0.4} & 76.3\,\scriptsize{$\pm$0.5} & 65.1\,\scriptsize{$\pm$2.4} & 7.5\,\scriptsize{$\pm$0.1} \\
+FTB-OPD & 87.4\,\scriptsize{$\pm$1.1} & 14.1\,\scriptsize{$\pm$0.3} & 86.6\,\scriptsize{$\pm$2.2} & \textbf{14.7}\,\scriptsize{$\pm$0.7} & 77.3\,\scriptsize{$\pm$0.3} & 69.0\,\scriptsize{$\pm$1.6} & 7.4\,\scriptsize{$\pm$0.1} \\
+\textbf{UOPD} & \textbf{90.0}\,\scriptsize{$\pm$0.7} & \textbf{13.6}\,\scriptsize{$\pm$0.3} & \textbf{88.8}\,\scriptsize{$\pm$1.3} & 14.9\,\scriptsize{$\pm$0.8} & \textbf{82.4}\,\scriptsize{$\pm$2.0} & \textbf{69.3}\,\scriptsize{$\pm$2.0} & \textbf{6.5}\,\scriptsize{$\pm$0.1} \\
+\midrule
+\multicolumn{8}{c}{\textit{RL-Qwen2.5-7B teacher $\rightarrow$ Qwen2.5-1.5B student}} \\
+\addlinespace[2pt]
+Student (zero-shot) & 6.2\,\scriptsize{$\pm$0.4} & 48.5\,\scriptsize{$\pm$0.3} & 3.7\,\scriptsize{$\pm$0.7} & 49.2\,\scriptsize{$\pm$0.2} & 22.6\,\scriptsize{$\pm$3.8} & 2.3\,\scriptsize{$\pm$2.1} & 10.9\,\scriptsize{$\pm$0.4} \\
+Teacher (zero-shot) & 97.4\,\scriptsize{$\pm$0.4} & 9.1\,\scriptsize{$\pm$0.1} & 92.8\,\scriptsize{$\pm$0.4} & 12.3\,\scriptsize{$\pm$0.4} & 85.4\,\scriptsize{$\pm$0.6} & 77.9\,\scriptsize{$\pm$1.2} & 6.6\,\scriptsize{$\pm$0.3} \\
+\midrule
+OPD & 86.2\,\scriptsize{$\pm$2.9} & 15.2\,\scriptsize{$\pm$1.0} & 84.8\,\scriptsize{$\pm$0.4} & 17.2\,\scriptsize{$\pm$0.9} & 66.3\,\scriptsize{$\pm$0.9} & 52.3\,\scriptsize{$\pm$1.4} & 7.9\,\scriptsize{$\pm$0.4} \\
+TCOD-F2B & 86.0\,\scriptsize{$\pm$1.8} & 14.3\,\scriptsize{$\pm$0.8} & 85.1\,\scriptsize{$\pm$2.0} & 16.8\,\scriptsize{$\pm$1.0} & 69.5\,\scriptsize{$\pm$1.2} & 51.8\,\scriptsize{$\pm$2.5} & 7.2\,\scriptsize{$\pm$0.2} \\
+TCOD-B2F & 84.5\,\scriptsize{$\pm$0.4} & 15.2\,\scriptsize{$\pm$0.1} & 84.1\,\scriptsize{$\pm$0.9} & 18.0\,\scriptsize{$\pm$0.1} & 68.4\,\scriptsize{$\pm$1.2} & 54.2\,\scriptsize{$\pm$0.5} & 7.6\,\scriptsize{$\pm$0.1} \\
+FTB-OPD & 85.2\,\scriptsize{$\pm$1.1} & 15.5\,\scriptsize{$\pm$0.4} & 83.6\,\scriptsize{$\pm$1.3} & 17.7\,\scriptsize{$\pm$0.4} & 67.7\,\scriptsize{$\pm$0.5} & 55.2\,\scriptsize{$\pm$1.2} & 9.4\,\scriptsize{$\pm$0.1} \\
+\textbf{UOPD} & \textbf{89.8}\,\scriptsize{$\pm$0.8} & \textbf{13.0}\,\scriptsize{$\pm$0.5} & \textbf{86.6}\,\scriptsize{$\pm$0.7} & \textbf{15.3}\,\scriptsize{$\pm$0.2} & \textbf{76.8}\,\scriptsize{$\pm$1.8} & \textbf{58.6}\,\scriptsize{$\pm$0.0} & \textbf{6.8}\,\scriptsize{$\pm$0.4} \\
+\bottomrule
+\end{tabular*}
+\\[3pt]
+\vspace{-5mm}
+\end{table}
+
+Proposition~\ref{prop:corrective_supervision} identifies a decision step where the supervision objective determines whether an update improves return. In the construction, reverse KL reduces an overproduced successful action but transfers some of its probability to an unsuccessful action. Teacher-action SFT instead reduces the unsuccessful action's probability. This motivates a teacher imitation target at intervention turns within UOPD, which retains OPD supervision on student-executed actions. The parameterized construction and full proof are in Appendix~\ref{app:proof_corrective_supervision}.

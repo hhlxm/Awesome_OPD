@@ -1,0 +1,107 @@
+\section{Additional Ablations}
+\label{app:ablations}
+\textbf{Impact of Entropy Threshold $\tau$.}
+The entropy threshold $\tau$ is a hyperparameter that controls when the forward KL objective is activated based on the teacher model’s token-level uncertainty. A lower $\tau$ activates forward KL at more tokens, thereby increasing its overall influence during training, while a higher $\tau$ restricts forward KL to only a small subset of tokens where the teacher exhibits the highest uncertainty.
+As shown in~\autoref{tab:ablation_threshold}, \method~demonstrates stable performance across a wide range of $\tau$ values, indicating that the method is not highly sensitive to this hyperparameter. Also, we observe an overall trend where Pass@8 performance decreases as $\tau$ increases. This suggests that restricting the application of forward KL can inhibit the transfer of the teacher’s uncertainty and diverse reasoning trajectories.
+Overall, the best performance is obtained at $\tau = 0.8$, and we use this value for all other experiments in this paper.
+
+\begin{table}[ht]
+\centering
+\small
+\caption{Performance variation with respect to the entropy threshold $\tau$ for the Qwen3-1.7B-Base student. \method~is not highly sensitive to $\tau$, while we observe an overall trend where Pass@8 performance decreases as $\tau$ increases.}
+\resizebox{0.38\textwidth}{!}{
+\begin{tabular}{c cccc}
+\toprule
+\multirow{2}{*}{$\tau$} 
+ & \multicolumn{2}{c}{MATH500} 
+ & \multicolumn{2}{c}{AMC23} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+ & Avg@8 & Pass@8 & Avg@8 & Pass@8 \\
+\midrule
+0.6 & 68.24 & 86.80 & 39.69 & 75.00 \\
+\cellcolor{blue!10}0.8 & \cellcolor{blue!10}68.73 & \cellcolor{blue!10}87.60 & \cellcolor{blue!10}41.88 & \cellcolor{blue!10}75.00 \\
+1.0 & 67.58 & 84.00 & 41.53 & 72.50 \\
+1.2 & 64.82 & 84.80 & 39.69 & 75.00 \\
+1.4 & 67.61 & 83.80 & 38.72 & 72.50 \\
+1.6 & 68.10 & 84.00 & 39.62 & 70.00 \\
+\bottomrule
+\end{tabular}
+}
+%\vspace{-0.5cm}
+\label{tab:ablation_threshold}
+\end{table}
+
+\textbf{Impact of Forward KL Coefficient $\alpha$.}
+The forward KL coefficient $\alpha$ controls the influence of the forward KL objective in high-entropy regions. A smaller $\alpha$ may fail to sufficiently transfer the teacher distribution’s uncertainty, while an excessively large $\alpha$ can weaken reverse KL’s ability to capture the teacher distribution’s dominant modes.
+As shown in~\autoref{tab:ablation_alpha}, \method~demonstrates stable performance across a range of $\alpha$ values, with the best performance achieved around $\alpha = 1.0 \sim 1.2$. This suggests that a balanced combination of forward and reverse KL in high-entropy regions is important for optimal performance. Unless otherwise specified, we use $\alpha = 1.0$ for all experiments in this paper.
+\begin{table}[ht]
+\centering
+\caption{
+Impact of the forward KL coefficient $\alpha$ for the Qwen3-1.7B-Base student. \textbf{Bold} indicates the best performance and \underline{underline} indicates second-best.
+}
+\resizebox{0.48\textwidth}{!}{
+\begin{tabular}{c c c c c c}
+\toprule
+\textbf{Benchmark} & \textbf{Metric} & $\boldsymbol{\alpha = 0.6}$ & \cellcolor{blue!10}$\boldsymbol{\alpha = 1.0}$ & \cellcolor{blue!10}$\boldsymbol{\alpha = 1.2}$ & $\boldsymbol{\alpha = 1.5}$ \\
+\midrule
+\multirow{2}{*}{MATH500}
+& Avg@8  & 67.37 & \cellcolor{blue!10}\underline{68.73} & \cellcolor{blue!10}\textbf{69.55} & 67.50 \\
+& Pass@8 & 86.20 & \cellcolor{blue!10}\textbf{87.60} & \cellcolor{blue!10}\underline{87.40} & 86.00 \\
+\addlinespace
+\midrule
+\multirow{2}{*}{AMC23}
+& Avg@8  & 38.12 & \cellcolor{blue!10}\textbf{41.88} & \cellcolor{blue!10}\underline{41.56} & 37.81 \\
+& Pass@8 & \underline{72.50} & \cellcolor{blue!10}\textbf{75.00} & \cellcolor{blue!10}\textbf{75.00} & 67.50 \\
+\addlinespace
+\midrule
+\multirow{2}{*}{AIME24}
+& Avg@8  & 8.75 & \cellcolor{blue!10}\underline{10.42} & \cellcolor{blue!10}\textbf{10.83} & 9.17 \\
+& Pass@8 & \underline{16.67} & \cellcolor{blue!10}\textbf{23.33} & \cellcolor{blue!10}\textbf{23.33} & \textbf{23.33} \\
+\addlinespace
+\midrule
+\multirow{2}{*}{AIME25}
+& Avg@8  & 4.58 & \cellcolor{blue!10}\textbf{5.83} & \cellcolor{blue!10}\underline{5.42} & 5.00 \\
+& Pass@8 & \textbf{16.67} & \cellcolor{blue!10}\textbf{16.67} & \cellcolor{blue!10}\textbf{16.67} & \underline{13.33} \\
+\bottomrule
+\end{tabular}
+}
+\label{tab:ablation_alpha}
+\end{table}
+\newpage
+\textbf{Impact of Top-k Selection.}
+Top-k selection determines the number of teacher tokens used for the forward KL computation. A small $k$ may fail to capture sufficient probability mass from the teacher distribution, while an excessively large $k$ includes low-probability tails and increases computational cost.
+As shown in~\autoref{tab:ablation_topk}, \method~shows relatively stable performance across different $k$ values, with the best performance achieved at $k = 16$. This suggests that capturing most of the teacher distribution’s probability mass while avoiding unnecessary low-probability tokens is important for effective and efficient training. Unless otherwise specified, we use $k = 16$ for all experiments in this paper.
+
+\begin{table}[ht]
+\centering
+\caption{
+Impact of top-k selection for the Qwen3-1.7B-Base student. \textbf{Bold} indicates the best performance and \underline{underline} indicates second-best.
+}
+\resizebox{0.48\textwidth}{!}{
+\begin{tabular}{c c c c c c}
+\toprule
+\textbf{Benchmark} & \textbf{Metric} & $\boldsymbol{k = 1}$ & $\boldsymbol{k = 8}$ & \cellcolor{blue!10}$\boldsymbol{k = 16}$ & $\boldsymbol{k = 128}$ \\
+\midrule
+\multirow{2}{*}{MATH500}
+& Avg@8  & \underline{67.72} & 67.15 & \cellcolor{blue!10}\textbf{68.73} & 65.21 \\
+& Pass@8 & 84.20 & 85.80 & \cellcolor{blue!10}\textbf{87.60} & \underline{87.40} \\
+\addlinespace
+\midrule
+\multirow{2}{*}{AMC23}
+& Avg@8  & 38.19 & 38.25 & \cellcolor{blue!10}\textbf{41.88} & \underline{39.42} \\
+& Pass@8 & 65.00 & \underline{72.50} & \cellcolor{blue!10}\textbf{75.00} & \textbf{75.00} \\
+\addlinespace
+\midrule
+\multirow{2}{*}{AIME24}
+& Avg@8  & \underline{9.17} & \textbf{10.42} & \cellcolor{blue!10}\textbf{10.42} & 8.75 \\
+& Pass@8 & \underline{16.67} & \underline{16.67} & \cellcolor{blue!10}\textbf{23.33} & \textbf{23.33} \\
+\addlinespace
+\midrule
+\multirow{2}{*}{AIME25}
+& Avg@8  & \underline{5.41} & \textbf{5.83} & \cellcolor{blue!10}\textbf{5.83} & 4.16 \\
+& Pass@8 & \underline{13.33} & \textbf{16.67} & \cellcolor{blue!10}\textbf{16.67} & \textbf{16.67} \\
+\bottomrule
+\end{tabular}
+}
+\label{tab:ablation_topk}
+\end{table}

@@ -1,0 +1,32 @@
+% Common packages shared by every venue main.tex (loaded AFTER the venue's
+% \usepackage[...]{acl} line and the standard times/fontenc/inputenc block).
+% Keep venue-neutral: nothing here should depend on review/preprint/final mode.
+
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\usepackage{booktabs}     % nicer tables (\toprule etc. if we migrate from \hline)
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}     % itemize/enumerate spacing controls used in sections
+\usepackage{placeins}     % keep result floats before references/appendix
+\usepackage{url}
+\usepackage{xspace}
+
+% graphicx search path: shared figures live one level up under shared/figures.
+\graphicspath{{figures/}}
+
+% Convenience macros (venue-neutral).
+\newcommand{\method}{SGCD\xspace}
+\newcommand{\methodfull}{Sibling-Guided Credit Distillation\xspace}
+\providecommand{\creditreferenceproviderphrase}{a training-time external LLM}
+\providecommand{\sftteacherproviderphrase}{a stronger external agentic teacher model}
+\providecommand{\simulatorproviderphrase}{the same external instruction-following simulator}
+
+% Venue-aware pointers to appendix/supplement content. Appendix-inclusive builds
+% resolve these to a normal \ref. A venue whose appendix
+% ships as SEPARATE supplementary material (AAAI) pre-defines these in its own
+% main.tex to emit fixed "supplementary material" text (\providecommand there
+% wins because it is set before this file is input).
+\providecommand{\suppref}[1]{Appendix~\ref{#1}}
+\providecommand{\supptabref}[1]{Appendix Table~\ref{#1}}

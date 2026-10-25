@@ -1,0 +1,17 @@
+\section{Related Work}\label{sec:related}
+
+
+
+\paragraph{Reinforcement Learning for Agents.}
+RL-based post-training has evolved from reinforcement learning from human feedback (RLHF)~\citep{christiano2017deep,ziegler2019fine} with PPO~\citep{schulman2017proximal} to more scalable methods like GRPO~\citep{grpo}. For language agents, structured reasoning paradigms such as ReAct~\citep{react}, Toolformer~\citep{schick2023toolformer}, and FireAct~\citep{chen2023fireact} enable tool use but rely on demonstrations rather than online optimization. Recent work extends RL to agent interaction trajectories across code generation~\citep{yang2024swe}, tool use~\citep{feng2025retool}, GUI interaction~\citep{bai2024digirl}, and web navigation~\citep{qi2024webrl}. A central challenge is credit assignment under sparse, delayed feedback, addressed via trajectory-level updates and value-free formulations~\citep{zhou2024archer, chen2025reinforcement}. KL-regularized policy optimization further introduces bias and instability concerns~\citep{schulman2017proximal}, amplified in agentic settings by distribution shift and compounding errors. Broader frameworks scaling agentic RL across environments~\citep{demy, wang2026rlanything, wang2025co} still rely on trajectory-level rewards without dense supervision.
+
+
+
+
+
+
+
+
+\paragraph{On-policy Distillation.}
+On-Policy Distillation (OPD)~\citep{opdsurvey,opcd,gad,hybridOPD, scope,tip,chen2026soda} introduces token-level supervision on student-generated trajectories to mitigate the distribution mismatch of offline distillation. \citet{gu2024minillm} formulates OPD as reverse KL minimization under the student distribution, while \citet{opd} unifies on-policy and off-policy distillation across divergence objectives. \citet{yang2026learning} further interprets OPD as KL-regularized reinforcement learning with implicit per-token rewards, and \citet{li2026rethinking} shows that OPD primarily aligns local support on student-visited states, depending on teacher–student compatibility in reasoning patterns. OPD has also been extended to self-distillation settings without external teachers~\citep{opsd,opsd2,sdpo,sdft,dqchen}.
+Recently, more works~\citep{srpo,sdrlvr,bousselham2025vold,wang2026openclaw,skillsd} have explored introducing OPD to mitigate the limitations of RL.

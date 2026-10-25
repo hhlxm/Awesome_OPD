@@ -1,0 +1,89 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "paper.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "Makefile"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "acl.sty"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "acl_latex.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "acl_natbib.bst"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "assets/Optimistic.ttf"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "assets/nice_plot.py"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "assets/optimistic.tfm"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "assets/plainnat.bst"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "assets/plot_demo.pdf"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "custom.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "paper.bbl"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "sections/0_abstract.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "sections/1_introduction.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "sections/2_related.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "sections/3_method.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "sections/5_experiments.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "sections/6_ablations.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "sections/7_conclusion.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "sections/8_appendix.tex"
+      }
+   ],
+   "spec_version" : 1,
+   "texlive_version" : "2025",
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}

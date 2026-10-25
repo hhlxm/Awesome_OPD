@@ -1,0 +1,143 @@
+\subsubsection{Case Studies on AMC23}
+\label{supp_sec:amc23_case}
+
+% we use the same model as for the aime24 case to answer and verify.
+
+\begin{questionbox}{ Question }
+\textbf{AMC 12 2023 A Problem 23(dataset id 15)}\footnotemark
+
+How many ordered pairs of positive real numbers $(a,b)$ satisfy the equation
+\[(1+2a)(2+2b)(2a+b) = 32ab?\]
+
+\end{questionbox}
+
+\footnotetext{\url{https://artofproblemsolving.com/wiki/index.php/2023_AMC_12A_Problems/Problem_23}}
+
+\begin{answerbox}{Qwen2.5-32B Answer}
+
+First, let's simplify the given equation:
+\[(1+2a)(2+2b)(2a+b) = 32ab\]
+
+\textcolor{red}{Expanding the left side, we get:
+\[(2 + 4a + 4b + 8ab)(2a + b) = 32ab\]}
+\begin{tcolorbox}[
+    colback=blue!5!white,         % 浅蓝色内容背景
+    colframe=blue!40!white,       % 柔和的蓝色边框
+]
+DeepSeek-R1-0528-Qwen3-8B verify: - Calculation Error - The initial expansion of (1+2a)(2+2b) is incorrect, resulting in 2+4a+4b+8ab instead of the correct 2+4a+2b+4ab. This error propagates through subsequent steps.
+
+\end{tcolorbox}
+
+Expanding further:
+\[4a + 8a^2 + 8ab + 16a^2b + 2b + 4ab + 8b^2 + 16ab^2 = 32ab\]
+\end{answerbox}
+\begin{tcolorbox}[
+    colback=magenta!10, % 文本框背景色（浅橙）
+    colframe=magenta!80!black, % 边框颜色
+]
+Combining like terms:
+\[8a^2 + 12ab + 8a^2b + 2b + 8b^2 + 16ab^2 = 28ab\]
+
+Rearranging terms:
+\[8a^2 + 8a^2b + 8b^2 + 16ab^2 = 16ab - 2b\]
+
+Dividing both sides by 2:
+\[4a^2 + 4a^2b + 4b^2 + 8ab^2 = 8ab - b\]
+
+Now, let's try to factor the equation:
+\[4a^2(1 + b) + 4b^2 + 8ab^2 = 8ab - b\]
+
+Factoring out common terms:
+\[4a^2(1 + b) + 4b^2(1 + 2a) = 8ab - b\]
+
+Now, let's try to solve for $a$ and $b$:
+\[4a^2(1 + b) = 8ab - b - 4b^2(1 + 2a)\]
+
+Dividing both sides by 4:
+\[a^2(1 + b) = 2ab - \frac{b}{4} - b^2(1 + 2a)\]
+
+Now, let's try to find a solution for $a$ and $b$:
+\[a^2(1 + b) = 2ab - \frac{b}{4} - b^2(1 + 2a)\]
+
+\textcolor{red}{One possible solution is when $a = b$:
+\[a^2(1 + a) = 2a^2 - \frac{a}{4} - a^2(1 + 2a)\]}
+
+\begin{tcolorbox}[
+    colback=blue!5!white,         % 浅蓝色内容背景
+    colframe=blue!40!white,       % 柔和的蓝色边框
+]
+DeepSeek-R1-0528-Qwen3-8B verify: - Logical Error - The solution assumes a=b is a solution without verification, and this assumption is based on an incorrect equation. The derivation under a=b leads to a non-zero result, contradicting the claim of a solution.
+
+\end{tcolorbox}
+
+
+Simplifying:
+\[a^3 + a^2 = 2a^2 - \frac{a}{4} - a^3 - 2a^2\]
+
+Combining like terms:
+\[2a^3 = \frac{a}{4}\]
+
+Multiplying both sides by 4:
+\[8a^3 = a\]
+
+Dividing both sides by $a$:
+\[8a^2 = 1\]
+
+Taking the square root of both sides:
+\[a = \frac{1}{\sqrt{8}}\]
+
+Since $a = b$, we have:
+\[b = \frac{1}{\sqrt{8}}\]
+
+Thus, there is only one ordered pair $(a, b)$ that satisfies the equation:
+\[\boxed{1}\]
+\end{tcolorbox}
+
+
+\begin{questionbox}{ Question }
+\textbf{AMC 12 2023 A Problem 19(dataset id 10)}\footnotemark
+
+What is the product of all solutions to the equation
+\[\log_{7x}2023\cdot \log_{289x}2023=\log_{2023x}2023\]
+
+\end{questionbox}
+
+\footnotetext{\url{https://artofproblemsolving.com/wiki/index.php/2023_AMC_12A_Problems/Problem_19}}
+
+\begin{answerbox}{Qwen2.5-32B Answer}
+
+First, let's rewrite the equation using the change of base formula for logarithms. We have
+\[\log_{7x}2023=\frac{\log 2023}{\log(7x)}\]
+\[\log_{289x}2023=\frac{\log 2023}{\log(289x)}\]
+\[\log_{2023x}2023=\frac{\log 2023}{\log(2023x)}\]
+Substituting these expressions into the original equation, we get
+\[\frac{(\log 2023)^2}{\log(7x)\cdot \log(289x)}=\frac{\log 2023}{\log(2023x)}\]
+Cross-multiplying, we get
+\[(\log 2023)^2\cdot \log(2023x)=(\log 7x)\cdot (\log 289x)\cdot \log 2023\]
+\textcolor{red}{Canceling the common factor of $\log 2023$, we have
+\[\log(2023x)=(\log 7x)\cdot (\log 289x)\]}
+\begin{tcolorbox}[
+    colback=blue!5!white,         % 浅蓝色内容背景
+    colframe=blue!40!white,       % 柔和的蓝色边框
+]
+DeepSeek-R1-0528-Qwen3-8B verify:  - **Calculation Error**: The solution incorrectly canceled the \(\log 2023\) factor during simplification, omitting the \(\log 2023\) term. 
+
+\end{tcolorbox}
+
+\textcolor{red}{Using the product-to-sum formula for logarithms, we have
+\[\log(2023x)=\log(7x)+\log(289x)\]}
+\begin{tcolorbox}[
+    colback=blue!5!white,         % 浅蓝色内容背景
+    colframe=blue!40!white,       % 柔和的蓝色边框
+]
+DeepSeek-R1-0528-Qwen3-8B verify: - **Conceptual Error**: the solution incorrectly treated the product of logarithms \((\log 7x) \cdot (\log 289x)\) as if it were a sum, which is not valid. 
+
+\end{tcolorbox}
+\[\log(2023x)=\log(2023x^2)\]
+\[2023x=2023x^2\]
+Dividing both sides by $2023x$, we get
+\[1=x\]
+So the only solution is $x=1$. The product of all solutions is $\boxed{1}$.
+
+\end{answerbox}
+

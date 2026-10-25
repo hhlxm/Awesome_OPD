@@ -1,0 +1,223 @@
+% \begin{figure}[!ht]
+%     \centering
+%     \includegraphics[width=\linewidth]{figure/validation_accuracy_curve.pdf}
+%     \caption{Training efficiency}
+%     \label{fig:intro_example}
+% \end{figure}
+
+\section{Preliminaries}
+
+\subsection{KL-Based Divergences}
+\label{subsec:kl_divergences}
+
+
+Let $P$ and $Q$ be probability distributions defined over the same sample space $\mathcal{X}$.
+The Kullback--Leibler (KL) divergence is a non-symmetric measure of difference between two distributions, quantifying how well $Q$ approximates the reference distribution $P$.
+\begin{equation}
+\label{eq:kl_general}
+\mathrm{KL}(P \,\|\, Q)
+= \mathbb{E}_{x \sim P} \left[ \log \frac{P(x)}{Q(x)} \right].
+\end{equation}
+% The KL divergence is always non-negative and equals zero if and only if $P=Q$.
+Due to its asymmetry, $\mathrm{KL}(P \,\|\, Q)$ and $\mathrm{KL}(Q \,\|\, P)$ induce different optimization behaviors, depending on which distribution is used as the reference.
+
+% In this work, we focus on knowledge distillation for autoregressive sequence models, such as large language models, which define a probability distribution over tokens conditioned on a context $\mathbf{c}$.
+For auto-regressive sequence models like Large Language Models (LLMs), the probability distribution of a token $x$ is conditioned on a context $\mathbf{c}$, where $\mathbf{c}$ is the sequence generated before $x$. 
+% Here, the context $\mathbf{c}$ refers to a prefix of previously generated tokens in the sequence.
+% Under this setting, we denote $\pi_\theta(\cdot \mid \mathbf{c})$ as the student model and $\pi_{\tt{te}}(\cdot \mid \mathbf{c})$ as the teacher model.
+% Both models define probability distributions over the next token $x$ conditioned on the context $\mathbf{c}$.
+In distillation, we have two models, a student model denoted by $\pi_\theta(\cdot \mid \mathbf{c})$, and a teacher model $\pi_{\texttt{te}}(\cdot \mid \mathbf{c})$. We now define forward and reverse KL divergences in terms of these models.
+
+% In the context of knowledge distillation between teacher and student autoregressive sequence models, KL divergence is applied to token-level distributions conditioned on a shared context.
+% Let $\pi_\theta(\cdot \mid \mathbf{c})$ and $\pi_{\text{teacher}}(\cdot \mid \mathbf{c})$ denote the student and teacher policies, respectively, defining distributions over the next token given context $\mathbf{c}$.
+
+
+% Let $\pi_\theta(\cdot \mid \mathbf{c})$ denote the \emph{student} policy and
+% $\pi_{\text{teacher}}(\cdot \mid \mathbf{c})$ a fixed \emph{teacher} policy,
+% where both define distributions over next tokens conditioned on a context
+% $\mathbf{c}$ (prompt plus previously generated tokens).
+% The KL divergence between two such conditional
+% distributions is defined as
+% \begin{equation}
+% \mathrm{KL}\!\left(\pi_1 \,\|\, \pi_2\right)
+% =
+% \mathbb{E}_{x \sim \pi_1(\cdot \mid \mathbf{c})}
+% \left[
+% \log \frac{\pi_1(x \mid \mathbf{c})}{\pi_2(x \mid \mathbf{c})}
+% \right].
+% \end{equation}
+% KL divergence is non-negative and equals zero if and only if the two
+% distributions match almost everywhere.
+% Crucially, KL divergence is asymmetric, leading to different optimization
+% behavior depending on which policy defines the expectation.
+
+\textbf{Forward KL (Teacher-to-Student).}
+The forward KL divergence is defined as an expectation over the teacher's distribution:
+\begin{equation}
+\label{eq:forward_kl}
+\mathrm{KL}
+% (\pi_{\tt{te}} \,\|\, \pi_\theta) 
+(\pi_{\tt{te}}(\cdot\mid\mathbf{c}) \,\|\, \pi_{\theta}(\cdot\mid\mathbf{c})) = \mathbb{E}_{x \sim \pi_{\tt{te}}(\cdot \mid \mathbf{c})} \left[ \log \frac{\pi_{\tt{te}}(x \mid \mathbf{c})}{\pi_\theta(x \mid \mathbf{c})} \right].
+\end{equation}
+
+Minimizing \eqref{eq:forward_kl} is equivalent to standard supervised learning (maximizing likelihood on teacher samples). 
+It penalizes the student for assigning low probability to any token the teacher considers likely. 
+This induces \emph{mode-covering} behavior, where the student attempts to match the entire support of the teacher, potentially leading to overly diffuse distributions if the student has limited capacity~\cite{minka2005divergence}.
+
+% \paragraph{Forward KL (teacher-to-student).}
+% The forward KL divergence from the teacher to the student is given by
+% \begin{equation}
+% \begin{aligned}
+% \mathrm{KL}\!\left(\pi_{\text{teacher}} \,\|\, \pi_\theta\right)
+% &=
+% \mathbb{E}_{x \sim \pi_{\text{teacher}}(\cdot \mid \mathbf{c})}
+% \Big[
+% \log \pi_{\text{teacher}}(x \mid \mathbf{c})
+% \\
+% &\qquad\qquad
+% -
+% \log \pi_\theta(x \mid \mathbf{c})
+% \Big].
+% \end{aligned}
+% \end{equation}
+
+% Because the expectation is taken over teacher-generated tokens, this objective
+% strongly penalizes the student for assigning low probability to tokens that
+% the teacher considers likely in a given context.
+% As a result, minimizing forward KL encourages the student to allocate
+% probability mass wherever the teacher does, regardless of whether the student
+% would naturally generate those tokens under its own policy.
+
+% This induces \emph{mode-covering} behavior: the student is pushed to cover
+% all modes of the teacher’s distribution, including low-probability or
+% ambiguous alternatives.
+% While this can improve coverage, it often leads to off-policy training and
+% overly diffuse student distributions when capacity is limited.
+
+\textbf{Reverse KL (Student-to-Teacher).}
+The reverse KL divergence is defined as an expectation over the student's distribution:
+\begin{equation}
+\label{eq:reverse_kl}
+\mathrm{KL}
+% (\pi_\theta \,\|\, \pi_{\tt{te}})
+(\pi_{\theta}(\cdot\mid\mathbf{c}) \,\|\, \pi_{\tt{te}}(\cdot\mid\mathbf{c}))= \mathbb{E}_{x \sim \pi_\theta(\cdot \mid \mathbf{c})} \left[ \log \frac{\pi_\theta(x \mid \mathbf{c})}{\pi_{\tt{te}}(x \mid \mathbf{c})} \right].
+\end{equation}
+Since the expectation is taken over student samples, \eqref{eq:reverse_kl} penalizes generated tokens that the teacher considers unlikely, but ignores teacher modes that the student does not visit. It induces \emph{mode-seeking} behavior, encouraging the student to concentrate probability mass on a single high-likelihood mode of the teacher while ignoring others~\cite{minka2005divergence}.
+
+% \paragraph{Reverse KL (student-to-teacher).}
+% The reverse KL divergence from the student to the teacher is defined as
+% \begin{equation}
+% \begin{aligned}
+% \mathrm{KL}\!\left(\pi_\theta \,\|\, \pi_{\text{teacher}}\right)
+% &=
+% \mathbb{E}_{x \sim \pi_\theta(\cdot \mid \mathbf{c})}
+% \Big[
+% \log \pi_\theta(x \mid \mathbf{c})
+% \\
+% &\qquad\qquad
+% -
+% \log \pi_{\text{teacher}}(x \mid \mathbf{c})
+% \Big].
+% \end{aligned}
+% \end{equation}
+
+% Here, the expectation is taken over student-generated tokens.
+% The objective penalizes cases where the student assigns high probability to
+% tokens that the teacher deems unlikely, but does not directly penalize tokens
+% or modes that the student never samples.
+
+% This leads to \emph{mode-seeking} behavior: minimizing reverse KL
+% encourages the student to concentrate probability mass on tokens and modes
+% that it already visits and that the teacher assigns high likelihood to,
+% while ignoring alternative modes that are unlikely under the student policy.
+
+
+\subsection{On-Policy Distillation} \label{sec:pre_opd}
+% Each term definition
+
+% On-policy distillation (OPD)~\cite{agarwal2024policy} is a post-training method in which a student model learns by matching a teacher’s token-level probability distribution on the student’s own generated sequences. Unlike off-policy distillation, which relies solely on teacher-generated trajectories, OPD trains on on-policy rollouts produced by the student itself. This allows the student to receive token-specific feedback on its own outputs, enabling credit assignment in the exact contexts the student visits. As a result, OPD mitigates compounding errors and exposure bias inherent in purely off-policy imitation.
+
+% Several OPD methods have been proposed that optimize the reverse KL divergence~\cite{gu2023minillm, lu2025onpolicydistillation} to encourage mode-seeking behavior, allowing the student to focus on the teacher’s dominant modes within its limited capacity and thereby improve generation correctness.
+
+% Specifically, recent approach~\cite{lu2025onpolicydistillation} defines a token-level reward based on the log-probability difference between the teacher and the student for each token generated by the student, and optimizes it using policy gradient methods.
+
+On-policy distillation (OPD)~\cite{agarwal2024policy} is a post-training method in which a student model learns by matching a teacher's token-level probability distribution on its own generated sequences. By training on on-policy rollouts rather than teacher-generated trajectories, OPD enables precise credit assignment and mitigates compounding errors inherent in off-policy imitation.
+
+Recent OPD methods optimize the reverse KL divergence~\cite{gu2024minillm, lu2025onpolicydistillation}, encouraging mode-seeking behavior that helps the student focus on the teacher's dominant modes. 
+Specifically, given inputs $\mathbf{q}\sim\mathcal{D}$, %and student rollouts , 
+we denote $\mathbf{x} = (x_1, x_2, \ldots, x_{|\mathbf{x}|})$ as the student-generated token sequence.
+With $\mathbf{c}_t = (\mathbf{q},x_{<t})$ as the context for token $t$, we have $x_t\sim\pi_{\theta}(\cdot\mid\mathbf{c}_t)$. %$\mathbf{x}\sim\pi_{\theta}(\cdot\mid\mathbf{q})$ 
+The on-policy reverse-KL objective is then defined as:
+\begin{equation}\label{eq:opd_ideal}
+\mathbb{E}_{\mathbf{q}\sim\mathcal{D}}\left[
+\mathbb{E}_{\mathbf{x}\sim\pi_{\theta}(\cdot\mid\mathbf{q})} \left[
+\frac{1}{|\mathbf{x}|}\sum_{t=1}^{|\mathbf{x}|}\mathcal{L}_{t}^{\textrm{RKL}}(\theta;\mathbf{c}_t)
+\right]
+\right],
+\end{equation}
+where $\mathcal{L}_{t}^{\textrm{RKL}}(\theta;\mathbf{c}_t)$ is the per-token reverse KL from \eqref{eq:reverse_kl}:
+% \begin{equation}
+% \mathcal{L}_{t}^{\textrm{RKL}}(\theta;\mathbf{c}_t) = \mathbb{E}_{x_t\sim\pi_{\theta}(\cdot\mid\mathbf{c}_t)}\left[\log\frac{\pi_{\theta}(x_t\mid\mathbf{c}_t)}{\pi_{\tt{te}}(x_t\mid\mathbf{c}_t)}\right].
+% \end{equation}
+\begin{equation}
+\mathcal{L}_{t}^{\textrm{RKL}}(\theta;\mathbf{c}_t) = \mathrm{KL}(\pi_\theta(\cdot\mid\mathbf{c}_t) \,\|\, \pi_{\tt{te}}(\cdot\mid\mathbf{c}_t)).
+\end{equation}
+In practice, \citet{lu2025onpolicydistillation} use a single-sample Monte‑Carlo estimate of the expectation in \eqref{eq:reverse_kl} and plug it into a policy‑gradient-style update. This is done by defining the token-level reward as the log-probability difference between the teacher and student:
+\begin{equation} \label{eq:per_token_reward}
+A_t
+=
+\log \pi_{\tt{te}}(x_t \mid \mathbf{c}_t)
+-
+\log \pi_{\theta}(x_t \mid \mathbf{c}_t).
+\end{equation}
+This reward measures how preferred the student-selected token is under the teacher distribution in the same context, assigning positive values when the teacher assigns a higher probability to the token than the student, and negative values otherwise.
+The student then essentially optimizes the objective $\max_{\theta}\mathbb{E}_{\pi_{\theta}}\left[\sum_t A_t\right]$.
+The result is an effective on-policy distillation method based on policy gradient optimization.
+
+\subsection{OPD with Clipped-Reverse KL} \label{sec:opd_witch_crkl}
+To stabilize training, the OPD objective can be implemented with standard PPO-style importance sampling and clipping~\cite{schulman2017proximal}. 
+We sample trajectories using a behavior policy $\pi_{\theta_{\text{old}}}$ instantiated from the student policy $\pi_\theta$,
+query the teacher for log-probabilities of the sampled student tokens, and
+define a per-token advantage $\hat{A}_t=
+\log \pi_{\tt{te}}(x_t \mid \mathbf{c}_t)
+-
+\log \pi_{\theta_{\text{old}}}(x_t \mid \mathbf{c}_t)$, substituting the behavior policy %as the token-level reward 
+in~\eqref{eq:per_token_reward}.
+% \begin{equation}
+% \hat{A}_t
+% =
+% \log \pi_{\tt{te}}(x_t \mid \mathbf{c}_t)
+% -
+% \log \pi_{\theta_{\text{old}}}(x_t \mid \mathbf{c}_t).
+% \end{equation}
+We then update $\pi_\theta$ by minimizing the clipped PPO surrogate over
+generated tokens. To simplify notation, we omit  the expectations over $\mathbf{q}$ and $\mathbf{x}$ in \eqref{eq:opd_ideal} and focus on single tokens. The surrogate objective is then 
+\begin{equation}
+\label{eq:opd}
+\mathcal{L}_t^{\text{OPD}}(\theta; \mathbf{c}_t)
+=
+\mathbb{E}_{x_t\sim\pi_{\theta_{\textrm{old}}}(\cdot\mid\mathbf{c}_t)}
+\Big[
+%\mathcal{L}^{\text{C-RKL}}_t(\theta;\mathbf{c}_t)
+\widetilde{A}_t
+\Big],
+\end{equation}
+where $\widetilde{A}_t$ %$\mathcal{L}^{\text{C-RKL}}_t(\theta)$ 
+is the clipped reverse KL loss:
+\begin{equation}
+\label{eq:clipped}
+\begin{aligned}
+\widetilde{A}_t%\mathcal{L}^{\text{C-RKL}}_t(\theta;\mathbf{c}_t) 
+= \max \big(
+ - r_t \hat{A}_t,\, %\\
+ - \mathrm{clip}(r_t, 1-\epsilon, 1+\epsilon)\, \hat{A}_t
+\big).
+\end{aligned}
+\end{equation}
+%
+Here, $r_t = \frac{\pi_\theta(x_t \mid \mathbf{c}_t)}
+     {\pi_{\theta_{\text{old}}}(x_t \mid \mathbf{c}_t)}$ corrects for sampling under $\pi_{\theta_{\text{old}}}$, while
+clipping limits overly large policy updates. %For notational simplicity, we drop explicit dependence on $\mathbf{c}_t$.
+% Unlike reward model based RL, the OPD
+% signal is directly tied to matching a trusted teacher distribution and can be
+% computed efficiently by evaluating teacher log-probabilities on student rollouts.

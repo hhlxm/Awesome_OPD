@@ -1,0 +1,73 @@
+% =============================================================================
+% arXiv preprint version
+% Official ACL template in [preprint] mode -> non-anonymous, with page numbers.
+% (ACL permits the ACL style for arXiv preprints; [preprint] is the intended
+%  non-anonymous mode. Do NOT use [review] for a public preprint.)
+%
+% Build:  pdflatex main && bibtex main && pdflatex main && pdflatex main
+%         (or: latexmk -pdf main.tex)
+%
+% Shares common manuscript sections with venue variants. arXiv-specific settings:
+%   - [preprint] instead of [review]
+%   - real author/affiliation block
+%   - Acknowledgments allowed
+% =============================================================================
+\documentclass[11pt]{article}
+\ifdefined\pdfminorversion\pdfminorversion=7\fi % pdfTeX only; no-op on other engines
+
+\PassOptionsToPackage{hyperfootnotes=false}{hyperref}
+\usepackage[preprint]{acl}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\newcommand{\creditreferenceproviderphrase}{a Claude-family external LLM}
+\newcommand{\sftteacherproviderphrase}{a stronger Claude-family agentic teacher model}
+\newcommand{\simulatorproviderphrase}{the same Claude-family instruction-following simulator}
+\newcommand{\venuecompacttablefont}{\small}
+
+\input{preamble_common}
+
+% --- Title / authors ---------------------------------------------------------
+\title{Keep Policy Gradient in Charge: Sibling-Guided Credit Distillation
+       for Long-Horizon Tool-Use Agents
+       \thanks{Work done at Amazon Web Services. Correspondence:
+       \texttt{tianyd@amazon.com}.}}
+
+\author{
+  Tianyu Ding \\
+  Amazon Web Services \\
+  \texttt{tianyd@amazon.com} \\\And
+  Jianhong Xin \\
+  Amazon Web Services \\
+  \texttt{xijianho@amazon.com} \\\And
+  Juan Pablo De la Cruz Weinstein \\
+  Amazon Web Services \\
+  \texttt{jcruam@amazon.com} \\
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_diagnosis}
+\input{sections/figures}
+\input{sections/04_method}
+\input{sections/05_experiments}
+\input{sections/06_conclusion}
+
+\input{sections/07_limitations}
+
+\input{sections/09_ethics}
+
+\bibliography{refs}
+
+\input{sections/08_appendix}
+
+\end{document}

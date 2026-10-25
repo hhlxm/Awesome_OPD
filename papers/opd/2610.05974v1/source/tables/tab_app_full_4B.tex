@@ -1,0 +1,33 @@
+\begin{table}[h]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\caption{Per-benchmark results for the 4B student (\%). Direct GRPO uses no teacher. Macro averages weight each benchmark equally.}
+\label{tab:app-full-4B}
+\begin{tabular}{llrrrrrrrrr}
+\toprule
+ & & & \multicolumn{4}{c}{Teacher: base-8B} & \multicolumn{4}{c}{Teacher: GRPO-8B} \\
+\cmidrule(lr){4-7}\cmidrule(lr){8-11}
+Benchmark & Metric & \shortstack{Direct\\GRPO} & OPD-r & OPD-f & \shortstack{TS-OPD\\(routing only)} & TS-OPD & OPD-r & OPD-f & \shortstack{TS-OPD\\(routing only)} & TS-OPD \\
+\midrule
+MATH500 & Avg@8 & 88.47 & 80.12 & 78.95 & 80.15 & 80.88 & 88.97 & 88.47 & 89.40 & 90.03 \\
+ & Pass@8 & 94.80 & 93.60 & 93.40 & 93.40 & 93.20 & 95.40 & 94.60 & 95.60 & 95.20 \\
+Minerva & Avg@8 & 35.80 & 29.32 & 29.73 & 29.55 & 29.41 & 36.67 & 35.39 & 36.12 & 39.20 \\
+ & Pass@8 & 48.53 & 43.75 & 44.49 & 43.38 & 41.54 & 48.53 & 51.84 & 47.79 & 52.21 \\
+OlympiadBench & Avg@8 & 55.10 & 45.16 & 43.90 & 46.07 & 46.88 & 56.84 & 56.66 & 56.94 & 57.14 \\
+ & Pass@8 & 67.66 & 65.28 & 65.88 & 66.91 & 66.47 & 68.55 & 70.03 & 69.58 & 70.33 \\
+AIME24 & Avg@16 & 48.54 & 19.79 & 20.62 & 21.46 & 22.08 & 48.75 & 51.46 & 48.33 & 49.38 \\
+ & Pass@16 & 76.67 & 46.67 & 50.00 & 43.33 & 53.33 & 80.00 & 83.33 & 83.33 & 73.33 \\
+AIME25 & Avg@16 & 39.38 & 17.92 & 17.71 & 17.50 & 17.29 & 41.25 & 43.12 & 39.79 & 46.25 \\
+ & Pass@16 & 73.33 & 50.00 & 43.33 & 46.67 & 43.33 & 73.33 & 73.33 & 73.33 & 73.33 \\
+HMMT-Feb25 & Avg@16 & 24.17 & 8.33 & 8.12 & 8.96 & 9.79 & 24.58 & 25.62 & 28.33 & 26.25 \\
+ & Pass@16 & 40.00 & 20.00 & 23.33 & 23.33 & 20.00 & 46.67 & 56.67 & 66.67 & 53.33 \\
+HMMT-Nov25 & Avg@16 & 31.25 & 5.83 & 7.92 & 6.46 & 6.04 & 31.25 & 32.29 & 33.33 & 35.42 \\
+ & Pass@16 & 56.67 & 30.00 & 30.00 & 23.33 & 26.67 & 63.33 & 60.00 & 63.33 & 60.00 \\
+MATH-test & Avg@1 & 89.86 & 82.12 & 82.04 & 82.10 & 81.96 & 89.86 & 89.64 & 89.84 & 90.56 \\
+\midrule
+Macro Avg & Avg@k & 51.57 & 36.07 & 36.12 & 36.53 & 36.79 & 52.27 & 52.83 & 52.76 & 54.28 \\
+ & Pass@k & 68.44 & 53.93 & 54.06 & 52.81 & 53.31 & 70.71 & 72.43 & 73.68 & 71.04 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,41 @@
+{
+  "arxiv_id": "2606.11709v2",
+  "title": "RLCSD: Reinforcement Learning with Contrastive On-Policy Self-Distillation",
+  "authors": [
+    "Pan, Leyi",
+    "Tao, Shuchang",
+    "Zhai, Yunpeng",
+    "Zhang, Lingzhe",
+    "Liu, Zhaoyang",
+    "Ding, Bolin",
+    "Liu, Aiwei",
+    "Wen, Lijie"
+  ],
+  "submitted_date": "2026/06/10",
+  "abs_url": "https://arxiv.org/abs/2606.11709v2",
+  "schema_version": 1,
+  "requested_input": "2606.11709",
+  "requested_id": "2606.11709",
+  "source_url": "https://arxiv.org/src/2606.11709v2",
+  "downloaded_at": "2026-10-13T07:32:25.095282+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "b2e88f85552acb6ea6aa0af628cc00ffc2b9405639a3134112412d5bf9654451",
+  "tex_files": [
+    "colm2025_conference.tex",
+    "math_commands.tex",
+    "sections/appendix.tex",
+    "sections/conclusion.tex",
+    "sections/experiment.tex",
+    "sections/intro.tex",
+    "sections/method.tex",
+    "sections/related.tex",
+    "tabs/ablation.tex",
+    "tabs/contrastive.tex",
+    "tabs/main-tab.tex"
+  ],
+  "main_tex_candidates": [
+    "colm2025_conference.tex"
+  ],
+  "source_file_count": 38
+}

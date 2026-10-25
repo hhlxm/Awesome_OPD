@@ -1,0 +1,34 @@
+\begin{table*}[t]
+\caption{Comparison against off-policy distillation (SFT) and weight extrapolation (ExPO) methods in both single-teacher and multi-teacher settings with same-sized teacher-student pairs. ``Teacher'' represents the performance of the domain teacher model (Qwen3-4B-Non-Thinking-RL-Math for math reasoning and Qwen3-4B-Non-Thinking-RL-Code for code generation), ``Student'' represents the initial performance of student model Qwen3-4B-Non-Thinking. Each numerical subscript indicates the absolute \textcolor{lightgreen}{\textbf{improvement}} or \textcolor{myred}{\textbf{degradation}} \textbf{compared to the domain teacher model}.}
+\label{tab: results on same-sized models}
+% \vskip 0.05in
+\centering
+\small
+\setlength{\tabcolsep}{2.0pt}
+\begin{tabular}{lccccccccc}
+\toprule
+\multirow{2.5}{*}{\begin{tabular}[c]{@{}l@{}}\textbf{Method} \end{tabular}} & \multicolumn{5}{c}{\textbf{Math Reasoning}} & \multicolumn{4}{c}{\textbf{Code Generation}}  \\
+\cmidrule(lr){2-6}
+\cmidrule(lr){7-10}
+& AIME24 & AIME25  & HMMT25 (Feb.) & HMMT25 (Nov.) & \phantom{0}\phantom{0}Avg.\phantom{0}\phantom{0} & HumanEval+ & \phantom{0}MBPP+\phantom{0} & \phantom{0}\phantom{0}LCB\phantom{0}\phantom{0} & \phantom{0}\phantom{0}Avg.\phantom{0}\phantom{0}
+\\
+\midrule
+\makecell[l]{Teacher}  &  58.0 & 54.6 & 32.5 & 38.9  & 46.0 & 86.0 & 70.2 & 27.3 & 61.2 \\
+\makecell[l]{Student} & 21.5 & 21.9 & 10.0 & \phantom{0}8.0 & 15.4 & 74.7 & 64.7 & 17.9 & 52.4 \\
+\midrule
+\multicolumn{6}{l}{\emph{\quad \textbf{Single-Teacher Distillation}}} \\ 
+ExPO & \cimp{58.7}{+0.7} & \cimp{55.2}{+0.6} & \cdec{32.4}{-0.1} & \cdec{37.0}{-1.9} & \cdec{45.8}{-0.2} & \cdec{84.8}{-1.2} & \cimp{70.2}{+0.0} & \cimp{28.0}{+0.7} & \cdec{61.0}{-0.2}\\
+OPD &  \cimp{60.7}{+2.7} & \cimp{55.0}{+0.4} & \cdec{32.4}{-0.1} & \cdec{37.9}{-1.0} & \cimp{46.5}{+0.5} & \cdec{85.2}{-0.8} & \cdec{69.9}{-0.3} & \cimp{27.3}{+0.0} & \cdec{60.8}{-0.3} \\
+\rowcolor{cyan!10} ExOPD & \cimp{\textbf{62.7}}{+4.7} & \cimp{\textbf{56.1}}{+1.5} & \cimp{\textbf{33.9}}{+1.4} & \cimp{\textbf{39.3}}{+0.4} & \cimp{\textbf{48.0}}{+2.0} & \cimp{\textbf{86.9}}{+0.9} & \cimp{\textbf{70.7}}{+0.5} & \cimp{\textbf{28.6}}{+1.3} & \cimp{\textbf{62.1}}{+0.9} \\
+\midrule
+\multicolumn{6}{l}{\emph{\quad \textbf{Multi-Teacher Distillation}}} \\ 
+SFT & \cimp{58.5}{+0.5} &  \cdec{53.3}{-1.3} & \cdec{30.7}{-1.8} & \cdec{34.8}{-4.1} & \cdec{44.3}{-1.7} & \cimp{86.4}{+0.4} & \cdec{69.6}{-0.6} & \cdec{26.4}{-0.9} & \cdec{60.8}{-0.4} \\
+ExPO & \cdec{57.5}{-0.5} & \cdec{54.5}{-0.1} & \cdec{31.7}{-0.8} & \cdec{36.3}{-2.6} & \cdec{45.0}{-1.0} & \cimp{\textbf{86.7}}{+0.7} & \cimp{\textbf{72.0}}{+1.8} & \cimp{\textbf{29.0}}{+1.7} &  \cimp{\textbf{62.6}}{+1.4} \\
+OPD &  \cimp{60.6}{+2.6} &  \cdec{54.1}{-0.5} & \cimp{32.5}{+0.0} & \cdec{38.3}{-0.6} & \cimp{46.4}{+0.4} & \cdec{84.6}{-1.4} & \cdec{69.5}{-0.7} &  \cimp{27.6}{+0.3} & \cdec{60.6}{-0.6} \\
+\rowcolor{cyan!10} ExOPD &  \cimp{\textbf{61.0}}{+3.0} &  \cimp{\textbf{56.0}}{+1.4} & \cimp{\textbf{34.4}}{+1.9}  &  \cimp{\textbf{39.2}}{+0.3} & \cimp{\textbf{47.7}}{+1.7}  & \cimp{86.3}{+0.3} & \cimp{70.6}{+0.4} &  \cimp{\textbf{29.0}}{+1.7} & \cimp{62.0}{+0.8} \\
+\bottomrule
+\end{tabular}
+% \vskip -0.1in
+\end{table*}
+
+

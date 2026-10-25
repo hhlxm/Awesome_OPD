@@ -1,0 +1,4 @@
+\section{Conclusion}\label{sec:conclusion}
+
+
+In this work, we study on-policy distillation for small language model agents under tool-integrated reasoning. We identify that tool-induced state transitions can rapidly push the student into out-of-distribution regions where teacher supervision becomes unreliable. To address this, we propose \ourmodel, a step-wise on-policy distillation framework that adaptively reweights distillation strength based on student–teacher divergence, preserving informative signals in aligned regions while attenuating misleading guidance under large drift. Extensive experiments across math, science, and code benchmarks demonstrate consistent improvements in both training stability and final performance. Our findings suggest that effective agent distillation requires supervision mechanisms that adapt to evolving state distributions, offering a general principle for robust training in agentic systems.

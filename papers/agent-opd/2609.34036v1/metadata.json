@@ -1,0 +1,44 @@
+{
+  "arxiv_id": "2609.34036v1",
+  "title": "UOPD: Uncertainty-Aware Intervention for On-Policy Distillation of Multi-Turn Agents",
+  "authors": [
+    "Zhang, Wenbo",
+    "Xu, Pengcheng",
+    "Du, Weizhi",
+    "Zhang, Jing",
+    "Cai, Hengrui"
+  ],
+  "submitted_date": "2026/09/27",
+  "abs_url": "https://arxiv.org/abs/2609.34036v1",
+  "schema_version": 2,
+  "requested_input": "2609.34036",
+  "requested_id": "2609.34036",
+  "source_url": "https://arxiv.org/src/2609.34036v1",
+  "downloaded_at": "2026-10-23T05:31:40.391245+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "b0cc41f4b841435892e98ec78fcf46855668303b0dbd76e4e178c978042fb26a",
+  "tex_files": [
+    "main.tex",
+    "math_commands.tex",
+    "sections/appendix.tex",
+    "sections/conclusion.tex",
+    "sections/experiments.tex",
+    "sections/introduction.tex",
+    "sections/method.tex",
+    "sections/motivation.tex",
+    "sections/related_work.tex",
+    "sections/theory.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 25,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2609.34036v1",
+    "sha256": "47086b89e79f1fc4b40bffcfea2bb588378d014a3e729f3398c8995661d7fe3c",
+    "downloaded_at": "2026-10-23T05:31:42.922484+00:00",
+    "content_type": "application/pdf"
+  }
+}

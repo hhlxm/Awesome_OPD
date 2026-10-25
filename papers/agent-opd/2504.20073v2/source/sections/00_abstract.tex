@@ -1,0 +1,55 @@
+\begin{abstract}
+% Training large language models (LLMs) as agents in multi-turn, stochastic environments poses unique challenges such as long-horizon planning and dynamic reasoning. While recent reinforcement learning (RL) approaches have shown promise in static, single-turn tasks, the dynamics of \textbf{LLM agent RL training} remain underexplored. 
+% We propose \textbf{StarPO} (State-Thinking-Actions-Reward Policy Optimization), a general framework for trajectory-level RL that adapts easily to existing single-turn RL algorithms, built upon which we present \textbf{RAGEN}, a modular RL training and evaluation system for LLM agents. 
+% Using three stylized environments that features stochastic, multi-turn interaction challenges, we analyze key design factors for agent RL. 
+% First, we identify the \textbf{Echo Trap}, a failure mode in multi-turn RL marked by reward variance collapse and gradient spikes, and propose \textbf{StarPO-S} to stabilize gradients for more effective agent RL training. 
+% Second, we show that agent self-evolution depends critically on \textbf{frequent and diverse rollouts}. 
+% Third, we find agent reasoning \textbf{would not be guaranteed to emerge} without meticulously designed reward signal and would possibly lead to collapsing or hallucinating reasoning.
+
+Training large language models (LLMs) as interactive agents presents unique challenges including long-horizon decision making and interacting with stochastic environment feedback. While reinforcement learning (RL) has enabled progress in static tasks, multi-turn agent RL training remains underexplored. We propose \textbf{StarPO} (\textbf{S}tate-\textbf{T}hinking-\textbf{A}ctions-\textbf{R}eward \textbf{P}olicy \textbf{O}ptimization), a general framework for trajectory-level agent RL, and introduce \textbf{RAGEN}, a modular system for training and evaluating LLM agents. 
+Our study on four stylized environments reveals three core findings. First, our agent RL training shows a recurring mode of \textbf{Echo Trap} where reward variability cliffs and gradient spikes; we address this with \textbf{StarPO-S}, a stabilized variant with trajectory filtering, critic incorporation, and gradient stabilization.
+Second, we find the shaping of RL rollouts would benefit from \textbf{diverse initial states, medium interaction granularity and more frequent sampling}. 
+Third, we show that without \textbf{fine-grained, reasoning-aware reward signals}, agent reasoning hardly emerge through multi-turn RL and they may show shallow strategies or hallucinated thoughts. 
+
+
+% Training large language models (LLMs) as interactive agents presents unique challenges including long-horizon decision making and interacting with stochastic environment feedback. While reinforcement learning (RL) has enabled progress in static tasks, multi-turn agent RL training remains underexplored. We propose \textbf{StarPO} (\textbf{S}tate-\textbf{T}hinking-\textbf{A}ctions-\textbf{R}eward \textbf{P}olicy \textbf{O}ptimization), a general framework for trajectory-level agent RL, and introduce \textbf{RAGEN}, a modular system for training and evaluating LLM agents. 
+% Our study on three stylized environments reveals three core findings. First, our agent RL training shows a recurring mode of \textbf{Echo Trap} where reward variance cliffs and gradient spikes; we address this with \textbf{StarPO-S}, a stabilized variant with trajectory filtering, critic incorporation, and decoupled clipping.
+% Second, we find the shaping of RL rollouts would benefit from \textbf{diverse initial states, medium interaction granularity and more frequent sampling}. 
+% Third, we show that without \textbf{fine-grained, reasoning-aware reward signals}, agent reasoning hardly emerge through multi-turn RL and they may show shallow strategies or hallucinated thoughts.
+
+\vspace{3pt}
+\textbf{Keywords}: LLM Agents, Multi-turn RL \\
+\textbf{Website}: \url{https://ragen-ai.github.io/} \\
+\textbf{Code/Environments}:  \url{https://github.com/RAGEN-AI/RAGEN}. 
+
+% when supervision lacks fine-grained grounding. 
+% Together, our findings offer insights and infrastructure for developing generalizable, reasoning-capable LLM agents. 
+% \zihan{Please refer to \href{https://docs.google.com/document/d/1BzqNWmSH3ozRZqGiT7T4i-VI8fGWIOf96OdQVooAd1E/edit?usp=sharing}{This link} for the latest paper draft. }
+
+
+% Reinforcement Learning (RL) with rule-based rewards has shown promise in enhancing reasoning capabilities of large language models (LLMs). Extending these methods to agent scenarios faces challenges of multi-turn interaction and environment stochasticity. We present \textbf{RAGEN}, a general framework that extends RL to train LLM \textbf{R}easoning \textbf{AGEN}ts. It employs Markov Decision Process (MDP) formulation and the 
+% State-Thinking-Actions-Reward Policy Optimization (StarPO)
+% Reason-Interaction Chain Optimization (RICO) 
+% algorithm to optimize the entire trajectory distribution with rule-based reward modeling over single-turn responses for agent training. We evaluate RAGEN on three agentic tasks with increasing complexity in multi-turn interaction and stochasticity, respectively, where RAGEN demonstrates notable performance and intriguing reasoning patterns. Our analysis further reveals how reward normalization, prompt diversity and rollout frequency work jointly to enable effective training of LLM reasoning agents in interactive, stochastic environments.
+% Large language models (LLMs) have shown promising reasoning capabilities in static tasks such as math and coding. However, enabling LLMs to act as reasoning agents in interactive environments presents new challenges: agents must operate over multi-turn interactions and adapt to stochastic environment dynamics, both absent in conventional RL training pipelines.
+% We present StarPO (State-Thinking-Action-Reward Policy Optimization), a general reinforcement learning framework for training reasoning agents with LLMs. StarPO formulates agent training as trajectory-level policy optimization under an MDP formulation, enabling reasoning-guided rollouts, diverse reward assignment strategies, and compatibility with multiple RL optimizers. It serves as a flexible interface to study how interaction granularity, reward sparsity, and optimization stability affect reasoning agent performance.
+% Built on StarPO, we develop RAGEN, a complete training and evaluation system for reasoning agents in interactive environments. RAGEN implements StarPO with open-source support, multiple environments, and modular evaluation pipelines. Through controlled experiments on three environment types—ranging from multi-turn to stochastic settings—we uncover actionable insights on prompt diversity, state continuity, and rollout frequency that impact agent training.
+% Code of RAGEN is available at \url{https://github.com/RAGEN-AI/RAGEN}.\\
+
+
+% $r_\mathrm{all}$
+
+% $r_{all}$
+
+% $x_{\text{input}}$
+
+% $x_{{input}}$
+
+% $softmax, min$
+
+% $\softmax, \text{softmax}$
+
+% $i\text{-th}$
+
+% $i^\text{th}$
+\end{abstract}

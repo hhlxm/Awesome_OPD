@@ -1,0 +1,33 @@
+% 
+\section{Experiments}
+\label{sec:exp}
+
+\subsection{Setup}
+\label{sec:exp_setup}
+\paragraph{Dataset}
+% \label{sec:env_tasks}
+We conduct major experiments on the {MATH} subset of {MetaMathQA}~\citep{metamathqa} dataset (MMQ-Math), where data are augmented from the MATH~\citep{hendrycks2021measuringmathematicalproblem} dataset. This environment provides math questions with adequate difficulty, enabling us to observe and analyze its reasoning emergence. We also select eight other widely-used datasets in four different domains to evaluate the generalization ability of UFO: TheoremQA~\citep{theoremqa} evaluates formal mathematics understanding through questions about theorem statements and proofs. GSM8K\citep{gsm8k} focuses on grade-school level arithmetic reasoning. GPQA\citep{gpqa} tests graduate-level physics understanding. MMLU-STEM\citep{MMLU} is a curated STEM-focused benchmark derived from fifteen scientific and technical subjects within MMLU. HotPotQA~\citep{hotpotqa} tests multi-hop factual reasoning across Wikipedia passages, while ConcurrentQA~\citep{concurrentqa} focuses on temporal and causal reasoning in concurrent event settings. MMLU~\citep{MMLU} assesses general-knowledge proficiency across fifty-seven academic subjects, and its extension, MMLU-Pro~\citep{MMLUPro} covers more specialized expert domains.
+
+\paragraph{Training Settings}
+% \label{sec:training_settings}
+We use Qwen-2.5-3B-Instruct~\citep{qwen25} with {PPO} for $200$ optimization steps on A100 GPUs as main training setting. Each batch samples $P{=}8$ prompts, with $N{=}16$ rollouts per prompt. During training, we experiment with three distinct maximum number of turns per episode, setting $T_{\text{max}}$ to 1, 5, and 10, respectively. For the validation phase, $T_{\text{max}}$ is fixed at 5 turns. In both training and validation, episodes are limited to a maximum of 10 actions in total. Policy updates use PPO with GAE parameters $(\gamma,\lambda)=(1.0,1.0)$, Adam with $\beta=(0.9,0.999)$, entropy coefficient $10^{-3}$. We apply the same training setup to four additional models: Qwen2.5-1.5B-Instruct, Qwen2.5-7B-Instruct, LLaMA3.2-1B-Instruct~\citep{llama3_2_blog}, and LLaMA3.2-3B-Instruct, to ensure consistent comparison across architectures and scales.
+    
+\paragraph{Baseline and Metrics}
+We compare our method\textbf{ UFO} against a single-turn PPO-trained model using parallel sampling. For each problem, the baseline generates $k$ independent responses in parallel and is evaluated using standard \texttt{Pass@k} metric. In contrast, our multi-turn model generates responses sequentially with unary feedback after each attempt, and is evaluated using both \texttt{Succ@k} and \texttt{AvgTurns}. Success is recorded if any of the 5 responses is correct. We also conduct ablation studies with different maximum interaction turns ($T_{\text{max}}$) to further analyze the effect of multi-turn training.
+
+We report the following complementary metrics to assess both effectiveness and efficiency.
+
+\begin{itemize}[topsep=0pt, itemsep=2pt, parsep=0pt, leftmargin=10pt]
+    \item \textbf{Pass@k (Single-turn baseline).}~
+    The proportion of problems for which at least one of the k parallel completions is correct. This metric reflects performance when no feedback is used during generation.
+    \item \textbf{Succ@k (Multi-turn model)}~~
+This metric measures the percentage of problems solved within a fixed number of interaction turns. Let $\tau_j$ be the number of turns the agent takes to solve problem $q_j$, or $\infty$ if it fails. We have:
+\begin{align}
+\text{Succ@k} = \frac{1}{N} \sum_{j=1}^{N} \mathbbm{1}[\tau_j \le k].   
+\end{align}
+We report \texttt{Succ@1} for single-turn performance, and \texttt{Succ@5/10} to reflect multi-turn capability.
+\item \textbf{Average Number of Turns (Multi-turn model)}~~
+To evaluate interaction efficiency, we report the average number of turns the agent takes to solve each problem:
+$\text{AvgTurns} = \tfrac{1}{N}\sum_{j=1}^{N} T_{j}$. $T_j$ denotes the number of interactive turns taken for problem $q_j$. This metric reflects how efficiently the agent reaches a solution, accounting for retries and step-wise refinement across multi-turn episodes.
+\end{itemize}
+

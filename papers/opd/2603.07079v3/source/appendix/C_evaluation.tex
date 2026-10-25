@@ -1,0 +1,15 @@
+\newpage
+\section{Evaluation Details}
+\label{app:eval}
+Math reasoning benchmarks (six datasets) and the GPQA-Diamond~\cite{rein2024gpqa} evaluation were conducted using the evaluation pipeline released with Qwen2.5-Math~\cite{yang2024qwen2}. All experiments were performed in a zero-shot setup. During sampling, the maximum sequence length was set to 8192, with temperature = 1.0 and top-p = 0.8. We report both average@k and pass@k as evaluation metrics. For all problems, the same prompt template was appended at the end:
+\texttt{``Please reason step by step, and put your final answer within \textbackslash boxed\{\}.''}
+
+For out-of-domain (OOD) evaluation, MMLU-Pro~\cite{wang2024mmlu} was evaluated under the default 5-shot setting (examples are sampled from the validation set), while all other configurations were kept identical to those used in the math reasoning benchmarks. The prompt template for MMLU-Pro is specified below. For AlpacaEval~\cite{dubois2024length}, we followed the default evaluation protocol and used the annotator model \texttt{weighted\_alpaca\_eval\_gpt4\_turbo} to report both win rate and length-controlled win rate against gpt4\_turbo~\cite{achiam2023gpt}.
+
+\begin{mdframed}[linewidth=0.8pt, roundcorner=5pt]
+\texttt{
+The following are multiple choice questions (with answers) about \{\$\}. 
+Think step by step and then finish your answer with ``the answer is (X)'' 
+where X is the correct letter choice.
+}
+\end{mdframed}

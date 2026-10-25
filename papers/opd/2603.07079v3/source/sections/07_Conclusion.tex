@@ -1,0 +1,10 @@
+\section{Conclusion}
+We study on-policy distillation for language models and identify a key limitation of the reverse-KL objective:
+its mode-seeking nature can collapse generation diversity and destabilize learning at token positions where the teacher distribution has high entropy.
+% its mode-seeking behavior can collapse generation diversity and produce unstable learning signals at token positions where the teacher distribution has high entropy. 
+To address this, we introduce \method, which adapts the on-policy distillation objective and selectively applies forward-KL for high-entropy teacher tokens. Empirically, \method~better preserves the teacher-like distribution while retaining on-policy training efficiency, yielding consistent gains over standard on-policy distillation on six mathematical reasoning benchmarks.
+% . Across six mathematical reasoning benchmarks, this leads to consistent improvements over standard on-policy distillation. 
+Overall, our results demonstrate that explicitly modeling teacher uncertainty is essential for stable, diverse, and effective knowledge transfer.
+
+\section*{Acknowledgements}
+This work was supported by Institute for Information \& communications Technology Planning \& Evaluation(IITP) grant funded by the Korea government(MSIT) (RS-2019-II190075, Artificial Intelligence Graduate School Program(KAIST)), the MSIT(Ministry of Science, ICT), Korea, under the Global Research Support Program in the Digital Field program(RS-2024-00436680) supervised by the IITP(Institute for Information \& Communications Technology Planning \& Evaluation), and the Institute of Information \& Communications Technology Planning \& Evaluation(IITP) grant funded by the Korea government(MSIT) (RS-2025-02304967, AI Star Fellowship(KAIST))

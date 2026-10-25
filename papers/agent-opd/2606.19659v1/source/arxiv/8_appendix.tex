@@ -1,0 +1,474 @@
+\appendix
+\section*{Appendix}
+
+\section{Implementation Details}
+\label{sec:implementation_details}
+
+
+We implement \ours{} and all baselines on top of the \texttt{verl} fully-asynchronous pipeline, using a decoupled rollouter--trainer architecture with a staleness-bounded queue. We set \texttt{trigger\_parameter\_sync\_step} to $4$ and \texttt{staleness\_threshold} to $0.5$. We use AdamW with a learning rate $10^{-6}$, weight decay $0.1$, response length $4096$, rollout number $n=1$, global batch size 64, and epoch number 1. 
+
+The maximum number of turns is $30$ for ALFWorld and ScienceWorld and $16$ for SearchQA.
+%
+The maximum generation length is $4096$ tokens per turn.
+%
+We use temperature $0.4$, top-$p=1.0$, and top-$k=-1$.
+%
+All evaluations use the ReAct prompt format with full chat history, no sliding window, thinking mode disabled, and \texttt{</action>} as the stop string.
+%
+For SearchQA, the agent is allowed at most $8$ search calls per episode and retrieves the top $3$ documents from a Wikipedia-2018 index using dense E5 retrieval with FAISS-Flat.
+%
+We evaluate on the standard ALFWorld valid-seen and valid-unseen splits, the ScienceWorld test set with $30$ task types and $5$ variations per task, and capped SearchQA splits with up to $500$ questions per split except Bamboogle, which contains $125$ questions.
+
+
+For agentic OPD baselines, we keep the OPD backbone fixed and modify only the per-token or per-turn weighting scheme. TCOD-F2B truncates each rollout after
+\begin{equation}
+    k(n) = \min\left(k_{\mathrm{start}} + \frac{n}{\eta}, T\right)
+\end{equation}
+assistant turns. We set $k_{\mathrm{start}}=1$ and $\eta=1$. The maximum horizon is $T=30$ for ALFWorld and ScienceWorld, and $T=16$ for SearchQA, so the curriculum reaches the cap within one epoch. Entropy-Aware OPD scales the per-token weight by
+\begin{equation}
+    1 + \alpha_e \cdot \mathbf{1}
+    \left[
+    H_{\phi}(\cdot \mid h_t,a_{t,<j}) > \tau_e
+    \right],
+\end{equation}
+where $H_{\phi}$ is estimated from the cached top-$K$ teacher distribution. We use $\tau_e=0.8$ and $\alpha_e=1.0$.
+
+For \ours{}, the selective weight is defined as
+\begin{equation}
+    s_t = i_t \cdot c_t.
+\end{equation}
+The default per-turn intervention weight $i_t \in \{0,0.5,1\}$ ($\alpha=0.5$) is obtained from one short teacher query per assistant turn, using maximum generation length $1028$ and default temperature $0.0$. If the teacher output is unparseable, we conservatively fall back to $i_t=1$. We also retain the deterministic-failure short circuit: if the student turn is empty, unparseable, or violates the required action schema, we directly set $i_t=1$ without relying on the teacher intervention query.
+
+We use the training split of each benchmark for training. For SearchQA \citep{jin2025search}, we randomly sample 10K examples from the training split as the training subset.
+
+\paragraph{Evaluation Metrics.}
+We use benchmark-specific metrics following the standard evaluation protocols.
+%
+For ALFWorld, we report success rate (SR) on the valid-seen and valid-unseen splits, where an episode is counted as successful if the environment returns \texttt{info["won"] = True} within the turn budget.
+%
+For ScienceWorld, we report both SR and mean score.
+%
+SR counts episodes whose cumulative score reaches $100$, while mean score averages the environment-provided cumulative reward over episodes.
+%
+Since ScienceWorld provides partial credit and small models rarely solve tasks end-to-end, mean score is a more sensitive measure of partial progress and catastrophic failures.
+%
+For SearchQA, we report exact match (EM), where the final answer is counted as correct if its normalized string matches any reference answer.
+%
+We follow the SearchR1 normalization protocol, which lowercases text, removes punctuation and articles, and collapses whitespace.
+%
+For SearchQA, we report EM on each evaluation split and macro-average across NQ, TriviaQA, PopQA, HotpotQA, 2WikiMultiHopQA, Musique, and Bamboogle.
+%
+We also report average number of turns for ALFWorld and ScienceWorld, and average search/turn statistics for SearchQA as auxiliary efficiency metrics.
+
+
+\section{Supplementary Results}
+\label{sec:supplementary_results}
+
+\subsection{Case Study: Turn-Level Intervention Examples}
+\label{sec:case_study}
+
+To qualitatively examine how \ours{} allocates teacher supervision, we present representative ALFWorld cases for different intervention outcomes.
+%
+These examples illustrate that the intervention mechanism does not simply supervise every student response uniformly.
+%
+Instead, it distinguishes between acceptable actions, mildly suboptimal actions, clearly harmful actions, and deterministic execution failures.
+
+\paragraph{Skip: acceptable student behavior.}
+When the student response is reasonable under the current observation, \ours{} assigns \textsc{Skip} and suppresses the OPD loss for that turn.
+%
+For example, in a \texttt{pick\_two\_obj\_and\_place} task, the student observes the following environment state:
+%
+\begin{quote}
+\small
+\texttt{You arrive at coffeetable 1. On the coffeetable 1, you see a box 2, a creditcard 2, a creditcard 1, a houseplant 1, a plate 2, a plate 1, a statue 1, and a wateringcan 1.}
+\end{quote}
+%
+The student responds:
+%
+\begin{quote}
+\small
+\texttt{Thought: I need to find two vases and place them on the coffeetable.}\\
+\texttt{Action: look}
+\end{quote}
+%
+The parsed action is \texttt{look}, and the teacher assigns \textsc{Skip} with intervention weight $i_t=0$.
+%
+Although the action does not immediately complete the task, it is a valid exploratory step under the current observation.
+%
+In another \texttt{pick\_clean\_then\_place\_in\_recep} task, the student similarly takes an exploratory action:
+%
+\begin{quote}
+\small
+\texttt{Thought: I need to examine the cabinet to find a knife.}\\
+\texttt{Action: examine cabinet 1}
+\end{quote}
+%
+The environment returns that the cabinet contains nothing, but the action itself is executable and plausible, so the teacher again assigns \textsc{Skip}.
+%
+These cases show that \ours{} avoids unnecessary token-level correction when the student is making plausible progress.
+
+\paragraph{Weak: executable but suboptimal behavior.}
+When the student action is valid but potentially inefficient or only partially aligned with the task, \ours{} assigns \textsc{Weak}.
+%
+For instance, in a \texttt{pick\_clean\_then\_place\_in\_recep} task, the student sees the same coffeetable observation and produces:
+%
+\begin{quote}
+\small
+\texttt{Thought: I need to find a clean kettle in the cabinet.}\\
+\texttt{Action: examine cabinet 1}
+\end{quote}
+%
+The action \texttt{examine cabinet 1} is executable and may still provide useful information, but it is not clearly the best next step for the task.
+%
+The teacher therefore assigns \textsc{Weak} with intervention weight $i_t=\alpha$.
+%
+As another example, in a \texttt{pick\_and\_place\_simple} task, the student reasons:
+%
+\begin{quote}
+\small
+\texttt{Thought: The cloth is not on the countertop. I'll check the cabinets to find a cloth.}\\
+\texttt{Action: go to cabinet 1}
+\end{quote}
+%
+The environment accepts the action and moves the agent to the closed cabinet, but the decision remains uncertain rather than clearly optimal.
+%
+The teacher again assigns \textsc{Weak}.
+%
+These examples demonstrate that \ours{} can provide partial supervision for ambiguous turns rather than forcing a binary choice between full imitation and no correction.
+
+\paragraph{Strong: clearly harmful or inconsistent behavior.}
+When the student response is clearly inconsistent with the task state or likely to push the trajectory in an unhelpful direction, \ours{} assigns \textsc{Strong}.
+%
+For example, in a \texttt{pick\_cool\_then\_place\_in\_recep} task, the student states that it should cool a plate in the fridge, but then navigates to a cabinet:
+%
+\begin{quote}
+\small
+\texttt{Thought: I need to find a plate and cool it in the fridge before putting it in the cabinet.}\\
+\texttt{Action: go to cabinet 1}
+\end{quote}
+%
+This response is internally inconsistent with the required cooling procedure, because moving to a cabinet does not help complete the cooling step.
+%
+The teacher assigns \textsc{Strong} with intervention weight $i_t=1$.
+%
+A related failure occurs when the student repeats the same high-level intent but selects another cabinet-navigation action:
+%
+\begin{quote}
+\small
+\texttt{Thought: I need to find a plate and cool it in the fridge before putting it in the cabinet.}\\
+\texttt{Action: go to cabinet 10}
+\end{quote}
+%
+Although the action is executable, it is unlikely to make progress toward cooling the object and may cause the trajectory to drift further from a successful plan.
+%
+These cases show that strong intervention is used when the current turn requires clear correction.
+
+\paragraph{Deterministic failure: environment-detected execution error.}
+In addition to teacher-judged intervention, \ours{} directly assigns full intervention when the environment or parser detects a deterministic failure.
+%
+For example, in a \texttt{pick\_and\_place\_simple} task, the student attempts:
+%
+\begin{quote}
+\small
+\texttt{Thought: I need to place the book on the sofa. I'll put the book on the sofa now.}\\
+\texttt{Action: put book 1 in/on sofa 1}
+\end{quote}
+%
+The parsed action is \texttt{put book 1 in/on sofa 1}, but the environment returns:
+%
+\begin{quote}
+\small
+\texttt{Nothing happens.}
+\end{quote}
+%
+Similarly, in another episode, the student outputs:
+%
+\begin{quote}
+\small
+\texttt{Thought: I need to put the laptop in the safe. I'll put the laptop in the safe now.}\\
+\texttt{Action: put laptop 1 in/on safe 1}
+\end{quote}
+%
+Again, the environment returns \texttt{Nothing happens}, indicating that the action failed to produce a valid state transition.
+%
+In these cases, \ours{} bypasses semantic teacher judgment and directly applies full intervention with $i_t=1$.
+%
+This deterministic-failure pathway provides a high-precision correction signal for malformed, invalid, or ineffective executable actions.
+
+\paragraph{Discussion.}
+Overall, these case studies support the motivation for selective multi-turn OPD.
+%
+Different student turns require different levels of teacher supervision: some should be left unchanged, some benefit from weak guidance, and others require strong correction.
+%
+By using environment feedback together with teacher judgment, \ours{} allocates supervision at the turn level and avoids applying dense token-level OPD uniformly across the entire trajectory.
+%
+This behavior is especially important in multi-turn environments, where over-correcting acceptable exploration can reduce behavioral diversity, while failing to intervene on invalid or harmful actions can cause errors to compound in later turns.
+
+
+
+
+
+
+
+
+
+\section{Prompt Templates}
+\label{sec:appendix_prompts}
+
+
+We use task-specific ReAct-style prompts for each benchmark. All prompts enforce a fixed output protocol so that the executable action can be reliably parsed and sent to the environment. We present the prompt details in \tabref{tab:prompt_alfworld}, \tabref{tab:prompt_scienceworld} and \tabref{tab:prompt_searchqa}. 
+
+
+In addition to the task-specific agent prompts, \ours{} uses a separate intervention prompt to obtain turn-level teacher judgments.
+%
+Given the task goal, current environment state, admissible actions, and the student's candidate response, the teacher assigns one label from \{\textsc{Skip}, \textsc{Weak}, \textsc{Strong}\}.
+%
+The prompt is shown in \tabref{tab:prompt_intervention}.
+
+\begin{table*}[t]
+\centering
+\caption{Prompt template for ALFWorld. We use a demonstration before the user turn.}
+\label{tab:prompt_alfworld}
+\resizebox{0.95\textwidth}{!}{%
+\begin{tabular}{lp{0.78\textwidth}}
+\toprule
+\textbf{Field} & \textbf{Prompt Content} \\
+\midrule
+System prompt &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+You are an embodied agent solving a household task in a text-based simulator (AlfWorld). You receive an Observation describing what you can see and a list of Admissible commands you may execute. On every turn you must reply with exactly two lines: Thought: <one short sentence of reasoning> Action: <one command, copied verbatim from the Admissible list when possible> Plan briefly, then issue the next action. Only the line beginning with 'Action:' is used to step the environment. Do not add any other text after the Action line.
+\end{minipage}
+\\
+\midrule
+One-shot demonstration &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+An one-shot demonstration.
+\end{minipage}
+\\
+\midrule
+User turn &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+Task: \{task\_goal\}\\
+Observation: \{scene\_description\}\\
+Admissible: cmd1; cmd2; ...; cmd30 (+N more)
+\end{minipage}
+\\
+\midrule
+Assistant turn &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+Thought: <reasoning>\\
+Action: <command>
+\end{minipage}
+\\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Prompt template for ScienceWorld. We use a single generic one-shot ReAct trajectory.}
+\label{tab:prompt_scienceworld}
+\resizebox{0.95\textwidth}{!}{%
+\begin{tabular}{lp{0.78\textwidth}}
+\toprule
+\textbf{Field} & \textbf{Prompt Content} \\
+\midrule
+System prompt &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+You are an embodied agent solving a science task in the ScienceWorld text-based simulator. You receive an Observation describing what you can see and an Inventory listing what you carry. On every turn you must reply with exactly two lines: Thought: <one short sentence of reasoning> Action: <one valid action> Plan briefly, then issue the next action. Only the line beginning with 'Action:' is used to step the environment.
+\end{minipage}
+\\
+\midrule
+One-shot demonstration &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+A single generic ReAct trajectory.
+\end{minipage}
+\\
+\midrule
+User turn &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+Task: \{task\_description\}\\
+Observation: \{observation\}\\
+Inventory: \{inventory or "(empty)"\}
+\end{minipage}
+\\
+\midrule
+Assistant turn &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+Thought: <reasoning>\\
+Action: <valid action>
+\end{minipage}
+\\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Prompt template for SearchQA. The agent repeatedly issues Wikipedia search queries and terminates with a concise final answer.}
+\label{tab:prompt_searchqa}
+\resizebox{0.95\textwidth}{!}{%
+\begin{tabular}{lp{0.78\textwidth}}
+\toprule
+\textbf{Field} & \textbf{Prompt Content} \\
+\midrule
+System prompt &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+You are an expert open-domain question-answering agent. You answer questions by repeatedly issuing wikipedia search queries, reading the returned snippets, and finally producing a concise short answer.
+
+Output protocol -- on every turn you must reply with exactly two blocks: <thought>... brief reasoning (1-2 sentences) ...</thought> <action>VERB[PAYLOAD]</action> where VERB[PAYLOAD] is exactly one of: search[your concise wikipedia query, 3-8 words] to fetch top-3 snippets answer[your final short answer] to terminate the episode Use search[...] until you have enough evidence, then answer[...]. Final answers should be short and direct (a single entity, date, or short phrase). Do not output anything after the </action> tag.
+\end{minipage}
+\\
+\midrule
+One-shot demonstration &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+A hardcoded one-shot demonstration.
+\end{minipage}
+\\
+\midrule
+User turn &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+Question: \{question\}? \\
+\ttfamily
+<information>1) ... 2) ... 3) ...</information>
+\end{minipage}
+\\
+\midrule
+Assistant turn &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+<thought>...</thought>\\
+<action>search[query]</action>\\
+\emph{or}\\
+<thought>...</thought>\\
+<action>answer[final]</action>
+\end{minipage}
+\\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+
+\begin{table*}[t]
+\centering
+\caption{Prompt template for turn-level intervention. The teacher acts as a supervision gatekeeper and assigns one intervention label for each student response.}
+\label{tab:prompt_intervention}
+\resizebox{0.95\textwidth}{!}{%
+\begin{tabular}{lp{0.78\textwidth}}
+\toprule
+\textbf{Field} & \textbf{Prompt Content} \\
+\midrule
+System prompt &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+You are a SUPERVISION GATEKEEPER for distillation training of a smaller agent operating in a multi-turn text-based environment. Your job is to decide whether the student's proposed next action deserves teacher distillation supervision.
+\end{minipage}
+\\
+\midrule
+Episode goal &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+GOAL OF THE EPISODE:\\
+Task type: \{task\_type\}\\
+Task goal: \{task\_goal\}
+\end{minipage}
+\\
+\midrule
+Current environment state &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+CURRENT STATE OF THE ENVIRONMENT (what the student is reacting to):\\
+Scene description: \{scene\_description\}\\
+Last observation: \{last\_obs\}\\
+Currently admissible actions (top \{admissible\_count\}):\\
+\{admissible\}
+\end{minipage}
+\\
+\midrule
+Student response &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+STUDENT'S CANDIDATE NEXT ACTION (what we are evaluating):\\
+\{llm\_text\}
+\end{minipage}
+\\
+\midrule
+Decision rubric &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+DECISION RUBRIC:\\
+- SKIP: The student's action is reasonable, strategically equivalent to your preferred action, or the situation is too ambiguous for confident correction. Distillation here would just over-regularize the student.\\
+- WEAK: The student's action may be suboptimal but the issue is uncertain or low-impact. A mild distillation signal is appropriate but the action is not clearly wrong.\\
+- STRONG: The student's action is clearly problematic, off-task, redundant, or likely to fail the goal. The student needs to learn the correct behavior here.
+\end{minipage}
+\\
+\midrule
+Output format &
+\begin{minipage}[t]{0.78\textwidth}
+\ttfamily
+Respond with EXACTLY ONE WORD: SKIP, WEAK, or STRONG.
+\end{minipage}
+\\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}
+
+
+\begin{algorithm}[t]
+\caption{\ours{} Training Procedure}
+\label{alg:sl_opd}
+\begin{algorithmic}[1]
+\REQUIRE Student $\pi_\theta$, teacher $\pi_\phi$, environment $\mathcal{E}$, horizon $T$, weak weight $\alpha$, constant $\epsilon$
+\STATE Collect student on-policy trajectories $\tau \sim \pi_\theta$ by interacting with $\mathcal{E}$
+\FOR{each turn $(h_t,a_t)$ in the collected trajectories}
+    \IF{$a_t$ causes a deterministic execution failure}
+        \STATE Set $z_t=\textsc{Strong}$ and $i_t=1$
+    \ELSE
+        \STATE Ask the teacher to assign $z_t \in \{\textsc{Skip},\textsc{Weak},\textsc{Strong}\}$
+        \STATE Map the label to
+        \[
+        i_t =
+        \begin{cases}
+        0, & z_t=\textsc{Skip},\\
+        \alpha, & z_t=\textsc{Weak},\\
+        1, & z_t=\textsc{Strong}.
+        \end{cases}
+        \]
+    \ENDIF
+    \STATE Compute teacher confidence
+    \[
+    c_t =
+    \frac{1}{|a_t|}
+    \sum_{j=1}^{|a_t|}
+    \max_v \pi_\phi(v \mid h_t,a_{t,<j}).
+    \]
+    \STATE Set the selective weight $s_t=i_t c_t$
+\ENDFOR
+\STATE Let $N=\sum_t |a_t|$ and compute
+\[
+Z=
+\frac{N}{\max\left(\sum_t s_t |a_t|,\epsilon\right)}.
+\]
+\STATE Update the student using
+\[
+\mathcal{L}_{\mathrm{SL\mbox{-}OPD}}
+=
+Z\sum_t s_t \mathcal{L}_{\mathrm{OPD}}(h_t,a_t).
+\]
+\end{algorithmic}
+\end{algorithm}

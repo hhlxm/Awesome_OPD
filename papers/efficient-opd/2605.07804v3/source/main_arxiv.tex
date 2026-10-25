@@ -1,0 +1,77 @@
+\documentclass{article}
+
+% For final submission, remove the preprint option.
+\usepackage[preprint]{neurips_2026}
+% \usepackage{neurips_2026}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[font=small,labelfont=bf]{caption}
+
+
+\newcommand{\coloredhref}[3][blue]{%
+  \href{#2}{\textcolor{#1}{#3}}%
+}
+\definecolor{burgundy}{rgb}{0.5, 0.0, 0.13}
+
+\input{math_commands}
+
+\title{\method: Efficient and Reliable On-Policy Distillation for Long-Horizon Reasoning}
+
+\vspace{-3mm}
+\author{
+Zhicheng Yang\textsuperscript{1}~~Zhijiang Guo\textsuperscript{1,2}~~Yifan Song\textsuperscript{1}~~Minrui Xu\textsuperscript{1}~~Yongxin Wang\textsuperscript{3}\\
+\textbf{Yiwei Wang}\textsuperscript{4}~~\textbf{Xiaodan Liang}\textsuperscript{3,5}~~\textbf{Jing Tang}\textsuperscript{1,2}\\
+$^1$The Hong Kong University of Science and Technology (Guangzhou) \\
+$^2$The Hong Kong University of Science and Technology \\
+$^3$MBZUAI, $^4$University of California, Merced, $^5$Sun Yat-sen University \\
+\\
+\textit{\textbf{Project Repo}}: \coloredhref[burgundy]{https://github.com/yangzhch6/Prune-OPD}{\ttfamily \textbf{https://github.com/yangzhch6/Prune-OPD}}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+On-policy distillation (OPD) leverages dense teacher rewards to enhance reasoning models. However, scaling OPD to long-horizon tasks exposes a critical flaw: as the student's generated prefix inevitably diverges from the teacher's thought process, the teacher's dense reward loses local exploitability. Continuing to generate and evaluate tokens on these ``drifted'' trajectories not only degrades reward quality but also incurs massive computational waste. 
+%
+To address this, we introduce \textbf{Prune-OPD}, a framework that dynamically aligns training budgets with supervision quality. By continuously monitoring the local compatibility between student and teacher predictions (e.g., via top-$k$ overlap), Prune-OPD detects prefix-drift events in real time. Upon detecting severe drift, it monotonically down-weights subsequent unreliable rewards and triggers dynamic rollout truncation. This allows the training process to halt futile generation and reallocate compute strictly to reliable teacher supervision.
+%
+Across diverse teacher-student combinations, Prune-OPD consistently aligns computation with supervision reliability. When prefix drift makes dense teacher rewards unreliable, it reduces training time by 37.6\%--68.0\% while preserving, and often improving, performance on challenging benchmarks (AMC, AIME, HMMT). When student-teacher compatibility remains high, it automatically preserves long-context supervision by expanding the training window. These results suggest that Prune-OPD improves OPD not by blindly shortening rollouts, but by reallocating computation toward locally exploitable teacher rewards.
+
+\end{abstract}
+\vspace{-4mm}
+
+\input{sections/01_introduction}
+\input{sections/02_background}
+\input{sections/03_method}
+\input{sections/04_experiments}
+\input{sections/06_related_work}
+\input{sections/06_limitations_conclusion}
+
+% \bibliographystyle{plainnat}
+\bibliographystyle{plain}
+\input{main_arxiv.bbl}
+% \bibliography{references}
+
+\appendix
+\input{sections/appendix}
+
+\end{document}

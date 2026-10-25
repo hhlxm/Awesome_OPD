@@ -1,0 +1,31 @@
+
+
+
+
+
+\input{./table/rq2.tex}
+
+
+
+\subsection{Ablation Study}
+
+
+
+To evaluate each component in \ourmodel, we develop six variants from two perspectives on the Qwen3-1.7B student. For \textit{Step-wise Reweighting}, we consider: (1.1)~\textit{w/ Uniform Weighting}, which fixes $w_k=1$ for all steps; (1.2)~\textit{w/ Heuristic Weighting}, which applies a fixed exponential decay $w_k = \gamma^{k - k_{\mathrm{err}}}$ starting from the first erroneous tool call at step $k_{\mathrm{err}}$, with $\gamma$ fixed as 0.9; (1.3)~\textit{w/ Mask After Wrong}, which zeros out the OPD signal for all steps after the first tool-call error; and (1.4)~\textit{w/o Weight Clipping}, which removes the upper-bound clipping $\delta$ in~\cref{eq:adaptive_weight}. For \textit{Training Objective}, we ablate the two terms in \cref{eq:training_object}: (2.1)~\textit{w/o GRPO}, which removes $\mathcal{L}_{\mathrm{GRPO}}$; and (2.2)~\textit{w/o Step-wise OPD}, which removes $\mathcal{L}_{\mathrm{OPD}}^{\mathrm{step}}$. The results are reported in Table~\ref{tab:ablation}, from which we observe:
+
+
+
+\begin{itemize}[leftmargin=*]
+
+\item \textbf{Obs 3: The adaptive step-wise reweighting is critical, and neither static nor heuristic alternatives can substitute it.}
+Replacing our adaptive reweighting mechanism with uniform weighting (variant 1.1) causes a notable drop to 34.70\% average, confirming that treating all steps equally exposes training to misleading supervision from corrupted states. Heuristic decay (variant 1.2) partially mitigates this issue (37.14\%) by down-weighting later steps, yet still falls behind because a fixed schedule cannot capture non-monotonic divergence patterns where the student recovers alignment after earlier errors. Hard masking (variant 1.3) performs worst (31.85\%), as it discards all subsequent supervision after a single error, wasting informative signals from partially correct trajectories and preventing the student from recovering. Removing weight clipping (variant 1.4) yields 38.10\%, indicating that unbounded amplification introduces training instability. 
+
+\item \textbf{Obs 4: Both the GRPO and step-wise OPD components are indispensable, serving complementary roles.}
+Removing GRPO (variant 2.1) reduces the average to 40.78\%, showing that outcome-level rewards remain valuable for steering exploration with dense distillation. Removing step-wise OPD (variant 2.2) causes a far more severe drop to 25.39\%, 
+which confirms that sparse rewards alone are insufficient for stable TIR learning in small models. The pronounced asymmetry reveals their complementary nature: step-wise OPD provides the primary fine-grained guidance, while GRPO broadens trajectory-level exploration beyond the teacher distribution.
+
+
+\end{itemize}
+
+
+

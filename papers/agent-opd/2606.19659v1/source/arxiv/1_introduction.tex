@@ -1,0 +1,84 @@
+\section{Introduction}
+\label{sec:introduction}
+
+On-policy distillation (OPD) has become a leading approach for post-training open-weight reasoning models~\citep{agarwal2024policy, lu2025onpolicydistillation, song2026survey, zhou2026omniopd}.
+%
+By training the student on samples generated from its own policy, OPD mitigates the exposure-bias limitation of offline supervised fine-tuning (SFT), where the student is optimized only on teacher-generated states~\citep{zhou2025mixture, hao2026self}.
+%
+This on-policy property becomes especially important when moving from single-turn reasoning to multi-turn LLM agents.
+%
+Unlike single-turn generation, a multi-turn agent repeatedly acts in an environment and conditions on the resulting observations, so each student action can influence the future states encountered during training and evaluation.
+%
+OPD appears to be a natural fit for agent training, because it allows a strong teacher to supervise the student on histories induced by the student's own behavior, rather than only on expert-generated trajectories.
+%
+
+However, most existing OPD studies primarily evaluate single-turn generation on reasoning tasks~\citep{yang2026learning, jin2026entropy}, where each example is completed in one model rollout and there is no environment state that evolves in response to intermediate actions.
+%
+This setting abstracts away a central difficulty of realistic agent learning.
+%
+In multi-turn interaction, errors can compound over time (compounding errors): an early incorrect action may alter the environment state, distort later observations, and make subsequent decisions increasingly harder to recover.
+
+Despite the advantage of using student-induced trajectories, recent analyses have revealed that the token-level logit signal underlying standard OPD is brittle~\citep{li2026rethinking, luo2026demystifying}.
+%
+This brittleness can be amplified in multi-turn agent training.
+%
+First, standard OPD applies dense token-level alignment between the student and teacher distributions, even when several continuations are semantically valid~\citep{li2026rethinking}.
+%
+For example, two actions may follow different surface forms or intermediate reasoning paths while still making equivalent progress toward the task.
+%
+In such cases, token-level distillation may over-penalize acceptable student behavior simply because it does not match the teacher's preferred wording or local decomposition.
+%
+Second, dense token-level gradients can reinforce local degeneracies~\citep{luo2026demystifying}, such as repeated thoughts, repeated actions, or shallow formatting patterns, when these prefixes accidentally receive favorable teacher likelihood.
+%
+These local degeneracies are particularly harmful in multi-turn interaction, because a repeated or malformed action does not only affect the current response but also changes the subsequent environment feedback.
+%
+Third, compounding errors can make later student-induced histories increasingly off-distribution for the teacher~\citep{li2025beyond}.
+%
+The teacher may still provide a distribution over next tokens, but that distribution can become less reliable when the current history is the result of earlier student mistakes.
+%
+Therefore, uniformly applying OPD to every token at every turn can both over-correct acceptable behavior and propagate unreliable supervision in corrupted histories.
+%
+
+These observations motivate our central question:
+%
+\begin{quote}
+    \centering
+    \textit{Can multi-turn OPD preserve the benefits of on-policy teacher supervision while selectively applying it only to turns where intervention is necessary and reliable?}
+\end{quote}
+%
+
+We answer this question with \textbf{\ours{}}, a verifier-free selective intervention framework for multi-turn OPD.
+%
+Our key observation is that multi-turn interaction already segments the student trajectory into turn-level units, providing a natural granularity for teacher critique beyond token-level alignment.
+%
+For each turn, \ours{} observes the environment feedback and uses teacher judgment to decide whether the current student response should be skipped or intervened on.
+%
+This allows \ours{} to preserve the on-policy benefit of OPD while avoiding unnecessary dense supervision on acceptable or semantically flexible student responses.
+
+However, deciding whether to intervene is not sufficient, since compounding errors may create histories where the teacher is uncertain about the precise token-level correction.
+%
+% To reduce the influence of unreliable teacher distributions\zz{nit: there might be a more precise way of saying ``unreliable teacher distributions''}, \ours further weights each turn by the teacher's predictive confidence.
+%
+To reduce the influence of uncertain token-level teacher supervision on student-induced histories, \ours{} further weights each turn by the teacher's predictive confidence.
+%
+The final selective weight is the product of the intervention weight and the confidence weight, so strong OPD supervision is applied mainly when intervention is needed and the teacher signal is reliable.
+%
+Finally, we apply loss normalization to preserve the overall loss scale of standard OPD while retaining the relative turn-level weighting.
+
+We evaluate \ours on various multi-turn agent benchmarks.
+%
+Notably, \ours achieves up to a $13.3\%$ relative improvement in success rate over standard OPD with Qwen-3 models~\citep{yang2025qwen3} on ALFWorld~\citep{shridhar2020alfworld}.
+%
+Ablation studies further show that turn-level intervention, teacher confidence weighting, and loss normalization provide complementary benefits.
+%
+
+Our contributions are summarized as follows:
+%
+\begin{itemize}
+    \item We propose \ours{}, a verifier-free selective intervention framework for multi-turn OPD that preserves on-policy teacher supervision while avoiding uniformly dense distillation over all student-generated turns.
+    %
+    \item We introduce three key components that make selective multi-turn OPD effective: teacher-judged turn-level intervention for deciding whether supervision is needed, teacher confidence weighting for estimating whether token-level supervision is reliable, and loss normalization for preserving the training signal scale.
+    %
+    \item We demonstrate the effectiveness of \ours{} across embodied interaction, scientific task solving, and question answering, with strong gains over standard OPD, and other state-of-the-art OPD baselines.
+    %
+\end{itemize}

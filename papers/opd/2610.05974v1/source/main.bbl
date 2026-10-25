@@ -1,0 +1,336 @@
+\begin{thebibliography}{35}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Agarwal et~al.(2024)Agarwal, Vieillard, Zhou, Stanczyk, Ramos, Geist,
+  and Bachem]{agarwal2024opd}
+Rishabh Agarwal, Nino Vieillard, Yongchao Zhou, Piotr Stanczyk, Sabela Ramos,
+  Matthieu Geist, and Olivier Bachem.
+\newblock On-policy distillation of language models: Learning from
+  self-generated mistakes, 2024.
+\newblock URL \url{https://arxiv.org/abs/2306.13649}.
+
+\bibitem[{Art of Problem Solving}(n.d.)]{aopsAimeArchive}
+{Art of Problem Solving}.
+\newblock {AIME} problems and solutions.
+\newblock AoPS Wiki, n.d.
+\newblock URL
+  \url{https://artofproblemsolving.com/wiki/index.php/AIME_Problems_and_Solutions}.
+\newblock Community-maintained problem archive. Accessed September 23, 2026.
+
+\bibitem[Chen et~al.(2021)Chen, Tworek, Jun, Yuan, de~Oliveira~Pinto, Kaplan,
+  Edwards, Burda, Joseph, Brockman, Ray, Puri, Krueger, Petrov, Khlaaf, Sastry,
+  Mishkin, Chan, Gray, Ryder, Pavlov, Power, Kaiser, Bavarian, Winter, Tillet,
+  Such, Cummings, Plappert, Chantzis, Barnes, Herbert-Voss, Guss, Nichol,
+  Paino, Tezak, Tang, Babuschkin, Balaji, Jain, Saunders, Hesse, Carr, Leike,
+  Achiam, Misra, Morikawa, Radford, Knight, Brundage, Murati, Mayer, Welinder,
+  McGrew, Amodei, McCandlish, Sutskever, and Zaremba]{chen2021evaluating}
+Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique~Ponde
+  de~Oliveira~Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph,
+  Greg Brockman, Alex Ray, Raul Puri, Gretchen Krueger, Michael Petrov, Heidy
+  Khlaaf, Girish Sastry, Pamela Mishkin, Brooke Chan, Scott Gray, Nick Ryder,
+  Mikhail Pavlov, Alethea Power, Lukasz Kaiser, Mohammad Bavarian, Clemens
+  Winter, Philippe Tillet, Felipe~Petroski Such, Dave Cummings, Matthias
+  Plappert, Fotios Chantzis, Elizabeth Barnes, Ariel Herbert-Voss,
+  William~Hebgen Guss, Alex Nichol, Alex Paino, Nikolas Tezak, Jie Tang, Igor
+  Babuschkin, Suchir Balaji, Shantanu Jain, William Saunders, Christopher
+  Hesse, Andrew~N. Carr, Jan Leike, Josh Achiam, Vedant Misra, Evan Morikawa,
+  Alec Radford, Matthew Knight, Miles Brundage, Mira Murati, Katie Mayer, Peter
+  Welinder, Bob McGrew, Dario Amodei, Sam McCandlish, Ilya Sutskever, and
+  Wojciech Zaremba.
+\newblock Evaluating large language models trained on code, 2021.
+\newblock URL \url{https://arxiv.org/abs/2107.03374}.
+
+\bibitem[Feng et~al.(2026)Feng, ang Gao, Chi, Wu, Zhang, Jiang, He, Ma, Zhang,
+  and Zhou]{feng2026directopd}
+Shiyuan Feng, Huan ang Gao, Haohan Chi, Hanlin Wu, Zhilong Zhang, Zheng Jiang,
+  Bingxiang He, Wei-Ying Ma, Ya-Qin Zhang, and Hao Zhou.
+\newblock Weak-to-strong generalization via direct on-policy distillation,
+  2026.
+\newblock URL \url{https://arxiv.org/abs/2607.05394}.
+
+\bibitem[Gu et~al.(2024)Gu, Dong, Wei, and Huang]{gu2024minillm}
+Yuxian Gu, Li~Dong, Furu Wei, and Minlie Huang.
+\newblock Mini{LLM}: Knowledge distillation of large language models.
+\newblock In \emph{The Twelfth International Conference on Learning
+  Representations}, 2024.
+\newblock URL \url{https://openreview.net/forum?id=5h0qf7IBZZ}.
+
+\bibitem[Guo et~al.(2025)Guo, Yang, Zhang, Song, Wang, Zhu, Xu, Zhang, Ma, Bi,
+  Zhang, Yu, Wu, Wu, Gou, Shao, Li, Gao, Liu, Xue, Wang, Wu, Feng, Lu, Zhao,
+  Deng, Ruan, Dai, Chen, Ji, Li, Lin, Dai, Luo, Hao, Chen, Li, Zhang, Xu, Ding,
+  Gao, Qu, Li, Guo, Li, Chen, Yuan, Tu, Qiu, Li, Cai, Ni, Liang, Chen, Dong,
+  Hu, You, Gao, Guan, Huang, Yu, Wang, Zhang, Zhao, Wang, Zhang, Xu, Xia,
+  Zhang, Zhang, Tang, Zhou, Li, Wang, Li, Tian, Huang, Zhang, Wang, Chen, Du,
+  Ge, Zhang, Pan, Wang, Chen, Jin, Chen, Lu, Zhou, Chen, Ye, Wang, Yu, Zhou,
+  Pan, Li, Zhou, Wu, Yun, Pei, Sun, Wang, Zeng, Liu, Liang, Gao, Yu, Zhang,
+  Xiao, An, Liu, Wang, Chen, Nie, Cheng, Liu, Xie, Liu, Yang, Li, Su, Lin, Li,
+  Jin, Shen, Chen, Sun, Wang, Song, Zhou, Wang, Shan, Li, Wang, Wei, Zhang, Xu,
+  Li, Zhao, Sun, Wang, Yu, Zhang, Shi, Xiong, He, Piao, Wang, Tan, Ma, Liu,
+  Guo, Ou, Wang, Gong, Zou, He, Xiong, Luo, You, Liu, Zhou, Zhu, Huang, Li,
+  Zheng, Zhu, Ma, Tang, Zha, Yan, Ren, Ren, Sha, Fu, Xu, Xie, Zhang, Hao, Ma,
+  Yan, Wu, Gu, Zhu, Liu, Li, Xie, Song, Pan, Huang, Xu, Zhang, and
+  Zhang]{guo2025deepseekr1}
+Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Peiyi Wang, Qihao Zhu,
+  Runxin Xu, Ruoyu Zhang, Shirong Ma, Xiao Bi, Xiaokang Zhang, Xingkai Yu,
+  Yu~Wu, Z.~F. Wu, Zhibin Gou, Zhihong Shao, Zhuoshu Li, Ziyi Gao, Aixin Liu,
+  Bing Xue, Bingxuan Wang, Bochao Wu, Bei Feng, Chengda Lu, Chenggang Zhao,
+  Chengqi Deng, Chong Ruan, Damai Dai, Deli Chen, Dongjie Ji, Erhang Li,
+  Fangyun Lin, Fucong Dai, Fuli Luo, Guangbo Hao, Guanting Chen, Guowei Li,
+  H.~Zhang, Hanwei Xu, Honghui Ding, Huazuo Gao, Hui Qu, Hui Li, Jianzhong Guo,
+  Jiashi Li, Jingchang Chen, Jingyang Yuan, Jinhao Tu, Junjie Qiu, Junlong Li,
+  J.~L. Cai, Jiaqi Ni, Jian Liang, Jin Chen, Kai Dong, Kai Hu, Kaichao You,
+  Kaige Gao, Kang Guan, Kexin Huang, Kuai Yu, Lean Wang, Lecong Zhang, Liang
+  Zhao, Litong Wang, Liyue Zhang, Lei Xu, Leyi Xia, Mingchuan Zhang, Minghua
+  Zhang, Minghui Tang, Mingxu Zhou, Meng Li, Miaojun Wang, Mingming Li, Ning
+  Tian, Panpan Huang, Peng Zhang, Qiancheng Wang, Qinyu Chen, Qiushi Du, Ruiqi
+  Ge, Ruisong Zhang, Ruizhe Pan, Runji Wang, R.~J. Chen, R.~L. Jin, Ruyi Chen,
+  Shanghao Lu, Shangyan Zhou, Shanhuang Chen, Shengfeng Ye, Shiyu Wang,
+  Shuiping Yu, Shunfeng Zhou, Shuting Pan, S.~S. Li, Shuang Zhou, Shaoqing Wu,
+  Tao Yun, Tian Pei, Tianyu Sun, T.~Wang, Wangding Zeng, Wen Liu, Wenfeng
+  Liang, Wenjun Gao, Wenqin Yu, Wentao Zhang, W.~L. Xiao, Wei An, Xiaodong Liu,
+  Xiaohan Wang, Xiaokang Chen, Xiaotao Nie, Xin Cheng, Xin Liu, Xin Xie,
+  Xingchao Liu, Xinyu Yang, Xinyuan Li, Xuecheng Su, Xuheng Lin, X.~Q. Li,
+  Xiangyue Jin, Xiaojin Shen, Xiaosha Chen, Xiaowen Sun, Xiaoxiang Wang, Xinnan
+  Song, Xinyi Zhou, Xianzu Wang, Xinxia Shan, Y.~K. Li, Y.~Q. Wang, Y.~X. Wei,
+  Yang Zhang, Yanhong Xu, Yao Li, Yao Zhao, Yaofeng Sun, Yaohui Wang, Yi~Yu,
+  Yichao Zhang, Yifan Shi, Yiliang Xiong, Ying He, Yishi Piao, Yisong Wang,
+  Yixuan Tan, Yiyang Ma, Yiyuan Liu, Yongqiang Guo, Yuan Ou, Yuduan Wang, Yue
+  Gong, Yuheng Zou, Yujia He, Yunfan Xiong, Yuxiang Luo, Yuxiang You, Yuxuan
+  Liu, Yuyang Zhou, Y.~X. Zhu, Yanping Huang, Yaohui Li, Yi~Zheng, Yuchen Zhu,
+  Yunxian Ma, Ying Tang, Yukun Zha, Yuting Yan, Z.~Z. Ren, Zehui Ren, Zhangli
+  Sha, Zhe Fu, Zhean Xu, Zhenda Xie, Zhengyan Zhang, Zhewen Hao, Zhicheng Ma,
+  Zhigang Yan, Zhiyu Wu, Zihui Gu, Zijia Zhu, Zijun Liu, Zilin Li, Ziwei Xie,
+  Ziyang Song, Zizheng Pan, Zhen Huang, Zhipeng Xu, Zhongyu Zhang, and Zhen
+  Zhang.
+\newblock Deepseek-r1 incentivizes reasoning in llms through reinforcement
+  learning.
+\newblock \emph{Nature}, 645\penalty0 (8081):\penalty0 633--638, September
+  2025.
+\newblock ISSN 1476-4687.
+\newblock \doi{10.1038/s41586-025-09422-z}.
+\newblock URL \url{http://dx.doi.org/10.1038/s41586-025-09422-z}.
+
+\bibitem[He et~al.(2024)He, Luo, Bai, Hu, Thai, Shen, Hu, Han, Huang, Zhang,
+  Liu, Qi, Liu, and Sun]{he2024olympiadbench}
+Chaoqun He, Renjie Luo, Yuzhuo Bai, Shengding Hu, Zhen~Leng Thai, Junhao Shen,
+  Jinyi Hu, Xu~Han, Yujie Huang, Yuxiang Zhang, Jie Liu, Lei Qi, Zhiyuan Liu,
+  and Maosong Sun.
+\newblock Olympiadbench: A challenging benchmark for promoting agi with
+  olympiad-level bilingual multimodal scientific problems, 2024.
+\newblock URL \url{https://arxiv.org/abs/2402.14008}.
+
+\bibitem[Hendrycks et~al.(2021)Hendrycks, Burns, Kadavath, Arora, Basart, Tang,
+  Song, and Steinhardt]{hendrycks2021math}
+Dan Hendrycks, Collin Burns, Saurav Kadavath, Akul Arora, Steven Basart, Eric
+  Tang, Dawn Song, and Jacob Steinhardt.
+\newblock Measuring mathematical problem solving with the math dataset, 2021.
+\newblock URL \url{https://arxiv.org/abs/2103.03874}.
+
+\bibitem[{HMMT}(2025{\natexlab{a}})]{hmmt2025february}
+{HMMT}.
+\newblock Archive of february 2025, 2025{\natexlab{a}}.
+\newblock URL \url{https://www.hmmt.org/www/archive/282}.
+\newblock Official problem and solution archive. Accessed September 23, 2026.
+
+\bibitem[{HMMT}(2025{\natexlab{b}})]{hmmt2025november}
+{HMMT}.
+\newblock Archive of november 2025, 2025{\natexlab{b}}.
+\newblock URL \url{https://www.hmmt.org/www/archive/291}.
+\newblock Official problem and solution archive. Accessed September 23, 2026.
+
+\bibitem[Jin et~al.(2026)Jin, Min, Yang, Wei, Zhou, Kadhe, Baracaldo, and
+  Lee]{jin2026entropy}
+Woogyeol Jin, Taywon Min, Yongjin Yang, Dennis Wei, Yi~Zhou, Swanand~Ravindra
+  Kadhe, Nathalie Baracaldo, and Kimin Lee.
+\newblock Entropy-aware on-policy distillation of language models, 2026.
+\newblock URL \url{https://arxiv.org/abs/2603.07079}.
+
+\bibitem[Jung et~al.(2025)Jung, Yoon, Kim, and Lee]{jung2025todi}
+Seongryong Jung, Suwan Yoon, DongGeon Kim, and Hwanhee Lee.
+\newblock Todi: Token-wise distillation via fine-grained divergence control,
+  2025.
+\newblock URL \url{https://arxiv.org/abs/2505.16297}.
+
+\bibitem[Ko et~al.(2024)Ko, Kim, Chen, and Yun]{ko2024distillm}
+Jongwoo Ko, Sungnyun Kim, Tianyi Chen, and Se-Young Yun.
+\newblock Distillm: Towards streamlined distillation for large language models,
+  2024.
+\newblock URL \url{https://arxiv.org/abs/2402.03898}.
+
+\bibitem[Ko et~al.(2025)Ko, Chen, Kim, Ding, Liang, Zharkov, and
+  Yun]{ko2025distillm2}
+Jongwoo Ko, Tianyi Chen, Sungnyun Kim, Tianyu Ding, Luming Liang, Ilya Zharkov,
+  and Se-Young Yun.
+\newblock Distillm-2: A contrastive approach boosts the distillation of llms,
+  2025.
+\newblock URL \url{https://arxiv.org/abs/2503.07067}.
+
+\bibitem[Lewkowycz et~al.(2022)Lewkowycz, Andreassen, Dohan, Dyer, Michalewski,
+  Ramasesh, Slone, Anil, Schlag, Gutman-Solo, Wu, Neyshabur, Gur-Ari, and
+  Misra]{lewkowycz2022minerva}
+Aitor Lewkowycz, Anders Andreassen, David Dohan, Ethan Dyer, Henryk
+  Michalewski, Vinay Ramasesh, Ambrose Slone, Cem Anil, Imanol Schlag, Theo
+  Gutman-Solo, Yuhuai Wu, Behnam Neyshabur, Guy Gur-Ari, and Vedant Misra.
+\newblock Solving quantitative reasoning problems with language models, 2022.
+\newblock URL \url{https://arxiv.org/abs/2206.14858}.
+
+\bibitem[Li et~al.(2026)Li, Zuo, He, Zhang, Xiao, Qian, Yu, ang Gao, Yang, Liu,
+  and Ding]{li2026rethinking}
+Yaxuan Li, Yuxin Zuo, Bingxiang He, Jinqian Zhang, Chaojun Xiao, Cheng Qian,
+  Tianyu Yu, Huan ang Gao, Wenkai Yang, Zhiyuan Liu, and Ning Ding.
+\newblock Rethinking on-policy distillation of large language models:
+  Phenomenology, mechanism, and recipe, 2026.
+\newblock URL \url{https://arxiv.org/abs/2604.13016}.
+
+\bibitem[Li et~al.(2025)Li, Yue, Xu, Jiang, Niu, Lin, Ramasubramanian, and
+  Poovendran]{li2025small}
+Yuetai Li, Xiang Yue, Zhangchen Xu, Fengqing Jiang, Luyao Niu, Bill~Yuchen Lin,
+  Bhaskar Ramasubramanian, and Radha Poovendran.
+\newblock Small models struggle to learn from strong reasoners, 2025.
+\newblock URL \url{https://arxiv.org/abs/2502.12143}.
+
+\bibitem[Lightman et~al.(2023)Lightman, Kosaraju, Burda, Edwards, Baker, Lee,
+  Leike, Schulman, Sutskever, and Cobbe]{lightman2023verify}
+Hunter Lightman, Vineet Kosaraju, Yura Burda, Harri Edwards, Bowen Baker, Teddy
+  Lee, Jan Leike, John Schulman, Ilya Sutskever, and Karl Cobbe.
+\newblock Let's verify step by step, 2023.
+\newblock URL \url{https://arxiv.org/abs/2305.20050}.
+
+\bibitem[Lin et~al.(2026)Lin, Zhao, Jiang, Rao, Li, Wang, He, and
+  Huang]{lin2026opdvr}
+Wenze Lin, Jiale Zhao, Xitai Jiang, Songde Rao, Yining Li, Shenzhi Wang,
+  Bingxiang He, and Gao Huang.
+\newblock On-policy distillation with verifiable reward, 2026.
+\newblock URL \url{https://arxiv.org/abs/2608.24696}.
+
+\bibitem[Lin et~al.(2025)Lin, Gou, Gong, Liu, Shen, Xu, Lin, Yang, Jiao, Duan,
+  and Chen]{lin2024rho1}
+Zhenghao Lin, Zhibin Gou, Yeyun Gong, Xiao Liu, Yelong Shen, Ruochen Xu, Chen
+  Lin, Yujiu Yang, Jian Jiao, Nan Duan, and Weizhu Chen.
+\newblock Rho-1: Not all tokens are what you need, 2025.
+\newblock URL \url{https://arxiv.org/abs/2404.07965}.
+
+\bibitem[Shao et~al.(2024)Shao, Wang, Zhu, Xu, Song, Bi, Zhang, Zhang, Li, Wu,
+  and Guo]{shao2024deepseekmath}
+Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei
+  Zhang, Mingchuan Zhang, Y.~K. Li, Y.~Wu, and Daya Guo.
+\newblock Deepseekmath: Pushing the limits of mathematical reasoning in open
+  language models, 2024.
+\newblock URL \url{https://arxiv.org/abs/2402.03300}.
+
+\bibitem[Sheng et~al.(2026)Sheng, Ye, Wang, Wang, Gu, and Kang]{sheng2026ier}
+Huanxin Sheng, Zhiling Ye, Haonan Wang, Jian Wang, Jinjie Gu, and Jian Kang.
+\newblock 1% of tokens can be enough: On gradient estimation in on-policy
+  distillation, 2026.
+\newblock URL \url{https://arxiv.org/abs/2609.24432}.
+
+\bibitem[Wang et~al.(2025{\natexlab{a}})Wang, Yang, Wang, Wang, Xu, and
+  Huang]{wang2025abkd}
+Guanghui Wang, Zhiyong Yang, Zitai Wang, Shi Wang, Qianqian Xu, and Qingming
+  Huang.
+\newblock Abkd: Pursuing a proper allocation of the probability mass in
+  knowledge distillation via $\alpha$-$\beta$-divergence, 2025{\natexlab{a}}.
+\newblock URL \url{https://arxiv.org/abs/2505.04560}.
+
+\bibitem[Wang et~al.(2025{\natexlab{b}})Wang, Yu, Gao, Zheng, Liu, Lu, Dang,
+  Chen, Yang, Zhang, Liu, Yang, Zhao, Yue, Song, Yu, Huang, and
+  Lin]{wang2025beyond8020}
+Shenzhi Wang, Le~Yu, Chang Gao, Chujie Zheng, Shixuan Liu, Rui Lu, Kai Dang,
+  Xionghui Chen, Jianxin Yang, Zhenru Zhang, Yuqiong Liu, An~Yang, Andrew Zhao,
+  Yang Yue, Shiji Song, Bowen Yu, Gao Huang, and Junyang Lin.
+\newblock Beyond the 80/20 rule: High-entropy minority tokens drive effective
+  reinforcement learning for llm reasoning, 2025{\natexlab{b}}.
+\newblock URL \url{https://arxiv.org/abs/2506.01939}.
+
+\bibitem[Wu et~al.(2024)Wu, Tao, Wang, Yang, Zhao, and Wong]{wu2025akl}
+Taiqiang Wu, Chaofan Tao, Jiahao Wang, Runming Yang, Zhe Zhao, and Ngai Wong.
+\newblock Rethinking kullback-leibler divergence in knowledge distillation for
+  large language models, 2024.
+\newblock URL \url{https://arxiv.org/abs/2404.02657}.
+
+\bibitem[Xing et~al.(2026)Xing, Wang, Gao, Li, and Tang]{xing2026trust}
+Xingrun Xing, Haoqing Wang, Boyan Gao, Ziheng Li, and Yehui Tang.
+\newblock Trust region on-policy distillation, 2026.
+\newblock URL \url{https://arxiv.org/abs/2606.01249}.
+
+\bibitem[Xu et~al.(2026{\natexlab{a}})Xu, Sang, Zhou, He, and
+  Wang]{xu2026paced}
+Yuanda Xu, Hejian Sang, Zhengze Zhou, Ran He, and Zhipeng Wang.
+\newblock Paced: Distillation and on-policy self-distillation at the frontier
+  of student competence, 2026{\natexlab{a}}.
+\newblock URL \url{https://arxiv.org/abs/2603.11178}.
+
+\bibitem[Xu et~al.(2026{\natexlab{b}})Xu, Sang, Zhou, He, Wang, and
+  Geramifard]{sang2026beyond}
+Yuanda Xu, Hejian Sang, Zhengze Zhou, Ran He, Zhipeng Wang, and Alborz
+  Geramifard.
+\newblock Beyond grpo and on-policy distillation: An empirical sparse-to-dense
+  reward principle for language-model post-training, 2026{\natexlab{b}}.
+\newblock URL \url{https://arxiv.org/abs/2605.12483}.
+
+\bibitem[Xu et~al.(2026{\natexlab{c}})Xu, Sang, Zhou, He, Wang, and
+  Geramifard]{xu2026tip}
+Yuanda Xu, Hejian Sang, Zhengze Zhou, Ran He, Zhipeng Wang, and Alborz
+  Geramifard.
+\newblock Tip: Token importance in on-policy distillation, 2026{\natexlab{c}}.
+\newblock URL \url{https://arxiv.org/abs/2604.14084}.
+
+\bibitem[Xu et~al.(2026{\natexlab{d}})Xu, Zhou, Behdin, Markovic-Voronov, Sang,
+  Li, Zhu, Du, Rahmattalabi, He, Na, Wang, and Geramifard]{xu2026trek}
+Yuanda Xu, Zhengze Zhou, Kayhan Behdin, Jelena Markovic-Voronov, Hejian Sang,
+  Xiaomin Li, Wenhui Zhu, Xinchen Du, Aida Rahmattalabi, Ran He, Sen Na,
+  Zhipeng Wang, and Alborz Geramifard.
+\newblock Trek: Distill to explore, reinforce to refine, 2026{\natexlab{d}}.
+\newblock URL \url{https://arxiv.org/abs/2607.05339}.
+
+\bibitem[Yan et~al.(2025)Yan, Li, Hu, Wang, Cui, Qu, Cheng, and
+  Zhang]{yan2025luffy}
+Jianhao Yan, Yafu Li, Zican Hu, Zhi Wang, Ganqu Cui, Xiaoye Qu, Yu~Cheng, and
+  Yue Zhang.
+\newblock Learning to reason under off-policy guidance, 2025.
+\newblock URL \url{https://arxiv.org/abs/2504.14945}.
+
+\bibitem[Yang et~al.(2025)Yang, Li, Yang, Zhang, Hui, Zheng, Yu, Gao, Huang,
+  Lv, Zheng, Liu, Zhou, Huang, Hu, Ge, Wei, Lin, Tang, Yang, Tu, Zhang, Yang,
+  Yang, Zhou, Zhou, Lin, Dang, Bao, Yang, Yu, Deng, Li, Xue, Li, Zhang, Wang,
+  Zhu, Men, Gao, Liu, Luo, Li, Tang, Yin, Ren, Wang, Zhang, Ren, Fan, Su,
+  Zhang, Zhang, Wan, Liu, Wang, Cui, Zhang, Zhou, and Qiu]{yang2025qwen3}
+An~Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo~Zheng, Bowen
+  Yu, Chang Gao, Chengen Huang, Chenxu Lv, Chujie Zheng, Dayiheng Liu, Fan
+  Zhou, Fei Huang, Feng Hu, Hao Ge, Haoran Wei, Huan Lin, Jialong Tang, Jian
+  Yang, Jianhong Tu, Jianwei Zhang, Jianxin Yang, Jiaxi Yang, Jing Zhou,
+  Jingren Zhou, Junyang Lin, Kai Dang, Keqin Bao, Kexin Yang, Le~Yu, Lianghao
+  Deng, Mei Li, Mingfeng Xue, Mingze Li, Pei Zhang, Peng Wang, Qin Zhu, Rui
+  Men, Ruize Gao, Shixuan Liu, Shuang Luo, Tianhao Li, Tianyi Tang, Wenbiao
+  Yin, Xingzhang Ren, Xinyu Wang, Xinyu Zhang, Xuancheng Ren, Yang Fan, Yang
+  Su, Yichang Zhang, Yinger Zhang, Yu~Wan, Yuqiong Liu, Zekun Wang, Zeyu Cui,
+  Zhenru Zhang, Zhipeng Zhou, and Zihan Qiu.
+\newblock Qwen3 technical report, 2025.
+\newblock URL \url{https://arxiv.org/abs/2505.09388}.
+
+\bibitem[Yue et~al.(2025)Yue, Chen, Lu, Zhao, Wang, Yue, Song, and
+  Huang]{yue2025does}
+Yang Yue, Zhiqi Chen, Rui Lu, Andrew Zhao, Zhaokai Wang, Yang Yue, Shiji Song,
+  and Gao Huang.
+\newblock Does reinforcement learning really incentivize reasoning capacity in
+  llms beyond the base model?, 2025.
+\newblock URL \url{https://arxiv.org/abs/2504.13837}.
+
+\bibitem[Zhang et~al.(2025)Zhang, Li, Song, Ye, Gao, and Hu]{zhang2025law}
+Chen Zhang, Qiuchi Li, Dawei Song, Zheyu Ye, Yan Gao, and Yan Hu.
+\newblock Towards the law of capacity gap in distilling language models, 2025.
+\newblock URL \url{https://arxiv.org/abs/2311.07052}.
+
+\bibitem[Zhang et~al.(2026)Zhang, Sun, Zhao, Peng, Liang, Deng, Hu, Wong, and
+  Chuan]{zhang2026verifydistill}
+Zhiwei Zhang, Zechen Sun, Fei Zhao, Kang Peng, Bin Liang, Huayu Deng, Yao Hu,
+  Kam-Fai Wong, and Mu~Chuan.
+\newblock Verify before you distill: Prompt-level teacher gating for on-policy
+  distillation, 2026.
+\newblock URL \url{https://arxiv.org/abs/2609.02998}.
+
+\end{thebibliography}

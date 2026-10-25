@@ -1,0 +1,157 @@
+\section{Sibling-Guided Credit Distillation}
+\label{sec:method}
+
+\subsection{Overview}
+\method (Figure~\ref{fig:method}) augments a group-relative policy-gradient
+backbone with a distillation-derived credit signal. Dynamic sampling produces
+mixed successful/failed sibling rollouts; an external LLM turns them into a
+stepwise credit reference; the policy is scored under clean and credit-reference
+contexts; and detached teacher/student divergence reshapes token advantages
+inside the policy-gradient update. The inference-time model is the ordinary student policy: no external LLM,
+credit reference, or sibling evidence appears at inference.
+
+\subsection{Mixed sibling evidence}
+\label{sec:siblings}
+For a task $x$, the rollout worker samples a sibling group
+$Y_x=\{y_{x,1},\ldots,y_{x,n}\}$ under the current policy, with verifier outcome
+$R_{x,k}\in\{0,1\}$. A group is useful when it is \emph{mixed}:
+\begin{equation}
+  0 < \sum_{k=1}^{n} R_{x,k} < n .
+\end{equation}
+Mixed groups contain verified successful routes and failed alternatives under
+the same task prompt, making dynamic sampling SGCD's sibling evidence source.
+Following DAPO-style dynamic sampling \citep{dapo2025}, all-success and
+all-failure candidate groups are discarded and replacement task groups are
+sampled. The reported recipe refills toward eight complete mixed groups for at
+most ten generation batches; if the target remains unmet, it skips that
+optimizer update and continues training. Homogeneous groups never enter an SGCD
+policy update.
+
+\paragraph{Credit-reference construction.} For each mixed group, a strong
+external LLM converts policy-visible sibling traces plus binary verifier
+outcomes into a training-only stepwise credit reference $z_x$: reusable state
+checks, useful actions, failed
+branches, and likely deviation points. We rebuild this reference from fresh
+on-policy siblings rather than a persistent skill bank (prompt details:
+\suppref{sec:appendix}).
+
+\paragraph{Leakage boundary.} The credit reference is never shown to the
+inference-time student. During construction we retain only rollout-visible
+traces and the binary verifier outcome; all other evaluator-private fields,
+gold actions, sensitive values, and answer-bearing literals are removed. The
+reference therefore abstracts reusable credit evidence rather than hidden
+answers.
+
+\subsection{Dense teacher/student divergence}
+\label{sec:dense}
+For a rollout token position $t$, let $p_{x,k,t}^{K}$ be the current policy
+scored on the clean rollout prefix, and let $q_{x,k,t}^{K}$ use the same policy
+weights on the same observed prefix with credit reference $z_x$ inserted as
+teacher context. Both distributions are projected onto the same local support.
+The reported runs use $K{=}100$. The support
+contains the teacher top-$K$ tokens, the observed rollout token, and a tail
+bucket that preserves remaining mass. We primarily use reverse-KL,
+\begin{equation}
+  d_{x,k,t}
+  = D_{\mathrm{KL}}\!\left(
+      p_{x,k,t}^{K} \;\middle\|\; \mathrm{sg}[q_{x,k,t}^{K}]
+    \right),
+  \label{eq:rkl}
+\end{equation}
+The reported SGCD results use reverse-KL. Equation~\ref{eq:rkl} stops gradients
+through $q$; the complete divergence/entropy feature is detached from the actor
+through $u$ below. Thus the divergence and teacher entropy are consumed as
+credit features, not as a direct actor-gradient distillation loss.
+
+\subsection{Divergence-driven credit weighting}
+\label{sec:segments}
+Long-horizon traces contain large stretches of boilerplate reasoning, setup, and
+tool output. SGCD uses token-level divergence for \emph{bounded credit
+emphasis}: it adds local emphasis to the broadcast trajectory advantage without
+claiming causal ground-truth credit or conserving advantage mass. Within each
+response, our deterministic divergence/entropy segmenter uses
+$\tilde d_{x,k,t}=(d_{x,k,t}-d_{\min})/(d_{\max}-d_{\min}+\epsilon_{\mathrm{norm}})$
+with response extrema $d_{\min},d_{\max}$ and $\epsilon_{\mathrm{norm}}=0.1$.
+A segment starts when $\tilde d_{x,k,t}>\lambda_{\mathrm{KL}}=0.15$ and extends
+until entropy exceeds $\lambda_H=1.5$ times its onset value, subject to the
+$0.2T$ cap in \suppref{sec:appendix}. Triggered-span tokens inherit the
+onset saliency, while non-triggered tokens use their local $\tilde d_{x,k,t}$.
+The saliency $s_{x,k,t}\in[0,1]$ marks confident, localized disagreement.
+API/action spans are a safety/reporting slice, not the only segmentation rule.
+The optimization mask includes only assistant-generated response tokens;
+prompts, tool observations, simulator returns, and the credit-reference prefix
+are excluded from the objective below.
+Let $\mathcal{M}$ denote the resulting set of assistant-response token
+positions.
+
+\subsection{Credit-weighted policy gradient}
+\label{sec:credit}
+Let $A_{x,k}$ be the group-relative trajectory advantage and $\rho_{x,k,t}(\theta)$
+the usual policy ratio. SGCD replaces the broadcast advantage with a
+token-weighted advantage
+\begin{equation}
+  \begin{aligned}
+  \widehat A_{x,k,t} &= A_{x,k} \, W_{x,k,t},\\
+  s_{x,k,t} &= g(u_{x,k,t}),\\
+  u_{x,k,t} &= \mathrm{sg}\!\left[d_{x,k,t},
+  H(q_{x,k,t}^{K})\right],
+  \end{aligned}
+  \label{eq:weighted_adv}
+\end{equation}
+where $g$ is the deterministic divergence-spike and entropy-termination
+segmenter from \S\ref{sec:segments}. In our implementation, the credit
+multiplier is
+\begin{equation}
+  W_{x,k,t}
+  = \mathrm{clip}\!\left(1+\gamma\,s_{x,k,t},
+  1, c\right),
+  \label{eq:weight_layer}
+\end{equation}
+where $\mathrm{clip}(a,\ell,u)=\min(\max(a,\ell),u)$, $c>1$, and
+$\gamma\ge0$; reported runs use $\gamma{=}1$ and $c{=}2$. Low-saliency tokens
+have $W\approx1$; high-saliency tokens amplify the existing advantage magnitude
+without flipping its sign. The stop-gradient detaches feature construction from
+actor and teacher scoring, and the multiplier is constant with respect to actor
+parameters: there is no learned credit-weight network and no gradient through
+$d_{x,k,t}$, $H(q^K)$, or a teacher-matching KL/JSD objective. Failed rollouts
+receive larger negative advantage on high-saliency tokens; successful rollouts
+receive concentrated positive credit; low-saliency tokens recover ordinary GRPO. The
+actor loss is the standard
+clipped surrogate with $\widehat A_{x,k,t}$. Let
+$\bar\rho_{x,k,t}=\mathrm{clip}(\rho_{x,k,t},1-\epsilon,1+\epsilon)$; we use
+symmetric $\epsilon{=}0.2$ (bounds $[0.8,1.2]$) as in PPO \citep{ppo2017}:
+\begin{equation}
+  \begin{aligned}
+  \mathcal{L}_{\text{SGCD}}
+  ={}& - \sum_{(x,k,t)\in\mathcal{M}} \\
+     &\min\!\left(\rho_{x,k,t}\widehat A_{x,k,t},
+      \bar\rho_{x,k,t}\widehat A_{x,k,t}\right).
+  \end{aligned}
+  \label{eq:sgcd_loss}
+\end{equation}
+This equation shows SGCD's credit-weighted PG component. Additional
+regularization is recipe-specific and outside this notation. The distillation
+pathway contributes no
+teacher-matching actor-gradient term. The dense
+teacher/student comparison and credit-reference construction determine
+\emph{where} the verified advantage receives extra emphasis, not \emph{what}
+token distribution the actor must imitate. The Vanilla GRPO comparators retain
+their benchmark reference-KL regularizers: coefficient $0.05$ on
+$\tau^3$-airline and $0.04$ on AppWorld, the latter following DeepSeekMath
+\citep{deepseekmath2024}. SGCD omits reference-KL and instead uses detached
+dense divergence as a replacement credit signal. This signal is not an
+equivalent KL penalty because it has no direct teacher-matching actor-gradient
+path. Finally, $\lambda_{\mathrm{KL}}=0.15$ in \S\ref{sec:segments} is a
+normalized-divergence segment-onset threshold, not a loss coefficient.
+
+\subsection{Why this removes the direct-SD failure path}
+\label{sec:safety}
+Earlier direct auxiliary variants have the form
+$\mathcal{L}_{\text{PG}}+\lambda\mathcal{L}_{\text{SD}}$: if the teacher target
+is wrong, privileged, or unreproducible, the auxiliary creates a second actor
+gradient that can oppose the verifier. SGCD removes that path. The credit
+reference and dense RKL are detached features; they identify where the verified
+advantage receives bounded emphasis, while SGCD adds no distillation-derived
+actor-gradient path beyond the reward-grounded PG term. This operationalizes the diagnosis in
+\S\ref{sec:diagnosis}: use distillation for credit weighting, not to overrule
+policy gradient.

@@ -1,0 +1,42 @@
+\section{The Failure Mode: Naive SD Can Collapse Tool Use}
+\label{sec:diagnosis}
+
+\paragraph{Setup.} We train Qwen3.5-4B on the corrected $\tau^3$-airline task
+set in the $\tau$-bench family
+\citep{taubench2024,tau2bench2025,tau3bench2026} and evaluate 20 held-out task
+specifications on a paired grid of three evaluation seeds and four greedy trials
+per seed (240 episodes). Gold actions define \emph{state-changing action} tasks
+(booking/cancellation/update; 13), \emph{information-only} tasks (4),
+\emph{transfer-only} tasks (1), and \emph{no-action} tasks (2).
+
+\paragraph{Aggregate result.} Table~\ref{tab:tau3} reports the held-out
+$\tau^3$ mean Pass$^1$ across recipes. The Vanilla GRPO comparator reaches $0.583$; SDPO reaches
+$0.317$ at the reported checkpoint and scores $0\%$ on state-changing action
+tasks at late steps. The aggregate hides this category structure.
+
+\paragraph{Observed behavior: zero-tool collapse.} A per-step rollout audit shows that
+SDPO shifts toward no-tool information-only successes: the no-tool share rises
+sharply, while mean tools per success falls $2.5\to0.0$. The Vanilla GRPO control
+stays at $0\%$ zero-tool. Thus SDPO is not merely
+trading off categories; it preserves easy information-only answers while
+abandoning executable action behavior, as Table~\ref{tab:tau3} shows.
+
+\paragraph{A plausible direct-SD failure path.} Stop-gradient prevents
+teacher-parameter updates, but a teacher-matching target distribution can still
+pull the student. If the teacher favors ``skip the tool, answer directly'' or an
+action plan unsupported by the clean prompt, a KL/JSD auxiliary can optimize
+that target and steer the actor away from what the verifier rewards. The
+behavioral audit establishes collapse; it does not by itself identify this
+teacher-target pathway as the unique cause.
+
+\paragraph{Design implication.} This diagnosis motivates keeping the
+policy-gradient objective as the
+update driver. Distillation is useful for the narrower question: \emph{which parts
+of a long trajectory deserve extra emphasis relative to the broadcast verified
+advantage?} SGCD (\S\ref{sec:method}) uses teacher/student divergence for credit
+weighting in a policy-gradient update, not as an independent actor-gradient loss.
+
+\paragraph{Relation to known SD instability.} Prior work reports SD instability
+on math reasoning and dialogue (\S\ref{sec:related}); zero-tool collapse is the
+corresponding \emph{tool-use} instance and motivates keeping the reward-grounded
+update primary.

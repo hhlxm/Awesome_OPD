@@ -1,0 +1,73 @@
+\section{Preliminaries}
+\label{sec:prelim}
+
+\subsection{Notation}
+Let $x\sim\mathcal{D}$ denote a \emph{training input} and $y=(y_1,\ldots,y_L)$ a response, with $y_{<i}=(y_1,\ldots,y_{i-1})$ the prefix up to token position~$i$. We consider two LLMs: a student $\pi_{\theta}$ and a teacher $\pi_T$, each defining a next-token distribution over a shared vocabulary. A \emph{trajectory} is a pair $(x,y)$ with $y$ sampled autoregressively from a policy given $x$. We use $i$ to index token positions and $t$ to index optimization steps, writing $\theta_t$ for the student parameters at step~$t$. A \emph{state} is the autoregressive context $s_i=(x,y_{<i})$, the object on which the OPD objective is defined. 
+
+\subsection{On-Policy Distillation}
+On-policy distillation (OPD) samples trajectories from the student and aligns the student to the teacher on the prefixes the student actually visits~\citep{agarwal2024policy}. OPD can also be viewed as a special case of dense KL-constrained reinforcement learning, where the teacher distribution induces a token-level reward and the KL regularizer has a fixed relative weight~\citep{yang2026learning}.
+ 
+In the full-distribution form, OPD minimizes a per-token KL divergence on visited states:
+\begin{equation}
+    \mathcal{L}_{\mathrm{OPD}}(\theta)
+    =
+    \mathbb{E}_{x\sim\mathcal{D},\,y\sim\pi_\theta}
+    \left[
+        \sum_{i=1}^{L}
+        \operatorname{KL}\!\left(
+            \pi_\theta(\cdot\mid s_i)
+            \,\Vert\,
+            \pi_T(\cdot\mid s_i)
+        \right)
+    \right].
+\end{equation}
+
+In practice, we estimate it with a per-token advantage:
+\begin{equation}
+    A_i^{\mathrm{OPD}} = \log \pi_T(y_i \mid s) - \log \pi_\theta(y_i \mid s),
+    \label{eq:token-advantage}
+\end{equation}
+
+where $s = (x, y_{<i})$. Two properties follow from this formulation: (i)~the signal is \emph{local} in that it depends only on the prediction problem at state~$s$, not on the trajectory's outcome; and (ii)~it is \emph{dense} in that the teacher supplies a distributional signal at every visited state instead of a terminal scalar reward.
+
+Equation~\ref{eq:token-advantage} evaluates the correction only at the token the student emitted. A second estimator of the same divergence keeps the student's $k$ most likely tokens at each visited state and weights them by the student's probability:
+\begin{equation}
+    A_i^{\text{top-}k}
+    =
+    \sum_{v \in \mathcal{V}_i}
+    \tilde{\pi}_\theta(v \mid s)
+    \left[
+        \log \pi_T(v \mid s) - \log \pi_\theta(v \mid s)
+    \right],
+    \label{eq:topk-advantage}
+\end{equation}
+where $\mathcal{V}_i = \operatorname{TopK}(\pi_\theta(\cdot \mid s), k)$ and $\tilde{\pi}_\theta$ is $\pi_\theta$ renormalized over that set. It truncates the divergence to $k$ terms rather than estimating it from one sampled token, trading the distribution's tail for lower variance. Section~\ref{sec:setup} states which form each run uses. The alignment metrics below are diagnostics computed from the two policies' logged distributions, so they are available under either form.
+ 
+
+
+\subsection{Dynamic Metrics}
+
+\paragraph{Gap recovery.}
+Because evaluation criteria and initial teacher--student performance gaps vary across domains and model pairs, raw score improvements are not directly comparable. We therefore report improvement as a ratio to the initial teacher--student gap. Let $M_0$, $M_T$, and $M_t$ denote the evaluation scores of the initial student, the teacher, and the student at optimization step~$t$, respectively. The gap recovery ratio at step~$t$ is
+$\frac{M_t-M_0}{M_T-M_0}\times100\%.$
+A value of $0\%$, $100\%$, or above $100\%$ indicates no improvement toward the teacher, matching the teacher, or surpassing the teacher, respectively.
+
+\paragraph{Full-data recovery.}
+When the reference is full-data OPD rather than the teacher, we normalize by the gain of full-data OPD instead. Let $M_F$ denote the full-data OPD score at the same optimization step. The full-data recovery ratio is
+$\frac{M_t-M_0}{M_F-M_0}\times100\%.$ A value approaching $100\%$ means that a reduced query set nearly matches the gain of full-data OPD while a value above $100\%$ means it surpasses it.
+
+
+\paragraph{Top-$k$ token overlap ratio.}
+This metric measures agreement between the two policies' high-probability token sets. Let $S_t^\theta(s)=\operatorname{TopK}(\pi_{\theta_t}(\cdot\mid s),k)$ and $S^T(s)=\operatorname{TopK}(\pi_T(\cdot\mid s),k)$. The overlap at optimization step~$t$ is
+\begin{equation}
+    O_t^{(k)}
+    =
+    \frac{1}{|\mathcal{T}_t|}
+    \sum_{i\in\mathcal{T}_t}
+    \frac{|S_t^\theta(s_i)\cap S^T(s_i)|}{k},
+    \label{eq:topk-overlap}
+\end{equation}
+where $\mathcal{T}_t$ indexes the non-padding response positions of the rollouts in the batch collected at step~$t$~\citep{li2026rethinking}.
+
+\paragraph{Overlap-token advantage.}
+Inside that agreement, we average the teacher--student log-probability difference over the shared tokens $S_t^\theta(s_i)\cap S^T(s_i)$, weighting each shared token by the probability the student assigns it. The result reports how far apart the two policies remain on the tokens they already rank highly. Because of that weighting, and because it averages over top-$k$ entries rather than over sampled tokens, it sits on a much smaller scale than the teacher--student distance of Section~\ref{sec:rate-setup}, and the levels of the two are not comparable.

@@ -1,0 +1,15 @@
+\subsection{Data Sources}
+\label{supp_sec:data_source}
+
+For math benchmarks studied in this paper, we leverage the following data sources:
+AIME 2025\footnote{\url{https://huggingface.co/datasets/opencompass/AIME2025}},
+AIME 2024\footnote{\url{https://huggingface.co/datasets/HuggingFaceH4/aime_2024}},
+Math-500\footnote{\url{https://huggingface.co/datasets/HuggingFaceH4/MATH-500}},
+AMC23\footnote{\url{https://huggingface.co/datasets/math-ai/amc23}},
+Minerva\footnote{\url{https://huggingface.co/datasets/math-ai/minervamath}}.
+
+For training and evaluation of DAPO~\citep{yu2025DAPO-Zero}, we reuse their training data (\url{https://huggingface.co/datasets/BytedTsinghua-SIA/DAPO-Math-17k}) and processed version of AIME 2024 (\url{https://huggingface.co/datasets/BytedTsinghua-SIA/AIME-2024}).
+Please note that they have duplicated questions multiple times and explained in the dataset page that the purpose is to be compatible with an old version of VERL~\citep{sheng2025VERL}.
+We reuse the prompt template of DAPO to evaluate their $Pass@K$ and $CoT$-$Pass@K$ performance on other benchmarks.
+
+Besides, we follow the official LiveCodeBench repository\footnote{\url{https://github.com/LiveCodeBench/LiveCodeBench}} to perform Pass@K evaluations on competitive coding.

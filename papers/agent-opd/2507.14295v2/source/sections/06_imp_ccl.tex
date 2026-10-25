@@ -1,0 +1,9 @@
+\vspace{-5pt}
+\section{Conclusions and Limitations}
+
+\label{sec:conclusions}
+
+In this work, we highlight a critical limitation of current single-turn RL training: its tendency to impair multi-turn reasoning by promoting repetitive and shallow responses. To address this, we propose \textit{Unary Feedback as Observation (UFO)}, a simple yet effective method that integrates minimal feedback into existing RL pipelines. By explicitly incorporating prior interaction history, UFO enables models to engage in exploration and self-reflection across multiple attempts, leading to deeper reasoning and improved adaptability. Our experiments show a 14\% gain in multi-turn accuracy while preserving single-turn quality. Additionally, we demonstrate that incorporating reward decay and repetitive penalty encourages diverse reasoning, self-correction and more thoughtful response patterns. Our approach is lightweight, generalizable, and easily applicable to existing datasets. A limitation of our work is its primary focus on relatively small models, leaving its generalizability to larger scales for future investigation. 
+
+\section{Acknowledgements}
+We thank the DeepSeek team for providing the DeepSeek-R1 model and early conceptual inspirations. We are grateful to the veRL team for their infrastructure support and the RAGEN team for their multi-turn RL framework. We thank Anna Zhao for their valuable contribution in helping revising manuscripts.

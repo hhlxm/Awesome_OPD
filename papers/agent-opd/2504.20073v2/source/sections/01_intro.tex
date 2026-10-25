@@ -1,0 +1,70 @@
+% \section{Introduction}
+
+
+
+
+% Reinforcement Learning (RL) has been promising in enhancing \textbf{reasoning} capabilities of large language models (LLMs)~\citep{deepseekai2025deepseekr1incentivizingreasoningcapability, openai2024o1, tinyzero, zeng2025simplerl}. These successes of RL with rule-based rewards have been demonstrated in deterministic, single-turn (i.e., \textit{static}) tasks like math~\citep{shao2024deepseekmathpushinglimitsmathematical} and coding~\citep{deepseekai2024deepseekcoderv2breakingbarrierclosedsource}.
+% However, applying it to agentic scenarios introduces two fundamental challenges.
+% % ~\citep{sutton2018reinforcement}
+% First, agents require \textbf{\textit{Multi-turn Interactions}}, where LLMs perform sequential decision-making and react with environment feedback;
+% second, \textbf{\textit{Environment Stochasticity}} may exist and identical actions can lead to different outcomes. 
+% Existing RL approaches aiming to improve LLM reasoning~\citep{deepseekai2025deepseekr1incentivizingreasoningcapability, kumar2024traininglanguagemodelsselfcorrect,gao2024regressingrelativefutureefficient} have been focusing on static tasks, leaving these challenges in extending them to agent settings underexplored.
+
+% To tackle these challenges, we first design three tasks using OpenAI-Gym ~\citep{brockman2016openaigym} to evaluate LLM capabilities on \textit{\textbf{reasoning as agents}}: {Bi-Arm Bandit}~\citep{auer2002finite} for stochastic feedback, {Sokoban}~\citep{sokoban} for multi-turn interaction, and {Frozen Lake}~\citep{frozenlake} combining both challenges.
+% Upon these environments, we introduce \textbf{RAGEN}, a general framework that extends RL to train LLM \textbf{R}easoning \textbf{Agen}ts (Figure~\ref{fig:teaser}). We formulate agent tasks as Markov Decision Processes (MDPs, \citet{mdp, kaelbling1998planning}). Beyond the single-turn interaction objectives, \textbf{RAGEN maximizes the objective of expected reward over entire trajectories} $\mathbb{E}_{\tau \sim \pi_\theta(\cdot|s_0)}[r_{\rm all}(\tau)]$, with $\tau$ representing the state-action trajectory, $r_{\rm all}(\tau) = \sum_{t} r_t$ is the cumulative reward across multi-turn interactions.
+
+
+% To optimize LLM policy $\pi_{\theta}$ for the above agent training objective, we propose State-Thinking-Actions-Reward
+% Policy Optimization (\textbf{StarPO}, Figure~\ref{fig:starpo}). StarPO consists of two interleaved stages: rollout stage and update stage. In the rollout stage, the LLM generates reasoning-guided responses $a^T_t$ consisting of thinking process and environment actions $a_t$ given interaction history, and sums up step rewards to collect trajectory-level rewards. The rewards are then normalized and used to update the LLM policy, where each trajectory is treated as a pair of initial state $s_0$ and model rollout $\langle a^T_0, r_0, s_1, ..., a^T_{t}, r_{t}, s_{t+1}, ... \rangle$. The model learns to generate complete rollouts with higher rewards given initial states, optimizing reasoning and action strategies jointly. Our experiments show that RAGEN effectively enhances LLM reasoning as agents across tasks and enables diverse reasoning patterns in different (e.g., adversarial) environmental dynamics.
+
+% A key consideration for effective reasoning agent RL training is reward stability in long-horizon, stochastic interactions. Inspired by Group-Relative Policy Optimization methods~\citep{shao2024deepseekmathpushinglimitsmathematical, liu2025DRGRPO}, we examine two key factors for rule-based reward modeling, namely \textbf{instance grouping strategy} and \textbf{reward normalization function}.
+% We find inductive bias can be effective in instance grouping: similarly difficult instances should be clustered into large groups, while state-level grouping leads to higher variance. Comparing normalization approaches, z-score normalization adopted by GRPO~\citep{shao2024deepseekmathpushinglimitsmathematical} works better with more inductive bias, while mean subtraction used in Dr. GRPO~\citep{liu2025DRGRPO} performs better otherwise.
+% Our analysis further reveals two key aspects for effective LLM agent RL training: prompt diversity, which balances task variety and effective response comparison, and rollout frequency, which mediates between training stability and data recency.
+
+% Our contributions are summarized as follows:
+% \vspace{-6pt}
+% \setlength{\itemsep}{-1pt}
+% \begin{itemize}
+% \item We introduce RAGEN, a general framework based on Markov Decision Processes (MDP) for training LLM reasoning agents through RL, and propose State-Thinking-Actions-Reward
+% Policy Optimization (StarPO) as an effective training approach.
+
+% \item We evaluate RAGEN on three tasks featured by multi-turn interaction and stochasticity, showing intriguing reasoning patterns and effectiveness over non-reasoning baselines.
+
+% \item We examine the effect of reward normalization, prompt diversity and rollout frequency on training LLM reasoning agents through RL.
+% \end{itemize}
+
+\section{Introduction}
+
+Training large language models (LLMs) to function as autonomous agents in interactive environments presents unique challenges. Unlike static tasks such as single-turn math problem solving~\citep{shao2024deepseekmathpushinglimitsmathematical} or coding~\citep{deepseekai2024deepseekcoderv2breakingbarrierclosedsource}, agent settings require models to make sequential decisions, maintain memory across turns, and adapt to stochastic feedback from their environment. These settings—central to planning assistants, robotics, and tutoring agents—demand that models not only perform well, but also self-improve through experience.
+
+While recent work has explored reinforcement learning (RL) for LLMs~\citep{deepseekai2025deepseekr1incentivizingreasoningcapability, openai2024o1, tinyzero, zeng2025simplerl, kumar2024traininglanguagemodelsselfcorrect, gao2024regressingrelativefutureefficient} using rule-based reward, it remains largely underexplored to train interactive \textbf{agents} that self-evolve to reason and adapt through rule-based RL. In particular, LLM agent training often exhibits training instability, complex reward signals, and limited generalization across environment changes, especially under multi-turn interaction with stochastic feedback. A key open question is: \textit{what design factors make self-evolving LLM agents learn effectively and stably}?
+
+
+We explore this question through a systematic study of agent learning under a general RL framework \textbf{StarPO} (\textbf{S}tate-\textbf{T}hinking-\textbf{A}ctions-\textbf{R}eward \textbf{P}olicy \textbf{O}ptimization). StarPO provides a unified view of \textbf{multi-turn, trajectory-level agent training} with flexible control over reasoning, reward assignment, and prompt-rollout structure. Built on top of StarPO, we develop \textbf{RAGEN}, a modular agent training and evaluation system designed to support the study of RL-based training in LLM Agents. RAGEN implements the full training loop—including rollout generation, reward assignment, and trajectory optimization—serving as a research infrastructure for systematic analysis of LLM agent training dynamics under multi-turn and stochastic environments.
+
+% Training LLM agents on real-world tasks such as web browsing and embodied manipulation often relies on extensive pretrained priors and task-specific engineering.
+% \textbf{To study learning from scratch and independent of these confounding factors}, we evaluate LLMs through RAGEN on four stylized environments: \textbf{Bandit} (single-turn, stochastic), \textbf{Sokoban} (multi-turn, deterministic), \textbf{Frozen Lake} (multi-turn, stochastic). These environments are deliberately minimalistic and fully controllable in difficulty, symbolic variation, and transition dynamics.
+% Crucially, they require agents to learn decision-making policies through environment interaction, relying minimally on pre-existing world knowledge. The shared structure across these tasks (e.g., symbolic grid representations) further enables analysis of cross-task generalization.
+
+Training LLM agents on real-world tasks like web browsing often depends on pretrained priors and heavy task-specific engineering. 
+We evaluate RAGEN on four environments spanning different complexities: \textbf{Bandit} (single-turn, stochastic), \textbf{Sokoban} (multi-turn, deterministic), \textbf{Frozen Lake} (multi-turn, stochastic), and \textbf{WebShop} (multi-turn, open-domain).
+The first three symbolic environments are \textbf{minimalistic and fully controllable}, while WebShop adds \textbf{real-world understanding and reasoning}. 
+Together, they enable analysis of generalization across varied decision-making challenges.
+
+
+Using this setup, we analyze three key dimensions of agent learning, and summarize below findings that \textbf{reveal core challenges and design principles} for stable agent RL training:
+\vspace{-5pt}
+\begin{enumerate}[left=2pt, itemsep=2pt, topsep=4pt]
+    \item \textbf{Gradient Stability in Multi-turn RL is the Key to Stable Training.} We find that \textbf{multi-turn RL training} often leads to a recurring instability pattern, \textbf{Echo Trap}, where agents overfit to locally rewarded reasoning patterns, marked by reward variability collapse, entropy drop, and gradient spikes. To mitigate this failure mode, we propose \textbf{StarPO-S}, a stabilized variant of our framework that improves learning robustness through variability-based trajectory filtering, critic baselining, and decoupled clipping.
+    
+    \item \textbf{Rollout Frequency and Diversity Shape Self-Evolution.} In RL-based agent training, LLM self-generated rollout trajectories are served as core training material. We identify key rollout factors for stable agent RL training: (1) ensuring that rollouts come from \textbf{diverse initial states} with \textbf{multiple responses per initial state}, (2) \textbf{implementing multiple actions each turn} to improve interaction horizon within fixed turn limit, (3) maintaining a \textbf{high rollout frequency} to ensure online feedback reflects current policies. 
+    % We find that training stability decreases when rollout lags behind updates and the model learns on old trajectories, or when prompt-response pairs lack intra-prompt comparison, highlighting the need for dynamic, structured rollout design.
+
+    \item \textbf{Emerging \textit{Agent} Reasoning Requires Meticulous Reward Signal.} We find that simply encouraging reasoning in the action format does not guarantee reasoning behavior. Even when models are prompted to reason (e.g., with `\texttt{\textbf{<think>}}' tokens) with trajectory-level optimization via StarPO, they often regress to direct action selection if reasoning offers no distinct reward advantage. We assume this is due to the simple action spaces in MDP where shallow strategies suffice. Moreover, when rewards only reflect task success, models produce \textbf{hallucinated reasoning}, revealing a mismatch between thoughts and environment states. These issues underscore the need for \textbf{fine-grained, reasoning-aware reward design} for long-horizon agent training.
+
+
+
+\end{enumerate}
+\vspace{-5pt}
+
+% Together, our framework and analysis offer insights into the principles behind training reasoning-capable, stable, and generalizable LLM agents. All environments and code are released as part of the RAGEN system.

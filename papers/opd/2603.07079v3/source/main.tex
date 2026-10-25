@@ -1,0 +1,212 @@
+%%%%%%%% ICML 2026 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs} % for professional tables
+\usepackage{mdframed}
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2026} with \usepackage[nohyperref]{icml2026} above.
+\usepackage{hyperref}
+
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+\PassOptionsToPackage{noend}{algorithmic}
+% Use the following line for the initial blind version submitted for review:
+\usepackage[accepted]{icml2026}
+
+% For preprint, use
+% \usepackage[preprint]{icml2026}
+
+% If accepted, instead use the following line for the camera-ready submission:
+% \usepackage[accepted]{icml2026}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[dvipsnames,svgnames,table]{xcolor}
+\usepackage{enumitem}
+\definecolor{text_green}{HTML}{55AA55}
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+\usepackage{makecell}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage[table]{xcolor}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\yj}[1]{\textcolor{blue}{Yongjin: #1}}
+\newcommand{\sk}[1]{\textcolor{purple}{Swanand: #1}}
+\newcommand{\methodfullname}{Entropy-Aware On-Policy Distillation}
+\newcommand{\method}{EOPD}
+
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+\usepackage[textsize=tiny]{todonotes}
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Entropy-Aware On-Policy Distillation of Language Models}
+
+\begin{document}
+
+\twocolumn[
+  \icmltitle{Entropy-Aware On-Policy Distillation of Language Models}
+
+  % It is OKAY to include author information, even for blind submissions: the
+  % style file will automatically remove it for you unless you've provided
+  % the [accepted] option to the icml2026 package.
+
+  % List of affiliations: The first argument should be a (short) identifier you
+  % will use later to specify author affiliations Academic affiliations
+  % should list Department, University, City, Region, Country Industry
+  % affiliations should list Company, City, Region, Country
+
+  % You can specify symbols, otherwise they are numbered in order. Ideally, you
+  % should not use this facility. Affiliations will be numbered in order of
+  % appearance and this is the preferred way.
+  \icmlsetsymbol{equal}{*}
+
+  \begin{icmlauthorlist}
+    \icmlauthor{Woogyeol Jin}{kaist}
+    \icmlauthor{Taywon Min}{kaist}
+    \icmlauthor{Yongjin Yang}{uoft,vec}
+    \icmlauthor{Dennis Wei}{comp}
+    \icmlauthor{Yi Zhou}{comp}
+    \icmlauthor{Swanand Ravindra Kadhe}{comp}
+    \icmlauthor{Nathalie Baracaldo}{comp}
+    \icmlauthor{Kimin Lee}{kaist}
+    %\icmlauthor{}{sch}
+    %\icmlauthor{}{sch}
+  \end{icmlauthorlist}
+
+  \icmlaffiliation{kaist}{KAIST AI, Seoul, South Korea}
+  \icmlaffiliation{comp}{IBM Research, San Jose, CA, USA}
+  \icmlaffiliation{uoft}{University of Toronto, Ontario, Canada}
+    \icmlaffiliation{vec}{Vector Institute, Ontario, Canada}
+  \icmlcorrespondingauthor{Kimin Lee}{kiminlee@kaist.ac.kr}
+
+  % You may provide any keywords that you find helpful for describing your
+  % paper; these are used to populate the "keywords" metadata in the PDF but
+  % will not be shown in the document
+  \icmlkeywords{Machine Learning, ICML}
+
+  \vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column listing the
+% affiliations and the copyright notice. The command takes one argument, which
+% is text to display at the start of the footnote. The \icmlEqualContribution
+% command is standard text for equal contribution. Remove it (just {}) if you
+% do not need this facility.
+
+% Use ONE of the following lines. DO NOT remove the command.
+% If you have no special notice, KEEP empty braces:
+\printAffiliationsAndNotice{}  % no special notice (required even if empty)
+% Or, if applicable, use the standard equal contribution text:
+% \printAffiliationsAndNotice{\icmlEqualContribution}
+
+\begin{abstract}
+%%%%%%%%%KM
+On-policy distillation is a promising approach for transferring knowledge between language models, where a student learns from dense token-level signals along its own trajectories. The standard objective is reverse KL divergence, which encourages the student to match the teacher's high-confidence predictions. However, we show that the mode-seeking property of reverse KL reduces generation diversity and yields unstable learning signals when the teacher distribution has high entropy. To address this, we introduce \methodfullname~(\method), which augments the reverse KL objective with forward KL on tokens where the teacher distribution has high entropy. This captures the full range of plausible outputs at uncertain steps while retaining precise imitation elsewhere, balancing mode-seeking precision with mode-covering robustness without sacrificing on-policy training efficiency. Experiments show that our method maintains generation diversity (sustained token-level entropy) and improves student–teacher alignment (lower forward KL on high-entropy tokens). Across six math reasoning benchmarks, this yields Pass@8 accuracy gains of $+1.37$ for Qwen3-0.6B-Base, $+2.39$ for Qwen3-1.7B-Base, and $+5.05$ for Qwen3-4B-Base compared to baseline on-policy distillation methods. These results demonstrate that accounting for teacher uncertainty is essential for maintaining diversity and achieving effective knowledge transfer. Our code is publicly available at {\small\url{https://github.com/WLS04/EOPD}}.
+%%%%%%%%%Prev version
+% On-policy distillation based on minimizing the reverse KL divergence has been adopted to reduce distribution mismatch between training and inference by aligning the student model with its own generation trajectory. 
+% On-policy distillation has emerged as a promising approach for transferring knowledge from a teacher model to a student by leveraging dense learning signals from the student’s own trajectories.
+% In this work, we show that due to mode-seeking property of the reverse KL objective in on-policy distillation, it tends to reduce generation diversity and yields unstable learning signals in regions where the teacher distribution has high entropy.
+% To mitigate this issue, we introduce \methodfullname, a simple adaptive integration of the forward KL for on-policy distillation. 
+% By leveraging the mode-covering property of the forward KL, our approach captures the global distributional structure of the teacher's top-$k$ logits, thereby providing stable learning signals even when the teacher is uncertain. This modification preserves the efficiency of on-policy distillation while ensuring robust learning in regions with high teacher entropy.
+% % of the teacher’s global distributional structure and uncertainty.
+% Compared to other methods, we show that our method preserves generation diversity, reflected in sustained token-level entropy, and maintains closer student–teacher distributional alignment, evidenced by lower forward KL divergence on high-entropy teacher tokens.
+% % By analyzing training dynamics and comparing with other entropy-promoting approaches, we show that our method effectively preserves entropy levels and yields lower forward KL divergence on high-entropy teacher tokens, indicating closer alignment with the teacher distribution. 
+% Consistent with these findings, experiments on math reasoning benchmarks demonstrate improvements of 2.1\% in Average@8 and 4.3\% in Pass@8.
+% These results show that explicitly accounting for teacher uncertainty during on-policy distillation is critical for preserving diversity and improving reasoning performance.
+  % add more after 
+\end{abstract}
+
+\input{sections/01_Introduction}
+\input{sections/02_Preliminary}
+\input{sections/03_Diversity}
+\input{sections/04_Method}
+\input{sections/05_Experiments}
+\input{sections/06_Related_works}
+\input{sections/07_Conclusion}
+%\input{sections/notation_proposal}
+
+
+% In the unusual situation where you want a paper to appear in the
+% references without citing it in the main text, use \nocite
+% \nocite{langley00}
+\section*{Impact Statement}
+This work improves on-policy knowledge distillation for transferring reasoning capabilities from large language models to smaller, more efficient models. We identify that reverse KL–based distillation, while effective for learning dominant modes, fails to preserve distributional structure and diversity in high-uncertainty regions that are critical for reasoning. To address this, we propose an entropy-aware framework that adaptively applies KL objectives based on the teacher’s token-level uncertainty. The proposed method preserves the efficiency of on-policy distillation while more faithfully transferring the teacher’s uncertainty and global structure. More broadly, this work contributes to the development of efficient and deployable language models, which may reduce computational and environmental costs associated with large-scale model deployment. As with prior advances in language modeling, the societal impact of this work depends on downstream applications, with no new ethical concerns beyond those of existing language models.
+\bibliography{icml2026}
+\bibliographystyle{icml2026}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\appendix
+\onecolumn
+\input{appendix/A_experiment}
+\input{appendix/B_toy}
+\input{appendix/C_evaluation}
+\input{appendix/D_pass}
+\input{appendix/E_high_entropy}
+\input{appendix/F_tradeoff}
+\input{appendix/G_other_model}
+\input{appendix/H_baselines}
+\input{appendix/I_additional_ablations}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
+% This document was modified from the file originally made available by
+% Pat Langley and Andrea Danyluk for ICML-2K. This version was created
+% by Iain Murray in 2018, and modified by Alexandre Bouchard in
+% 2019 and 2021 and by Csaba Szepesvari, Gang Niu and Sivan Sabato in 2022.
+% Modified again in 2023 and 2024 by Sivan Sabato and Jonathan Scarlett.
+% Previous contributors include Dan Roy, Lise Getoor and Tobias
+% Scheffer, which was slightly modified from the 2010 version by
+% Thorsten Joachims & Johannes Fuernkranz, slightly modified from the
+% 2009 version by Kiri Wagstaff and Sam Roweis's 2008 version, which is
+% slightly modified from Prasad Tadepalli's 2007 version which is a
+% lightly changed version of the previous year's version by Andrew
+% Moore, which was in turn edited from those of Kristian Kersting and
+% Codrina Lauth. Alex Smola contributed to the algorithmic style files.

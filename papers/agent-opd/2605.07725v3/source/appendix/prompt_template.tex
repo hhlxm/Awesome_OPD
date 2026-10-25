@@ -1,0 +1,216 @@
+\section{Prompt Template}
+
+
+\subsection{Datasets Prompt Template}
+
+\label{dataset_prompt}
+
+Our dataset contains various question types, including mathematics, programming, and scientific problems, each with different answer formats. To ensure consistent model output and facilitate simultaneous reasoning and tool usage, we have developed specialized prompts for each task type. Below, we present these prompts following~\citet{demy}.
+
+
+
+
+\begin{tcolorbox}[
+colframe=gray!30,
+colback=gray!5,
+coltitle=black!100,
+title=\textit{\textbf{Prompt Template for verifiable Math Problems}}
+]
+\setstretch{0.93}
+
+\rule{1.0\textwidth}{0.4pt}
+\hrule
+\vspace{0.3ex}
+\hrule
+
+\begin{center}
+    \textbf{\large Math Problems}
+\end{center}
+\vspace{-0.8em}
+\rule{1.0\textwidth}{0.4pt}
+
+Analyze and solve the following [math/science domain] problem step by step.
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Problem:} \textcolor{violet!90}{\textbf{[Insert problem text here]}}
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Hint:} \textcolor{blue!80!black}{\textbf{The tool could be used}} for more precise and efficient calculations and could help you to verify your result before you reach the final answer.
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Note:} You should first analyze the problem and form a high-level solution strategy, then utilize the tools to help you solve the problem.
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Answer Format:} Do not put units of the final answer inside \textbackslash{}boxed\{\}. The content of \textbackslash{}boxed\{\} should be the numerical value of the final answer only, without any units.
+
+Remember once you make sure the current answer is your final answer, do not call the tools again and directly output the final answer in the following text format, the answer format must be: \textcolor{red!50!black}{\textbf{\texttt{\textbackslash{}boxed\{'The final answer goes here.'\}}}}.
+
+\end{tcolorbox}
+
+
+\begin{tcolorbox}[
+colframe=gray!30,
+colback=gray!5,
+coltitle=black!100,
+title=\textit{\textbf{Prompt Template for Scientific QA Problems}}
+]
+\setstretch{0.93}
+
+\rule{1.0\textwidth}{0.4pt}
+\hrule
+\vspace{0.3ex}
+\hrule
+
+\begin{center}
+    \textbf{\large Scientific QA Problems}
+\end{center}
+\vspace{-0.8em}
+\rule{1.0\textwidth}{0.4pt}
+
+Analyze and solve the following [science domain] problem step by step.
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Problem:} \textcolor{violet!90}{\textbf{[Insert problem text here]}}
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Hint:} \textcolor{blue!80!black}{\textbf{The tool could be used}} for more precise and efficient calculations and could help you to verify your result before you reach the final answer.
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Note:} You should first analyze the problem and form a high-level solution strategy, then utilize the tools to help you solve the problem.
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Answer Format:} Remember once you make sure the current answer is your final answer, do not call the tools again and directly output the final answer in the following text format, the answer format must be: \textcolor{red!50!black}{\textbf{\texttt{\textbackslash{}boxed\{'The final answer goes here.'\}}}}. You need to put the final uppercase letter option of this problem into \textbackslash{}boxed\{\}.
+
+\end{tcolorbox}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{tcolorbox}[
+colframe=gray!30,
+colback=gray!5,
+coltitle=black!100,
+title=\textit{\textbf{Prompt Template for Code Problems}}
+]
+\setstretch{0.93}
+
+\rule{1.0\textwidth}{0.4pt}
+\hrule
+\vspace{0.3ex}
+\hrule
+
+\begin{center}
+    \textbf{\large Code Problems}
+\end{center}
+\vspace{-0.8em}
+\rule{1.0\textwidth}{0.4pt}
+
+You will be given a question (problem specification) and will generate a correct Python program that matches the specification and passes all tests.
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Problem:} \textcolor{violet!90}{\textbf{[Insert problem text here]}}
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Public Examples:} Here are some input and output examples of the expected code:
+
+\textcolor{green!50!black}{\textbf{Input:}} [sample inputs]
+
+\textcolor{green!50!black}{\textbf{Output:}} [sample outputs]
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Note:} You should first analyze the problem and form a high-level solution strategy, then utilize the tools to help you solve the problem.
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Instruction:} Read the inputs from stdin, solve the problem, and write the answer to stdout (do not directly test on the sample inputs). Enclose your code within the delimiters shown below. Ensure that when the Python program runs, it correctly reads inputs, executes the algorithm, and writes output to stdout.
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Submit:} Before submitting your code, you can utilize tools to check its correctness. Once you make sure the current code is correct, do not call the tools again and submit your code within the following Python code block:
+
+\begin{lstlisting}[language=Python]
+# YOUR CODE HERE
+\end{lstlisting}
+
+\end{tcolorbox}
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Baseline Prompt Template}
+\label{opsd_hint}
+For the OPSD$_{\mathrm{hint}}$ baseline, we construct partial guidance signals by prompting a language model to distill the ground-truth solution into a concise hint. Given a problem and its full solution, the model is instructed to extract the key insight or critical intermediate step (\eg, a useful substitution, a relevant theorem, or a strategic decomposition) without revealing the final answer or complete derivation. The resulting hint is then injected into the teacher's input as a conditioning signal during on-policy self-distillation. The prompt template used for hint generation is shown below:
+\begin{tcolorbox}[
+colframe=gray!30,
+colback=gray!5,
+coltitle=black!100,
+title=\textit{\textbf{Prompt Template for Hint Generation}}
+]
+\setstretch{0.93}
+
+\rule{1.0\textwidth}{0.4pt}
+\hrule
+\vspace{0.3ex}
+\hrule
+
+\begin{center}
+    \textbf{\large Hint Generation Prompt}
+\end{center}
+\vspace{-0.8em}
+\rule{1.0\textwidth}{0.4pt}
+
+You are given a problem and its ground-truth solution. Your task is to generate a concise hint that provides partial guidance toward solving the problem, \textbf{without} revealing the full solution or the final answer.
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Problem:} \textcolor{violet!90}{\textbf{[Insert problem text here]}}
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Ground-Truth Solution:} \textcolor{teal!80!black}{\textbf{[Insert full solution here]}}
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Requirements for the hint:}
+\begin{itemize}
+    \item Identify the key insight or critical intermediate step that is most essential for solving the problem.
+    \item Express it as a brief directional suggestion (1--2 sentences), such as a useful substitution, a relevant theorem, or a strategic decomposition.
+    \item Do \textbf{not} include the final numerical answer or any complete derivation.
+    \item Do \textbf{not} explicitly state which tool to use or how to use it.
+\end{itemize}
+
+\rule{1.0\textwidth}{0.4pt}
+
+\textbf{Output Format:} Return only the hint text, without any preamble or explanation.
+
+\end{tcolorbox}

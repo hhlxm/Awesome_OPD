@@ -1,0 +1,138 @@
+\section{\method}
+\label{sec:method}
+
+\method~converts local student-teacher compatibility into a position-wise weight on OPD rewards.
+The method is designed as a drop-in modifier for OPD: it does not alter how the teacher reward is computed, but changes how much each visited position should trust that reward.
+It has three parts: a per-position compatibility metric, a cumulative reliability weight, and an optional dynamic response-length controller.
+
+\subsection{Compatibility Metric}
+
+At position $\tau$, our goal is to decide whether the teacher still provides locally exploitable supervision on the student's current trajectory.
+The student and teacher are therefore evaluated on the same student-generated
+prefix $s_{\tau}=(x,y_{<\tau})$.
+
+We first restrict the comparison to each model's high-confidence candidate
+tokens. Let
+\begin{equation}
+    \mathcal{K}^{\mathrm{S}}_{\tau}
+    =
+    \operatorname{TopK}\!\left(\student(\cdot\mid s_{\tau}),k\right),
+    \qquad
+    \mathcal{K}^{\mathrm{T}}_{\tau}
+    =
+    \operatorname{TopK}\!\left(\teacher(\cdot\mid s_{\tau}),k\right)
+\end{equation}
+be the returned top-$k$ candidate sets.
+The top-$k$ size is an experimental hyperparameter.
+Then, we measure local compatibility with the overlap ratio
+\begin{equation}
+    \overlap
+    =
+    \frac{
+    \left|\mathcal{K}^{\mathrm{S}}_{\tau}\cap \mathcal{K}^{\mathrm{T}}_{\tau}\right|
+    }{k}.
+    \label{eq:local-overlap}
+\end{equation}
+Low overlap means that the teacher's dense reward is being computed under prefixes where its preferred next-token support has separated from the student's support. Accordingly, we define the prefix-drift event as
+\begin{equation}
+    B_{\tau}
+    =
+    \mathbf{1}\left[\overlap < \gamma\right],
+    \label{eq:bad-event}
+\end{equation}
+where $\gamma$ is the compatibility threshold.
+These drift events are later accumulated to attenuate subsequent OPD rewards and define the effective response length for dynamic rollout control.
+
+This metric follows the OPD mechanism analysis directly: successful OPD is associated with increasing high-probability overlap, while failing runs show stagnant or unstable overlap on student-visited states \citep{li2026rethinking}.
+It measures whether the student and teacher still share a plausible local action space.
+Low overlap means that the teacher's dense reward is being computed in a region where its preferred next-token support has separated from the student's support.
+We also design an alternative top-$p$ action-acceptance metric, its definition is given in Appendix~\ref{app:top-p-metric}.
+
+\subsection{Cumulative Reliability and Loss Weighting}
+
+Bad events are accumulated over the response:
+\begin{equation}
+    C_{\tau} = \sum_{i=1}^{\tau} B_i.
+\end{equation}
+The raw reliability weight is a clipped linear decay,
+\begin{equation}
+    R_{\tau} = \clip(1 - w_{\mathrm{drop}} C_{\tau}, 0, 1),
+    \label{eq:raw-weight}
+\end{equation}
+where $w_{\mathrm{drop}}\geq 0$ controls the penalty per compatibility failure.
+The raw weight is monotone non-increasing along each valid response.
+Padding positions are forced to zero.
+
+The actual loss weight adds a base floor:
+\begin{equation}
+    L_{\tau} = R_{\tau} + w_{\mathrm{base}}
+    \label{eq:loss-weight}
+\end{equation}
+for valid response positions, and $L_{\tau}=0$ for padding.
+The scaled \opd~reward is
+\begin{equation}
+    \widetilde{r}_{\tau,j} = L_{\tau} \cdot r_{\tau,j}.
+    \label{eq:scaled-reward}
+\end{equation}
+The base weight has two practical roles.
+First, it prevents \method~from becoming a hard switch when $R_{\tau}$ reaches zero.
+Second, it lets the method trade off denoising and retention of weak teacher signal.
+Concrete hyperparameter values are specified in the experimental setup.
+
+\subsection{Dynamic Response Budget}
+
+\method~can additionally adjust the rollout length during training.
+Define the effective response length of a sample as
+\begin{equation}
+    E = \sum_{\tau=1}^{T} \mathbf{1}\left[R_{\tau}>\epsilon\right],
+    \label{eq:effective-length}
+\end{equation}
+for a small tolerance $\epsilon$.
+This definition deliberately uses $R_{\tau}$, not $L_{\tau}$.
+Therefore a token with $R_{\tau}=0$ and $w_{\mathrm{base}}>0$ can still contribute a small \opd~reward, but it is not counted as reliable length.
+
+
+
+
+% \vspace{-2mm}
+\begin{algorithm}[t]
+\caption{\method~with reliability-aware reward scaling and dynamic response budget}
+\label{alg:prune-opd}
+\begin{algorithmic}[1]
+\Require prompt distribution $\mathcal{D}$, student policy $\student$, teacher policy $\teacher$, OPD reward routine, initial response budget $M_1$
+% \Require compatibility, reward-weighting, and response-budget hyperparameters
+\Ensure updated student policy $\student$ and response budget sequence $\{M_t\}$
+\For{training step $t=1,2,\ldots$}
+    \State Sample prompts $\{x^{(b)}\}_{b=1}^{B}\sim\mathcal{D}$ and generate student rollouts $\{y^{(b)}_{1:T_b}\}_{b=1}^{B}$ with maximum length $M_t$.
+    \State Compute raw OPD reward tensors $r^{(b)}_{\tau,j}$ on the student-visited prefixes.
+    \For{each rollout $b=1,\ldots,B$}
+        \State Compute the overlap-ratio sequence on student-visited prefixes using Eq.~\eqref{eq:local-overlap}.
+        \State Mark low-compatibility positions and form the cumulative reliability weights using Eqs.~\eqref{eq:bad-event}--\eqref{eq:loss-weight}.
+        \State Scale OPD rewards using Eq.~\eqref{eq:scaled-reward} and compute the effective reliable length $E^{(b)}$ using Eq.~\eqref{eq:effective-length}.
+    \EndFor
+    \State Update $\theta$ with the OPD objective using scaled rewards $\widetilde{r}^{(b)}_{\tau,j}$.
+    \State $h_t\leftarrow B^{-1}\sum_{b=1}^{B}\mathbf{1}[E^{(b)}\geq M_t-m]$.
+    \If{$h_t\geq \rho$}
+        \State $M_{t+1}\leftarrow \min(M_t+\Delta,M_{\max})$ and reset the low-hit counter.
+    \ElsIf{$h_t<\rho$ for $P$ consecutive steps}
+        \State $M_{t+1}\leftarrow \max(M_t-\Delta,M_{\min})$ and reset the low-hit counter.
+    \Else
+        \State $M_{t+1}\leftarrow M_t$.
+    \EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+% \vspace{-8mm}
+
+% \vspace{-5mm}
+Let $M_t$ be the maximum response length used for rollout generation at training step $t$.
+The controller monitors the batch hit ratio: the fraction of samples whose effective reliable length reaches the current limit up to a margin.
+If the hit ratio is large, the limit expands by a fixed step, capped by $M_{\max}$.
+If the hit ratio remains small for a patience window, the limit contracts by the same step, bounded below by $M_{\min}$.
+The initial limit, bounds, update step, margin, hit-ratio threshold, and patience are specified in the experimental setup. Algorithm~\ref{alg:prune-opd} summarizes the full \method~procedure, including reliability-aware reward scaling and dynamic response-budget adaptation.
+To keep the training loop readable, the position-wise compatibility and weighting rules refer directly to the definitions above.
+
+% The implementation is intentionally narrow.
+% When \method~is disabled, the original OPD or GRPO path is unchanged.
+% When enabled, \method~only rescales the already-computed OPD reward tensor.
+% It does not currently route zero-reliability tokens to a GRPO fallback loss; that is an explicit future direction rather than part of the present method.

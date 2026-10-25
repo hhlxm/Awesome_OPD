@@ -1,0 +1,126 @@
+\documentclass[11pt,letterpaper]{mystyle}
+
+\usepackage[comma,authoryear,compress]{natbib}
+\bibliographystyle{plainnat}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{placeins}
+\usepackage{listings}
+\tcbuselibrary{skins,breakable,listings}
+
+\input{math_commands.tex}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Assumption}
+\newtheorem{theorem}{Theorem}
+
+\definecolor{promptframe}{RGB}{31,56,100}
+\newtcblisting{promptbox}[1]{
+  listing only,
+  breakable,
+  enhanced,
+  colback=white,
+  colframe=promptframe,
+  boxrule=0.5pt,
+  arc=1pt,
+  title={#1},
+  fonttitle=\bfseries\small,
+  left=4pt,
+  right=4pt,
+  top=2pt,
+  bottom=2pt,
+  listing options={
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    breakatwhitespace=true,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false,
+    upquote=true,
+    frame=none,
+    aboveskip=0pt,
+    belowskip=0pt
+  }
+}
+
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  breakatwhitespace=true,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  framesep=4pt,
+  showstringspaces=false,
+  upquote=true
+}
+
+\setcounter{topnumber}{3}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.75}
+
+\title{\LARGE UOPD: Uncertainty-Aware Intervention for \\
+On-Policy Distillation of Multi-Turn Agents}
+\runningtitle{UOPD: Uncertainty-Aware Intervention for On-Policy Distillation of Multi-Turn Agents}
+
+\author{\textbf{Wenbo Zhang}\textsuperscript{1,*} \quad
+\textbf{Pengcheng Xu}\textsuperscript{1,*} \quad
+\textbf{Weizhi Du}\textsuperscript{2} \quad
+\textbf{Jing Zhang}\textsuperscript{1} \quad
+\textbf{Hengrui Cai}\textsuperscript{1} \\
+\textsuperscript{1}University of California, Irvine \quad
+\textsuperscript{2}University of Michigan, Ann Arbor
+}
+
+\hypersetup{
+  pdftitle={UOPD: Uncertainty-Aware Intervention for On-Policy Distillation of Multi-Turn Agents},
+  pdfauthor={Wenbo Zhang, Pengcheng Xu, Weizhi Du, Jing Zhang, Hengrui Cai}
+}
+
+\begin{document}
+
+\begin{abstract}
+On-policy distillation (OPD) trains a student on its own rollouts using dense supervision from a teacher. In multi-turn environments, a mistake at a critical decision step can redirect the subsequent rollout toward poor outcomes. We use low teacher confidence on student actions to select high-uncertainty steps for correction. In a controlled ALFWorld study, a single teacher correction at a low-confidence step improves subsequent student behavior and task success, motivating selective intervention during distillation. We propose \textbf{UOPD}, an uncertainty-aware intervention method for on-policy distillation. At low-uncertainty turns, UOPD executes student actions and applies the standard OPD loss. At high-uncertainty turns, it samples and executes teacher actions and trains the student to imitate them through supervised fine-tuning, which minimizes forward Kullback–Leibler divergence in expectation. UOPD utilizes adaptive uncertainty thresholds to target a scheduled intervention rate. Empirically, we evaluate UOPD across a broad range of agentic tasks, including ALFWorld, WebShop, and Search, demonstrating its superior performance over OPD methods and their variants. UOPD improves WebShop score by up to $15.8\%$ relative to standard OPD.
+
+\vspace{6mm}
+\textbf{Date:} September 26, 2026
+
+\raisebox{-0.15\height}{\includegraphics[height=1em]{figures/github-logo.pdf}}
+\textbf{Code:}
+\href{https://github.com/onepounchman/UOPD}{https://github.com/onepounchman/UOPD}
+
+\textbf{Author Emails:}
+\href{mailto:wenbz13@uci.edu,pengchx3@uci.edu,hengrc1@uci.edu}{\{wenbz13,pengchx3,hengrc1\}@uci.edu}
+\end{abstract}
+
+\maketitle
+\begingroup
+\renewcommand{\thefootnote}{*}
+\footnotetext{These authors contributed equally to this work.}
+\endgroup
+
+\input{sections/introduction.tex}
+\input{sections/related_work.tex}
+\input{sections/motivation.tex}
+\input{sections/method.tex}
+\input{sections/experiments.tex}
+\input{sections/conclusion.tex}
+
+\clearpage
+\bibliography{references}
+
+\appendix
+\input{sections/appendix.tex}
+
+\end{document}

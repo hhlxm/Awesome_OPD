@@ -1,0 +1,7 @@
+\section{Conclusion}
+\vspace{-3mm}
+OPD provides dense supervision for long reasoning chains; however, when the student's reasoning pattern diverges from that of the teacher, the resulting dense rewards become unreliable.
+\method~treats this as a position-wise reliability problem: it checks whether student and teacher remain locally compatible under shared prefix, turns cumulative compatibility failures into a drift signal, rescales OPD rewards, and controls response length using reliable rather than raw token count.
+Across diverse distillation settings, overlap-based \method~reduces training time by 37.6\%--68.0\% in low-compatibility regimes while preserving benchmark performance, and it keeps the long training window open when compatibility remains high.
+These results show that efficient long-horizon OPD should not be governed by teacher strength or a fixed rollout budget alone.
+Instead, dense teacher supervision should be allocated according to its local exploitability on the prefixes that the student actually visits.

@@ -1,0 +1,148 @@
+\subsection{Proof and Additional Theoretical Analysis}
+\label{supp_sec:theorem_proof}
+
+Below we include the detailed proof for Theorem~\ref{thm:grpo-incentive}.
+
+\begin{proof}
+% We analyze the policy gradient dynamics under GRPO.
+Let $p_c = P(\mathcal{I}_{\text{CoT}}(c_i)=1)$ be the current probability of generating a correct CoT. The expected reward for a response $y_i$ is:
+\begin{equation}
+\mathbb{E}[R(y_i)] = 
+\begin{cases} 
+\alpha & \text{if } \mathcal{I}_{\text{CoT}}(c_i)=1 \\
+\beta & \text{if } \mathcal{I}_{\text{CoT}}(c_i)=0 
+\end{cases}
+% \label{eq:expected_reward}
+\end{equation}
+The group-level expected reward $\mu \triangleq \mathbb{E}[\mu_{\mathbf{Y}}]$ is:
+\begin{equation}
+\mu = p_c \alpha + (1 - p_c)\beta. \label{eq:group_mu}
+\end{equation}
+For large $G$, the group mean $\mu_{\mathbf{Y}}$ and variance $\sigma_{\mathbf{Y}}^2$ concentrate around their expectations:
+\begin{align}
+\mu_{\mathbf{Y}} &\xrightarrow{G \to \infty} \mu
+\label{eq:mu_converge}
+\\
+\sigma_{\mathbf{Y}}^2 &\xrightarrow{G \to \infty} \sigma^2 > 0. \label{eq:sigma_converge}
+\end{align}
+% where $\sigma^2 > 0$.
+
+The expected advantage conditional on CoT correctness is:
+\begin{align}
+\mathbb{E}[\hat{A}(y_i) \mid \mathcal{I}_{\text{CoT}}(c_i)=1] &
+% \approx
+\xrightarrow{G \to \infty}
+\frac{\alpha - \mu}{\sigma} \label{eq:correct_raw} \\
+\mathbb{E}[\hat{A}(y_i) \mid \mathcal{I}_{\text{CoT}}(c_i)=0] &
+% \approx
+\xrightarrow{G \to \infty}
+\frac{\beta - \mu}{\sigma}. \label{eq:incorrect_raw}
+\end{align}
+Substituting \eqref{eq:group_mu} into \eqref{eq:correct_raw} and \eqref{eq:incorrect_raw}:
+\begin{align}
+\mathbb{E}[\hat{A}(y_i) \mid \text{correct CoT}] &
+% =
+\rightarrow
+\frac{(1 - p_c)(\alpha - \beta)}{\sigma} \label{eq:correct_final} \\
+\mathbb{E}[\hat{A}(y_i) \mid \text{incorrect CoT}] &
+% =
+\rightarrow
+\frac{-p_c(\alpha - \beta)}{\sigma}. \label{eq:incorrect_final}
+\end{align}
+Since $\alpha > \beta$ (by \eqref{eq:assumption_alpha} under the \emph{Logic Prior} assumption) and $\sigma > 0$, we have:
+\begin{align*}
+(1 - p_c)(\alpha - \beta)/\sigma &> 0, \\
+-p_c(\alpha - \beta)/\sigma &< 0,
+\end{align*}
+proving inequalities \eqref{eq:theorem_advantage_guarantee}.
+
+The GRPO policy gradient update in \eqref{eq:gradient_update},
+$\nabla_\theta J(\theta) \approx \frac{1}{G} \sum_{i=1}^G \hat{A}(y_i) \nabla_\theta \log \pi_\theta(y_i \mid q)$,
+on average increases the likelihood of responses with $\hat{A}(y_i) > 0$ (correct CoTs) and decreases it for $\hat{A}(y_i) < 0$ (incorrect CoTs).
+Thus, $p_c$ increases monotonically.
+\end{proof}
+
+\paragraph{Discussions on ($\mu, \sigma^2$) in Theorem~\ref{thm:grpo-incentive}}
+From \eqref{eq:group_mu}, we know that the group reward mean is given by $\mu = p_c \alpha + (1 - p_c)\beta$. Furthermore, we can derive the exact formula for the variance $\sigma^2$ in \eqref{eq:sigma_converge} and analyze their impacts together with $p_c$, $\alpha$, and $\beta$ on policy iterations.
+
+The sample variance $\sigma_{\mathbf{Y}}^2$ converges to the true variance $\sigma^2$:
+\[
+\sigma_{\mathbf{Y}}^2 = \frac{1}{G} \sum_{j=1}^G (R(y_j) - \mu_{\mathbf{Y}})^2 \xrightarrow{G \to \infty} \text{Var}(R(y_j)) \equiv \sigma^2,
+\]
+where $\text{Var}(R(y_j))$ can be computed using the law of total variance:
+\[
+\text{Var}(R(y_j)) = \underbrace{\text{Var}(\mathbb{E}[R(y_j) \mid \mathcal{I}_{\text{CoT}}(c_j)])}_{\text{Variance of conditional expectation}} + \underbrace{\mathbb{E}[\text{Var}(R(y_j) \mid \mathcal{I}_{\text{CoT}}(c_j))]}_{\text{Expectation of conditional variance}}.
+\]
+
+First term:
+    \[
+    \mathbb{E}[R(y_j) \mid \mathcal{I}_{\text{CoT}}(c_j)] = 
+    \begin{cases} 
+    \alpha & \text{if } \mathcal{I}_{\text{CoT}}(c_j) = 1 \\
+    \beta & \text{if } \mathcal{I}_{\text{CoT}}(c_j) = 0
+    \end{cases}.
+    \]
+The random variable $\mathbb{E}[R(y_j) \mid \mathcal{I}_{\text{CoT}}(c_j)]$ has variance:
+  \[
+  \text{Var}(\mathbb{E}[R(y_j) \mid \mathcal{I}_{\text{CoT}}(c_j)]) = (\alpha - \beta)^2 p_c (1 - p_c).
+  \]
+Second term:
+  \[
+  \text{Var}(R(y_j) \mid \mathcal{I}_{\text{CoT}}(c_j)) = 
+  \begin{cases} 
+  \alpha(1 - \alpha) & \text{if } \mathcal{I}_{\text{CoT}}(c_j) = 1 \\
+  \beta(1 - \beta) & \text{if } \mathcal{I}_{\text{CoT}}(c_j) = 0
+  \end{cases},
+  \]
+so its expectation is:
+  \[
+  \mathbb{E}[\text{Var}(R(y_j) \mid \mathcal{I}_{\text{CoT}}(c_j))] = p_c \alpha(1 - \alpha) + (1 - p_c)\beta(1 - \beta).
+  \]
+Thus:
+\begin{align}
+\sigma^2 = (\alpha - \beta)^2 p_c (1 - p_c) + p_c \alpha(1 - \alpha) + (1 - p_c)\beta(1 - \beta).
+% \label{eq:sigma_solution}
+\end{align}
+
+Substituting $\mu$ and $\sigma$ into \eqref{eq:correct_final} and \eqref{eq:incorrect_final}, we have
+\[
+\mathbb{E}[\hat{A}(y_i) \mid \text{correct CoT}]
+\rightarrow
+\frac{(1 - p_c)(\alpha - \beta)}{\sqrt{
+(\alpha - \beta)^2 p_c (1 - p_c) + p_c \alpha(1 - \alpha) + (1 - p_c)\beta(1 - \beta)
+}} ,
+\]
+\[
+\mathbb{E}[\hat{A}(y_i) \mid \text{incorrect CoT}]
+\rightarrow
+\frac{-p_c(\alpha - \beta)}{\sqrt{
+(\alpha - \beta)^2 p_c (1 - p_c) + p_c \alpha(1 - \alpha) + (1 - p_c)\beta(1 - \beta)
+}} .
+\]
+
+An ideal pre-training on a high-capacity model could help to ensure that $\alpha \rightarrow 1$ and $\beta \rightarrow 0$ at the beginning of RLVR. In this condition, we have the following advantage estimates:
+\[
+\mathbb{E}[\hat{A}(y_i) \mid \text{correct CoT}]
+\rightarrow
+\sqrt{\frac{1-p_c}{p_c}},
+\quad
+% \]
+% \[
+\mathbb{E}[\hat{A}(y_i) \mid \text{incorrect CoT}]
+\rightarrow
+- \sqrt{\frac{p_c}{1-p_c}}.
+\]
+In this ideal scenario, the role of human would be to prepare a comprehensive and diverse set of questions and answers, leveraging RLVR to automatically incentivize the model's reasoning capabilities. However, in practice—the ``unideal case''—it is often necessary to first fine-tune the base LLM to align its output with a proper reasoning distribution before applying RLVR.
+
+\paragraph{Discussions on Key Observations in RLVR}
+Grounded in our theoretical analysis, we can now provide our unique explanations for several previously elusive yet important observations reported in DeepSeek-R1~\citep{guo2025deepseek-r1}.
+
+Our Explanation of the Observation ``\emph{DeepSeek-R1-Zero achieved remarkable Pass@K performance on AIME 2024 but encountered challenges such as poor readability and language mixing.}'': 
+Even DeepSeek-V3~\citep{liu2024deepseek-v3} cannot guarantee ideal conditions where $\alpha \rightarrow 1, \beta \rightarrow 0$. As a result, cold-start data is required to rectify prior logic biases, motivating the R1 approach.
+
+Our Explanation of the Observation ``\emph{The R1-Zero approach did not work well for the 32B dense model, yet distillation can be very effective.}'': 
+Key factors such as $(p_c, \alpha, \beta)$ for the 32B base model are in an even worse state, causing pure RLVR to converge to suboptimal local solutions. Based on our analysis, the key to effective reasoning lies in learning correct CoTs. Therefore, the distillation approach can efficiently teach an LLM how to reason properly.
+
+% Our Explanation of the Observation ``\emph{The average response length of DeepSeek-R1-Zero naturally increases during training.}'':
+% On average, long CoTs have higher probabilities than short CoTs to generate correct answers because more tokens can enable problem solving in finer-grained steps and may also introduce more spurious correlations. Replacing ``correct v.s. incorrect'' with ``long v.s. short'' in \eqref{eq:assumption_alpha} leads to the conclusion that long CoTs being naturally incentivized. For simple problems, long CoTs may be regarded as an improper model bias, which could be the root cause of widely observed ``over-thinking'' phenomena~\citep{chen2025SurveyReasoning}.
+

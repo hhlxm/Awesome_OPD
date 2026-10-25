@@ -1,0 +1,54 @@
+{
+  "arxiv_id": "2603.07079v3",
+  "title": "Entropy-Aware On-Policy Distillation of Language Models",
+  "authors": [
+    "Jin, Woogyeol",
+    "Min, Taywon",
+    "Yang, Yongjin",
+    "Wei, Dennis",
+    "Zhou, Yi",
+    "Kadhe, Swanand Ravindra",
+    "Baracaldo, Nathalie",
+    "Lee, Kimin"
+  ],
+  "submitted_date": "2026/03/07",
+  "abs_url": "https://arxiv.org/abs/2603.07079v3",
+  "schema_version": 2,
+  "requested_input": "2603.07079",
+  "requested_id": "2603.07079",
+  "source_url": "https://arxiv.org/src/2603.07079v3",
+  "downloaded_at": "2026-10-25T09:45:09.891568+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "8b9c9ad1e06c00b3fa3da29c8e8e7f03a6556dc8bba8dcc67ba30c5975fb2471",
+  "tex_files": [
+    "appendix/A_experiment.tex",
+    "appendix/B_toy.tex",
+    "appendix/C_evaluation.tex",
+    "appendix/D_pass.tex",
+    "appendix/E_high_entropy.tex",
+    "appendix/F_tradeoff.tex",
+    "appendix/G_other_model.tex",
+    "appendix/H_baselines.tex",
+    "appendix/I_additional_ablations.tex",
+    "main.tex",
+    "sections/01_Introduction.tex",
+    "sections/02_Preliminary.tex",
+    "sections/03_Diversity.tex",
+    "sections/04_Method.tex",
+    "sections/05_Experiments.tex",
+    "sections/06_Related_works.tex",
+    "sections/07_Conclusion.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 42,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2603.07079v3",
+    "sha256": "b73ce4b5bfcc9956c3ba39067f868f18f935fb8b894094ac1dff0a597e69691d",
+    "downloaded_at": "2026-10-25T09:45:11.770858+00:00",
+    "content_type": "application/pdf"
+  }
+}

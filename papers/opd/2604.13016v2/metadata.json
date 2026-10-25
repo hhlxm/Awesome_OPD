@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "arxiv_id": "2604.13016v2",
+  "title": "Rethinking On-Policy Distillation of Large Language Models: Phenomenology, Mechanism, and Recipe",
+  "authors": [
+    "Li, Yaxuan",
+    "Zuo, Yuxin",
+    "He, Bingxiang",
+    "Zhang, Jinqian",
+    "Xiao, Chaojun",
+    "Qian, Cheng",
+    "Yu, Tianyu",
+    "Gao, Huan-ang",
+    "Yang, Wenkai",
+    "Liu, Zhiyuan",
+    "Ding, Ning"
+  ],
+  "abs_url": "https://arxiv.org/abs/2604.13016v2",
+  "pdf": {
+    "url": "https://arxiv.org/pdf/2604.13016v2",
+    "file": "paper.pdf"
+  },
+  "note": "PDF identified as a separate paper in the local reading collection. First-page date: 2026-04-15. No source archive was present for this paper."
+}

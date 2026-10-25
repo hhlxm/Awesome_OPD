@@ -1,0 +1,22 @@
+% ACL encourages an unnumbered ethical-considerations section; it is excluded
+% from the page limit and placed after Limitations and before References.
+\section*{Ethical Considerations}
+
+SGCD is a training-time method for tool-use agents and introduces no new data
+collection involving human subjects. The experiments build on public benchmark
+resources. The method's
+privileged signal, summaries of on-policy sibling rollouts from
+\creditreferenceproviderphrase{}, is
+confined to training; the inference-time model receives no credit reference, sibling
+evidence, oracle, or external model. The sanitizer excludes credentials,
+evaluator internals, hidden gold actions, and answer-bearing
+deployment-invisible content from the external summarizer. As with any agent that executes actions in real
+applications, deployment should retain human oversight for irreversible
+operations. SGCD only changes training-time credit weighting; it is not a
+substitute for application-level safety controls.
+
+Generative AI systems assisted with language editing, consistency checks,
+citation verification, and preparation of the conceptual method schematic.
+They were not treated as authors or as sources of scientific evidence. The
+authors independently reviewed the final text, references, figures, and claims
+and remain responsible for the manuscript in full.

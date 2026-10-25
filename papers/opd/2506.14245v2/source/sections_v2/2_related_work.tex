@@ -1,0 +1,38 @@
+\section{Related Work}
+\label{sec:rel_work}
+
+
+\paragraph{RLVR}
+Since the release of DeepSeek-R1~\citep{guo2025deepseek-r1}, there has been a surge of research interest in the RLVR paradigm~\citep{deepscaler2025,liu2025DrGRPO-Oat-Zero,hu2025OpenReasonerZero,cui2025PRIME,xie2025LogicRL,zeng2025SimpleRL-Zoo-Zero,yu2025DAPO-Zero,deepcoder2025,chen2025NFT,he2025Skywork-OR1,wen2025Light-R1,cao2025skyrl,liu2025ProRL,chen2025AceReason-Nemotron}.
+Due to the high computational cost of RLVR, most studies have focused on small- to medium-sized models (up to 32B parameters).
+These studies span a wide range of aspects, including training data curation, objective design, hyperparameter tuning, base model selection, and various insightful observations.
+However, only a few studies have addressed the theoretical foundations of RLVR.
+In this work, we argue that RLVR for LLMs should be understood from a different perspective—one that emphasizes the correctness of reasoning paths.
+We hope our empirical findings and theoretical perspective could inspire the community to develop more efficient and effective RLVR approaches, unlocking its broader potential across diverse applications.
+
+\paragraph{Debates on Whether RLVR Really Incentivizes}
+Since~\citet{yue2025RLVR_limit} raised the insightful question of whether RLVR truly incentivizes improvements beyond the base LLMs, and conducted extensive empirical experiments to demonstrate the wide applicability of their key hypothesis—that RLVR does not improve $Pass@K$ for the base LLM because all reasoning paths are already present in the base model—there have been varying perspectives on this hypothesis.
+Some studies agree with this viewpoint~\citep{wang2025OneShotRLVR,zhu2025PosNegRLVR,zhang2025EMPO,wang2025MultimodalCoTRM,chen2025NFT}, while others report contradictory findings~\citep{liu2025ProRL,chen2025AceReason-Nemotron,Shojaee2025IllusionOfThink}, as discussed in the introduction.
+There is currently no fundamental understanding to resolve these debates.
+~\citet{liu2025ProRL} speculated that previous RLVR experiments may have been conducted within a single domain (e.g., math) and were optimized for limited gradient steps before true exploration could occur. 
+~\citet{Shojaee2025IllusionOfThink} suggested that the complexity of puzzles might be the key factor. 
+~\citet{chen2025AceReason-Nemotron} presented statistically significant empirical results to justify that their model indeed improves $Pass@K$, particularly highlighting a persistent gap on the LiveCodeBench v6~\citep{Jain2025LiveCodeBench}.
+In this work, we extend the Pass@K experiments of~\citet{chen2025AceReason-Nemotron} to more LiveCodeBench versions and include another similar open-source study~\citep{he2025Skywork-OR1} starting RLVR from distilled LLMs as a comparison.
+All these results clearly disclose the extended reasoning boundary of distilled LLMs on competitive coding after RLVR.
+
+% Our findings also suggest that on challenging, live benchmarks, base LLMs struggle to guess, and their limitations in reasoning become clearly evident.
+
+% \paragraph{The Importance of Correct CoTs}
+% Some recent studies also noticed the importance of verifying the correctness of CoTs~\citep{McGinness2025llm-reason-stall,Shojaee2025IllusionOfThink}.
+% However, their approaches are to define a synthetic reasoning task with the reasoning CoTs verifiable programmably.
+% This is an interesting yet effective approach to fully examine the correctness of reasoning, but it can hardly transfer to unstructured reasoning scenarios, such as on math and code.
+% In this work, we believe that LLM-as-a-CoT-Judge could play a vital role in general reasoning cases, and there is also a pressing need to design evaluation benchmarks to verify the reliability of emerging LLM verifiers.
+
+\paragraph{The Importance of Correct CoTs}
+Recent studies have also highlighted the importance of verifying the correctness of CoTs~\citep{arcuschin2025CoTNotFaithful,McGinness2025llm-reason-stall,Shojaee2025IllusionOfThink}.
+However, their approaches focus on defining synthetic reasoning tasks where the correctness of reasoning CoTs can be verified easily.
+While this is an interesting and effective approach for fully examining reasoning correctness, it is difficult to apply to unstructured reasoning scenarios, such as in math and code. 
+In this work, we argue that the LLM-as-a-CoT-Judge paradigm could play a crucial role in more general reasoning tasks, and emphasize the pressing need for the design of evaluation benchmarks to assess the reliability of emerging LLM verifiers.
+
+% In the meanwhile, we note there is a contemporary study also advocating this paradigm~\citep{jiang2025misaligning}, and they mainly consider education and healthcare domains.
+

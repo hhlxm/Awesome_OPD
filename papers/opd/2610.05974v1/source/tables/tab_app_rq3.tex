@@ -1,0 +1,23 @@
+\begin{table}[h]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\caption{Outcome categories, in the student, of the 567 problems that GRPO improves for the teacher (\%).}
+\label{tab:app-rq3}
+\begin{tabular}{lrrrrrrrrrrrr}
+\toprule
+ & \multicolumn{4}{c}{0.6B} & \multicolumn{4}{c}{1.7B} & \multicolumn{4}{c}{4B} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}\cmidrule(lr){10-13}
+Method & A & C & P & N & A & C & P & N & A & C & P & N \\
+\midrule
+Direct GRPO & 24.3 & 16.9 & 8.8 & 49.9 & 23.3 & 41.4 & 6.7 & 28.6 & 17.3 & 45.1 & 10.8 & 26.8 \\
+Direct GRPO (A$\cup$C) & 21.0 & 16.1 & 9.0 & 54.0 & 20.5 & 39.0 & 7.6 & 33.0 & 14.5 & 43.6 & 11.0 & 31.0 \\
+OPD-r & 25.0 & 16.2 & 7.9 & 50.8 & 21.7 & 38.9 & 8.6 & 30.8 & 18.7 & 47.6 & 7.4 & 26.3 \\
+OPD-r (A$\cup$C) & 28.0 & 18.0 & 7.9 & 46.0 & 23.3 & 39.9 & 8.6 & 28.2 & 15.9 & 47.4 & 8.5 & 28.2 \\
+OPD-f & 29.1 & 20.3 & 6.5 & 44.1 & 22.4 & 35.6 & 11.3 & 30.7 & 18.2 & 46.9 & 8.8 & 26.1 \\
+OPD-f (A$\cup$C) & 24.2 & 17.1 & 9.5 & 49.2 & 21.7 & 36.2 & 11.1 & 31.0 & 14.8 & 46.2 & 10.4 & 28.6 \\
+TS-OPD (routing only) & 30.7 & 18.0 & 7.6 & 43.7 & 23.9 & 38.1 & 9.3 & 28.7 & 18.3 & 49.0 & 7.6 & 25.0 \\
+TS-OPD & 32.1 & 18.0 & 8.6 & 41.3 & 24.0 & 38.1 & 8.2 & 29.8 & 19.2 & 49.2 & 7.2 & 24.3 \\
+\bottomrule
+\end{tabular}
+\end{table}

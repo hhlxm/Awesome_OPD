@@ -1,0 +1,54 @@
+\vspace{-0.5mm}
+\section{Conclusion and Limitations}
+\vspace{-0.5mm}
+% \textbf{Conclusion.}
+% RLVR is widely regarded as a promising approach to enable LLMs to continuously self-improve and acquire novel reasoning capabilities. 
+% In this paper, we systematically investigate \the effect of current RLVR methods on the reasoning capacity boundary of LLMa.
+% Surprisingly, our findings demonstrate that RLVR does not elicit fundamentally new reasoning patterns and are bounded by the base model.
+% Furthermore, our in-depth analysis reveals xxx.
+% We also show that distillation plays a different role in introducing new reasoning patterns and expanding the reasoning boundary.
+% These findings highlight a critical limitation of current RLVR xxx.
+
+RLVR is widely regarded as a promising approach to enable LLMs to continuously self-improve and acquire novel reasoning capabilities. 
+In this paper, we systematically investigate the effect of current RLVR methods on the reasoning capacity boundaries of LLMs.
+Surprisingly, our findings reveal that current RLVR rarely elicits fundamentally new reasoning patterns; instead, the reasoning capabilities of RLVR-trained models remain bounded by those of their base models. 
+These results indicate that current RLVR methods have not fully realized the potential of reinforcement learning to elicit novel reasoning abilities in LLMs through exploration and exploitation. 
+This limitation may stem from the lack of effective exploration strategies in the vast language space as we discussed in~\cref{sec:discuss}. Exploration in high-level abstraction, fine-grained credit assignment, and multi-turn agent-environment interactions may alleviate this problem. 
+We hope the community will continue developing methods along these dimensions to unlock the potential of reinforcement learning to discover genuinely novel reasoning strategies.
+
+Despite our best efforts, this study has several limitations. Although we have attempted to evaluate as many strong, publicly available pure-RLVR models as possible, our analysis is constrained by the fact that many of the most capable models and training pipelines remain proprietary. Moreover, RL for LLM is rapidly evolving, and emerging techniques may mitigate some of the limitations identified here. Consequently, our conclusions should be interpreted with awareness of these practical constraints.
+
+% We provide a more detailed discussion of the possible causes of this gap and promising future directions in~\cref{sec:discuss}.
+
+% Our in-depth analysis further shows that RLVR improves sampling efficiency but does not expand the set of solvable problems. 
+% In contrast, we find that distillation can introduce new reasoning patterns from teacher models, thereby genuinely extending the model’s reasoning boundary.
+% These results highlight a critical limitation of current RLVR approaches and underscore the need for improved paradigms—such as continual scaling, more effective exploration, and multi-turn agent-environment interaction—to fully unlock the reasoning potential of LLMs and realize the untapped promise of reinforcement learning.
+
+
+\section*{Author Contributions}
+
+\textbf{All authors} made valuable contributions to the experimental design, analysis, and iteration, as well as to the writing, editing, and overall management of the project.
+
+
+% \begin{itemize}
+%     \item \textbf{Yang Yue \begin{CJK}{UTF8}{gbsn}(乐洋)\end{CJK}} led the project, first discovered the phenomenon where RL pass@k is surpassed by the base model, and proposed the idea; designed the experiments and partially conducted experiments; took primary responsibility for writing the manuscript.
+%     \item \textbf{Zhiqi Chen} conducted substantial experiments, including pass@k evaluation across models and benchmarks, and the perplexity analysis; contributed to  discussions, figure creation, and manuscript review.
+%     \item \textbf{Rui Lu} contributed to inspiration of the idea and conceptualization of the project, story writing and manual check of AI reasoning trajectory.
+%     \item \textbf{Andrew Zhao} contributed to discussions on experimental design, proposed the perplexity-based analysis, and contributed to the early implementation of the RL training code.
+%     \item \textbf{Zhaokai Wang} contributed to discussions, writing, proofreading, and comprehensive manuscript review.
+%     \item \textbf{Yang Yue \begin{CJK}{UTF8}{gbsn}(乐阳)\end{CJK}} contributed to the training of visual reasoning model, discussions, proofreading and figure refinement.
+%     \item \textbf{Gao Huang} \& \textbf{Shiji Song} supervised the research, and assisted in writing the paper.
+% \end{itemize}
+
+\begin{itemize}[leftmargin=0.5cm]
+    \item \textbf{Yang Yue \begin{CJK}{UTF8}{gbsn}(乐洋)\end{CJK}} led the project, first discovered the phenomenon where RL pass@k is surpassed by the base model, and proposed the idea; designed the experiments and partially conducted experiments; took primary responsibility for writing the manuscript.
+    \item \textbf{Zhiqi Chen} conducted substantial experiments, including pass@k evaluation across models and benchmarks, and the perplexity analysis; contributed to  discussions, figure creation, and manuscript review.
+    \item \textbf{Rui Lu} contributed to inspiration of the idea and conceptualization of the project, story writing and manual check of AI reasoning trajectory.
+    \item \textbf{Andrew Zhao} contributed to discussions on experimental design, proposed the perplexity-based analysis, and contributed to the early implementation of the RL training code.
+    \item \textbf{Zhaokai Wang} contributed to discussions of RLVR's effect on reasoning boundary, writing, proofreading, and comprehensive manuscript review.
+    \item \textbf{Yang Yue \begin{CJK}{UTF8}{gbsn}(乐阳)\end{CJK}} contributed to the training of visual reasoning model, discussions, proofreading and figure refinement.
+    \item \textbf{Gao Huang} \& \textbf{Shiji Song} supervised the research, and assisted in writing the paper.
+\end{itemize}
+
+\section*{Acknowledgements}
+This work is supported in part by the National Key R\&D Program of China under Grant 2022ZD0114903, the National Natural Science Foundation of China under Grants 42327901 and U24B20173, and the Scientific Research Innovation Capability Support Project for Young Faculty under Grant ZYGXQNJSKYCXNLZCXM-I20.

@@ -1,0 +1,39 @@
+{
+  "arxiv_id": "2602.15260v1",
+  "title": "Fast and Effective On-policy Distillation from Reasoning Prefixes",
+  "authors": [
+    "Zhang, Dongxu",
+    "Yang, Zhichao",
+    "Janghorbani, Sepehr",
+    "Han, Jun",
+    "Ressler II, Andrew",
+    "Qian, Qian",
+    "Lyng, Gregory D.",
+    "Batra, Sanjit Singh",
+    "Tillman, Robert E."
+  ],
+  "submitted_date": "2026/02/16",
+  "abs_url": "https://arxiv.org/abs/2602.15260v1",
+  "schema_version": 2,
+  "requested_input": "2602.15260",
+  "requested_id": "2602.15260",
+  "source_url": "https://arxiv.org/src/2602.15260v1",
+  "downloaded_at": "2026-10-23T05:31:30.446533+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "53ffcf85e8c593e5724259b30298d1f9faa065c657e6be627de212aede3e8681",
+  "tex_files": [
+    "main.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 18,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2602.15260v1",
+    "sha256": "87df6988609676184f72e0d87ab4a1b8e3e17e3fda58cca79b09a9c150941b68",
+    "downloaded_at": "2026-10-23T05:31:32.049600+00:00",
+    "content_type": "application/pdf"
+  }
+}

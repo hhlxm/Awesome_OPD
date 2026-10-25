@@ -1,0 +1,26 @@
+
+
+
+
+
+% \vspace{-3mm}
+\section{More Related Works}
+% \vspace{-2mm}
+\label{appendix:more-related}
+
+\noindent\textbf{Reinforcement Learning for LLM Reasoning.}
+Since the emergence of LLMs, the post-training phase has proven crucial to enhance problem solving and reasoning abilities~\cite{ouyang2022training}. This stage typically falls into three main categories: supervised fine-tuning using human-curated or distilled data~\cite{wang2023far}, self-improvement iteration~\cite{zelikman2022star, gulcehre2023reinforced}, and reinforcement learning~\cite{ouyang2022training}.
+Previously, a reward model or preferences between responses were employed for reward modeling~\cite{ouyang2022training, rafailov2023dpo}.
+Recently, Reinforcement Learning with Verifiable Rewards (RLVR) has gained significant traction as a method to improve the reasoning capabilities of LLMs in domains such as mathematics and programming~\cite{lambert2024tulu3,shao2024deepseekmath}. 
+An encouraging landmark work is OpenAI's o1 model~\cite{jaech2024openaio1}, which was among the first large-scale applications of RL for reasoning, achieving state-of-the-art results at the time of its release.
+Following this, Deepseek-R1~\cite{guo2025deepseek-r1} became the first open-weight model to match or surpass the performance of o1. 
+A significant innovation introduced with R1 is the ``zero'' setting, where reinforcement learning is applied directly to the base LLM, bypassing any intermediate supervised tuning.
+This approach inspired a wave of open-source efforts to replicate or extend R1's methodology and improve RL algorithms~\cite{zeng2025simplerl, liu2025oat, yu2025dapo, code-r1, zhao2025absolute, wang2025beyond}.
+In parallel, reinforcement learning has also gained attention in the multimodal domain, driving advancements in multimodal reasoning~\cite{chen2025r1v, shen2025vlmr1, zheng2025easyr1}.
+
+% analysis: no aha-moment, xxx
+\textbf{Analysis of RLVR}. Although there are many excellent open-source works and algorithmic designs in the field of RLVR, there remains a lack of deep understanding regarding the root effects of RLVR on LLM reasoning abilities and its limitations when starting from the base model. 
+Several studies~\cite{liu2025there, zhao2025echo, shah2025rethinking} highlight that the reflective behaviors observed in R1-like models actually emerge from the base models, rather than being introduced by RLVR training.
+Dang \etal~\cite{dang2025assessing} observed a phenomenon similar to our findings: Pass@k deteriorates rapidly and fails to recover with reinforcement learning, but this was seen only in a limited experimental setup with Qwen-2.5-0.5B on GSM8K. More importantly, they did not explore the relationship between the base model and the RL model. In contrast, our paper conducts systematic and rigorous experiments to show that not only reflective behaviors but all reasoning paths are already embedded in the base model. We further demonstrate that RLVR does not elicit any new reasoning abilities beyond the base model.
+
+

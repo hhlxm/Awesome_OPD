@@ -1,0 +1,84 @@
+\begin{table*}[t]
+    \centering
+    \caption{
+    Performance comparison of Qwen3 teacher and student across 4 benchmarks. The best results are in \textbf{bold}, and the second-best results are \underline{underlined}. We report average@32 over 5 runs.}
+    \vspace{1 mm}
+    \label{tab:main}
+
+    \begingroup
+    \setlength{\tabcolsep}{6.5 pt}
+    \renewcommand{\arraystretch}{1.08}
+    \normalsize
+
+    \begin{adjustbox}{max width=0.82\textwidth}
+    \begin{tabular}{llccccc}
+        \toprule
+        \multirow{2}{*}{\textbf{Params}} 
+        & \multirow{2}{*}{\textbf{Method}} 
+        & \multicolumn{2}{c}{\textbf{Math}} 
+        & \textbf{Science} 
+        & \textbf{Code} 
+        & \multirow{2}{*}{\textbf{Average}} \\
+        \cmidrule(lr){3-4}
+        \cmidrule(lr){5-5}
+        \cmidrule(lr){6-6}
+        & & AIME 2024 & AIME 2025 & GPQA & LiveCodeBench & \\
+
+        \midrule
+        \rowcolor[HTML]{FEE090}
+        \multicolumn{7}{c}{\textbf{Teacher Models from the Qwen3 Series}}\\
+        \textbf{4B} 
+        & GRPO 
+        & 67.60\phantom{.}\scalebox{0.72}{$\pm$1.34} & 60.42\phantom{.}\scalebox{0.72}{$\pm$1.47} & 55.19\phantom{.}\scalebox{0.72}{$\pm$0.81} & 63.13\phantom{.}\scalebox{0.72}{$\pm$0.93} & 61.59 \\
+
+        \midrule
+        \rowcolor[HTML]{E0F3F8}
+        \multicolumn{7}{c}{\textbf{Distilled Student Models from the Qwen3 Series}}\\
+        \multirow{7}{*}{\textbf{0.6B}}
+        & Vanilla 
+        & 7.71\phantom{.}\scalebox{0.72}{$\pm$0.33} & 12.81\phantom{.}\scalebox{0.72}{$\pm$0.38} & 13.24\phantom{.}\scalebox{0.72}{$\pm$0.24} & 14.89\phantom{.}\scalebox{0.72}{$\pm$0.29} & 12.16 \\
+        & SFT 
+        & 5.67\phantom{.}\scalebox{0.72}{$\pm$0.26} & 5.42\phantom{.}\scalebox{0.72}{$\pm$0.22} & 15.20\phantom{.}\scalebox{0.72}{$\pm$0.30} & 9.61\phantom{.}\scalebox{0.72}{$\pm$0.27} & 8.97 \\
+        & GRPO 
+        & 4.06\phantom{.}\scalebox{0.72}{$\pm$0.37} & 4.90\phantom{.}\scalebox{0.72}{$\pm$0.31} & \underline{20.38}\phantom{.}\scalebox{0.72}{$\pm$0.47} & 15.95\phantom{.}\scalebox{0.72}{$\pm$0.51} & 11.32 \\
+        & OPD 
+        & \underline{16.82}\phantom{.}\scalebox{0.72}{$\pm$0.81} & \underline{22.95}\phantom{.}\scalebox{0.72}{$\pm$0.97} 
+        & 17.76\phantom{.}\scalebox{0.72}{$\pm$0.41} 
+        & \underline{22.65}\phantom{.}\scalebox{0.72}{$\pm$0.75} & \underline{20.04} \\
+        & OPSD$_{\mathrm{gt}}$ 
+        & 12.63\phantom{.}\scalebox{0.72}{$\pm$0.58} & 17.04\phantom{.}\scalebox{0.72}{$\pm$0.64} & 17.32\phantom{.}\scalebox{0.72}{$\pm$0.35} & 16.73\phantom{.}\scalebox{0.72}{$\pm$0.44} & 15.93 \\
+        & OPSD$_{\mathrm{hint}}$ 
+        & 9.77\phantom{.}\scalebox{0.72}{$\pm$0.43} & 14.12\phantom{.}\scalebox{0.72}{$\pm$0.48} & 15.98\phantom{.}\scalebox{0.72}{$\pm$0.30} & 12.65\phantom{.}\scalebox{0.72}{$\pm$0.37} & 13.13 \\
+        & \textbf{\ourmodel} 
+        & \textbf{20.84}\phantom{.}\scalebox{0.72}{$\pm$0.90} & \textbf{26.13}\phantom{.}\scalebox{0.72}{$\pm$1.07} & \textbf{22.19}\phantom{.}\scalebox{0.72}{$\pm$0.59} 
+        & \textbf{27.72}\phantom{.}\scalebox{0.72}{$\pm$0.83} & \textbf{24.22} \\
+
+        \midrule
+        \multirow{7}{*}{\textbf{1.7B}}
+        & Vanilla 
+        & 9.90\phantom{.}\scalebox{0.72}{$\pm$0.38} & 8.96\phantom{.}\scalebox{0.72}{$\pm$0.33} & 26.80\phantom{.}\scalebox{0.72}{$\pm$0.36} & 22.73\phantom{.}\scalebox{0.72}{$\pm$0.41} & 17.10 \\
+        & SFT 
+        & 26.77\phantom{.}\scalebox{0.72}{$\pm$0.66} & 22.40\phantom{.}\scalebox{0.72}{$\pm$0.72} & 29.85\phantom{.}\scalebox{0.72}{$\pm$0.51} & 24.63\phantom{.}\scalebox{0.72}{$\pm$0.57} & 25.91 \\
+        & GRPO 
+        & 25.63\phantom{.}\scalebox{0.72}{$\pm$1.03} & 21.67\phantom{.}\scalebox{0.72}{$\pm$1.12} & 33.55\phantom{.}\scalebox{0.72}{$\pm$0.76} & 20.70\phantom{.}\scalebox{0.72}{$\pm$0.87} & 25.39 \\
+        & OPD 
+        & \underline{43.86}\phantom{.}\scalebox{0.72}{$\pm$1.23} & \underline{37.04}\phantom{.}\scalebox{0.72}{$\pm$1.31} 
+        & 31.73\phantom{.}\scalebox{0.72}{$\pm$0.55} 
+        & \underline{32.45}\phantom{.}\scalebox{0.72}{$\pm$0.93} 
+        & \underline{36.27} \\
+        & OPSD$_{\mathrm{gt}}$ 
+        & 33.85\phantom{.}\scalebox{0.72}{$\pm$0.88} & 24.69\phantom{.}\scalebox{0.72}{$\pm$0.94} & \underline{35.02}\phantom{.}\scalebox{0.72}{$\pm$0.67} & 22.73\phantom{.}\scalebox{0.72}{$\pm$0.61} & 29.07 \\
+        & OPSD$_{\mathrm{hint}}$ 
+        & 34.42\phantom{.}\scalebox{0.72}{$\pm$0.76} & 21.43\phantom{.}\scalebox{0.72}{$\pm$0.83} & 33.46\phantom{.}\scalebox{0.72}{$\pm$0.59} & 23.12\phantom{.}\scalebox{0.72}{$\pm$0.52} & 28.11 \\
+        & \textbf{\ourmodel} 
+        & \textbf{50.83}\phantom{.}\scalebox{0.72}{$\pm$1.15} & \textbf{41.72}\phantom{.}\scalebox{0.72}{$\pm$1.24} & \textbf{38.72}\phantom{.}\scalebox{0.72}{$\pm$0.73} 
+        & \textbf{40.63}\phantom{.}\scalebox{0.72}{$\pm$0.91} & \textbf{42.98} \\
+
+        \bottomrule
+    \end{tabular}%
+    \end{adjustbox}
+
+    \endgroup
+
+    \vspace{-10pt}
+\end{table*}

@@ -1,0 +1,23 @@
+% Abstract -- venue-agnostic. ~150 words for ACL.
+Long-horizon tool-use RL learns from outcome verification, but trajectory-level
+advantages are broadcast over many reasoning, API, and answer tokens. Direct
+self-distillation seems to offer a denser signal, yet in the direct-SD recipes
+we study it can \emph{collapse} tool use. We diagnose a plausible failure path:
+teacher-matching pressure can rehearse behavior without knowing which actions
+the verifier rewards, reinforcing useful skills and shortcuts together. We
+introduce \textbf{Sibling-Guided Credit Distillation (SGCD)}, which
+uses distillation for bounded credit weighting rather than as a competing actor
+loss. Dynamic sampling yields mixed successful/failed sibling rollouts; an
+external LLM summarizes their contrast into a training-only credit reference;
+and detached teacher/student divergence reshapes policy-gradient token advantages. The
+inference-time student sees no external LLM, sibling evidence, or oracle. On
+AppWorld, SGCD reports higher held-out point estimates than Vanilla GRPO under
+matched rollout-generation hyperparameters and evaluation settings:
+TGC $42.9\to45.6$ on \texttt{test\_normal} and $24.7\to27.0$ on
+\texttt{test\_challenge}. This is a recipe-level comparison: Vanilla GRPO
+includes reference-KL, whereas SGCD omits it and uses detached divergence for
+credit weighting. On $\tau^3$-airline, three independent SGCD training
+runs give a directional higher held-out mean Pass$^1$ estimate,
+$0.583\to0.615\pm0.006$,
+against the Vanilla GRPO comparator, whose benchmark recipe includes
+reference-KL while SGCD omits it.

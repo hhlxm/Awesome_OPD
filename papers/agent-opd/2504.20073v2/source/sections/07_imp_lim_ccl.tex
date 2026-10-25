@@ -1,0 +1,43 @@
+\section{Conclusions and Limitations}
+\label{sec:conclusions}
+We present RAGEN, a general-purpose system for training language agents with reinforcement learning in multi-turn, stochastic environments. Built upon the StarPO framework, RAGEN enables reasoning-guided trajectory optimization and reveals new challenges unique to agent training—such as gradient collapse, rollout drift, and reasoning degradation. Through extensive experiments, we identify key design principles for stabilizing training, including rollout filtering, gradient shaping, and reward-aware reasoning supervision. These insights provide a foundation for building more robust and generalizable LLM agents. Our framework offers a scalable platform for studying autonomous language agents across domains such as symbolic reasoning and web browsing. Limitations of our work include the focus on relatively small-scale tasks, the omission of established RL practices like replay buffers, and the absence of multimodal tasks—which we leave for future work.
+
+% \section{Conclusion}
+
+% \paragraph{Novel Methods.} This paper introduces two key methodological advances in reinforcement learning for language models. First, we present RAGEN, a framework that extends rule-based rewards to handle real-world agent scenarios with environmental randomness and long-horizon interactions. Second, we develop the RICO algorithm for optimizing entire trajectory distributions rather than single-turn responses, enabling effective learning in complex interactive environments.
+
+% \paragraph{Technical Contributions.} Our work makes several significant technical contributions:
+% \begin{itemize}
+%     \item A \textbf{MDP formulation} that enables language models to handle both stochastic environments and long-horizon interactions
+%     \item The \textbf{RICO algorithm} for joint optimization of reasoning strategies and action planning
+%     \item Analysis of \textbf{reward normalization (ARPO, BRPO, GRPO)} for stable optimization
+% \end{itemize}
+
+% \paragraph{Empirical Successes.} Through experiments across three environments of increasing complexity, we demonstrate that RAGEN achieves:
+% \begin{itemize}
+%     \item Superior \textbf{environmental stochasticity} handling compared to baseline approaches
+%     \item Effective \textbf{long-horizon planning }in deterministic puzzle environments
+%     \item \textbf{Stable optimization} in combined stochastic and multi-turn scenarios
+%     \item Successful \textbf{emergence of sophisticated reasoning} strategies via reward-based training
+% \end{itemize}
+
+% \section*{Limitations}
+% We note RAGEN's limitations:
+% \begin{enumerate}
+%    \item \textbf{Model scaling} RAGEN has yet to be evaluated on multimodal models or larger models.
+%    \item \textbf{Rewards} RAGEN is not yet optimised for domains without easily verifiable rewards.
+%    \item \textbf{Long context:} Long multi-turn context results in large KV-cache, which limits training efficiency on longer more complex tasks.
+% \end{enumerate}
+
+%ethics not included in page limit, can shorten though
+% yes let's shorten it
+
+% \section*{Ethical Considerations}
+% This research follows ACM's ethical guidelines. We have tested our models thoroughly to ensure safety and reliability. 
+% All implementation details and code will be made publicly available after blind review. 
+% No personal data was used in this research.
+
+\section*{Acknowledgements}
+
+We thank the DeepSeek team for providing the DeepSeek-R1 model and early conceptual inspirations. We are grateful to the veRL team for their infrastructure support, and to the TinyZero team for their discoveries that informed our initial exploration.
+We would like to appreciate insightful discussions with Han Liu, Xinyu Xing, Monica Lam, Li Erran Li, John Schulman, Akari Asai, Eiso Kant, Lu Lu, Runxin Xu, Zhihan Liu, Huajian Xin, Zijun Liu, Weiyi Liu, Weimin Wu, Yibo Wen, Jiarui Liu, Lorenzo Xiao, Ishan Mukherjee, Anabella Isaro, Haosen Sun, How-Yeh Wan, Lester Xue, Matthew Khoriaty, Haoxiang Sun, Jiajun Liu.

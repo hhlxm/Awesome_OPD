@@ -1,0 +1,60 @@
+\section{Background and Problem Setup}
+
+\subsection{On-Policy Distillation}
+
+Let $x$ denote an input prompt and $y=(y_1,\ldots,y_T)$ a response sampled autoregressively from a student policy $\student$.
+At position $t$, write $y_{<t}=(y_1,\ldots,y_{t-1})$ for the prefix and define the student and teacher next-token distributions as:
+\begin{equation}
+    p_t(v) \triangleq \student(v\mid x,y_{<t}), \qquad
+    q_t(v) \triangleq \teacher(v\mid x,y_{<t}),
+    \label{eq:pt-qt}
+\end{equation}
+over vocabulary tokens $v\in\mathcal{V}$.
+OPD computes supervision on trajectories sampled from the current student, usually by minimizing a reverse-KL objective over student-generated trajectories \citep{gu2024minillm,agarwal2024policy,li2026rethinking}:
+\begin{equation}
+    \mathcal{L}_{\mathrm{OPD}}(\theta)
+    =
+    \mathbb{E}_{x,\;y\sim\student(\cdot\mid x)}
+    \left[
+        \sum_{t=1}^{T}
+        D_{\mathrm{KL}}\!\left(p_t \,\|\, q_t\right)
+    \right].
+    \label{eq:opd-token-kl}
+\end{equation}
+This token-level decomposition drives OPD's sample efficiency: every position provides a dense teacher signal instead of waiting for a final-answer reward.
+It also exposes the central assumption: $q_t$ should be a useful local target on the student-visited state $(x,y_{<t})$.
+In practice, we approximate this reward on the student's top-$k$ candidate tokens and obtain a per-position reward vector $r_{t,\cdot}$.
+Because rewards are already localized by position, a reliability modifier can simply multiply all rewards at position $t$ by a scalar weight before the policy loss.
+This is the interface used by \method: reliable prefixes keep their OPD rewards, while drifted prefixes receive attenuated rewards.
+
+\subsection{Dynamic Metrics}
+
+Following the OPD mechanism analysis~\citep{li2026rethinking}, let $S_t^{(p)}=\operatorname{TopK}(p_t,k)$ and $S_t^{(q)}=\operatorname{TopK}(q_t,k)$.
+The overlap ratio proposed in that work is
+\begin{equation}
+    \mathcal{M}_{\mathrm{overlap}}
+    =
+    \mathbb{E}_{t}\left[
+        \frac{|S_t^{(p)}\cap S_t^{(q)}|}{k}
+    \right],
+    \label{eq:overlap-ratio}
+\end{equation}
+which measures whether the student and teacher assign high probability to a shared candidate region.
+The entropy gap,
+\begin{equation}
+    \Delta H_t = |H(q_t)-H(p_t)|,
+    \label{eq:entropy-gap}
+\end{equation}
+tracks whether the two models have similar uncertainty on the same visited state.
+These metrics are usually reported as diagnostics after training.
+\method~turns them into online control signals.
+The current primary metric is the per-position overlap ratio, which measures whether student and teacher still share a high-probability candidate region on the same student prefix.
+We also evaluate a stricter action-level variant that asks whether the sampled student token is accepted by the teacher's observable top-$p$/top-$k$ region.
+
+\subsection{Long-Horizon Reliability Problem}
+
+The reward at position $t$ depends on $q_t(v)=\teacher(v\mid x,y_{<t})$, where the prefix $y_{<t}$ was produced by the student.
+As $t$ grows, the prefix can drift away from trajectories the teacher would naturally generate.
+Prior OPD analysis reports suffix-to-prefix instability and decreasing teacher-continuation advantage as the student prefix depth increases \citep{li2026rethinking}.
+Thus the same dense reward that helps on moderate traces can become unreliable on long traces. This motivates position-level reliability control.
+We estimate whether each student prefix remains teacher-compatible, then allocate dense supervision to reliable prefixes and attenuate rewards after prefix drift.

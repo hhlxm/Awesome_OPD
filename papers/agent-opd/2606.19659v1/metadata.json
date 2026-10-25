@@ -1,0 +1,50 @@
+{
+  "arxiv_id": "2606.19659v1",
+  "title": "SAGE-OPD: Selective Agent-Guided Intervention for Multi-Turn On-Policy Distillation",
+  "authors": [
+    "Zhou, Yuhang",
+    "Zhang, Lizhu",
+    "Wu, Yifan",
+    "Wang, Mingyi",
+    "Peng, Bo",
+    "Liu, Jiayi",
+    "Fan, Xiangjun",
+    "Zhao, Zhuokai"
+  ],
+  "submitted_date": "2026/06/17",
+  "abs_url": "https://arxiv.org/abs/2606.19659v1",
+  "schema_version": 1,
+  "requested_input": "2606.19659",
+  "requested_id": "2606.19659",
+  "source_url": "https://arxiv.org/src/2606.19659v1",
+  "downloaded_at": "2026-10-12T16:19:19.795901+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "964ba3980d44ce383974c7a4e6101ddd55a0b0ecaf58e9c7aaedbd335b834302",
+  "tex_files": [
+    "acl_latex.tex",
+    "arxiv/0_abstract.tex",
+    "arxiv/1_introduction.tex",
+    "arxiv/2_related.tex",
+    "arxiv/3_method.tex",
+    "arxiv/4_theory.tex",
+    "arxiv/5_experiments.tex",
+    "arxiv/6_ablations.tex",
+    "arxiv/7_conclusion.tex",
+    "arxiv/8_appendix.tex",
+    "paper.tex",
+    "sections/0_abstract.tex",
+    "sections/1_introduction.tex",
+    "sections/2_related.tex",
+    "sections/3_method.tex",
+    "sections/5_experiments.tex",
+    "sections/6_ablations.tex",
+    "sections/7_conclusion.tex",
+    "sections/8_appendix.tex"
+  ],
+  "main_tex_candidates": [
+    "acl_latex.tex",
+    "paper.tex"
+  ],
+  "source_file_count": 35
+}

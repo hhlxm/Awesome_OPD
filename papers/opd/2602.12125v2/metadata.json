@@ -1,0 +1,36 @@
+{
+  "arxiv_id": "2602.12125v2",
+  "title": "Learning beyond Teacher: Generalized On-Policy Distillation with Reward Extrapolation",
+  "authors": [
+    "Yang, Wenkai",
+    "Liu, Weijie",
+    "Xie, Ruobing",
+    "Yang, Kai",
+    "Yang, Saiyong",
+    "Lin, Yankai"
+  ],
+  "submitted_date": "2026/02/12",
+  "abs_url": "https://arxiv.org/abs/2602.12125v2",
+  "schema_version": 1,
+  "requested_input": "2602.12125",
+  "requested_id": "2602.12125",
+  "source_url": "https://arxiv.org/src/2602.12125v2",
+  "downloaded_at": "2026-10-13T07:34:56.459984+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "6f7ffdff9c8d31960745b1aa768cdc68b96602fc0c4c53c0d6a5183896dc9e14",
+  "tex_files": [
+    "main.tex",
+    "math_commands.tex",
+    "prompts/qwen3_code.tex",
+    "prompts/qwen3_math.tex",
+    "tables/comparison_against_teacher_with_additional_rl.tex",
+    "tables/results_on_different_sized_models.tex",
+    "tables/results_on_same_size_models.tex",
+    "tables/results_under_stronger_teachers.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 30
+}

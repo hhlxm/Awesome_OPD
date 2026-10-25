@@ -1,0 +1,43 @@
+{
+  "arxiv_id": "2504.13837v5",
+  "title": "Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?",
+  "authors": [
+    "Yue, Yang",
+    "Chen, Zhiqi",
+    "Lu, Rui",
+    "Zhao, Andrew",
+    "Wang, Zhaokai",
+    "Yue, Yang",
+    "Song, Shiji",
+    "Huang, Gao"
+  ],
+  "submitted_date": "2025/04/18",
+  "abs_url": "https://arxiv.org/abs/2504.13837v5",
+  "schema_version": 1,
+  "requested_input": "2504.13837",
+  "requested_id": "2504.13837",
+  "source_url": "https://arxiv.org/src/2504.13837v5",
+  "downloaded_at": "2026-10-12T07:15:51.116569+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "78da066b45f3f698956610e1ca4272c47502c443ad87b88c1915ca97406b3cec",
+  "tex_files": [
+    "config.tex",
+    "main_leaplab.tex",
+    "tex/0-abs.tex",
+    "tex/1-intro.tex",
+    "tex/2-more-related.tex",
+    "tex/2-related.tex",
+    "tex/3-method.tex",
+    "tex/4-experiments.tex",
+    "tex/5-appendix.tex",
+    "tex/7-conclusion.tex",
+    "tex/tables/algos.tex",
+    "tex/tables/exp_setup.tex",
+    "tex/tables/solvable_aime24.tex"
+  ],
+  "main_tex_candidates": [
+    "main_leaplab.tex"
+  ],
+  "source_file_count": 55
+}

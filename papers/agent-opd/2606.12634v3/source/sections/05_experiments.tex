@@ -1,0 +1,82 @@
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Setup}
+We evaluate on AppWorld \citep{appworld2024} and $\tau^3$-airline, a corrected
+airline task set in the $\tau$-bench family
+\citep{taubench2024,tau2bench2025,tau3bench2026}. AppWorld reports the official
+evaluator aggregates for Task Goal Completion (TGC) and Scenario Goal Completion
+(SGC); $\tau^3$-airline reports
+held-out mean Pass$^1$ with action-category diagnostics. AppWorld starts
+from Qwen3.5-4B after diagnostic SFT regressed (\suppref{sec:sftdiag});
+$\tau^3$-airline uses our SFT-warm-start ladder. Runtime settings and the
+credit-reference prompt template are in \suppref{sec:appendix}. The AppWorld
+Vanilla GRPO comparator uses matched rollout-generation hyperparameters and
+evaluation settings and includes reference-KL; SGCD instead uses detached dense
+divergence for credit weighting alongside its mixed-sibling construction.
+
+\input{sections/tables}
+
+\subsection{Main results}
+On AppWorld (Table~\ref{tab:appworld}), SGCD raises official TGC over the
+un-finetuned base on both splits (\texttt{test\_normal} TGC $23.8\to45.6$;
+\texttt{test\_challenge} TGC $11.3\to27.0$) and gives higher point estimates than
+the Vanilla GRPO control under matched rollout-generation hyperparameters,
+environment, and evaluation settings ($+2.7$ and $+2.3$ TGC). This is a
+recipe-level comparison rather than
+an isolated component test because only Vanilla GRPO includes reference-KL.
+The margin is modest; SGCD adds bounded credit weighting
+inside a reward-grounded policy-gradient recipe.
+
+On $\tau^3$-airline (Table~\ref{tab:tau3}), the benchmark where we first
+diagnosed the failure, three SGCD training runs give a higher held-out mean Pass$^1$
+summary ($0.615\pm0.006$) than the Vanilla GRPO comparator ($0.583$).
+The detailed diagnostic row reports the closest-to-mean SGCD run
+($148/240=0.617$): its state-changing-action diagnostic remains nonzero ($44.9\%$
+vs.\ $41.0\%$ for Vanilla GRPO), while the historical SDPO diagnostic run has
+collapsed to $0\%$. We read the SGCD--Vanilla comparison as directional evidence
+under their matched setup, not as a variance-controlled effect; the comparator
+is a fixed single-run anchor and we
+make no between-method significance claim (Table~\ref{tab:seedrobust}).
+
+\subsection{Ablations}
+\label{sec:ablations}
+Table~\ref{tab:ablation} removes one component at a time. Removing the sibling
+credit reference lowers \texttt{test\_normal} TGC from $45.6$ to $44.0$.
+Replacing divergence weights with mean-matched uniform weights lowers it to
+$43.8$, so the effect is not explained only by average multiplier size. The
+direct/uncapped SD auxiliary uses the same teacher/student divergence as an
+imitation loss and drops to $38.2$, below Vanilla GRPO at $42.9$; we treat this
+as an untuned diagnostic, not a tuned baseline. Vanilla GRPO contains no SGCD
+component.
+
+\begin{table}[t]
+  \centering
+  \venuecompacttablefont
+  \setlength{\tabcolsep}{2.5pt}
+  \begin{tabular}{@{}lcc@{}}
+    \toprule
+    \textbf{Configuration} & \textbf{TGC norm.} & \textbf{TGC chal.} \\
+    \midrule
+    \textbf{SGCD (full)}                         & \textbf{45.6} & \textbf{27.0} \\
+    \quad no sibling credit reference             & 44.0 & 25.4 \\
+    \quad mean-matched uniform weights            & 43.8 & 25.3 \\
+    \quad direct/uncapped SD aux.                  & 38.2 & 20.6 \\
+    \midrule
+    Vanilla GRPO                                   & 42.9 & 24.7 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Ablating SGCD on AppWorld held-out TGC (\%). Removing the sibling
+    credit reference or replacing divergence weights with mean-matched uniform
+    weights gives lower point estimates;
+    replacing credit reweighting with a diagnostic direct SD auxiliary gives
+    lower TGC than the reported Vanilla GRPO control.}
+  \label{tab:ablation}
+\end{table}
+
+\subsection{Analysis}
+During SGCD training, dense reverse-KL, teacher entropy, selected segments,
+weight distributions, and clipping are monitored as sanity checks. They are not
+headline evidence, and the inference-time student carries no external
+dependency.
+\FloatBarrier

@@ -1,0 +1,11 @@
+\section{Conclusion}
+We introduced \ours, a verifier-free selective intervention framework for multi-turn on-policy distillation.
+%
+Instead of applying teacher supervision uniformly across all turns, \ours first estimates whether each student response requires intervention and then weights token-level distillation by teacher confidence, addressing both compounding errors across interaction steps and brittle token-level supervision in ambiguous states. 
+%
+Experiments on ALFWorld, ScienceWorld, and SearchQA show that \ours improves over base students, off-policy SFT, and standard OPD while remaining competitive with strong OPD variants. 
+%
+Ablation and training-dynamics analysis further demonstrate that intervention labels, teacher confidence weighting, and vanilla-scale normalization provide complementary benefits. 
+%
+Overall, our results suggest that effective multi-turn OPD should be on-policy but not necessarily token-level dense: teacher supervision should be selectively allocated to turns where intervention is necessary and reliable.
+%

@@ -1,0 +1,22 @@
+\subsection{Failure of On-policy Distillation under Tool-Induced State Drift}
+\label{sec:failure_uniform_opd}
+
+The OPD objective assumes that teacher supervision remains reliable across all student-visited states~\citep{fu2026revisiting,li2026rethinking,bousselham2025vold}. This assumption holds when distribution drift is gradual, but is severely violated in TIR due to discontinuous state transitions introduced by tool observations. We formalize this failure through two propositions (proofs in~\cref{app:proof_opd_failure}).
+
+We define the step-level mismatch as:
+\begin{equation}
+    \Delta_k = \frac{1}{|\mathcal{I}_k|} \sum_{t\in \mathcal{I}_k} D_{\mathrm{KL}}\bigl(\pi_\theta(\cdot \mid y_{<t}) \,\big\Vert\, \pi_{\mathrm{teacher}}(\cdot \mid y_{<t})\bigr).
+\end{equation}
+
+\begin{proposition}[Discontinuous divergence amplification]
+\label{prop:discontinuous_drift}
+In text-only reasoning, $\Delta_{k+1} - \Delta_k = O(\eta)$ where $\eta$ is the per-token distributional shift. In TIR, a single erroneous tool observation of length $m$ causes $\Delta_{k+1} - \Delta_k = \Omega(m \cdot \eta_{\mathrm{tool}})$ with $\eta_{\mathrm{tool}} \gg \eta$. Under $j$ consecutive tool errors, the divergence compounds super-linearly: $\Delta_{k+j} - \Delta_k = \Omega\!\left(\sum_{i=0}^{j-1} m_i \cdot \eta_{\mathrm{tool}}^{(i)}\right)$ with $\eta_{\mathrm{tool}}^{(i+1)} \ge \eta_{\mathrm{tool}}^{(i)}$.
+\end{proposition}
+
+\begin{proposition}[Gradient SNR degradation]
+\label{prop:variance_explosion}
+Define the teacher-supported region $S_t^\epsilon = \{v \in \mathcal{V}: \pi_{\mathrm{teacher}}(v \mid y_{<t}) \ge \epsilon\}$ and the overlap $\rho_t = \sum_{v \in S_t^\epsilon} \pi_\theta(v \mid y_{<t})$. When $\rho_t \le \rho$, the second moment of the OPD loss satisfies $\mathbb{E}[\ell_t^2] \ge (1 - \rho)\,\log^2(1/\epsilon)$, and the signal-to-noise ratio of the gradient estimator $\mathrm{SNR}(g_t) \to 0$ as $\rho_t \to 0$.
+\end{proposition}
+
+Together, these results characterize a failure cascade specific to TIR: consecutive erroneous tool calls trigger compounding divergence amplification (Prop.~\ref{prop:discontinuous_drift}), progressively pushing the student away from the teacher distribution into low-overlap states where the OPD gradient becomes dominated by high-variance, uninformative contributions (Prop.~\ref{prop:variance_explosion}). This is empirically confirmed in~\cref{motivation}: divergence accelerates sharply as tool errors accumulate (a), and teacher entropy becomes elevated and unstable in subsequent steps (b). Since OPD aggregates losses uniformly across steps, it systematically overweights these corrupted signals, motivating our step-wise reweighting mechanism.
+We formally show in Appendix~\ref{app:variance_reduction} that under monotonically increasing divergence, our reweighting suppresses the weighted second moment by a factor of $O((d_1/d_k)^2)$, restoring bounded gradient SNR even in low-overlap states where OPD suffers SNR collapse.

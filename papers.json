@@ -1,0 +1,3717 @@
+{
+  "schema_version": 1,
+  "papers": [
+    {
+      "title": "Transfer-Stratified On-Policy Distillation for RL-Improved Reasoning Teachers",
+      "arxiv_id": "2610.05974v1",
+      "arxiv_url": "https://arxiv.org/abs/2610.05974v1",
+      "category": "opd",
+      "background": false,
+      "tldr": "RL improvements in a teacher do not transfer uniformly to smaller students. TS-OPD stratifies problems by joint teacher–student success, uses gated forward KL for knowledge acquisition and gated reverse KL for consolidation, and adds an entropy brake. The insight is to match supervision to the student’s learning need; gains in average correctness need not translate uniformly to pass@K.",
+      "directory": "papers/opd/2610.05974v1",
+      "pdf": "papers/opd/2610.05974v1/paper.pdf",
+      "source": "papers/opd/2610.05974v1/source",
+      "source_archive": "papers/opd/2610.05974v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1180,
+          "sha256": "768ae916811a34cf27c960735d850f83060cfd1a7226a1cd6e7497e317793a6e"
+        },
+        "paper.pdf": {
+          "bytes": 905905,
+          "sha256": "3428a0312fd4ab0e3bcea383deee68332e472d7551e4566a9688718271b07007"
+        },
+        "source/00README.json": {
+          "bytes": 213,
+          "sha256": "d1f6b1a71c9accb812ec5121d1fff7910c025ca7bb201948bacdb40941bc14e5"
+        },
+        "source/figures/fig_overview.png": {
+          "bytes": 325132,
+          "sha256": "08a1eb918114bb1ce0a44d3546f76ea6e74f498516601e2ddcfb37b735b1c052"
+        },
+        "source/figures/figure1_v12.pdf": {
+          "bytes": 162867,
+          "sha256": "3bfffb6f5d865d140d1c8c0099cc87c24b4e9d6db14b3c3f1f76f9c2db48cb66"
+        },
+        "source/figures/logos/logos.png": {
+          "bytes": 53695,
+          "sha256": "60afa5aa05b2711e4621e2f3ac38ef5f152abf55d945b76a647bfc55f54cb5e1"
+        },
+        "source/figures/tracking/fig_acpn_all.pdf": {
+          "bytes": 51340,
+          "sha256": "dd76826267928cd818e48fee9b981146f0128efdc00a8e717c5b899ce2c618f3"
+        },
+        "source/figures/tracking/fig_where_gains.pdf": {
+          "bytes": 47616,
+          "sha256": "8f8c4c00626ffafae3da7dd8ac17281fd51cb68e39e2646f11a88207fb4a68c3"
+        },
+        "source/main.bbl": {
+          "bytes": 18293,
+          "sha256": "01390fd0c4ce86fa006af098dc5737fd367b51efda1216382aceeb3129e76c77"
+        },
+        "source/main.tex": {
+          "bytes": 47330,
+          "sha256": "89b2902745a4eeaa1b782ae9be4185bd1d6379b0c43498a37e4f8f436909b7c6"
+        },
+        "source/tables/tab_app_acpn.tex": {
+          "bytes": 1404,
+          "sha256": "fe60becfeb3699a1191bd8d0079ea6f0916d563ccc6e8914b169cc2422179c8d"
+        },
+        "source/tables/tab_app_base.tex": {
+          "bytes": 1273,
+          "sha256": "b7338f0d5f79708df32e68ba4ddfc9a4ac277f3db9b9c372e7b1ef5e977a8cce"
+        },
+        "source/tables/tab_app_full_06B.tex": {
+          "bytes": 2115,
+          "sha256": "b7508696b101a7e931faa28278b2d964ccd3216898c160337291a69b8527c47a"
+        },
+        "source/tables/tab_app_full_17B.tex": {
+          "bytes": 2134,
+          "sha256": "a882729dc8316db52e1488888ac0e9c6e02ac32b8a52656625c9ee98329309fb"
+        },
+        "source/tables/tab_app_full_4B.tex": {
+          "bytes": 2133,
+          "sha256": "2dfb3a518ff9429d114940a6790ed0a30a7bd6c706b0b4e7b50c1039d40e6bc8"
+        },
+        "source/tables/tab_app_gap.tex": {
+          "bytes": 2854,
+          "sha256": "881123cddb19d19c11698cca24ec85eef09350b5566a8f39b42551c24e50f5ad"
+        },
+        "source/tables/tab_app_rq3.tex": {
+          "bytes": 1267,
+          "sha256": "a9535d2aeb6d3f44b97e0e535a97083872983ca8ce98a6f1dbe1d1ab13c920ca"
+        },
+        "source/tables/tab_main.tex": {
+          "bytes": 1647,
+          "sha256": "1959134cf0992032f0860df9837a0c72cadaf712c1fb16c646374fbea6e51a78"
+        },
+        "source/tables/tab_rq2_en.tex": {
+          "bytes": 1893,
+          "sha256": "6b272ee4ccb1ae640855cbe044ddedb456e797ddf7897f9afcbc1f1b1187c8ef"
+        },
+        "source/tables/tab_rq4_en.tex": {
+          "bytes": 1806,
+          "sha256": "c67e3d48a61a2c37dc2e157d7cf10a8a454c43c2e327c617d31080cc58013ae6"
+        },
+        "source/tables/tab_rq5.tex": {
+          "bytes": 706,
+          "sha256": "4e36a348bf5778703c354ba700916a2a6d0bbc81859daca7f157ab3b9c14fd36"
+        },
+        "source.tar.gz": {
+          "bytes": 616241,
+          "sha256": "16f3d2438abd545f913d0d57df50e65d8500ba8a8849b2e2c48c521aa9c38ace"
+        }
+      }
+    },
+    {
+      "title": "Finetuning with Sampling: SFT Learns Better Than You Think",
+      "arxiv_id": "2610.02140v1",
+      "arxiv_url": "https://arxiv.org/abs/2610.02140v1",
+      "category": "opd",
+      "background": true,
+      "tldr": "SFT can struggle because expert traces are poorly matched to the learner’s distribution. This work uses MCMC sampling to rewrite off-policy traces into semantically equivalent, more model-compatible data before ordinary SFT. Its insight is to improve learnability by changing the data distribution, allowing expert information to transfer while reducing forgetting and improving generalization in the evaluated settings.",
+      "directory": "papers/opd/2610.02140v1",
+      "pdf": "papers/opd/2610.02140v1/paper.pdf",
+      "source": "papers/opd/2610.02140v1/source",
+      "source_archive": "papers/opd/2610.02140v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1046,
+          "sha256": "a6f7ff043bf684815f93ffe07ac743973300edc9f61b6eeab7809dba090add40"
+        },
+        "paper.pdf": {
+          "bytes": 529076,
+          "sha256": "4cf6b1e1a402df339d7b56842618140f165290001ba4c92bd5a2d1065b9a6cc4"
+        },
+        "source/00README.json": {
+          "bytes": 214,
+          "sha256": "f8701fa631c1bb367c886b9e16028cad2f0cf37463a4e26268b9f1ae7f23a663"
+        },
+        "source/arxiv.tex": {
+          "bytes": 83095,
+          "sha256": "6ef13c527f63d03b6b8258c2d5a7d70f188342af8ff7c73a99a1c91af88680f8"
+        },
+        "source/chemistry_teaser.pdf": {
+          "bytes": 29122,
+          "sha256": "e081f046bdfd81ba61c1d17d267cb803d51ccc5ea9f773dea0ac899dd95dffdd"
+        },
+        "source/kl_vs_acc_steps.pdf": {
+          "bytes": 14199,
+          "sha256": "5acc49ae06f69d345bb476bec2080ba3aa21e1c6f3ba1dd1c9ad74ab550f2a2a"
+        },
+        "source/main.bib": {
+          "bytes": 25903,
+          "sha256": "51d7f117676bcbeebeefde3ff8c72a8c8b75bff5f6697bef1b021fafa0340993"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12284,
+          "sha256": "90473c4d0542070db244cea73ef962d6cddc5b2a746757e6a40ddf5fdfb90ba9"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source/neurips_2025.sty": {
+          "bytes": 11625,
+          "sha256": "ef7a55f0a7c9da12fea39af7990a6a314a721b74a23b1544f252e55fcba940cd"
+        },
+        "source/off_policy_boosting_schematic.pdf": {
+          "bytes": 71015,
+          "sha256": "0d24ec65d20198499fbe3daf929edebbd67579b177928d990d244eb60224d25c"
+        },
+        "source/passatk_comparison_sci_2.pdf": {
+          "bytes": 18808,
+          "sha256": "633a4a02731a8e6e50fc000556f3320ebf42541770fb424d577d9ad135159943"
+        },
+        "source/science_math_logprobs_histograms_green.pdf": {
+          "bytes": 20540,
+          "sha256": "e4519ffa18d8b303fac1ca560e94a859927d5ce9cd695e69ef26c4247d9ffe22"
+        },
+        "source.tar.gz": {
+          "bytes": 162029,
+          "sha256": "17cc1a38ff2f5dc5a63ad38a6f996d1d8820cb9dca448d6cf02c24eeda232fbf"
+        }
+      }
+    },
+    {
+      "title": "UOPD: Uncertainty-Aware Intervention for On-Policy Distillation of Multi-Turn Agents",
+      "arxiv_id": "2609.34036v1",
+      "arxiv_url": "https://arxiv.org/abs/2609.34036v1",
+      "category": "agent-opd",
+      "background": false,
+      "tldr": "A single bad action can derail later observations, leaving ordinary OPD to supervise an already corrupted trajectory. UOPD identifies uncertain turns using low teacher confidence in student actions, executes teacher actions there, and trains imitation on those corrections; other turns use standard OPD. The insight is that selective trajectory repair can improve the future states from which the student learns.",
+      "directory": "papers/agent-opd/2609.34036v1",
+      "pdf": "papers/agent-opd/2609.34036v1/paper.pdf",
+      "source": "papers/agent-opd/2609.34036v1/source",
+      "source_archive": "papers/agent-opd/2609.34036v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1332,
+          "sha256": "eb992b5415b71fe73d6a20f6927a52672a984327a51a3506a1f46860a2653064"
+        },
+        "paper.pdf": {
+          "bytes": 713445,
+          "sha256": "d2f79c03d40f69c910b24d3b2a22d13d6e86a1ea346f113b776ee4aa0f8e9397"
+        },
+        "source/00README.json": {
+          "bytes": 298,
+          "sha256": "7ab1b93abc03a41610795ee1700a37a0d8cfee30c0b7ed377213795c0e7a3b4c"
+        },
+        "source/figures/alfworld_3b_30to5_position.pdf": {
+          "bytes": 15266,
+          "sha256": "207a272b74f872bba03e876cab588c6b2a1a29cccd25ac2d5d5729152c098883"
+        },
+        "source/figures/alfworld_3b_30to5_rate.pdf": {
+          "bytes": 16476,
+          "sha256": "4c1e1be8aaf8d95052af75ab87f6cfae68c73887129142da3e267cc3c0cfec31"
+        },
+        "source/figures/fig_motivation_alfworld_confidence_depth.pdf": {
+          "bytes": 11790,
+          "sha256": "366a8783704ca8a23475a75bebfe9b9e0c959c56723ef539bd958ac9481ab466"
+        },
+        "source/figures/fig_motivation_alfworld_confidence_recovery.pdf": {
+          "bytes": 18152,
+          "sha256": "5df67f93690ca0d19044886fc6db59f0a1e3851c3f05b792f1b955b5d947c76b"
+        },
+        "source/figures/fig_motivation_alfworld_performance.pdf": {
+          "bytes": 15345,
+          "sha256": "b0c1d9e672dd8a9927bf280134181023c45b955c16e63d9b8d910483c436d0c1"
+        },
+        "source/figures/fig_motivation_alfworld_state_return.pdf": {
+          "bytes": 17258,
+          "sha256": "7c067816e2e9bce9b4eca070a0535e7a8eeaa53059a0fdaefbcae41cd8e8d0d2"
+        },
+        "source/figures/fig_search_15b_multihop_compact.pdf": {
+          "bytes": 9472,
+          "sha256": "e4db0ea8957c61b8ffe8fee846e9e1f1c482fcf729c06c3de0a0c77a21fcf477"
+        },
+        "source/figures/fig_training_guidance_3b.pdf": {
+          "bytes": 32211,
+          "sha256": "3d34debf35cf6fa3be64e50aea319304a5d782b7b20acff4758adf5577875331"
+        },
+        "source/figures/github-logo.pdf": {
+          "bytes": 4183,
+          "sha256": "45501860f072834e87aa428c98caae90c4ca6ca490f065d768f2174dc0975e4a"
+        },
+        "source/figures/training_time_3b_preview.pdf": {
+          "bytes": 8390,
+          "sha256": "d7c8a8bebdee2cafcf177a7ab39ea82f32dc9d110a7d1f932dfa6f4342d9fc7f"
+        },
+        "source/figures/uai_opd_mode_balance.pdf": {
+          "bytes": 109469,
+          "sha256": "cc76f4d13e272a37005ea1f52263bb8fd69fdc88c1e89600a10dbcfab15fd28a"
+        },
+        "source/figures/uai_opd_pipeline.pdf": {
+          "bytes": 44956,
+          "sha256": "0f8f41e8c977d8ecda7972594fafa741eed054157e96d914ea9a03c6aa4c62fa"
+        },
+        "source/main.tex": {
+          "bytes": 4295,
+          "sha256": "93af9ffc0c4a2f96974468a1c7cf05b227fa24fe64551def194dd4b1c2fcc616"
+        },
+        "source/math_commands.tex": {
+          "bytes": 10693,
+          "sha256": "94af28c823618463e9b9fc46be7247c2a168d1146b58f53e71f0d905acac5450"
+        },
+        "source/mystyle.cls": {
+          "bytes": 8074,
+          "sha256": "8bdf222a2f210b4ef185bfce98b41682b34f842921527bab17fdd18dfc6200e5"
+        },
+        "source/references.bib": {
+          "bytes": 16500,
+          "sha256": "1516be5735742e455b177101cb24153e5fa76f307d6d934890342bd6cd613106"
+        },
+        "source/sections/appendix.tex": {
+          "bytes": 35107,
+          "sha256": "ff7ae4fc4c7db164c478c3fdd52a6fa0b24c21ed5398eb2edc6d8d62beeb2779"
+        },
+        "source/sections/conclusion.tex": {
+          "bytes": 1070,
+          "sha256": "68262154928d84f83b9a90f045b0a936ae2487b14ba040861bd0efc1c4b418d9"
+        },
+        "source/sections/experiments.tex": {
+          "bytes": 10329,
+          "sha256": "52f9ba594c26d503fad4b5f42d017c0cac8e9f15be2fda405a4ecd2a2db3af7b"
+        },
+        "source/sections/introduction.tex": {
+          "bytes": 5330,
+          "sha256": "5a1e3aa7706e98bbec0c5c3e35e3db5d9ebff63e86ece147b71665e62f43119a"
+        },
+        "source/sections/method.tex": {
+          "bytes": 7301,
+          "sha256": "68b57f95f98371af8e52a36c6230296b7fe7a313306c9c9a157f2cdfeccc9b74"
+        },
+        "source/sections/motivation.tex": {
+          "bytes": 5210,
+          "sha256": "806bcdd732af4874529a82ae5772fe2821b1a0e5a46e2705ce30d1d5b6f01a3f"
+        },
+        "source/sections/related_work.tex": {
+          "bytes": 3253,
+          "sha256": "bf80457ad270646af87a3794ca370796b65dc0e921a5a86056b6b6fa85f21b31"
+        },
+        "source/sections/theory.tex": {
+          "bytes": 9750,
+          "sha256": "e1ee422e1fe6dcbb2a7a2efda8927f92ae23c3991d2d2b21e24b17b6441f9db1"
+        },
+        "source.tar.gz": {
+          "bytes": 275715,
+          "sha256": "b0cc41f4b841435892e98ec78fcf46855668303b0dbd76e4e178c978042fb26a"
+        }
+      }
+    },
+    {
+      "title": "From Self-Distillation to Self-Practice: Privileged Information for Multi-Turn Agents",
+      "arxiv_id": "2609.29051v1",
+      "arxiv_url": "https://arxiv.org/abs/2609.29051v1",
+      "category": "opsd",
+      "background": false,
+      "tldr": "In multi-turn agents, matching a privileged teacher can teach confidence unsupported by the student’s observations. Privileged Self-Practice instead uses short, task-specific instructions to resample mostly failing tasks and trains those contextualized rollouts with plain GRPO. The insight is to use privileged information to improve exploration and experience collection, rather than impose a teacher-matching loss across unequal information states.",
+      "directory": "papers/opsd/2609.29051v1",
+      "pdf": "papers/opsd/2609.29051v1/paper.pdf",
+      "source": "papers/opsd/2609.29051v1/source",
+      "source_archive": "papers/opsd/2609.29051v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 908,
+          "sha256": "c992686fd0577ef76957c04f64027741873138c082dc9cd148217cc75645311b"
+        },
+        "paper.pdf": {
+          "bytes": 687482,
+          "sha256": "30ef239f1432913cd3afd413f8040cf9d6b8b048ecaf13c2736a121b5c398f66"
+        },
+        "source/00README.json": {
+          "bytes": 405,
+          "sha256": "0c5528ff2ed58220c459894c879064a2e2ece3e49156b298e759309ba0cd853d"
+        },
+        "source/arxiv_v1.tex": {
+          "bytes": 145480,
+          "sha256": "4fc111921d12ae32748226ee5a3dd5433b56f105122610839057580ea9f31a9c"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/figs/fig_annealing.pdf": {
+          "bytes": 16806,
+          "sha256": "3dd8618fdcfa1a5926166ea0707bc0afb4d2566ff9b4532054c5ace01205f595"
+        },
+        "source/figs/fig_collapse.pdf": {
+          "bytes": 17054,
+          "sha256": "ef41eef2eaf425a4939ddad27e710bad42d1daecc5a93b83c42265875faa1d02"
+        },
+        "source/figs/fig_offpolicy.pdf": {
+          "bytes": 16026,
+          "sha256": "f3171fa1b7151e27a82ee02bad173d6711c8d5f8a0d84751a5db45e8c5b51848"
+        },
+        "source/figs/gate_tau.pdf": {
+          "bytes": 41647,
+          "sha256": "1ba33e906efadfc4fc8cd3f1fd033dacb93d894f0a822d37e64e1986ed2c3287"
+        },
+        "source/figs/gradcos.pdf": {
+          "bytes": 81485,
+          "sha256": "05ddbe6fd42c47cfe059723e602e5806b3345119fecf276343f2b22bc7d14323"
+        },
+        "source/figs/leakage.pdf": {
+          "bytes": 55847,
+          "sha256": "155a42bfe74e520bb54ee6e535703db4668d07d671532283ae0895f8ac5760ee"
+        },
+        "source/figs/method.pdf": {
+          "bytes": 62707,
+          "sha256": "09da86b6e394e72a1add2c6eefd6cbe0c19e6b71c7c79fa8b951c544433ae406"
+        },
+        "source/figs/why_work.pdf": {
+          "bytes": 69635,
+          "sha256": "09d882f9d73c0b93ef6b0f0a508b739e06ebf1855e4e4fb4f0369d9d8d5a50fc"
+        },
+        "source/iclr2027_conference.bib": {
+          "bytes": 196054,
+          "sha256": "ecc8b4fe568ce9187c69da5c7887050b2fe387b99ce9606b0da4616b40ce2b27"
+        },
+        "source/iclr2027_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/iclr2027_conference.sty": {
+          "bytes": 9025,
+          "sha256": "797deef41724e93761426ac0cbcca46279a91cc650dd1f0ce76a4f08d2098ea6"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12284,
+          "sha256": "90473c4d0542070db244cea73ef962d6cddc5b2a746757e6a40ddf5fdfb90ba9"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source.tar.gz": {
+          "bytes": 418781,
+          "sha256": "b7c26606bf88f2342be7480b14f710cdbb6b7885a83537a0e86444d58c203667"
+        }
+      }
+    },
+    {
+      "title": "What Matters in On-Policy Distillation? A Perspective on Data Efficiency and Data Selection",
+      "arxiv_id": "2609.05198v2",
+      "arxiv_url": "https://arxiv.org/abs/2609.05198v2",
+      "category": "efficient-opd",
+      "background": false,
+      "tldr": "This work asks which examples make OPD data-efficient. Its analyses link harder prompts’ gains to longer reasoning trajectories rather than high token entropy alone: long rollouts support extended alignment and expose reflection patterns. Selecting just eight hard examples can match a 17K-example baseline in the evaluated settings, even when selected problems are unsolvable for the teacher.",
+      "directory": "papers/efficient-opd/2609.05198v2",
+      "pdf": "papers/efficient-opd/2609.05198v2/paper.pdf",
+      "source": "papers/efficient-opd/2609.05198v2/source",
+      "source_archive": "papers/efficient-opd/2609.05198v2/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1285,
+          "sha256": "431551731eb3152d949eb637a4710ce5f4f018c149f56150c096355fb61a61be"
+        },
+        "paper.pdf": {
+          "bytes": 523832,
+          "sha256": "ebba6220638d79480f08bd72b2af63a80fcc3f7065ad1f6eeb0603f08ed031ff"
+        },
+        "source/00README.json": {
+          "bytes": 212,
+          "sha256": "d64c1a2fce3eefffc376b050a66b43a851810b978d0fd12f3585bb1b38b053cb"
+        },
+        "source/data/appendix.tex": {
+          "bytes": 42784,
+          "sha256": "77c4935597a9bc1aa46601fcd7758549693b9b43d49aab5ff7640be169c72f70"
+        },
+        "source/data/conclusion.tex": {
+          "bytes": 877,
+          "sha256": "b913620b0c82218a21287f9536056c5c6b126900dfe58d9c33503d3048b42820"
+        },
+        "source/data/effiency.tex": {
+          "bytes": 7776,
+          "sha256": "37f414a1d4d226fd93c70f0497b20a33a8f992057a6203e488239cfdc2ca0be6"
+        },
+        "source/data/introduction.tex": {
+          "bytes": 3834,
+          "sha256": "b559f05e765a805bf3950f69ae1097df20178e637fe95fd2e92d4a0151566d12"
+        },
+        "source/data/pilot.tex": {
+          "bytes": 11313,
+          "sha256": "7d1fbdbea0f204af5404036c673db0ae062357b7974692e5be32aa29f3eca1a7"
+        },
+        "source/data/preliminary.tex": {
+          "bytes": 2829,
+          "sha256": "7525d39088522b6405473e72a45c7e5eb887ed2f7a01c5b4968bd8061b667fe0"
+        },
+        "source/data/related_work.tex": {
+          "bytes": 2296,
+          "sha256": "f6f180a5c567284699840941c0a64afee5849c105c5096887bc7ee41c20a4283"
+        },
+        "source/data/selection.tex": {
+          "bytes": 6956,
+          "sha256": "5c88abf1a074c7cc7d5ce646693c5150122f4c3fba37ffba1e7927200ebb6999"
+        },
+        "source/iclr2027_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/images/code.pdf": {
+          "bytes": 29145,
+          "sha256": "551b68b57ae00b1d93fdf4714d413e873e6cab5f02bfd286ea8854b57c1d0a80"
+        },
+        "source/images/difficulty.pdf": {
+          "bytes": 16202,
+          "sha256": "00b248f1ff1d64766b71e162ee280fdd91eb40e727bd497dbca7e4e02e0bb7de"
+        },
+        "source/images/kl.pdf": {
+          "bytes": 24882,
+          "sha256": "7c9a81dbce2ab003ac696f896d828ebcf3c1936cd54a64bf1a01af684c572b1d"
+        },
+        "source/images/kl_position.pdf": {
+          "bytes": 15016,
+          "sha256": "04484215b780f764590c1acc19f3108dd1832ac89a0c83183ec169ac11caa63e"
+        },
+        "source/images/length.pdf": {
+          "bytes": 15434,
+          "sha256": "d256423e7dde81927283cc0e41c9921c1e964cf177b5c2806b5ef404fff49d18"
+        },
+        "source/images/long.pdf": {
+          "bytes": 40078,
+          "sha256": "547bf0322ab033edc5ad91b7f8d14cbbf3ca8509bef02e23e365a3b0765c8afa"
+        },
+        "source/images/short.pdf": {
+          "bytes": 43952,
+          "sha256": "032528bf82228fc91c316851ed6e9a6f8f702418799fff07de4f21ce66b7fc30"
+        },
+        "source/images/temperature.pdf": {
+          "bytes": 27309,
+          "sha256": "7eb4f8c37b709b05ffbb1407778c1c6c6ed7df49f2e743f6dc95bcd3fb52fad5"
+        },
+        "source/images/training.pdf": {
+          "bytes": 23056,
+          "sha256": "03e373b7c5e2c2a40f9db6aaf86216b0babdcd8e59330524d3811a5ae44fd3d5"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12284,
+          "sha256": "90473c4d0542070db244cea73ef962d6cddc5b2a746757e6a40ddf5fdfb90ba9"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source/neurips_2026.sty": {
+          "bytes": 13704,
+          "sha256": "c3fc2894e83d2517ca18b66741d6c595986d97957dc08ec08bb2125a7ec4555a"
+        },
+        "source/opd.bib": {
+          "bytes": 10855,
+          "sha256": "c979d6a6427d4a07bdd5a222a5062b02e5a7a4ba00a6a095b3df77b06b6ee605"
+        },
+        "source/opd.tex": {
+          "bytes": 3908,
+          "sha256": "98d749da49648ed9590683d829d64e95188e36b23cefad6125c7c066f9bd40f9"
+        },
+        "source.tar.gz": {
+          "bytes": 198680,
+          "sha256": "bbd3c6742bfaf1abdcb4a988d753635f3123b90272c86d75734febb692ffddde"
+        }
+      }
+    },
+    {
+      "title": "Rethinking On-Policy Distillation of Large Language Models II: One Training Example",
+      "arxiv_id": "2609.04172v1",
+      "arxiv_url": "https://arxiv.org/abs/2609.04172v1",
+      "category": "efficient-opd",
+      "background": false,
+      "tldr": "How much training data does OPD actually need? Repeated rollouts from one query recover most full-data gains, while a small diverse set can match full-data training. State-coverage and alignment analyses suggest that rollouts expose broad teacher supervision quickly but the student absorbs it slowly. The insight is that effective state coverage and optimization efficiency can matter more than raw query count.",
+      "directory": "papers/efficient-opd/2609.04172v1",
+      "pdf": "papers/efficient-opd/2609.04172v1/paper.pdf",
+      "source": "papers/efficient-opd/2609.04172v1/source",
+      "source_archive": "papers/efficient-opd/2609.04172v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1320,
+          "sha256": "84ae7ef19ca8c1e954f1393da2a630b30a28239e3f240fa107c66c939c3a179f"
+        },
+        "paper.pdf": {
+          "bytes": 1810938,
+          "sha256": "addcfc1fb00273de054d2a9bcd86d37ee046fd59bd97f92f0c85fdc555fe4dd5"
+        },
+        "source/00README.json": {
+          "bytes": 292,
+          "sha256": "f18d8978581aa5e80d308b5b9e74f11f6d51993a7a357919ef4da27cd567d916"
+        },
+        "source/Sections/0_Abstract.tex": {
+          "bytes": 5936,
+          "sha256": "d96d23431ea772a97a4b0902af12eb3ece0ae337d6e6755f0d1710e86dcb5c0f"
+        },
+        "source/Sections/1_Introduction.tex": {
+          "bytes": 5629,
+          "sha256": "202afcd80257615c0a19fdb74710eb4630139092065f98d51a9b692e580d7470"
+        },
+        "source/Sections/2_Preliminaries.tex": {
+          "bytes": 5403,
+          "sha256": "fd2334a633f30dd8edda0ecf3ce76cc758da69a6c044b7eea9aa4e79ac5e4ddf"
+        },
+        "source/Sections/3_One-shot.tex": {
+          "bytes": 9414,
+          "sha256": "b51e6e0386486fc2cc5049fea92eae1797852d2fb9cc906f4def7a00ef9f6ff8"
+        },
+        "source/Sections/4_Mechanism-Data.tex": {
+          "bytes": 9125,
+          "sha256": "097293f0869b8776a988a90d64d6812a219c2f5cd82a1cb910356d3278148f25"
+        },
+        "source/Sections/5_Mechanism-Algo.tex": {
+          "bytes": 7010,
+          "sha256": "486baa454fc37d9e5d6147a0d24bc4d944621e937e379fd00ecd36f618390215"
+        },
+        "source/Sections/6_MOPD.tex": {
+          "bytes": 3289,
+          "sha256": "5d9e475279f55b3865efa9e24d8b45d1656371414d7c194f9a8407572c607203"
+        },
+        "source/Sections/7_Discussion.tex": {
+          "bytes": 6782,
+          "sha256": "fb6558f6bc6f4f16033dc37eabd3b280edb8a3642ad8208d2fdd318191d7e429"
+        },
+        "source/Sections/8_Related-work.tex": {
+          "bytes": 4721,
+          "sha256": "13fb1a6158fa342362e5c7790982eb8aca91ee197e16b952ab3e7f45605864c9"
+        },
+        "source/Sections/9_Conclusion.tex": {
+          "bytes": 2411,
+          "sha256": "cea9a2df5ff577df167b2730817241863a832091c21e1e3ad3d6dd1c423c0992"
+        },
+        "source/Sections/Appendix.tex": {
+          "bytes": 18971,
+          "sha256": "fdc50915a6dd1fab3b30ed4915b5c25aab354ff45c10a7386e52d554ca7c1f90"
+        },
+        "source/figures/3A_ablations_training_acc.pdf": {
+          "bytes": 14913,
+          "sha256": "19db3364db8f942c4aab23a3165067ab1c31e3532a64c2f81d2f01cb65f34d48"
+        },
+        "source/figures/3_ablations.pdf": {
+          "bytes": 21621,
+          "sha256": "02b192679e04b81951f9f0efabe7e71c203689a267db4907471e614f43afa179"
+        },
+        "source/figures/3_cross_domain.pdf": {
+          "bytes": 16678,
+          "sha256": "1df575817b52ed9eb3c41c7d4fc94878d64c1877390a30a7f0d2a84fdfc3bc49"
+        },
+        "source/figures/3_cross_family.pdf": {
+          "bytes": 16794,
+          "sha256": "d1e540cfc995795616dc836145bd66d517cae7df29dfd9a9ea464b971f0030ba"
+        },
+        "source/figures/3_oneshot_math300.pdf": {
+          "bytes": 31959,
+          "sha256": "b939dcd6ee7b10b19457d13500addf96976385136bfd0889eb93bb3cd0eeedb9"
+        },
+        "source/figures/4A_2shot_schedule.pdf": {
+          "bytes": 25530,
+          "sha256": "a19d7b13f2a378f7a0f78ad3c3648bdc1501964e36081a300917f151028213eb"
+        },
+        "source/figures/4A_nshot_diversity.pdf": {
+          "bytes": 16946,
+          "sha256": "41c772abf93af585e3f5c5ecc18565a9a99bcef72159e852ec7f4a0db9089a42"
+        },
+        "source/figures/4A_state_extraction_positions.pdf": {
+          "bytes": 21810,
+          "sha256": "761dcd30f8992d194ee23a1854f1477ba1817b3572731b59f48aa2065764f392"
+        },
+        "source/figures/4_state_coverage_oneshot.pdf": {
+          "bytes": 17752,
+          "sha256": "c64d596cd16a1dc74bc43112100a9503843d6d7e258028977b36036c50e06ce2"
+        },
+        "source/figures/4_state_diversity.pdf": {
+          "bytes": 15352,
+          "sha256": "bdb9130170e8169f23cf267ab2d0cb849bd41b8a79848fba9eff8d06c81a0153"
+        },
+        "source/figures/5A_lr_collapse_v2.pdf": {
+          "bytes": 51850,
+          "sha256": "faf19878c70c0c2b6aa2acb0c038e499e25c2e670ae20089dd2cdd289e6d9e51"
+        },
+        "source/figures/5_digestion_rate_v2.pdf": {
+          "bytes": 39572,
+          "sha256": "9be66a356bcc2f3ac54fadaea7880f60ed33a1dd9a3024c8abfae5ac274726b5"
+        },
+        "source/figures/5_online_offline.pdf": {
+          "bytes": 21989,
+          "sha256": "4528d769ba79f40aa3d93c083a39cffd0adf4d373ce416480b66c1d2e014f750"
+        },
+        "source/figures/6_mopd_curves.pdf": {
+          "bytes": 24362,
+          "sha256": "81a0aa5fe683ddb2d6a2f76bd203626cf45c000c93151b79312655ec38a0fb60"
+        },
+        "source/figures/7A_template_wildchat_code.pdf": {
+          "bytes": 35903,
+          "sha256": "cf1baa0721fce96bb1f35730c847c451dd6c18c55490c765474dd0bfe7afb874"
+        },
+        "source/figures/7_opd_vs_rlvr.pdf": {
+          "bytes": 44211,
+          "sha256": "6cd0a511b11c421b834ff3bec1daebaf7b011bf5b55f7025c781b82ebe0032cc"
+        },
+        "source/figures/7_template_wildchat.pdf": {
+          "bytes": 31084,
+          "sha256": "883bb69fd7fab62cfb356ff70e2edea36428a9f98467901fd092467550fc1903"
+        },
+        "source/figures/main1.pdf": {
+          "bytes": 379814,
+          "sha256": "ea3f4a48f42dd7e5491f22b90e270c39de1e646439f025bf27423b8b280bc923"
+        },
+        "source/figures/main2.pdf": {
+          "bytes": 513903,
+          "sha256": "d031a42202af5ff6e6c6f73fe614baa77849e268eddb802eb91e616ec70a64e3"
+        },
+        "source/main.bib": {
+          "bytes": 22331,
+          "sha256": "7e01e40bef8bd60e225ef0c6755db059b426a0b3a95bab73b1e9a57dfe6adeee"
+        },
+        "source/main.tex": {
+          "bytes": 7495,
+          "sha256": "2890bf6d152e32ee88490e6b2e59d45ffe508d076de9f7eb28522111ef35ca74"
+        },
+        "source/thuc3i.cls": {
+          "bytes": 17074,
+          "sha256": "79b24f07d430b14090d3abfff0bae28ac44b78d318b9f2b46989f6604346a342"
+        },
+        "source.tar.gz": {
+          "bytes": 1230208,
+          "sha256": "c8e8b6ce958a5b0865e44eb5564c33689ebeb687c259d2bc729fac50e0227345"
+        }
+      }
+    },
+    {
+      "title": "Latent On-Policy Self-Distillation",
+      "arxiv_id": "2608.13040v1",
+      "arxiv_url": "https://arxiv.org/abs/2608.13040v1",
+      "category": "latent-opd",
+      "background": false,
+      "tldr": "Existing self-distillation methods depend on hand-designed privileged artifacts such as answers, skills, or feedback. Latent On-Policy Self-Distillation retrieves experiences and learns to compress them into continuous latent tokens that condition a self-teacher. A privileged-margin objective regulates this context learning. The insight is to learn what information makes the teacher useful, rather than fix the privileged context format by hand.",
+      "directory": "papers/latent-opd/2608.13040v1",
+      "pdf": "papers/latent-opd/2608.13040v1/paper.pdf",
+      "source": "papers/latent-opd/2608.13040v1/source",
+      "source_archive": "papers/latent-opd/2608.13040v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 839,
+          "sha256": "c77f098dfebc8150557493e5a5439e1a7fd6efaa3f3319972cffd88561a2498a"
+        },
+        "paper.pdf": {
+          "bytes": 1464253,
+          "sha256": "4a1e935d84bd434c015dcce11bc02cb5b19b3e85b1aad1dd6ed7f18024b80aac"
+        },
+        "source/00README.json": {
+          "bytes": 510,
+          "sha256": "a553ab1e18fd1716c8d0c4e6a61fbc9367bb687d1cf25abad8f04880aed2029e"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/figs/envscaler_training_curve.pdf": {
+          "bytes": 15897,
+          "sha256": "ac47c1d159c5a938594f381956cd76a40e3d4c5ca0568dc3b23d52f5e14ac3da"
+        },
+        "source/figs/huggingface_icon.pdf": {
+          "bytes": 17717,
+          "sha256": "04de81e409a894de9911119d50c3853b0951697b06967ce1adbce7b27a6aadca"
+        },
+        "source/figs/joint_optimization_bars.pdf": {
+          "bytes": 22197,
+          "sha256": "b065614e6d590e7958ad58747bbba45288af9a6dcd7044228c3d34bcb8a23130"
+        },
+        "source/figs/latent_decode_case_study.pdf": {
+          "bytes": 115275,
+          "sha256": "91bfceafad46f536454ca63a0f7927259c6e0cbf7c0adb13b2e2708cdb14b325"
+        },
+        "source/figs/lopd-intro-paradigms.pdf": {
+          "bytes": 474788,
+          "sha256": "f16f86e12e791cf0f312e747a9c9afc0d09b383b112caf9400bdbaad7951812c"
+        },
+        "source/figs/lopd_framework_final.pdf": {
+          "bytes": 279337,
+          "sha256": "e4613ef940b8f327d447e207161285691532dc71c63f560cfec00a7414cbb56d"
+        },
+        "source/figs/olmo_icon.pdf": {
+          "bytes": 14366,
+          "sha256": "95706a6e4472e93c7cdfb4a9ca06b007361e176895425369a73555b2b4cd6125"
+        },
+        "source/figs/qwen_icon.pdf": {
+          "bytes": 77527,
+          "sha256": "8accf720d6370d8c82d0e7d2b6ccc6b3f352be4933d49b44ac1dd2488ee8a3db"
+        },
+        "source/figs/sensitivity_analysis.pdf": {
+          "bytes": 58882,
+          "sha256": "4639368709c15e27870340652bb1ca9ec0db1a21870013f93e51cd9dd6b79bda"
+        },
+        "source/iclr2026_conference.bbl": {
+          "bytes": 19065,
+          "sha256": "4b7cc038073b942a09c6c851a8e5004bf873b4fcd39471ac72eac2674e0b7c93"
+        },
+        "source/iclr2026_conference.bib": {
+          "bytes": 21983,
+          "sha256": "11715e10f88d97f625b210c7c97ceffdbe6eed87629a92e77ac5fcea4a9dde85"
+        },
+        "source/iclr2026_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/iclr2026_conference.sty": {
+          "bytes": 8985,
+          "sha256": "dc0b2ff43cd1768b8e901f70eac57636fd02ed5dc8a0bd92ce02dc3aa1dad6ce"
+        },
+        "source/iclr2026_conference.tex": {
+          "bytes": 84388,
+          "sha256": "7ef740f431fbf6fc0d41b3f451f38704e00110241f21f78d8a1562184b435052"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12284,
+          "sha256": "90473c4d0542070db244cea73ef962d6cddc5b2a746757e6a40ddf5fdfb90ba9"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source.tar.gz": {
+          "bytes": 991687,
+          "sha256": "dc6ee859b236c6b6ed0404fca2135423768dd2a1debd1add92974805d649a436"
+        }
+      }
+    },
+    {
+      "title": "Towards Understanding On-Policy Distillation through the Lens of Test-Time Scaling",
+      "arxiv_id": "2608.11829v3",
+      "arxiv_url": "https://arxiv.org/abs/2608.11829v3",
+      "category": "opd",
+      "background": false,
+      "tldr": "An OPD model can improve pass@1 yet lose pass@K at larger sampling budgets, even with a more accurate teacher. This work analyzes that reversal and proposes Teacher Advantage Score at K to compare candidate teachers before training. The insight is to select teachers for the intended inference budget, since stronger average accuracy does not guarantee better sampled coverage.",
+      "directory": "papers/opd/2608.11829v3",
+      "pdf": "papers/opd/2608.11829v3/paper.pdf",
+      "source": "papers/opd/2608.11829v3/source",
+      "source_archive": "papers/opd/2608.11829v3/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 960,
+          "sha256": "3b8b2b868eefe6c8134783cd804259fd2c3ef0646af548e65dbe556288ee3ed6"
+        },
+        "paper.pdf": {
+          "bytes": 1453528,
+          "sha256": "49675054a0b3e0e3c75c1aaac3b1a445280bfbcde93637871781e1828ec5445a"
+        },
+        "source/00README.json": {
+          "bytes": 228,
+          "sha256": "fb33021218b4c6c56cbc9896b62c2e54bf5ae797c2c7641fd9e4392d84959227"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/figures/avg_at_k_code_settings_model_rows_compact_flat.pdf": {
+          "bytes": 25096,
+          "sha256": "11224e8a327d696882639060f66483adf798f5086019d9a7ce0fbb665989c736"
+        },
+        "source/figures/avg_at_k_fact_settings_two_teachers_compact_flat.pdf": {
+          "bytes": 26814,
+          "sha256": "004de535c173e5c31b6b196c7566c2a61783d0db3311706da6909844d954e2b9"
+        },
+        "source/figures/avg_at_k_math_settings_model_rows_compact_flat.pdf": {
+          "bytes": 35188,
+          "sha256": "a6a3c00cc72c088c391f73e78b46d508c7431baff57526520dac6a4bb9c68ce5"
+        },
+        "source/figures/github_mark.png": {
+          "bytes": 5437,
+          "sha256": "2a2f5cbcc74c7fa83c40127dd8b0e42c23f1157131aebe28492aa1ac27bbdc6d"
+        },
+        "source/figures/huggingface_logo.png": {
+          "bytes": 185450,
+          "sha256": "9cf16f4f32604eaf76dabbdf47701eea5a768ebcc7296acc1d1758181f71db73"
+        },
+        "source/figures/math_fact_p_bin_split_by_accuracy_direction.pdf": {
+          "bytes": 519851,
+          "sha256": "3ad617097bde9f35f83da9e0bd6df54a56879672fe00eaba968e036e366a2860"
+        },
+        "source/figures/pass_at_k_code_settings_model_rows_compact_v6_flat.pdf": {
+          "bytes": 25778,
+          "sha256": "3cec1f89847af9e170f7821a73b7d97769721d22f1269d6bdc715e5cbf77b66f"
+        },
+        "source/figures/pass_at_k_fact_settings_two_teachers_compact_flat.pdf": {
+          "bytes": 26328,
+          "sha256": "d8499e83356c8560377cc4a550be6cbe8f05b9eb7eb48379fd738e874f060ab5"
+        },
+        "source/figures/pass_at_k_math_settings_model_rows.pdf": {
+          "bytes": 35865,
+          "sha256": "95648716cbc41132f24fcbda0429bac38bcd7f74b4efa645f7c620692188ef0f"
+        },
+        "source/figures/pass_at_k_qwen3_advanced_opd_methods.pdf": {
+          "bytes": 24610,
+          "sha256": "f63391c79ce3e783d3eea90b29906234dfeab20d2a987a293245f306808b2efc"
+        },
+        "source/figures/pass_at_k_rlcode4b_checkpoint_progression_v6_flat.pdf": {
+          "bytes": 20609,
+          "sha256": "5d134bb3ef1d0d7e30b0a7c0ceef546f1513df5f543cb7828bb9831c85f755ab"
+        },
+        "source/figures/pass_at_k_skywork_checkpoint_progression.pdf": {
+          "bytes": 17842,
+          "sha256": "7bce2bd56abb85d112b813530c1b670e9398baaf19c8c6dba118e78d51a44adf"
+        },
+        "source/figures/skywork_primary4_random_alignment_ppl.pdf": {
+          "bytes": 19731,
+          "sha256": "3ca0307188f3c7fdf4cc4bb5986f485552c89f18553632c20384c1029def098d"
+        },
+        "source/figures/tas_at_k_opd_compact_with_fact_no_nq.pdf": {
+          "bytes": 57939,
+          "sha256": "3cd93fe407ec4d0cfa30a8cedb05346e59ec6377dd0da8cb074bbce6f2a8f2ad"
+        },
+        "source/figures/teaser_compact.png": {
+          "bytes": 410189,
+          "sha256": "63db76a3cfce69f3c6d538ea41c9be250b2c7e7dd6cbbe71e8d974b7684f219a"
+        },
+        "source/iclr2027_arxiv_0928.tex": {
+          "bytes": 119022,
+          "sha256": "68fc8e8b4e12aea0cd833ec8ff15f87df30b146c4ae28a6abf20083a7b922b88"
+        },
+        "source/iclr2027_conference.bib": {
+          "bytes": 26530,
+          "sha256": "09ea9ba6ac0f5e734a62bd38bf46d2aebd1f6db74d2014550abafcd6ac95b2b8"
+        },
+        "source/iclr2027_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/iclr2027_conference.sty": {
+          "bytes": 9025,
+          "sha256": "797deef41724e93761426ac0cbcca46279a91cc650dd1f0ce76a4f08d2098ea6"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12284,
+          "sha256": "90473c4d0542070db244cea73ef962d6cddc5b2a746757e6a40ddf5fdfb90ba9"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source.tar.gz": {
+          "bytes": 1101911,
+          "sha256": "6c23e19dc0366bd1f246b923dcf6b65ccfaae7b1deb09dbd205bc01e6c40f4e9"
+        }
+      }
+    },
+    {
+      "title": "Privileged, but Biased: How PI-Conditioned Teachers Break Self-Distillation",
+      "arxiv_id": "2608.04794v1",
+      "arxiv_url": "https://arxiv.org/abs/2608.04794v1",
+      "category": "opsd",
+      "background": false,
+      "tldr": "A falling self-distillation loss need not imply better task performance. This study finds that privileged conditioning can bias the teacher toward one reference trajectory and concentrate supervision on stylistic or low-information tokens, even penalizing useful exploration. Its insight is that standalone teacher matching can become decoupled from correctness, especially in the difficult settings examined.",
+      "directory": "papers/opsd/2608.04794v1",
+      "pdf": "papers/opsd/2608.04794v1/paper.pdf",
+      "source": "papers/opsd/2608.04794v1/source",
+      "source_archive": "papers/opsd/2608.04794v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 816,
+          "sha256": "3e9c1ecb888899a0e6f50a4695d90e7c027115c6305e298d97c0f0be4996a52e"
+        },
+        "paper.pdf": {
+          "bytes": 2366623,
+          "sha256": "95bab2f4c4b751600a5703f23978419a6e1949a6d8a576fe532f83f8fdc191b3"
+        },
+        "source/00README.json": {
+          "bytes": 387,
+          "sha256": "a0bfc2741e4b9bcdb1de3e3ddd7410b82882e3bda60055227ed0113c798aa230"
+        },
+        "source/SDPO_NeurIPS.tex": {
+          "bytes": 96349,
+          "sha256": "0e61d0653679f8360ca0cd1d46f899fbc07ced45e75da11e6be1f17c287e9f9d"
+        },
+        "source/aaai2027.bib": {
+          "bytes": 4814,
+          "sha256": "ff8a860f20602b2645723856b80f0a0ad28ee7ec270158254400fdb80b429e45"
+        },
+        "source/aaai2027.bst": {
+          "bytes": 30207,
+          "sha256": "5db7765ba99de5c1e4686f9b3940a0add9c5e702f2164514462bec130ccb6e3c"
+        },
+        "source/figures/image.png": {
+          "bytes": 36267,
+          "sha256": "f7a876dd5a74dc3dd909de2103bb4a04194a9f0ccfb5d6a497f5a9b29b912cc4"
+        },
+        "source/figures/newfig_a1_kl.png": {
+          "bytes": 292546,
+          "sha256": "d3b9ded30ed16c27989f142930381be0368e3ad52f48c6de8d959c659bbdea78"
+        },
+        "source/figures/newfig_a1_loss.png": {
+          "bytes": 274359,
+          "sha256": "0570d6544e3b33361144ac928e526634fd8f3dd01deec5ed53fe811f432d9811"
+        },
+        "source/figures/newfig_a1_lpgap.png": {
+          "bytes": 187778,
+          "sha256": "3de1a65546e4a42e52a382a4605587f7235d01961963fc2e4bdf7c3ba68b404f"
+        },
+        "source/figures/newfig_a2_pertoken_loss_neurips.pdf": {
+          "bytes": 48731,
+          "sha256": "b2a444e6c8b78119d47d919033abefb5ea0e1b51d1684f767379bd08b74e4c61"
+        },
+        "source/figures/newfig_a2_tokentypes.png": {
+          "bytes": 143893,
+          "sha256": "b09b0bcf37dc9378cc0ac247e0d999ba267365097e752a27f714f59800e8dd6d"
+        },
+        "source/figures/newfig_a4_offpath.png": {
+          "bytes": 64140,
+          "sha256": "a14ef66179f698abbfec12f6f1cfc95ae8793f42c7118f66d9e45db740fcdcb2"
+        },
+        "source/figures/newfig_a5_signed.png": {
+          "bytes": 131799,
+          "sha256": "ad0c2f401b89541dff874b7b6bb1eba66a3e0b9d6928ca153a5dee213f3109cb"
+        },
+        "source/figures/qualitative_example_neurips.png": {
+          "bytes": 320281,
+          "sha256": "fd8b6e0e1123fcad628cb39bbd32303e40af3b40f767e8f0d2182c31834b6559"
+        },
+        "source/figures/talk_pi_bias_neurips.png": {
+          "bytes": 97461,
+          "sha256": "816b3ac10adcb310f06f692bc747216d70c25c088e0edbd88b6992dbcae3abde"
+        },
+        "source/figures/talk_repro_bio_acc.png": {
+          "bytes": 38344,
+          "sha256": "bfcc873701f097719072564612dfef49bfc6c9a600d56832ec7b681606dd9d86"
+        },
+        "source/figures/talk_repro_bio_loss.png": {
+          "bytes": 45744,
+          "sha256": "c3cd7103afb3d84cce1a41d46f8285e26fca59a5ccdf0fb3a4de3595e262b107"
+        },
+        "source/figures/talk_repro_phys_loss.png": {
+          "bytes": 59022,
+          "sha256": "f336955bedc265ab379d6fc32b7fe8818bfd5fd80da61925f0b76f3b1584910a"
+        },
+        "source/figures/talk_sig_accuracy_bfcl.png": {
+          "bytes": 74981,
+          "sha256": "e21c2359c29c61be7e007c4b4e2b7fc7fa67a1de51bfa38b04d45454591c995b"
+        },
+        "source/figures/talk_sig_accuracy_codeforces.png": {
+          "bytes": 76315,
+          "sha256": "d7fb72e9272c5f293c31919bd583c8cf957edf105d071612fecb4c8ff78521fe"
+        },
+        "source/figures/talk_sig_entropy_bfcl.png": {
+          "bytes": 55534,
+          "sha256": "08072d709d6159809b5503cbb267c6d7e27e66189bda5b47f279ca6f1b9c8ecd"
+        },
+        "source/figures/talk_sig_entropy_codeforces.png": {
+          "bytes": 54683,
+          "sha256": "e9474f930061b3fed58187104835b254c5b790d57ee3c9b733bde34a52020f5f"
+        },
+        "source/figures/talk_sig_entropy_dapo.png": {
+          "bytes": 67712,
+          "sha256": "f86a0d57d850755e047cb7a06a6ab99817a3e95e4a9413ca3a2f4dfdce3f0212"
+        },
+        "source/figures/talk_sig_entropy_mmlu.png": {
+          "bytes": 44235,
+          "sha256": "a95da8f2909433fb141eb4ebca02f13e80c93198023be54bbe7e708aaffb0af4"
+        },
+        "source/figures/talk_sig_length_bfcl.png": {
+          "bytes": 82248,
+          "sha256": "e512b7a6ac628e684011c932d987ad267d59ce3580f399b0ecfcf231f5c0b32f"
+        },
+        "source/figures/talk_sig_length_codeforces.png": {
+          "bytes": 95539,
+          "sha256": "a66d4907bdbbba7eb305285d9b71746a6fa8c9791cfa811c1a01f586173d4b81"
+        },
+        "source/figures/talk_sig_length_dapo.png": {
+          "bytes": 67633,
+          "sha256": "f0282a40c73984476c52beb20efd214a8b6480f3e0672c41552f7096c139b4a6"
+        },
+        "source/figures/talk_sig_length_mmlu.png": {
+          "bytes": 65155,
+          "sha256": "9ae1c584b854c063a6e84041501aa428f3423e0dffa3938354d187159c11d464"
+        },
+        "source/figures/talk_sig_loss_bfcl.png": {
+          "bytes": 102867,
+          "sha256": "c4e22c2eda833b397f3753fb697078d6ece4888528da4ed54f5bf4b79eedf12a"
+        },
+        "source/figures/talk_sig_loss_codeforces.png": {
+          "bytes": 87927,
+          "sha256": "9e90f81f42b9e707ee29450298710e8364122e63ea4811476b7fe4f6de9d1518"
+        },
+        "source/figures/talk_sig_loss_dapo.png": {
+          "bytes": 62343,
+          "sha256": "fd09cf00c2dd933680610eb0ae9a083a7a84c397f38148e82322c30df99db2fb"
+        },
+        "source/figures/talk_sig_loss_mmlu.png": {
+          "bytes": 77855,
+          "sha256": "6ebce7b95a25c4b8f78a6d1322031f64d468ace07039a71be370c2febf7ef15e"
+        },
+        "source/figures/talk_sig_val_dapo.png": {
+          "bytes": 62907,
+          "sha256": "8dac26ba66f90b20c9942cae01830671dfa9b9f7c76e01c63e43f220fc60d920"
+        },
+        "source/figures/talk_sig_val_mmlu.png": {
+          "bytes": 45080,
+          "sha256": "73459192327b924a356725c44e2c5d66a8f3a47db26d3fc4e1e5512ad3ffc2fb"
+        },
+        "source/neurips_2026.sty": {
+          "bytes": 13704,
+          "sha256": "c3fc2894e83d2517ca18b66741d6c595986d97957dc08ec08bb2125a7ec4555a"
+        },
+        "source/references.bib": {
+          "bytes": 12690,
+          "sha256": "3e48d26dcf3585cd4de6ad761204dda0d337b996e79f3a9ece7fe40b7f9aff6b"
+        },
+        "source.tar.gz": {
+          "bytes": 2784773,
+          "sha256": "0ccd6390ccc9e61447e1d85a93db168127072d3c02f7c064e64a5fd7567dc148"
+        }
+      }
+    },
+    {
+      "title": "Demystifying On-Policy Distillation: Roles, Pathologies, and Regulations",
+      "arxiv_id": "2607.13399v1",
+      "arxiv_url": "https://arxiv.org/abs/2607.13399v1",
+      "category": "opd",
+      "background": false,
+      "tldr": "Why can a stronger teacher or more OPD training still produce worse reasoning? This study identifies student–teacher mismatch and length exploitation as failures of the dense supervision signal. Advantage clipping and log-scale compression suppress extreme signals while preserving useful preferences. Its experiments frame OPD as an exploration catalyst whose success depends on signal quality and compatibility rather than teacher size alone.",
+      "directory": "papers/opd/2607.13399v1",
+      "pdf": "papers/opd/2607.13399v1/paper.pdf",
+      "source": "papers/opd/2607.13399v1/source",
+      "source_archive": "papers/opd/2607.13399v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 873,
+          "sha256": "971e24ced7da9bbeb2b063f2ec52ea2c12750604cbf9a093577e5fad4135909e"
+        },
+        "paper.pdf": {
+          "bytes": 898471,
+          "sha256": "dceb4edd97b6736c86d7e10b07e80f7d493c3d6191c5b13fdb68c7a56ea89894"
+        },
+        "source/00README.json": {
+          "bytes": 1120,
+          "sha256": "f7806ae9954d3a76e4b6c3a769b5675a06e9dcf8bb1fae89489c76736c87e099"
+        },
+        "source/README.md": {
+          "bytes": 2126,
+          "sha256": "c53d3e99a45873315d51ab845aa10c611a2dc3394bb5ebf575cccf961d17b91d"
+        },
+        "source/acl.sty": {
+          "bytes": 11615,
+          "sha256": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de"
+        },
+        "source/acl_latex.bbl": {
+          "bytes": 13500,
+          "sha256": "7a31ca24c25348039a2fcc31f7de3de818d0e2c7359fb8b8f77485cd210db786"
+        },
+        "source/acl_latex.tex": {
+          "bytes": 89040,
+          "sha256": "5a250307833e6602cc0599e883f65049ad57f3631e8c9b783fc875904bab002f"
+        },
+        "source/acl_natbib.bst": {
+          "bytes": 45186,
+          "sha256": "e332fd51dcea48e2a8a89754892c3cb99674a1cd70b527b661e9aaffc235e83c"
+        },
+        "source/anthology.bib.txt": {
+          "bytes": 1169,
+          "sha256": "2b78d2d9aeda62e14c4e46099e8225b5fc116387d8e0a54aad776485e249ceff"
+        },
+        "source/custom.bib": {
+          "bytes": 23813,
+          "sha256": "de9e62302143d65731f376816c9bd794328b1065f96e6b6aeac0877c3bb52b3a"
+        },
+        "source/figs/failure_modes_accuracy_mean_clip_ratio_mean.pdf": {
+          "bytes": 65941,
+          "sha256": "67aaa3f3de2320a211e6a1b26764907cbf1351341c9354aee1881658fd0f537b"
+        },
+        "source/figs/passk.png": {
+          "bytes": 288100,
+          "sha256": "835aba8a9ab94f60e5c1fb733789ab7129383d9d4a311309a9b518c529e36831"
+        },
+        "source/figs/signal_regulation_v3.pdf": {
+          "bytes": 56254,
+          "sha256": "a621a0c5e01d7078fa27e4e6a57d3dd8a82a85cfda9cfef0808f9e655009bd37"
+        },
+        "source/figs/signal_regulation_v4.pdf": {
+          "bytes": 44221,
+          "sha256": "5eaca61132f19faeefb2dd43e6f9bbdc2e454a8a3b1a109206361dabc88152d6"
+        },
+        "source/figs/teaser_toy.pdf": {
+          "bytes": 27087,
+          "sha256": "9514db7046353e6652166474952f29b54054b0168dd96dc32b86c750b69089ae"
+        },
+        "source/figs/three-runs-compare.pdf": {
+          "bytes": 49161,
+          "sha256": "762a3d97542dbc7b8ae94579cc7a13fb12f2dd390890e72efddc742701f6face"
+        },
+        "source/figs/token_adv_step600_paper.pdf": {
+          "bytes": 53866,
+          "sha256": "173a235634dbc3de984da8e83e5bcfce41bdabc2f8de0e0d87a0bc39ff6adfbf"
+        },
+        "source/figs/weak_vs_strong_teacher_1x4.pdf": {
+          "bytes": 87064,
+          "sha256": "7967df9429e0723d5f0890f65f7c177e114ce934d67e39a62a2a7841271adcc3"
+        },
+        "source/figs/weak_vs_strong_teacher_1x4.png": {
+          "bytes": 326079,
+          "sha256": "630c2b74713dc5097326d0e71445bb086a2234e2a10f21040c0c9229e1020c03"
+        },
+        "source/formatting.md": {
+          "bytes": 17923,
+          "sha256": "9e004a136c5dd43300d97e5bef5eb3a77d0e2a2d3502f0f2436ec011d1c49e9c"
+        },
+        "source/rollout_number_bar.pdf": {
+          "bytes": 14994,
+          "sha256": "4d4e1a51a2ca1920ed0c7bdaf098abc92aae650d6bc82fb1e4992a760b46aa37"
+        },
+        "source/rollout_number_bar.png": {
+          "bytes": 81618,
+          "sha256": "30316b55124dfdc674a8698913617017cc43b5224c8e4954da02f7f5829145d4"
+        },
+        "source/signal_regulation.pdf": {
+          "bytes": 37891,
+          "sha256": "76bb0f4f569733699d633a2e3f70bfb1db7c4d0b4c4ea28db1b6ebfc85502dd1"
+        },
+        "source/tabs/main_tab.tex": {
+          "bytes": 3441,
+          "sha256": "d2cd68ddd8072ea961ac01aa38cd6f618e91333014e7cb418b200291cbd2964a"
+        },
+        "source/teaser.tex": {
+          "bytes": 3894,
+          "sha256": "38000149063b526c1b2fde63ec34524fffc26ae405b85af85f63f5091eb7fdce"
+        },
+        "source/teaser_toy.pdf": {
+          "bytes": 27099,
+          "sha256": "9bf173f097b17239912b0362714e92b14d4df52975e2d4a09b94060c7b258077"
+        },
+        "source.tar.gz": {
+          "bytes": 1080420,
+          "sha256": "4763002a13fa650359e3f2cf14e9b91e7e8a8d09097479c9cdad3791c3a0d342"
+        }
+      }
+    },
+    {
+      "title": "SAGE-OPD: Selective Agent-Guided Intervention for Multi-Turn On-Policy Distillation",
+      "arxiv_id": "2606.19659v1",
+      "arxiv_url": "https://arxiv.org/abs/2606.19659v1",
+      "category": "agent-opd",
+      "background": false,
+      "tldr": "Uniform token-level distillation can overcorrect valid actions and propagate unreliable guidance after multi-turn errors. SAGE-OPD uses environment feedback and teacher judgment to select turns needing supervision, then weights that supervision by teacher confidence and normalizes the loss. The insight is to allocate guidance where it is both necessary and reliable while keeping trajectories student-generated.",
+      "directory": "papers/agent-opd/2606.19659v1",
+      "pdf": "papers/agent-opd/2606.19659v1/paper.pdf",
+      "source": "papers/agent-opd/2606.19659v1/source",
+      "source_archive": "papers/agent-opd/2606.19659v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1407,
+          "sha256": "e8bad2d890f6d40599778378afdcfa420e152f84aca3de7bc141fdfd122041a6"
+        },
+        "paper.pdf": {
+          "bytes": 851338,
+          "sha256": "fd08150e5d332610134d4f0ccc523e5b6e9f05048b84a9d2a69de5757520a720"
+        },
+        "source/00README.json": {
+          "bytes": 1915,
+          "sha256": "ebbeab16ebe21556acc85f854583ed19947ad9ffbaaae948e957547a94a5107c"
+        },
+        "source/Makefile": {
+          "bytes": 176,
+          "sha256": "9974f27aa91fd14bab7ce3b94d101586b7346e56142dd4214f4f0b81c1c4c78c"
+        },
+        "source/acl.sty": {
+          "bytes": 11830,
+          "sha256": "f2168b57b2f445aac55af82662c8aa9dbad771f6393da5a154fa163abec2e76a"
+        },
+        "source/acl_latex.tex": {
+          "bytes": 4567,
+          "sha256": "6548d1d1b3de6ec1d7ddbd931c0445e41b1c650fd329ee34bb0bb4b1389b8cfc"
+        },
+        "source/acl_natbib.bst": {
+          "bytes": 47709,
+          "sha256": "391788478ae013cc539e3e44681e22e8e0f6c4c44fee5af28244dd5ac6a4059b"
+        },
+        "source/arxiv/0_abstract.tex": {
+          "bytes": 1877,
+          "sha256": "2222c2ec82473384e563d2fa3f4e95745dfa585a9d499728a6593af23f5408bc"
+        },
+        "source/arxiv/1_introduction.tex": {
+          "bytes": 6482,
+          "sha256": "7881c0e6cfe76bc57304b3283fc5fe57fde63f19cc6ec7c2d4ef8d91206e2d24"
+        },
+        "source/arxiv/2_related.tex": {
+          "bytes": 4886,
+          "sha256": "43e81e6e6381634dde9c9e964c9a44a19f1e1a3883cbaad2d8be0d7e1871aa4e"
+        },
+        "source/arxiv/3_method.tex": {
+          "bytes": 12834,
+          "sha256": "0e59e53d65e074456d6fe9a5496059baa4562382a720aef3dca3dbe15a652087"
+        },
+        "source/arxiv/4_theory.tex": {
+          "bytes": 6204,
+          "sha256": "b06f31c99b785da009ec25c03b393b211e4e7e3211aebc8e427e19265cc01240"
+        },
+        "source/arxiv/5_experiments.tex": {
+          "bytes": 15390,
+          "sha256": "4b507417ec0cdc710f9d268833180cc3c58afe1fef2b37a3a85f55435b81c68d"
+        },
+        "source/arxiv/6_ablations.tex": {
+          "bytes": 9758,
+          "sha256": "5eda28f5004528d2c929498b00b42764fcff59c6fb954da279f6ca3550ce35e7"
+        },
+        "source/arxiv/7_conclusion.tex": {
+          "bytes": 1055,
+          "sha256": "37cfff52114914650a892569e3a7df6302f58e6f66c01519227ffbcf6eafe0ee"
+        },
+        "source/arxiv/8_appendix.tex": {
+          "bytes": 19381,
+          "sha256": "6d7c9cfaf92d7c225a17bc3787d9e662d543edf12afa6ec7ccce30a122375505"
+        },
+        "source/assets/Optimistic.ttf": {
+          "bytes": 138812,
+          "sha256": "5c10892395a6397298256a86608506bff0cc713a27932f4de0b9435f2b0b1201"
+        },
+        "source/assets/logometa.pdf": {
+          "bytes": 12912,
+          "sha256": "2dc659799f4b5a02c5e4c279878e6466c9527b09f0bb90f6c16b5a4207b796d6"
+        },
+        "source/assets/nice_plot.py": {
+          "bytes": 2232,
+          "sha256": "ae519cc9eed98806486c053f6e0b83164bdc8ed2b31a8848465bd6c95ba27599"
+        },
+        "source/assets/optimistic.tfm": {
+          "bytes": 27676,
+          "sha256": "f6c8c396220e7733c912b78dbc8f843865d0ede62f6973da1a49b7c4a95d7090"
+        },
+        "source/assets/plainnat.bst": {
+          "bytes": 26811,
+          "sha256": "2da21cdc6403029656c6cf018ee0a03dc45c524fed8a0ccdc28ede2c3f2c56d5"
+        },
+        "source/assets/plot_demo.pdf": {
+          "bytes": 199223,
+          "sha256": "0b7d90a481554fec7e241d3d985d9572cc7f9f9b30467ecc06d4f159f9ee5e98"
+        },
+        "source/custom.bib": {
+          "bytes": 113544,
+          "sha256": "42bb98b21924cde9daddf182445953634337557c3f69bd040118ba7ed0647aaa"
+        },
+        "source/fairmeta.cls": {
+          "bytes": 5629,
+          "sha256": "571721fa9956b9c5f8984d16dbaa10fc1960afc7aab97a550cb62150dd7f59d2"
+        },
+        "source/figure/alfworld_sl_opd_vs_vanilla.pdf": {
+          "bytes": 27213,
+          "sha256": "05ef56caceeb8a5006a361c0318ab59aae814189f5c7f1b951cfb188fe5e74aa"
+        },
+        "source/figure/alfworld_slopd_intervention.pdf": {
+          "bytes": 23631,
+          "sha256": "d02da93dda9339a52f73f6831adc63e4f56c44ce450183da9def1fd55d4ad6d1"
+        },
+        "source/figure/diagram.png": {
+          "bytes": 366226,
+          "sha256": "76edee3eda37fd02d8f7e3b62cd64b92196ff87e33a74db768b3ab8fa9ec59ef"
+        },
+        "source/paper.bbl": {
+          "bytes": 13090,
+          "sha256": "9b371d09c0b8aae87a890fd162a57bc144dd22c15989ee726f2000907ca295d3"
+        },
+        "source/paper.tex": {
+          "bytes": 2914,
+          "sha256": "0736f63f7ab7dd789ff028051140873458bbfc075617caacb54e5620df0e5235"
+        },
+        "source/sections/0_abstract.tex": {
+          "bytes": 1497,
+          "sha256": "2c8aac8d99a00b043303a70e58edb7dda20f73d02ab802ff72525d450f2363eb"
+        },
+        "source/sections/1_introduction.tex": {
+          "bytes": 6155,
+          "sha256": "8d08da709d2120f7369d8f72ab4049dc84d95dbcd7ec0ba3ab74f7e589194532"
+        },
+        "source/sections/2_related.tex": {
+          "bytes": 4679,
+          "sha256": "00eec613547f24390b39c38bab1fb269612a4b2446e2e3198b38617af7c4296c"
+        },
+        "source/sections/3_method.tex": {
+          "bytes": 14017,
+          "sha256": "0695889d759f40504031149003eb418e28d18da87d9a2d8103ede855dd0d6035"
+        },
+        "source/sections/5_experiments.tex": {
+          "bytes": 9855,
+          "sha256": "4d55e609e3f67dd0bc5ecc7f6136decf07d1b43dec25c5d7f386c360fe474dfe"
+        },
+        "source/sections/6_ablations.tex": {
+          "bytes": 4452,
+          "sha256": "3cccc15fc589e597e72a5577664447a386c68e4ee33024d9d45a26ba9a01f535"
+        },
+        "source/sections/7_conclusion.tex": {
+          "bytes": 3744,
+          "sha256": "97640ef356fba0c86ab3bed37341de8bc96fccaf2c98f57fc937ae2970c2dc84"
+        },
+        "source/sections/8_appendix.tex": {
+          "bytes": 31240,
+          "sha256": "ac7a84c5c9792ef0c073bf45265d0c5c11d4cdcdb4d862a53bae1a98aacd5d06"
+        },
+        "source.tar.gz": {
+          "bytes": 774999,
+          "sha256": "964ba3980d44ce383974c7a4e6101ddd55a0b0ecaf58e9c7aaedbd335b834302"
+        }
+      }
+    },
+    {
+      "title": "On-Policy Distillation with Curriculum Turn-level Guidance for Multi-turn Agents",
+      "arxiv_id": "2606.15912v2",
+      "arxiv_url": "https://arxiv.org/abs/2606.15912v2",
+      "category": "agent-opd",
+      "background": false,
+      "tldr": "Small agent errors compound across turns and push rollouts outside the teacher’s reliable state distribution. Guided-OPD mixes teacher- and student-generated turns, gradually reducing teacher intervention to zero. The insight is that early guidance keeps trajectories learnable, while withdrawing it progressively restores the student-controlled histories required for independent multi-turn behavior.",
+      "directory": "papers/agent-opd/2606.15912v2",
+      "pdf": "papers/agent-opd/2606.15912v2/paper.pdf",
+      "source": "papers/agent-opd/2606.15912v2/source",
+      "source_archive": "papers/agent-opd/2606.15912v2/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 919,
+          "sha256": "b279ccc6b4229a3f68dd37bfd27f5910ca6c46e2883c4ff34ba0a45e2d339eeb"
+        },
+        "paper.pdf": {
+          "bytes": 3590978,
+          "sha256": "7b8bb83ce86ab3fb592edade52ca60c809d7f8b836912056bb8aa15d204a0506"
+        },
+        "source/00README.json": {
+          "bytes": 218,
+          "sha256": "f667cc0b758bff99447a0d28636e991d450bd3563304c85dd71804fb3f522ed7"
+        },
+        "source/acl.sty": {
+          "bytes": 11615,
+          "sha256": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de"
+        },
+        "source/acl_latex.tex": {
+          "bytes": 66735,
+          "sha256": "16d8c066cce74ca03eec90188947eda96b15aa363eb7be1d38c8063592dfa74d"
+        },
+        "source/acl_natbib.bst": {
+          "bytes": 45442,
+          "sha256": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e"
+        },
+        "source/custom.bib": {
+          "bytes": 25134,
+          "sha256": "9ba6495ccb33d8c0269f1e16564c9d1fffd575ba65bfb132eb2fce5ead6acbaa"
+        },
+        "source/figures/figure1.png": {
+          "bytes": 582898,
+          "sha256": "fda47b8a38f2f62e27afa26fce0a4b35ed9b12528ffb5e7a5c9bd126580af586"
+        },
+        "source/figures/figure2.pdf": {
+          "bytes": 2756808,
+          "sha256": "f8a7cafc90d440f0ebb064a7a6adbf5523eed27fe6c659afd25f1d15b0c0e810"
+        },
+        "source.tar.gz": {
+          "bytes": 3189470,
+          "sha256": "6df4a59c0142479deb270f95c4c1f1895622c47cfe585aa9d228f2ca6a8c3352"
+        }
+      }
+    },
+    {
+      "title": "Keep Policy Gradient in Charge: Sibling-Guided Credit Distillation for Long-Horizon Tool-Use Agents",
+      "arxiv_id": "2606.12634v3",
+      "arxiv_url": "https://arxiv.org/abs/2606.12634v3",
+      "category": "agent-opd",
+      "background": false,
+      "tldr": "Direct self-distillation can reinforce shortcuts and even collapse tool use because imitation does not identify which actions earn rewards. SGCD contrasts successful and failed sibling rollouts to construct a training-only credit reference, then uses detached divergence for bounded token-level advantage weighting. Its insight is to let distillation refine credit assignment while reward-grounded policy gradients retain control of the update direction.",
+      "directory": "papers/agent-opd/2606.12634v3",
+      "pdf": "papers/agent-opd/2606.12634v3/paper.pdf",
+      "source": "papers/agent-opd/2606.12634v3/source",
+      "source_archive": "papers/agent-opd/2606.12634v3/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1210,
+          "sha256": "1ad4472c6ff5170dbdaf71d4abbff18f064ee86ce66372832b40f8107e53d05d"
+        },
+        "paper.pdf": {
+          "bytes": 588467,
+          "sha256": "f7140214d4f17426d406662d952e51d03fa5fe99dd3638be8f417cec2640f0de"
+        },
+        "source/00README.json": {
+          "bytes": 456,
+          "sha256": "f3b79ccf4461c46cdb52f248663d86101cb1d35f505aef0ba5e8c9cbd691537e"
+        },
+        "source/acl.sty": {
+          "bytes": 11927,
+          "sha256": "7def961ac900a2bbcc091da0ee71796b277e6d14a707c9eed52b76ef5d25ae2a"
+        },
+        "source/acl_natbib.bst": {
+          "bytes": 47126,
+          "sha256": "859df36cb29eb8243730a7bb6f77308055d5a80c614bb20348a84358f8aabab6"
+        },
+        "source/figures/f3_method_schematic.pdf": {
+          "bytes": 131313,
+          "sha256": "207004453a200aa59e7739b8f41757cf6a76927598fc5f49ca19b4374a9c9c83"
+        },
+        "source/figures/f_appendix_appworld_training_diag.pdf": {
+          "bytes": 46858,
+          "sha256": "29aca38d2794a3d9e1fbb0423e45e45348bd9920790b767fafb3d0d6bb710a00"
+        },
+        "source/figures/f_appendix_tau_training_diag.pdf": {
+          "bytes": 127351,
+          "sha256": "a1c77fc7f7a73a3b06140090a20e3e635d4c822ebae2bcb31b7f896d430541e9"
+        },
+        "source/main.bbl": {
+          "bytes": 9598,
+          "sha256": "4eb1610a2080ad6186e7a4d4f59a41f73b4a3f29d5d18478b8bd30f3b78edb5f"
+        },
+        "source/main.tex": {
+          "bytes": 2354,
+          "sha256": "2e35644b7d93e0f5e16784b9843ca5a3bbd23e60ccf4fbe14eb5c485113a7386"
+        },
+        "source/preamble_common.tex": {
+          "bytes": 1599,
+          "sha256": "19500e4cd7058c0e7508b7e3a426d078006b1ce4235e252de8d7c41be6ed072f"
+        },
+        "source/refs.bib": {
+          "bytes": 11644,
+          "sha256": "3bcd4756b9a93658c91fc715f46bf279aea09b1121067a825c9cb1a0d0483be6"
+        },
+        "source/sections/00_abstract.tex": {
+          "bytes": 1615,
+          "sha256": "9960b7d224c0f8179035a09a5ae50efb44af8cf149c403ee082d1369fdc7b94f"
+        },
+        "source/sections/01_introduction.tex": {
+          "bytes": 4706,
+          "sha256": "ba1b4a008efb0e97f76f67b95c93bb43cc5b2a0e90c1165562dc0afa5538546c"
+        },
+        "source/sections/02_related_work.tex": {
+          "bytes": 2960,
+          "sha256": "5e65469699cd960318eb31074aa3bbe41357e2f2b3723abf90d8b8ecbd8c3976"
+        },
+        "source/sections/03_diagnosis.tex": {
+          "bytes": 2524,
+          "sha256": "4f1765602d07b331973ad8eb01f88b6673db6980fc2aafaf3db5f5edc9894c98"
+        },
+        "source/sections/04_method.tex": {
+          "bytes": 8323,
+          "sha256": "4ea6df22276ce13cf309ee4b613803ee43d6e49449759ad004e09304eb657eb5"
+        },
+        "source/sections/05_experiments.tex": {
+          "bytes": 4126,
+          "sha256": "f0d50d987174b63e2bcfd0db5cca536f8478fd97fbc3c1cd7740c37c6fd42c59"
+        },
+        "source/sections/06_conclusion.tex": {
+          "bytes": 737,
+          "sha256": "6184d7e2d2b5b62e779358a99ef7d5d52746cec09c1c9980e10a086afea293a5"
+        },
+        "source/sections/07_limitations.tex": {
+          "bytes": 3156,
+          "sha256": "5822953c3b75ba0864f264e2b48a7724c86b57fe9b45c4251411a1be3b322f7c"
+        },
+        "source/sections/08_appendix.tex": {
+          "bytes": 28343,
+          "sha256": "90e592739c0960f4d4141d6c4418135d39574d44dab57378606e85f149595a59"
+        },
+        "source/sections/09_ethics.tex": {
+          "bytes": 1350,
+          "sha256": "82f84da72d09b0b2e2498ce2c53a726544ee4677b272acbfe27406b1e25bdfff"
+        },
+        "source/sections/figures.tex": {
+          "bytes": 1012,
+          "sha256": "802ca746c0cf560a40fbe4e95bf505fb8274e98aff1044b72188ee0423a37955"
+        },
+        "source/sections/tables.tex": {
+          "bytes": 4040,
+          "sha256": "14e1cb84f7948ef1c101107fa670a43e1738530690388db8e10bfaf2993ca48f"
+        },
+        "source.tar.gz": {
+          "bytes": 319700,
+          "sha256": "a1512343d919856c71e88952490a20706d22a379c60d7c1d7bfdea4b0e2f45bf"
+        }
+      }
+    },
+    {
+      "title": "RLCSD: Reinforcement Learning with Contrastive On-Policy Self-Distillation",
+      "arxiv_id": "2606.11709v2",
+      "arxiv_url": "https://arxiv.org/abs/2606.11709v2",
+      "category": "opsd",
+      "background": false,
+      "tldr": "Privileged hints can shift self-distillation toward assertive phrasing and formatting rather than correctness, causing premature shortening or unstable training. RLCSD contrasts teacher predictions conditioned on correct and incorrect hints to suppress shared stylistic shifts, then uses the signal to modulate verifier-based advantages. Its insight is that contrastive supervision should isolate task-relevant evidence while preserving reward-grounded update direction.",
+      "directory": "papers/opsd/2606.11709v2",
+      "pdf": "papers/opsd/2606.11709v2/paper.pdf",
+      "source": "papers/opsd/2606.11709v2/source",
+      "source_archive": "papers/opsd/2606.11709v2/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1151,
+          "sha256": "82dd214c6d7358a10fb8f37348e69962b3ffeb30277012475f34ff7fbc29e39b"
+        },
+        "paper.pdf": {
+          "bytes": 1335372,
+          "sha256": "cbaedd5e33fdfbe0edf9a7556230b06a55a0e00ace23dc1c18c96856de6fde23"
+        },
+        "source/00README.json": {
+          "bytes": 416,
+          "sha256": "8400bf8818b4ed6e1fdf5894fe90621bf5967fb67833f27208503c012e40bf88"
+        },
+        "source/colm2025_conference.bib": {
+          "bytes": 16666,
+          "sha256": "d1f2c00f9ed4ee6a1edd8cd73d83e41860a4d67c484a996f3576c901af89c45b"
+        },
+        "source/colm2025_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/colm2025_conference.sty": {
+          "bytes": 11656,
+          "sha256": "d07d895ce29dd3fcf1331283d572badb194aacb0b16c0ed106f886ece360d66f"
+        },
+        "source/colm2025_conference.tex": {
+          "bytes": 7782,
+          "sha256": "73f3d670aefd3930b4889794ee8856ed73cca49f968725efbc32aace72847c94"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/figs/RLCSD.pdf": {
+          "bytes": 304038,
+          "sha256": "a0ab53c989d6ffa5a18515182f251eb36313cc9ea176f0b6494b564bfb1b7753"
+        },
+        "source/figs/curve_deepmath_entropy.pdf": {
+          "bytes": 45666,
+          "sha256": "f7fe1c786e92b4310f3725a586a7823e40f5b866621c1329eb47714f8eb768e5"
+        },
+        "source/figs/curve_deepmath_length.pdf": {
+          "bytes": 53268,
+          "sha256": "b609cb16945c788f79e94e7e97f3b8cdf21626e1be637d764baf1bc56c36a299"
+        },
+        "source/figs/curve_deepmath_reward.pdf": {
+          "bytes": 49125,
+          "sha256": "ec9ee4cb40225fcbf580f4a8d750b6bc71e2fedd21a2e299117bfea0eb3b58d3"
+        },
+        "source/figs/curve_deepmath_val.pdf": {
+          "bytes": 28860,
+          "sha256": "8740c51e7848d4572c54ad46d86d49e3c2149ec9693120da55fb695f26c44366"
+        },
+        "source/figs/curve_logic-kk_entropy.pdf": {
+          "bytes": 51359,
+          "sha256": "0bacbfed66fd85b482c18a9e0192a6e089aa6ea96ff474923f4ddf5f49c991b4"
+        },
+        "source/figs/curve_logic-kk_length.pdf": {
+          "bytes": 55781,
+          "sha256": "7607c99ba2685272f4207665e0c91db3fd9d5f31de9926411663d858389e768f"
+        },
+        "source/figs/curve_logic-kk_reward.pdf": {
+          "bytes": 49199,
+          "sha256": "dbe9f7f6cfa8ac96c40a4bd3de28c8c668a1f685169f0b4c68a033f7e12b114a"
+        },
+        "source/figs/curve_logic-kk_val.pdf": {
+          "bytes": 28153,
+          "sha256": "43c8f3386557f1cf18292ed907bbda0392d43777d6d2185fcb9e5dc1e61a9b8e"
+        },
+        "source/figs/ectr_logic_opsd_entropy.pdf": {
+          "bytes": 24688,
+          "sha256": "c7b71686d750bce9745d2ee5e3514dc849b714efdd031489c266b222bd93ab70"
+        },
+        "source/figs/ectr_logic_opsd_reward.pdf": {
+          "bytes": 26974,
+          "sha256": "83c74c904e1f4501fe6694d308497d869fbfada41e1027dc19c329cfb597f1b5"
+        },
+        "source/figs/ectr_math_rlcsd_length.pdf": {
+          "bytes": 38778,
+          "sha256": "8c3dbc5e9c3f9d814b8ac4c06ac5d96284bce50f2bee5c87b1800ef3e6f3533a"
+        },
+        "source/figs/ectr_math_rlsd_length.pdf": {
+          "bytes": 39832,
+          "sha256": "8598f63310092541378a48b7fd6634c914fd18317223bef3278013a56d27d41b"
+        },
+        "source/figs/failure_mode_1.pdf": {
+          "bytes": 15487,
+          "sha256": "ccc332f2f7e3c2127a7bad5ca24b2c053d04deb78d8157d06faebf7f6db75d69"
+        },
+        "source/figs/failure_mode_2.pdf": {
+          "bytes": 24510,
+          "sha256": "818927828aed794c7bf0897e77f685aaa8fac0b3989cd9810dd672c6eae9c838"
+        },
+        "source/figs/hist_ec_task_vs_style_singlepair.pdf": {
+          "bytes": 10918,
+          "sha256": "a11aeef05f7e11a8c05d3ffdb65e2dcea51da84b16e3826cd692c59ceaff82b2"
+        },
+        "source/figs/hist_ectr_task_vs_style.pdf": {
+          "bytes": 10521,
+          "sha256": "968b62e18b7e35ffb341c2a0989ac47977bc1cdb69bb914443fefd222c5acf96"
+        },
+        "source/figs/logo.pdf": {
+          "bytes": 138899,
+          "sha256": "141be813f974b60fb8d9585a5d30da7e840fe241e97608a532e537012a796fdd"
+        },
+        "source/figs/panel_a_tokens.pdf": {
+          "bytes": 14172,
+          "sha256": "4a750a8b04bc4ee083a768d31de7dff4e9698f2c880f1412793ae0231698c7a8"
+        },
+        "source/figs/panel_b_length.pdf": {
+          "bytes": 74085,
+          "sha256": "5272e0f70f85f4542b0da546533dcc3a70698d14a9e00b7be52f0dbdd9d5fc77"
+        },
+        "source/figs/panel_c_perf.pdf": {
+          "bytes": 32476,
+          "sha256": "613625b343d132777f9082c0e033ebd8e1cd91d9ec4fd789b0fb48c9e0975b73"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12284,
+          "sha256": "90473c4d0542070db244cea73ef962d6cddc5b2a746757e6a40ddf5fdfb90ba9"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source/sections/appendix.tex": {
+          "bytes": 31787,
+          "sha256": "e430b20faa88c95cc0b03c0473a493c602778c1f29d153835ce6eb169a2acbf4"
+        },
+        "source/sections/conclusion.tex": {
+          "bytes": 1025,
+          "sha256": "b89fe6a34c23426140d3cdb3a9146a7cac8430aeda80b81dcebc540225b383f0"
+        },
+        "source/sections/experiment.tex": {
+          "bytes": 24688,
+          "sha256": "df6d966c9e184e215c98e55b8f5ed9a34c0138f6607e80ede80a4fce39da890e"
+        },
+        "source/sections/intro.tex": {
+          "bytes": 9733,
+          "sha256": "ff8d84cb4c326f73d4626cc8b06666e82c366ae83dd46adcf04d7b30bc04a3d5"
+        },
+        "source/sections/method.tex": {
+          "bytes": 20142,
+          "sha256": "671c11633877ccb2e525dfc67cf15567fb0d85fd7f1532e437dbd16071aa06ae"
+        },
+        "source/sections/related.tex": {
+          "bytes": 7046,
+          "sha256": "4b456513f32ad195efaffaa00f4b60319b6a71c36368182d50b464e06e4bc627"
+        },
+        "source/tabs/ablation.tex": {
+          "bytes": 1304,
+          "sha256": "f1e1fd29afdadc6d22b4dc2d2f490e415ba876b3e4d68b03d54a8fbddebd47b7"
+        },
+        "source/tabs/contrastive.tex": {
+          "bytes": 2465,
+          "sha256": "f5b5cb0f6783aa27f592a2ee7afbb4e36b8601cd71502d0c93e1ec713512f59f"
+        },
+        "source/tabs/main-tab.tex": {
+          "bytes": 5592,
+          "sha256": "9be8b2bab42adcced73e1bf2a4d08a76896ba1acf438b243c2697fc26a57682e"
+        },
+        "source.tar.gz": {
+          "bytes": 1092857,
+          "sha256": "b2e88f85552acb6ea6aa0af628cc00ffc2b9405639a3134112412d5bf9654451"
+        }
+      }
+    },
+    {
+      "title": "Trust Region On-Policy Distillation",
+      "arxiv_id": "2606.01249v3",
+      "arxiv_url": "https://arxiv.org/abs/2606.01249v3",
+      "category": "opd",
+      "background": false,
+      "tldr": "Large teacher–student distribution gaps can make sampled reverse-KL supervision unreliable and destabilize OPD. TrOPD restricts on-policy learning to trustworthy regions, treats outliers with alternative estimators or attenuation, and guides exploration using teacher prefixes. The insight is to distinguish where teacher feedback is locally reliable from where the student first needs help reaching a learnable state.",
+      "directory": "papers/opd/2606.01249v3",
+      "pdf": "papers/opd/2606.01249v3/paper.pdf",
+      "source": "papers/opd/2606.01249v3/source",
+      "source_archive": "papers/opd/2606.01249v3/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 747,
+          "sha256": "3a1855027dbbdd46b3f6d0a23dfebdd63b5d4025afec92c637d2c7f652f65500"
+        },
+        "paper.pdf": {
+          "bytes": 435663,
+          "sha256": "1acf416ce10658073e0816dfbf88877fd65060edb47b2926fbc89928f94a0d34"
+        },
+        "source/00README.json": {
+          "bytes": 482,
+          "sha256": "a1b964b43d31beff8e434afebdd3bda331783c7df1db571fcce76c07708f0603"
+        },
+        "source/actor_entropy_comparison.pdf": {
+          "bytes": 21184,
+          "sha256": "be9af0090dba239c29f3331f3fdba73d36f19a95befefe96337c21cc4486368b"
+        },
+        "source/actor_grad_norm_comparison.pdf": {
+          "bytes": 21771,
+          "sha256": "b82bf0678ac0d4408abeabba21dbaf7e1ca074e7a83db4c4a0365a8ffed37985"
+        },
+        "source/colm2026_conference.bib": {
+          "bytes": 372,
+          "sha256": "965b58471f3716499065639837714f2167d884d47d629e8fe6009dadfa14909a"
+        },
+        "source/colm2026_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/colm2026_conference.sty": {
+          "bytes": 7146,
+          "sha256": "0eca1f4a279d856b7c82d2ab95392d3dfb1bb55cd388e52e0cd0c0c5c697aca0"
+        },
+        "source/custom.bib": {
+          "bytes": 338978,
+          "sha256": "2fdc98e38f0852257a5ca24467ea4fb57be57e6a38176e0be34d979ed4d095fb"
+        },
+        "source/f1-1.pdf": {
+          "bytes": 20605,
+          "sha256": "17315a86ec9a7cd60f7ae0ea8507840b86d7ebbed3cece263390a8dde6936eed"
+        },
+        "source/f2.pdf": {
+          "bytes": 104704,
+          "sha256": "b41d2c5cf3cd0a24d931d3673c9dd2ef4702db2fc406f07eddf65b8cbee296c5"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/main.tex": {
+          "bytes": 43467,
+          "sha256": "d58a65c36751762d62ddc41a26bb410cc71ed5662598cea87aeeaf3ea66c54af"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source.tar.gz": {
+          "bytes": 290625,
+          "sha256": "97d87f280e13a3c36540bcd3fd73086dcda03642fe316ccd3634d749005f3efe"
+        }
+      }
+    },
+    {
+      "title": "Self-Distilled Agentic Reinforcement Learning",
+      "arxiv_id": "2605.15155v1",
+      "arxiv_url": "https://arxiv.org/abs/2605.15155v1",
+      "category": "agent-opd",
+      "background": false,
+      "tldr": "Naively adding self-distillation to agent RL can destabilize learning when retrieved skills provide imperfect privileged guidance. SDAR keeps RL as the main objective and gates an auxiliary distillation loss using detached teacher–student probability gaps. Its asymmetric gate trusts teacher endorsements more than rejections, because a privileged teacher may reject useful behavior when skill retrieval or utilization fails.",
+      "directory": "papers/agent-opd/2605.15155v1",
+      "pdf": "papers/agent-opd/2605.15155v1/paper.pdf",
+      "source": "papers/agent-opd/2605.15155v1/source",
+      "source_archive": "papers/agent-opd/2605.15155v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 990,
+          "sha256": "fca92844786dbb065d32395c3c555a78d4b711af099585de30bb114040b2e90a"
+        },
+        "paper.pdf": {
+          "bytes": 2611822,
+          "sha256": "853ce7318607682bf90bd919c378969573aedb642688d6e493a743c7ba4550c2"
+        },
+        "source/00README.json": {
+          "bytes": 416,
+          "sha256": "271a4b3d3adac55359d827bd784ba5685781535da4b16727655b43e33be76203"
+        },
+        "source/colm2026_conference.bib": {
+          "bytes": 24836,
+          "sha256": "7659dfa7f780dcdb0695c33eb543fd763b9a79c7ced1b3a0bd83e62b878942b5"
+        },
+        "source/colm2026_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/colm2026_conference.sty": {
+          "bytes": 7765,
+          "sha256": "29d5a64675f13fdc7a695ce027c3f8d9dd6c82c7bfc6d30bdd81811a4f265188"
+        },
+        "source/colm2026_conference.tex": {
+          "bytes": 60653,
+          "sha256": "35f997fb91a7cd3335c6d41ace8712233c200cf861f949f7f6299b97d74aa37c"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/figures/7b_alfworld_gap_gate.pdf": {
+          "bytes": 23955,
+          "sha256": "b404e553a4475ce7468b579b529944c717f76903f1e1aabb4407a57948c20f26"
+        },
+        "source/figures/ablations_beta.pdf": {
+          "bytes": 23777,
+          "sha256": "42093b7816ad3dc647e19f2d7e3ebe8611701e3d057555a2e914caa6152fbc82"
+        },
+        "source/figures/ablations_lambda.pdf": {
+          "bytes": 21432,
+          "sha256": "2d48ff2bae0a2f386cf5c19216e54b751a55a4880e4ab04c138f68ad75932c68"
+        },
+        "source/figures/ablations_loss.pdf": {
+          "bytes": 20756,
+          "sha256": "8174bc372c1b60ace69e6e8e4612f34bf09eb03d9ca115554a15501db124ae4b"
+        },
+        "source/figures/ablations_tip.pdf": {
+          "bytes": 20915,
+          "sha256": "e87b8cf7cbc3a0b2b9e3b917084ec3c8e0040fdec82c3f72b5da5e9fd334600e"
+        },
+        "source/figures/gaps_analysis.pdf": {
+          "bytes": 28112,
+          "sha256": "def8cda785315ebc30c9f9eb29defe879e09e67d18bc11085ecd0d0b9699c08e"
+        },
+        "source/figures/longcat-logo-full.pdf": {
+          "bytes": 2536,
+          "sha256": "47b947c9737955cf0ce27d824a59719bfccf10e5c80912e4b9b9722fd416e283"
+        },
+        "source/figures/metrics_cgtd_gate_active_ratio.pdf": {
+          "bytes": 51101,
+          "sha256": "3e9e738f2fdbb0ea6dc3f4b08224c23f0232fd0a47931097466eb9426b3f1671"
+        },
+        "source/figures/metrics_cgtd_gate_mean.pdf": {
+          "bytes": 51567,
+          "sha256": "83433d30c3807a64f365d03416d68bc4c68853ed134a6f4b463fe6bc4cf2633a"
+        },
+        "source/figures/metrics_cgtd_loss.pdf": {
+          "bytes": 51209,
+          "sha256": "e281b3ceb847919da21f30ef5deb6838fe993fe6f1d0b111630f84a4f1ec3bda"
+        },
+        "source/figures/metrics_cgtd_teacher_gap_mean.pdf": {
+          "bytes": 51267,
+          "sha256": "fbd732608f9cfaec62e6522ec7037ddfd0473b3ad21b03630fc4c951eebfe79d"
+        },
+        "source/figures/metrics_critic_score_mean.pdf": {
+          "bytes": 51145,
+          "sha256": "96aef29d57f22baf63fff2a0f46cc6a496fae9ef1af68d274341f574370145c7"
+        },
+        "source/figures/pre_study.pdf": {
+          "bytes": 25954,
+          "sha256": "1a7c01e5d0f6ea6db26208e27f94a1a08cc3bfda25f5f64fb4c47cfa546efa2d"
+        },
+        "source/figures/sdar_teaser.pdf": {
+          "bytes": 538839,
+          "sha256": "3feebd67bb83dae1d5d952fcc001a9b94f5e50d97fa585c722edf7608a7d7579"
+        },
+        "source/figures/sdart_method.pdf": {
+          "bytes": 1475370,
+          "sha256": "fb36bab46c9139ab6c0231fbb5bf7a0acbf470937119a7245146b23ddb0555e8"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source/sections/algorithm.tex": {
+          "bytes": 15600,
+          "sha256": "99f711c0e77eaf14dc28bbcfd616e05d27cf8f83b2713449e65a82707d0ad85c"
+        },
+        "source/sections/proof.tex": {
+          "bytes": 6801,
+          "sha256": "307f0111a9e94aa941f0f80e703059d4bfa843a82e30d8090c58537023b31087"
+        },
+        "source/tables/experiment.tex": {
+          "bytes": 10197,
+          "sha256": "ab1d45191e8bf360ae38a82d427ee0a73d7a0cecd100d5c2015c5692558e551b"
+        },
+        "source.tar.gz": {
+          "bytes": 2104825,
+          "sha256": "7b0e4e018498c20a77601f435181b13f61e3ca79db13e54ac271667af63300fa"
+        }
+      }
+    },
+    {
+      "title": "Prune-OPD: Efficient and Reliable On-Policy Distillation for Long-Horizon Reasoning",
+      "arxiv_id": "2605.07804v3",
+      "arxiv_url": "https://arxiv.org/abs/2605.07804v3",
+      "category": "efficient-opd",
+      "background": false,
+      "tldr": "Long student prefixes can drift beyond the region where teacher rewards remain useful, wasting both generation and scoring compute. Prune-OPD measures local student–teacher compatibility, downweights unreliable suffix supervision, and adapts the rollout budget. The insight is to allocate compute according to supervision reliability rather than a fixed length cap; experiments report 37.6%–68.0% less training time while preserving or improving performance.",
+      "directory": "papers/efficient-opd/2605.07804v3",
+      "pdf": "papers/efficient-opd/2605.07804v3/paper.pdf",
+      "source": "papers/efficient-opd/2605.07804v3/source",
+      "source_archive": "papers/efficient-opd/2605.07804v3/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1408,
+          "sha256": "270b8c3ba76c20ba068884bdcd7667f0507ebc6ea3b0ac536e01fa203392808e"
+        },
+        "paper.pdf": {
+          "bytes": 1243202,
+          "sha256": "78778584aa5fdf08930cfd8d2a2fafbf5ff0ae6080d50f9a6e8132a34c7ba10b"
+        },
+        "source/00README.json": {
+          "bytes": 304,
+          "sha256": "be47e0024c5358aff98b4964f3cb9cdae04515542f7cdea890529d4b020e0b4f"
+        },
+        "source/figs/acc-time-final_compat.pdf": {
+          "bytes": 302201,
+          "sha256": "0ccd278d760214d8b8475df61ec451122494116a9b2d897355fe41d1652b2550"
+        },
+        "source/figs/apd-short_compat.pdf": {
+          "bytes": 60597,
+          "sha256": "cf5c06973c11324603987300d72e90ffa7554b06de961fc6a54c94a7a11c45bf"
+        },
+        "source/figs/fig3_compat.pdf": {
+          "bytes": 63289,
+          "sha256": "0115f46ebe509a8add4137d722a805a83c1932d28f04aed4b327eb3be8f4f286"
+        },
+        "source/figs/fig4_compat.pdf": {
+          "bytes": 81086,
+          "sha256": "05e97fe8f5b19fa314085fb2d71a7192dba119756aec0f08ca5ea5596f8f572d"
+        },
+        "source/figs/fig5_compat.pdf": {
+          "bytes": 165189,
+          "sha256": "df75cede386aef02b23c9b18c1256846dff3ba5fd0afbc40a9ff0fde39a87146"
+        },
+        "source/figs/fig7_opd_overlap_four_panels.pdf": {
+          "bytes": 27237,
+          "sha256": "7da45f648663292eb4ebee7d576b1533a97422427965761e53a3553daa3a3eb2"
+        },
+        "source/figs/fig8_threshold_diagnostics.pdf": {
+          "bytes": 62972,
+          "sha256": "fbc72c6d4948134954bfce0ded290990eb4dfafe0fd0f897538388f3b321ff4d"
+        },
+        "source/figs/main_compat.pdf": {
+          "bytes": 133210,
+          "sha256": "04b7f06bfc5c1749b454372661d214fc07c8d9ab0b2d1505bbe9d391082b5f89"
+        },
+        "source/main_arxiv.bbl": {
+          "bytes": 11515,
+          "sha256": "53bd78bafff7329df57308735ab78ae5b9f3f555885e6b2319d100ef223e1392"
+        },
+        "source/main_arxiv.tex": {
+          "bytes": 3571,
+          "sha256": "c93c7d89656c362a45d58de260a996c77815e9ce9e072d95c7bfd2e78889dd24"
+        },
+        "source/math_commands.tex": {
+          "bytes": 566,
+          "sha256": "becb7a60cc10a35aa18f954043317c3e1836a751e043ab8eb36279961f32bea2"
+        },
+        "source/neurips_2026.sty": {
+          "bytes": 13462,
+          "sha256": "0c1ad36961fcd9198dcc2558cf2793e1df39973bde8264fd701f5e7970672757"
+        },
+        "source/references.bib": {
+          "bytes": 15516,
+          "sha256": "0c1d166fb554e8f2eeeddf4a26a8c9d95161a4659dc873e1a124d9781ef0718d"
+        },
+        "source/sections/01_introduction.tex": {
+          "bytes": 5702,
+          "sha256": "cd77dde67257614e28f15ce150ed21b5691247d11eac478cd5a176aa1b4be061"
+        },
+        "source/sections/02_background.tex": {
+          "bytes": 3611,
+          "sha256": "085789eb1a6ac9ce2e4a635274fc7f7d90380959a60133ff04cabc0bce695385"
+        },
+        "source/sections/03_method.tex": {
+          "bytes": 7275,
+          "sha256": "cab4c8125c989a2ecaf73259a213e4cabae812d927c678073e3dbde8cddc14d1"
+        },
+        "source/sections/04_experiments.tex": {
+          "bytes": 16667,
+          "sha256": "c10a27369cab13b30b05448ef0c7683ffbeb68d7c227f1f9d90637c372bb6dea"
+        },
+        "source/sections/06_limitations_conclusion.tex": {
+          "bytes": 1037,
+          "sha256": "076e6d65a2b86428e13cda05d23c481fcbfec8c4f4077638512049a0ccfe77ee"
+        },
+        "source/sections/06_related_work.tex": {
+          "bytes": 1641,
+          "sha256": "86d2231d74da043f0e9f2bca5cc90b8c6c1be9aab98cc8b98ee852311b6d6986"
+        },
+        "source/sections/appendix.tex": {
+          "bytes": 19727,
+          "sha256": "e361269142651ceeb35f083ac4987e669c4aded7b8f731a25029258d529bbe74"
+        },
+        "source.tar.gz": {
+          "bytes": 747608,
+          "sha256": "836bcc9a73caa5e648adf93583f14a4deb7cae1568647a344e63ec03a7908e09"
+        }
+      }
+    },
+    {
+      "title": "SOD: Step-wise On-policy Distillation for Small Language Model Agents",
+      "arxiv_id": "2605.07725v3",
+      "arxiv_url": "https://arxiv.org/abs/2605.07725v3",
+      "category": "agent-opd",
+      "background": false,
+      "tldr": "Erroneous tool calls can abruptly shift an agent into states where teacher supervision becomes unreliable. SOD measures student–teacher divergence at each interaction step and adaptively downweights steps with growing mismatch, alongside outcome-based RL. Its insight is that supervision reliability changes across tool interactions, so uniform distillation can amplify cascading errors instead of correcting them.",
+      "directory": "papers/agent-opd/2605.07725v3",
+      "pdf": "papers/agent-opd/2605.07725v3/paper.pdf",
+      "source": "papers/agent-opd/2605.07725v3/source",
+      "source_archive": "papers/agent-opd/2605.07725v3/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1865,
+          "sha256": "2ae99b65b8dca0ce3495d77232fdbdd404e98b330ae5c54243ac8022349562b3"
+        },
+        "paper.pdf": {
+          "bytes": 5957533,
+          "sha256": "92370cc6d7ef877477a878cba02d00a40dc8e47995123852e5f656ed4e721c39"
+        },
+        "source/00README.json": {
+          "bytes": 213,
+          "sha256": "d1f6b1a71c9accb812ec5121d1fff7910c025ca7bb201948bacdb40941bc14e5"
+        },
+        "source/appendix/additional_experiment.tex": {
+          "bytes": 11256,
+          "sha256": "a5e49b252ef387cf78c0c52a1d4f464c7895879f2a60578f5c24eff166848192"
+        },
+        "source/appendix/algorithm.tex": {
+          "bytes": 2620,
+          "sha256": "f48694cd1d549424094d325d03d224cfa56c726adfd353d8c2d7186799ac9bf8"
+        },
+        "source/appendix/casestudy.tex": {
+          "bytes": 15817,
+          "sha256": "e12545f70e45ab3e5df060a774a0dc3f052420b9e93f977226a92c22ab490b22"
+        },
+        "source/appendix/experimental_setup.tex": {
+          "bytes": 13319,
+          "sha256": "b39bcacf2dffbefda8811a5961afc83c8482393e2b13d8d9caf301a6e5add3ad"
+        },
+        "source/appendix/prompt_template.tex": {
+          "bytes": 7106,
+          "sha256": "d44beb9223cfaada9edffd213408a13fc4ae81e46b87bb3aeffc41ca7d52d472"
+        },
+        "source/appendix/proof.tex": {
+          "bytes": 20300,
+          "sha256": "cc8ec37aea564454f3299e04a80868883ac8b730dab6e5ea8f55efc88e56ab76"
+        },
+        "source/appendix/visualization_H.tex": {
+          "bytes": 17590,
+          "sha256": "4bf2fdafcec31c96a31c7491b989505f0ac24bd93617a976abde26019b3cf6e4"
+        },
+        "source/chapter/abstract.tex": {
+          "bytes": 1520,
+          "sha256": "20cc293f5e83567750cc01af79910b7bf655629baaa32f050c4fc11716d1a6e3"
+        },
+        "source/chapter/appendix.tex": {
+          "bytes": 451,
+          "sha256": "2f64f9a0fe84d0744d20f6f9d1d1cec31a65d3b683813d530920935eb2b4429b"
+        },
+        "source/chapter/conclusion.tex": {
+          "bytes": 940,
+          "sha256": "ddfceb64c4b4b9e74d9a4a6503e99bff370505830055370430b3eb82efe80a60"
+        },
+        "source/chapter/experiment.tex": {
+          "bytes": 249,
+          "sha256": "f90c898554d92b5a93c3670d695d4366c8f7aaddf5842b0087d049fe12c08da6"
+        },
+        "source/chapter/introduction.tex": {
+          "bytes": 6298,
+          "sha256": "481d891d000956fc464f73a36936083bea73ba44efba1b2efb50a4f5c3664f01"
+        },
+        "source/chapter/limitations.tex": {
+          "bytes": 836,
+          "sha256": "42da0387a0afdbda9a716f3a01ea5cd56d39dbf62f9315e68288464db33f3b76"
+        },
+        "source/chapter/method.tex": {
+          "bytes": 479,
+          "sha256": "1917b7a2875523c8856ce3950725dcd868f1a17a6d2ab6c2d794795004c8eb2b"
+        },
+        "source/chapter/method1.tex": {
+          "bytes": 2990,
+          "sha256": "c8ce40ecf611f0fb9fa9357103ee0ed7f4537000b53e0ce1c86b0466d7c3c7f8"
+        },
+        "source/chapter/method2.tex": {
+          "bytes": 4902,
+          "sha256": "9d8aeaf4c636ceb5c93426048032543cac57e6d5753d73a8835f673c3acd8caf"
+        },
+        "source/chapter/preliminaries.tex": {
+          "bytes": 3262,
+          "sha256": "809cade760d740aced647cf98fceb95727eb9ec0ae62058bd601ea38231bb044"
+        },
+        "source/chapter/related.tex": {
+          "bytes": 2323,
+          "sha256": "227ed7dad8a23b260c56b2e397367b8d6196fa8ce4083bd0fc1ed39f434a2c96"
+        },
+        "source/experiment/rq1.tex": {
+          "bytes": 1605,
+          "sha256": "916d09d58cb85251b0f13e218ebc3613659c590a7f602e6d8c036a9fae80b55a"
+        },
+        "source/experiment/rq2.tex": {
+          "bytes": 2767,
+          "sha256": "f794be14d0e93a42e393deb6f01502c437bd50f5bd0d1d343e9487dd25c01069"
+        },
+        "source/experiment/rq3.tex": {
+          "bytes": 1372,
+          "sha256": "708d25727a0afc365d5030fedf79ed2bce02f9e9be5fd3932eac1e8a918e3b10"
+        },
+        "source/experiment/rq4.tex": {
+          "bytes": 1769,
+          "sha256": "3c08b3e69113698314361fa7c0c58a34fdf1bfbd699b08c23a57ce73359b49df"
+        },
+        "source/experiment/rq5.tex": {
+          "bytes": 1615,
+          "sha256": "2a7f5b3cbe14ca4653245f052df632f8fb852784644a8c3e23b2a018e0c1c2b7"
+        },
+        "source/experiment/setup.tex": {
+          "bytes": 1894,
+          "sha256": "c5bae120b03cfdc5a562f152f84c4e8637ddeea2e2211ad1ca8791d69c94ecd0"
+        },
+        "source/format.sty": {
+          "bytes": 13472,
+          "sha256": "c71c334f03f98d2743dd77a0df1657585411bcd8b54dec72d850458f9c1ab9ce"
+        },
+        "source/main.tex": {
+          "bytes": 4577,
+          "sha256": "64d2d5958f3c13c1209557a14bad9f0f14b58e1b73e0dbab8e6f62880cd8302b"
+        },
+        "source/pic/HF.png": {
+          "bytes": 18955,
+          "sha256": "88a9262100cfb7b070299c85a98fe43eded339d6b4112d129183d398a0d61d31"
+        },
+        "source/pic/framework7.png": {
+          "bytes": 2084124,
+          "sha256": "9438cdd43de9f793f0176e1b1c4263b446f64f896757f59cf24ba045eb36760d"
+        },
+        "source/pic/intro_v13.png": {
+          "bytes": 2107923,
+          "sha256": "907b7e9d5a54fb512fbe91ca9568b128fe27c5c053374105d50701339de64f85"
+        },
+        "source/pic/logo.png": {
+          "bytes": 71720,
+          "sha256": "c9d32ef70d6491deccbc45cce48146e7f77c9de5f342bd250e59ee147abcb2cd"
+        },
+        "source/pic/pattern_distribution_v23.pdf": {
+          "bytes": 46375,
+          "sha256": "744b2afb598ecfd6823ae379841663239258a6e9b6679ab3729b96f869dede58"
+        },
+        "source/pic/rq3_v9.png": {
+          "bytes": 1317347,
+          "sha256": "c01661a267ab39c51fd3ab02b18e8412062caea563935f55ba56cf99a0b94108"
+        },
+        "source/pic/rq4_combined_2x3_v6.pdf": {
+          "bytes": 33087,
+          "sha256": "062ca36e581fec73b67d87b807009861551bb64ae276bcfcd8775e480d24e8c2"
+        },
+        "source/pic/rq5_v5.png": {
+          "bytes": 506199,
+          "sha256": "c0db4a8016aa3321d30b23927afdf1334e5372e167aea89bc745154aab09a567"
+        },
+        "source/reference.bib": {
+          "bytes": 24985,
+          "sha256": "c0f88fdfa0452c7d64086571ac8713015dadde928eafd3586187d8b52eda927c"
+        },
+        "source/table/rq1.tex": {
+          "bytes": 4942,
+          "sha256": "d32d2738e2da8c9ddb77bed96106aa2bb31eefd3fd08e76f8f85a09a91e4e3c7"
+        },
+        "source/table/rq2.tex": {
+          "bytes": 2814,
+          "sha256": "402225703fc9eb168d622a8d6462518493edf31a636fced3aa69ef28c1e104ff"
+        },
+        "source.tar.gz": {
+          "bytes": 5831300,
+          "sha256": "07093491eb974e664cf8a8cd8a61f5fccdf1dac0de578654a4dbd02cdfca3b92"
+        }
+      }
+    },
+    {
+      "title": "Rethinking On-Policy Distillation of Large Language Models: Phenomenology, Mechanism, and Recipe",
+      "arxiv_id": "2604.13016v2",
+      "arxiv_url": "https://arxiv.org/abs/2604.13016v2",
+      "category": "opd",
+      "background": false,
+      "tldr": "Why can OPD fail with a stronger teacher yet work with a weaker one? This study links successful transfer to compatible thinking patterns, genuinely new teacher capabilities, and progressive alignment on shared high-probability tokens. Off-policy cold starts and teacher-aligned prompt selection can rescue failures. The insight is that teacher accuracy alone does not measure how learnable its supervision is for a particular student.",
+      "directory": "papers/opd/2604.13016v2",
+      "pdf": "papers/opd/2604.13016v2/paper.pdf",
+      "source": null,
+      "source_archive": null,
+      "files": {
+        "metadata.json": {
+          "bytes": 698,
+          "sha256": "809819d0eb8ebc42e77378cc44f9785dc0a23b7526c02db9d2d7e5aa8cdb6f11"
+        },
+        "paper.pdf": {
+          "bytes": 1528155,
+          "sha256": "7b43c679b5179aade605a2d9636c6a03e49234e0561bb5245e4de4ca6fcee53a"
+        }
+      }
+    },
+    {
+      "title": "Multi-Turn Reinforcement Learning for Tool-Calling Agents with Iterative Reward Calibration",
+      "arxiv_id": "2604.02869v1",
+      "arxiv_url": "https://arxiv.org/abs/2604.02869v1",
+      "category": "agent-opd",
+      "background": true,
+      "tldr": "Dense per-turn rewards can hurt multi-turn tool learning when their discriminative value conflicts with the resulting advantage direction. This work combines MT-GRPO with GTPO and iteratively calibrates rewards using rollout analysis. Its insight is that more frequent reward is useful only when credit assignment preserves the relationship between local behavior and final task success.",
+      "directory": "papers/agent-opd/2604.02869v1",
+      "pdf": "papers/agent-opd/2604.02869v1/paper.pdf",
+      "source": "papers/agent-opd/2604.02869v1/source",
+      "source_archive": "papers/agent-opd/2604.02869v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 824,
+          "sha256": "a5c7b955a0566b2f517ac515bf74ec016ec2ed94a662fa2f5839c563a4711c08"
+        },
+        "paper.pdf": {
+          "bytes": 367925,
+          "sha256": "e9e21976b5fbfa3a0b7a3552c7009271f45ebf93073c6562c777a8424d1251dd"
+        },
+        "source/00README.json": {
+          "bytes": 385,
+          "sha256": "2e53f43777b8b0dba07fb96df761678bd93101f51cab635ff8316683a9cd6029"
+        },
+        "source/acl.sty": {
+          "bytes": 11615,
+          "sha256": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de"
+        },
+        "source/acl_natbib.bst": {
+          "bytes": 45186,
+          "sha256": "e332fd51dcea48e2a8a89754892c3cb99674a1cd70b527b661e9aaffc235e83c"
+        },
+        "source/main-2.tex": {
+          "bytes": 44974,
+          "sha256": "1610fa7cb38d1389751185e5207d8dd0db0e25cf96490d22f8e7d0f52b576336"
+        },
+        "source/references.bib": {
+          "bytes": 4889,
+          "sha256": "9a0dd520415ff422977b3d6dfee182cacbffa3323ba31eee00247f4ed3262636"
+        },
+        "source.tar.gz": {
+          "bytes": 31044,
+          "sha256": "2261b53129f26fb57e8e59935f75b9804a0d6fccf115b759e43e1095e7ed3660"
+        }
+      }
+    },
+    {
+      "title": "Entropy-Aware On-Policy Distillation of Language Models",
+      "arxiv_id": "2603.07079v3",
+      "arxiv_url": "https://arxiv.org/abs/2603.07079v3",
+      "category": "opd",
+      "background": false,
+      "tldr": "Reverse-KL distillation can collapse generation diversity and become unstable where the teacher is uncertain. Entropy-Aware OPD adds forward KL selectively at high-teacher-entropy positions while retaining reverse KL elsewhere. The insight is that teacher uncertainty can encode multiple useful reasoning paths: mode-covering guidance preserves those alternatives instead of forcing premature commitment to one continuation.",
+      "directory": "papers/opd/2603.07079v3",
+      "pdf": "papers/opd/2603.07079v3/paper.pdf",
+      "source": "papers/opd/2603.07079v3/source",
+      "source_archive": "papers/opd/2603.07079v3/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1643,
+          "sha256": "54bfe22277618cd560d34dc5d39d576c1fa869fa78f5d94a71f2305886ced6c1"
+        },
+        "paper.pdf": {
+          "bytes": 760516,
+          "sha256": "b73ce4b5bfcc9956c3ba39067f868f18f935fb8b894094ac1dff0a597e69691d"
+        },
+        "source/00README.json": {
+          "bytes": 379,
+          "sha256": "d14d18b54d03b3c6ea92fb6c32b004ea9bde82e6509036159e9b474af59a2ecd"
+        },
+        "source/algorithm.sty": {
+          "bytes": 2223,
+          "sha256": "93fd0eb31c112eb405833db8f1d7f5d238c7e691b1c05680d7276e68f36d564a"
+        },
+        "source/algorithmic.sty": {
+          "bytes": 7414,
+          "sha256": "48d18794a5d97c0479a588cc2eac0917992feb9da83acc4631b8f55757d80f9b"
+        },
+        "source/appendix/A_experiment.tex": {
+          "bytes": 5843,
+          "sha256": "6199705e37df1241684d902d2805613d09f243e330ec9ad72520b93e2c3c34ab"
+        },
+        "source/appendix/B_toy.tex": {
+          "bytes": 1388,
+          "sha256": "55a508ea37f7731cbbd2a6efd2ed39b4cd8c0bfde1be81f1c8d356a2fb47d5a6"
+        },
+        "source/appendix/C_evaluation.tex": {
+          "bytes": 1457,
+          "sha256": "c1f80a4588e77e6d4a3e8ae3a5d83d8413fb54a0807f66bfd9b890c8e92d0fe1"
+        },
+        "source/appendix/D_pass.tex": {
+          "bytes": 2077,
+          "sha256": "296c5e46fb1886daf92243d9629bbf80a33c5697cf85b650db4841bbb0dc3395"
+        },
+        "source/appendix/E_high_entropy.tex": {
+          "bytes": 1264,
+          "sha256": "97fd03c4475ad6d49b252368b92bfacd1647955dc9c3070c617c2a184c550051"
+        },
+        "source/appendix/F_tradeoff.tex": {
+          "bytes": 1390,
+          "sha256": "1b817dbdb2bd76fba25ebce781efa92780aac5e832929ba04cf45f3ed86f8330"
+        },
+        "source/appendix/G_other_model.tex": {
+          "bytes": 3386,
+          "sha256": "75fb3d83fc682fc4d97cf936539b8f0a897b06bca559f17787825ffec2191f08"
+        },
+        "source/appendix/H_baselines.tex": {
+          "bytes": 2537,
+          "sha256": "02e0b849bd3b0bacee86ad86eeca3691d975684fc232368c1cca9a67a06faa41"
+        },
+        "source/appendix/I_additional_ablations.tex": {
+          "bytes": 6506,
+          "sha256": "5850f538beac86ba72473e169ffe461cb2c4d6598c0e78dac8e6e92622f33389"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 31715,
+          "sha256": "9130c52f91087abc6d223164ffa587e207e3257fcbcd069ef09ecb5391043f14"
+        },
+        "source/figure/entropy_curve_analysis.pdf": {
+          "bytes": 20379,
+          "sha256": "05c1390de6d05de9364fae6d8abe01d38bdb254a694aded0f9f08a1df5300717"
+        },
+        "source/figure/entropy_distribution_comparison.pdf": {
+          "bytes": 16353,
+          "sha256": "1c79b83189017123b6c95cfbf5c68e9ac93b358bef690ef382e99a5ebf4608c3"
+        },
+        "source/figure/entropy_stability_comparison.pdf": {
+          "bytes": 53137,
+          "sha256": "1905e4a58d87c5661dbc0037940551242989cbde948b1fc0eaef56aff47ed280"
+        },
+        "source/figure/fkl_curve_compare.pdf": {
+          "bytes": 22366,
+          "sha256": "88f19455676b3a0b202921845fe6093543dd8a4f6c69ff7b88b0afc93a3f1d33"
+        },
+        "source/figure/llama_fkl.pdf": {
+          "bytes": 18166,
+          "sha256": "fd5eda33b97b5be273612e528090836c13e8833dde14d182069424d1d3c78ef3"
+        },
+        "source/figure/pass_0.6B_AIME24.pdf": {
+          "bytes": 11236,
+          "sha256": "483874de413355da89de11b4362b31166c50b4bb307bb165664d31bb6626933e"
+        },
+        "source/figure/pass_0.6B_AIME25.pdf": {
+          "bytes": 11276,
+          "sha256": "479eab78a48a453ca56f9bb86a3af8d466a8fcc601f8d8a0feab729578c9cee1"
+        },
+        "source/figure/pass_0.6B_AMC23.pdf": {
+          "bytes": 11882,
+          "sha256": "15c8588086c4a222a91e1a9d0436b871a5705a210ae46479954beb100d2125da"
+        },
+        "source/figure/pass_1.7B_AIME24.pdf": {
+          "bytes": 15475,
+          "sha256": "d7a544ae0448f37ed033c61239a244d437ade060cd6902d5fca9473b5bb2d512"
+        },
+        "source/figure/pass_1.7B_AIME25.pdf": {
+          "bytes": 15685,
+          "sha256": "7fba72699539c0edb4401317cda0efdd705d103c77750292d76d99dadf4f7767"
+        },
+        "source/figure/pass_1.7B_AMC23.pdf": {
+          "bytes": 15735,
+          "sha256": "2b353548f33dbeb36b9c8f31ed23fd412d290e7230eb6c5b9dc2757e43ebfbe3"
+        },
+        "source/figure/pass_4B_AIME24.pdf": {
+          "bytes": 11650,
+          "sha256": "e0592ebbd6ba848c6fee8060fbb41eefa373c4bb3e97f9172177ca5816fd5788"
+        },
+        "source/figure/pass_4B_AIME25.pdf": {
+          "bytes": 11647,
+          "sha256": "9eb59c3b8a691b60471b2b90a019f42da23b85e389eb618c2877936699dd1b56"
+        },
+        "source/figure/pass_4B_AMC23.pdf": {
+          "bytes": 11662,
+          "sha256": "6c8b7ce7ed6c80c5b718df80adf2c59a8b4db41b95384bbe3b13e96ffdee775f"
+        },
+        "source/figure/ratio_curve.pdf": {
+          "bytes": 15756,
+          "sha256": "6bf305f18fa28f55cc530c334a057540a6e44524f65bc974df8734c46968e109"
+        },
+        "source/figure/topk_tradeoff.pdf": {
+          "bytes": 20261,
+          "sha256": "f0c24982018eb46d904e2c3365dde4d79bae6390a3ce5fc35f9c6d278ab2cc49"
+        },
+        "source/figure/toy_high.pdf": {
+          "bytes": 17390,
+          "sha256": "ecb7c1a36caafd4dd759f1a383336715f6fb34931b100e18920c8f037603630b"
+        },
+        "source/figure/toy_low.pdf": {
+          "bytes": 16582,
+          "sha256": "c5059a0b02b716f70e80409adaf1caf63e55563cb610ddf6567854513fb872e6"
+        },
+        "source/icml2026.bib": {
+          "bytes": 19348,
+          "sha256": "d7a714addfbfcaedef5c25fbb70d6a6afe215764b30cda6a68a93790984a46ec"
+        },
+        "source/icml2026.bst": {
+          "bytes": 27147,
+          "sha256": "0ec3d5eb9b02efb7e0b44a32f3775882f42a743d0bdc618f34e6936309b98764"
+        },
+        "source/icml2026.sty": {
+          "bytes": 27344,
+          "sha256": "7cdcf90f6a59c5219e7f15c88f7ed09fcaf598dad91e6cdddc4dc3cb0e397a95"
+        },
+        "source/main.tex": {
+          "bytes": 12027,
+          "sha256": "60198c76bbffee997d2d246dc774e5a77edddfc0b35d6a9d023eeb9196a708c5"
+        },
+        "source/sections/01_Introduction.tex": {
+          "bytes": 15166,
+          "sha256": "8f22ac41c3c7ced941366cde4fa5a727e3388be488003410aee8e8337b0eb34e"
+        },
+        "source/sections/02_Preliminary.tex": {
+          "bytes": 13406,
+          "sha256": "2c293793ce0e95c38580075f160ae0ed8c53a7909a934dd0cf68142ee3c06d5b"
+        },
+        "source/sections/03_Diversity.tex": {
+          "bytes": 25872,
+          "sha256": "0335025b8f64849597e8b86c172ea96740d4f06b028a2122a8a9f0e4f02ca9e1"
+        },
+        "source/sections/04_Method.tex": {
+          "bytes": 10523,
+          "sha256": "e09c47004c62a5a91fad65cd73f66e5df79e0b5f60bb2f9ff7c50699d73529c0"
+        },
+        "source/sections/05_Experiments.tex": {
+          "bytes": 35662,
+          "sha256": "49c600a1a4cb9814a3b745914f3fcd59ad23104ed1abd30adec568c0eb6d98c7"
+        },
+        "source/sections/06_Related_works.tex": {
+          "bytes": 4502,
+          "sha256": "8164222fabc775a497d9fb2bac221d3ee4e74314c97d90b6ca5283f73f66ffaf"
+        },
+        "source/sections/07_Conclusion.tex": {
+          "bytes": 1775,
+          "sha256": "13c5ecfd67b52afbd3a80efd7d0704ca3ad41404c6e90dce9efa075f3f1972ed"
+        },
+        "source.tar.gz": {
+          "bytes": 206189,
+          "sha256": "8b9c9ad1e06c00b3fa3da29c8e8e7f03a6556dc8bba8dcc67ba30c5975fb2471"
+        }
+      }
+    },
+    {
+      "title": "Fast and Effective On-policy Distillation from Reasoning Prefixes",
+      "arxiv_id": "2602.15260v1",
+      "arxiv_url": "https://arxiv.org/abs/2602.15260v1",
+      "category": "efficient-opd",
+      "background": false,
+      "tldr": "Full OPD spends substantial compute generating long student responses, even when much of the useful supervision is near the beginning. This work distills only student-generated reasoning prefixes and stops training rollouts early, optionally increasing prefix length over time. The insight is that learning how to begin a reasoning trajectory can transfer to longer inference-time solutions; experiments report 2×–47× lower training FLOPs.",
+      "directory": "papers/efficient-opd/2602.15260v1",
+      "pdf": "papers/efficient-opd/2602.15260v1/paper.pdf",
+      "source": "papers/efficient-opd/2602.15260v1/source",
+      "source_archive": "papers/efficient-opd/2602.15260v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1153,
+          "sha256": "5bd6c7d9c1aeea79e672af7e9dda37a8c8206a14664882b9658ab686773e3d5b"
+        },
+        "paper.pdf": {
+          "bytes": 1755364,
+          "sha256": "87df6988609676184f72e0d87ab4a1b8e3e17e3fda58cca79b09a9c150941b68"
+        },
+        "source/00README.json": {
+          "bytes": 213,
+          "sha256": "d1f6b1a71c9accb812ec5121d1fff7910c025ca7bb201948bacdb40941bc14e5"
+        },
+        "source/acl.sty": {
+          "bytes": 11615,
+          "sha256": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de"
+        },
+        "source/acl_natbib.bst": {
+          "bytes": 45186,
+          "sha256": "e332fd51dcea48e2a8a89754892c3cb99674a1cd70b527b661e9aaffc235e83c"
+        },
+        "source/figs/advantage_distribution.png": {
+          "bytes": 144973,
+          "sha256": "f2267c300fe85dac1066407fb3ec90cfdb9de06904f6d268ab530daeceb6165c"
+        },
+        "source/figs/advantage_distribution_1.7b.png": {
+          "bytes": 147568,
+          "sha256": "b737fe7516362d24669ce2ce5d8ac65ff543a1132c387f4c71f729fe2a2075c0"
+        },
+        "source/figs/advantage_distribution_prefix.png": {
+          "bytes": 164062,
+          "sha256": "b6cef7a6f48b411689bead98c675a192eab17f72cb654677bd4ae2eec5d8258d"
+        },
+        "source/figs/advantage_distribution_prefix_1.7b.png": {
+          "bytes": 160238,
+          "sha256": "d9caef4635e48c7e4391e984202fbe62b6dc7bfdbe7885523408170778f10be2"
+        },
+        "source/figs/aime24_gkd.png": {
+          "bytes": 79319,
+          "sha256": "cc3223c3f615cb4012d838eb30fb33a532bd69702818123f71884aac740d1caf"
+        },
+        "source/figs/effect_of_learning_rate_prefix_1024.png": {
+          "bytes": 64032,
+          "sha256": "7fe410aa36516d9dbf10ae95e73c49cd969a3b917c959ae0d44d15bf900ae6d5"
+        },
+        "source/figs/main_result_1.png": {
+          "bytes": 134156,
+          "sha256": "98f6171002f1fed07b0afab1982da3b9caf62198c5c53b4a5ec9d9f6ec2ac521"
+        },
+        "source/figs/main_result_2.png": {
+          "bytes": 126934,
+          "sha256": "54be3fcee2e1e47f533e4a2b78fb29047121023323ba54af0d949db061a3648e"
+        },
+        "source/figs/math500_gkd.png": {
+          "bytes": 86487,
+          "sha256": "68db39ca81f151f35129958f6eb0eae01a1625121d6b8a59d6470e65589c97dd"
+        },
+        "source/figs/performance_with_teacher_prefix.png": {
+          "bytes": 71582,
+          "sha256": "99424f17c3770dd2cbaa9af5dbde84f036d6920fffcd0f340dc25524ad56db02"
+        },
+        "source/figs/prefix_sft_aime24.png": {
+          "bytes": 67302,
+          "sha256": "ad03a827ecc7c6c56f6c79764f3b7ff477a100e84e8615276a12757a3b0bd8c6"
+        },
+        "source/figs/prefix_sft_math500.png": {
+          "bytes": 88256,
+          "sha256": "9e7016e0e3d7d38fc07b9c8a97678e93e891d9d26785fff7821d0f4b41a6d32d"
+        },
+        "source/figs/story.png": {
+          "bytes": 868928,
+          "sha256": "67227858e98514a87caeb6620c1be611c4a637b6ba96323b187a4e374937c358"
+        },
+        "source/main.tex": {
+          "bytes": 70256,
+          "sha256": "036ca331261de498724e515f6f9763c7b601bbdf0e98e103d268c1eec5de2e69"
+        },
+        "source/references.bib": {
+          "bytes": 19910,
+          "sha256": "ab8465a9594a6091056ff661540ad815202fcf1e4efd57fa3586052544a671a9"
+        },
+        "source.tar.gz": {
+          "bytes": 1926300,
+          "sha256": "53ffcf85e8c593e5724259b30298d1f9faa065c657e6be627de212aede3e8681"
+        }
+      }
+    },
+    {
+      "title": "Learning beyond Teacher: Generalized On-Policy Distillation with Reward Extrapolation",
+      "arxiv_id": "2602.12125v2",
+      "arxiv_url": "https://arxiv.org/abs/2602.12125v2",
+      "category": "opd",
+      "background": false,
+      "tldr": "Standard OPD implicitly fixes the balance between a dense teacher-derived reward and KL regularization. G-OPD exposes this balance and the reference model as explicit choices; ExOPD strengthens the reward through extrapolation. The insight is that teacher matching is one constrained-RL operating point, and adjusting it can improve transfer or surpass domain teachers in the tested expert-merging setting.",
+      "directory": "papers/opd/2602.12125v2",
+      "pdf": "papers/opd/2602.12125v2/paper.pdf",
+      "source": "papers/opd/2602.12125v2/source",
+      "source_archive": "papers/opd/2602.12125v2/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1113,
+          "sha256": "0fbb88de3ea48abb5c4f46e242380119521a2cb78f5c8cb683fb3d00439e1aff"
+        },
+        "paper.pdf": {
+          "bytes": 684408,
+          "sha256": "7035649ce40ec3dae2a8bd19eb177bd9a5d85f29be61482c2a14c8a57e93107a"
+        },
+        "source/00README.json": {
+          "bytes": 401,
+          "sha256": "58c811e5e77c40756fc118c0bde12c1fe0472121edec4d8a17604441852f827c"
+        },
+        "source/figures/aime24_acc_vs_length.pdf": {
+          "bytes": 21136,
+          "sha256": "b1968a07030ab895b2c13c2f5f1b0aa3d433fed81c81370aebb94a1c2782fed8"
+        },
+        "source/figures/aime25_acc_vs_length.pdf": {
+          "bytes": 21207,
+          "sha256": "d53ac0a00e2039579e11776975897dcc97804d4a0359296441ffd7337d2168b6"
+        },
+        "source/figures/entropy_multi_teacher_distillation.pdf": {
+          "bytes": 13882,
+          "sha256": "ae4c0ef17fd91e5c98a3b2e502a970fe711b80ce9efcb17f4d5fc4028e7f75f6"
+        },
+        "source/figures/hmmt25_feb_acc_vs_length.pdf": {
+          "bytes": 21216,
+          "sha256": "633ca63471302d53f2b74db069bdfacd3e96999650232d175261636dcd90b9ae"
+        },
+        "source/figures/humaneval_plus_acc_vs_length.pdf": {
+          "bytes": 20696,
+          "sha256": "39706b036d8e17fdfc72c89f89a56d78320f6e6d4066bce6d5f27fb60eb3be42"
+        },
+        "source/figures/legend.pdf": {
+          "bytes": 5317,
+          "sha256": "e398bc95357ec4ed00d33e5fb2ed4d5cb283690d1acb1067dab739474c8c9ea9"
+        },
+        "source/figures/livecodebench_acc_vs_length.pdf": {
+          "bytes": 20645,
+          "sha256": "a943e75823c5aea79d9b9425ae085dda58000dc32c9a2bba84564b8fc396a688"
+        },
+        "source/figures/mbpp_plus_acc_vs_length.pdf": {
+          "bytes": 21262,
+          "sha256": "4bbae1e925045caf7d9c8fee42998efb5a0f6b4ce6fd068f834e9144ded45826"
+        },
+        "source/figures/multi_teacher_distill_math_vs_code_scatter.pdf": {
+          "bytes": 22959,
+          "sha256": "1fdb651a98a341715b5ed9a866cc4350ffcc80ce663bb72c0a68544234692283"
+        },
+        "source/figures/qwen3_1.7B_student_reward_correction_code.pdf": {
+          "bytes": 21026,
+          "sha256": "14ffcd4ce6a2c0b8c9d500a6030a3d56950f33609da0a1a6eac2ffc854d63090"
+        },
+        "source/figures/qwen3_1.7B_student_reward_correction_math.pdf": {
+          "bytes": 21058,
+          "sha256": "c5c0e5fc0726e538d06aca503d72154b68d45a1d3db0c2a435b8ab3fb42691b9"
+        },
+        "source/figures/qwen3_4B_code_acc_lambda.pdf": {
+          "bytes": 27533,
+          "sha256": "1b36ba7fe091e8cb24e9e825cb43a1819c92263adc4c706c25fc939d6ddb9975"
+        },
+        "source/figures/qwen3_4B_math_acc_lambda.pdf": {
+          "bytes": 27492,
+          "sha256": "2e08d0f351e2facb0bcd5f31c6471eeb838b62f4d2c93c4c331f80aa3861d3a5"
+        },
+        "source/figures/response_length_multi_teacher_distillation.pdf": {
+          "bytes": 15830,
+          "sha256": "2e3bb25bd68797e92246527f2ec1521a972be7bbef4faf948b3e0155ed347219"
+        },
+        "source/figures/strong_to_weak_distillation_math_reasoning_comparison.pdf": {
+          "bytes": 23079,
+          "sha256": "c8ef34b8fb6f528389f3c4e6487db65e66cb7b7f8f8d83012501ef3f167f2b0d"
+        },
+        "source/figures/train_rewards_multi_teacher_distillation.pdf": {
+          "bytes": 16149,
+          "sha256": "ef70a158db2353470b3e26eb086d06e5d231287fff66973d373cb5151a0f9734"
+        },
+        "source/hunyuanlogo.png": {
+          "bytes": 57840,
+          "sha256": "0e927925ad7459fb83be5f96e99f13fb7b4d313ff3c70fc9056a43f9079f5053"
+        },
+        "source/iclr2025_conference.bib": {
+          "bytes": 26509,
+          "sha256": "b90c5fc450c94efdb9635cedbebd8c0aa9b7517b84e7014fee290732bc66cb70"
+        },
+        "source/iclr2025_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/iclr2025_conference.sty": {
+          "bytes": 10656,
+          "sha256": "63e58a398d2ab25b7454a1ac9e16107326b65902b7b12d0e59f12a2ac8a6fc1e"
+        },
+        "source/main.tex": {
+          "bytes": 70201,
+          "sha256": "4ff52862be3688c588643a094674d8dee6b65e6fa0ca198d7f4292b354378c15"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12305,
+          "sha256": "0c2c268c1ff2581ce57e551786ae5444fc649ef82caef3c695244398dec4644b"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source/prompts/qwen3_code.tex": {
+          "bytes": 427,
+          "sha256": "9906afb54f6682bb5d4fdbda93ca9a304d804745b9e6e5cb67276db05724d2a5"
+        },
+        "source/prompts/qwen3_math.tex": {
+          "bytes": 325,
+          "sha256": "d6fcaf1fdcc57d8acaee86c1f19d1ebe1be4b501b698667e256a280346d2043d"
+        },
+        "source/tables/comparison_against_teacher_with_additional_rl.tex": {
+          "bytes": 1072,
+          "sha256": "e246cc39c6e6ca66a2b29b0236b3d39b2b04b97dab2b92d6bad19ac3e5e743c9"
+        },
+        "source/tables/results_on_different_sized_models.tex": {
+          "bytes": 1610,
+          "sha256": "9cd77e755bc96085f0b4416f89bdbb1ddbc38277dfbe6147a929c42af368ab55"
+        },
+        "source/tables/results_on_same_size_models.tex": {
+          "bytes": 3208,
+          "sha256": "04a9d7007f4cf4d97a2e29ee4a816b559f9d875f209e51dfb32bcc0481fc2fdb"
+        },
+        "source/tables/results_under_stronger_teachers.tex": {
+          "bytes": 2272,
+          "sha256": "1f0ed288be95f852d8e5ce3ba5736493addfc63da3ed2c8402a5792f098a2159"
+        },
+        "source.tar.gz": {
+          "bytes": 201478,
+          "sha256": "6f7ffdff9c8d31960745b1aa768cdc68b96602fc0c4c53c0d6a5183896dc9e14"
+        }
+      }
+    },
+    {
+      "title": "Privileged Information Distillation for Language Models",
+      "arxiv_id": "2602.04942v3",
+      "arxiv_url": "https://arxiv.org/abs/2602.04942v3",
+      "category": "opsd",
+      "background": false,
+      "tldr": "Frontier agents may expose successful actions while hiding the reasoning needed for conventional distillation. This paper turns action trajectories into training-only privileged information and introduces π-Distill, which jointly trains privileged and unprivileged views of a shared model, plus an OPSD alternative using RL with reverse-KL regularization. The insight is to transfer the benefit of informative context without requiring frontier chain-of-thought traces.",
+      "directory": "papers/opsd/2602.04942v3",
+      "pdf": "papers/opsd/2602.04942v3/paper.pdf",
+      "source": "papers/opsd/2602.04942v3/source",
+      "source_archive": "papers/opsd/2602.04942v3/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 877,
+          "sha256": "befd83837160689f0bf39d0070197e1fbead2ee1d9a9da217f0afb45f321ea65"
+        },
+        "paper.pdf": {
+          "bytes": 2422251,
+          "sha256": "4c91fd10c00f4ed0a3fb0c50f085e3d7e27aa5b33f8a15ef40c2bfc92e6c929b"
+        },
+        "source/00README.json": {
+          "bytes": 219,
+          "sha256": "f87efd8258ca9d29359e91e301ccd38c92aa7b77fd4cff8041279249c9aad4e1"
+        },
+        "source/appendix.tex": {
+          "bytes": 64331,
+          "sha256": "3851d195dc526963ddb7f30974fccf6532916d494c4a48d5f807465627a8acbc"
+        },
+        "source/assets/ServiceNow_logo.png": {
+          "bytes": 13764,
+          "sha256": "d9d7e2528dddcb5acdf8e848803e634d2ed840ee51211463881235de3edf1567"
+        },
+        "source/assets/huggingface_logo-noborder.png": {
+          "bytes": 13148,
+          "sha256": "b7cd8a734309c0091599f34accc2906f4f9a2b72cf539c63d6a82c11f48d9a02"
+        },
+        "source/figures/CURVESpdf-pages.pdf": {
+          "bytes": 61509,
+          "sha256": "e5b15ff790249d64639c92c42008536e5458652a62e843d35eb18d3ee612097d"
+        },
+        "source/figures/Images_priv/grid_priv_train_q_current_default_overlay_betas_kl.pdf": {
+          "bytes": 37430,
+          "sha256": "0460aa99705fcd199d01caa9ec85672fa1d4f213a61746512f0d87b8e56aa9df"
+        },
+        "source/figures/Images_priv/kl-grid_self_distill.pdf": {
+          "bytes": 44964,
+          "sha256": "166ac66af02504cb2f094cc52898cfb853977201aba80db8dbe9b37418beb6ff"
+        },
+        "source/figures/PI_Types.drawio.pdf": {
+          "bytes": 77684,
+          "sha256": "3a24cf93661c01fb93a80e223538c3bc05b48224bf6012e7c583e37e733576c9"
+        },
+        "source/figures/beta_grid_qwen3_4b_taubench.pdf": {
+          "bytes": 187113,
+          "sha256": "e26e1166a9f22e9b64596a0539d0a2cef46fe2918d446b90e2d173a325ac26c1"
+        },
+        "source/figures/beta_grid_qwen3_8b_taubench.pdf": {
+          "bytes": 209113,
+          "sha256": "f3b51be14ecca35dd827c1ba558896587ee4c38aa81aa14873891123f13d8528"
+        },
+        "source/figures/delta_max_combined.pdf": {
+          "bytes": 40947,
+          "sha256": "d53e76654d24c5339ac257d58c007c0878332653882991bc6d3aa57fcd201643"
+        },
+        "source/figures/hp_comparison_update_ckpt.pdf": {
+          "bytes": 24795,
+          "sha256": "ff64101794cf5273dde1d70a24c7554d67098ba08d126a5983fcf46e0010d6b6"
+        },
+        "source/figures/kl-grid.pdf": {
+          "bytes": 51507,
+          "sha256": "2edd1c1ec3bac961d98be98b8da435808aa9ccf7c8247296aa86207b51f741a7"
+        },
+        "source/figures/leakage_algo_comparison_evals.pdf": {
+          "bytes": 39478,
+          "sha256": "913da40fe18a8d4f09d0fcd6770d53791fe04b94a5ce9d1ae87a852f7e4c2b0b"
+        },
+        "source/figures/leakage_keyword_analysis_all.pdf": {
+          "bytes": 35883,
+          "sha256": "6c92b562bb2620a4bddb7be151477590c477a3c7a7671d1f7ed940025b7c9074"
+        },
+        "source/figures/leakage_penalty_comparison.pdf": {
+          "bytes": 24092,
+          "sha256": "c25d21f63db700c2f5c7ad19eb2b79c8ee00fe5d7641b819fe97d07344c3af70"
+        },
+        "source/figures/main_diagram.pdf": {
+          "bytes": 228514,
+          "sha256": "138c9a3dff1e7ea4d5fa334f1309354bd76ba5cff8815bd7e4987e14fe24556a"
+        },
+        "source/figures/pass_at_k_all_models.pdf": {
+          "bytes": 33924,
+          "sha256": "34ab8692d452b120a580eb97028c05ce2871217f086218f2656fb5a76a75e7f5"
+        },
+        "source/figures/priv_train_q_gamma0_planner_qwen3_4b.pdf": {
+          "bytes": 16523,
+          "sha256": "16d84b84d733b62bf1af7fa856d6337f9bec6ecdb3bc8037d0a3de26e1575182"
+        },
+        "source/figures/qwen3_8b_benchmark_results.pdf": {
+          "bytes": 31978,
+          "sha256": "35d95ae43fa3faeef97009cb02e39d0606d82835194b0ddc47baec14129aee42"
+        },
+        "source/figures/sft_plot.pdf": {
+          "bytes": 21557,
+          "sha256": "aa9e0f7701a38ca2446481f4da64a6a21577e8d902b013ec084e1a29494f3e94"
+        },
+        "source/figures/stacked_taubench_planner_t.pdf": {
+          "bytes": 44639,
+          "sha256": "d8f1b6fd16f2b98885072d40b8fe07b0b1bfb8037d4c8e0f10b2af5ac3b05388"
+        },
+        "source/figures/three-seed-plot.pdf": {
+          "bytes": 36894,
+          "sha256": "6cd8a3610beffc12b2e347ce22293befe528f546bb5c015f1542eeceffa33e35"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12284,
+          "sha256": "90473c4d0542070db244cea73ef962d6cddc5b2a746757e6a40ddf5fdfb90ba9"
+        },
+        "source/servicenow.bib": {
+          "bytes": 86211,
+          "sha256": "2da0fcc349bf7530b4247da9a099aee273ea9be51206138690eb27cb60d08a4a"
+        },
+        "source/servicenow.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/servicenow.cls": {
+          "bytes": 6345,
+          "sha256": "9bc7465fdf2b88846b7954cc157d6813046d201b636fd93783c8ba65b69cb69a"
+        },
+        "source/servicenow.tex": {
+          "bytes": 71167,
+          "sha256": "72d3e2adefcd2b8254a6ba6289b4c6377d599a378e17993859b3c0fc88911724"
+        },
+        "source.tar.gz": {
+          "bytes": 1039677,
+          "sha256": "a7a0070144c9cf96aaba316a9cdf60b780a8a5ff52905ef1648287e0329bc7ba"
+        }
+      }
+    },
+    {
+      "title": "A Simple \"Try Again\" Can Elicit Multi-Turn LLM Reasoning",
+      "arxiv_id": "2507.14295v2",
+      "arxiv_url": "https://arxiv.org/abs/2507.14295v2",
+      "category": "agent-opd",
+      "background": true,
+      "tldr": "Single-turn RL can produce models that repeat failed reasoning instead of revising it across turns. Unary Feedback as Observation (UFO) trains with minimal feedback such as \"try again\" after an incorrect answer. The key insight is that multi-turn interaction and suitable rewards can teach alternative-path exploration and self-correction without detailed corrective feedback.",
+      "directory": "papers/agent-opd/2507.14295v2",
+      "pdf": "papers/agent-opd/2507.14295v2/paper.pdf",
+      "source": "papers/agent-opd/2507.14295v2/source",
+      "source_archive": "papers/agent-opd/2507.14295v2/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1132,
+          "sha256": "a92673f7670217cf8f3b5f5d79cdad365954d691862dd0470f892b898b48e404"
+        },
+        "paper.pdf": {
+          "bytes": 2500578,
+          "sha256": "baecf06000d7ccfba6efd8e414a57d181838b53a5223e8fe714b4cefd3fd0874"
+        },
+        "source/00README.json": {
+          "bytes": 370,
+          "sha256": "79e4d52b9bc3cbdfae7acdcb38ebe569f4790aec64172630704a928cfd6e2f93"
+        },
+        "source/arxiv.bbl": {
+          "bytes": 22658,
+          "sha256": "9cfbfa7c51a2d93305d3de5bb06e51640b532358b6f636d1b9acc91a448106ed"
+        },
+        "source/arxiv.tex": {
+          "bytes": 4459,
+          "sha256": "53791b282dddf9bd590c075b9711d4a0b65f3922717c46d652125bda35e02e66"
+        },
+        "source/commands.tex": {
+          "bytes": 11938,
+          "sha256": "e6b5e39d79476b05e343bd466fe56d44fb32270174fdf6c05656f9da73f9e9a3"
+        },
+        "source/figures/compare_baseline.pdf": {
+          "bytes": 12751,
+          "sha256": "ee50ceaa1be04fdf71fdc2ba29dee2602e63f88569407adbd66482977193eb27"
+        },
+        "source/figures/feedback_comparisons_side_by_side.pdf": {
+          "bytes": 19813,
+          "sha256": "20fa626b288eab1691c7bb052cf109650a2f2d8829870cb1c6d8862942a2c86f"
+        },
+        "source/figures/fig1.pdf": {
+          "bytes": 288183,
+          "sha256": "6bd7ae4e043648d23dcc82221e26ca14a064125c16c3057598072b16abb4f9f4"
+        },
+        "source/figures/fig2.pdf": {
+          "bytes": 287741,
+          "sha256": "d68f87919c20060dbcfce946d30bf66d52247183bd79b76c2915f13a08f25937"
+        },
+        "source/figures/multi-turn_training.pdf": {
+          "bytes": 13287,
+          "sha256": "87132df3cefbcecc82b034a6650c28f2f84ae6d92c82752e487df080deaaba2a"
+        },
+        "source/figures/nonrepetitive_answers.pdf": {
+          "bytes": 16921,
+          "sha256": "870985f65522f7293086141e3afa06c40a132f40aebbeee193776dd757174fb3"
+        },
+        "source/figures/prompt_strategies_comparison.pdf": {
+          "bytes": 19172,
+          "sha256": "e156f2adf4bd06396e2e0d1fb21fde8d72e4f7093566bacb07966256917114da"
+        },
+        "source/figures/reward_decay_comparison.pdf": {
+          "bytes": 16981,
+          "sha256": "10f1c2abb3c03c135ba7b8c9eb9508ddf5bee2330b1ff91194dc89643b7b796f"
+        },
+        "source/figures/unique_aswer_ratio_comparison.png": {
+          "bytes": 322348,
+          "sha256": "f2ea672c542daf09f8eb9ea2b0ab0e744f81ab4ea10636a90891da66a1953023"
+        },
+        "source/figures/validation_comparison.png": {
+          "bytes": 484387,
+          "sha256": "fd8815b12df62bd297e05a095ccded784eec0bf2acbbe6da27d80a8fd4f3bff5"
+        },
+        "source/figures/validation_rounds_comparison.pdf": {
+          "bytes": 16790,
+          "sha256": "e2d26060140693aa47a9e2b2451f7b23a58c7220c10d3474c99e244e597edee9"
+        },
+        "source/figures/validation_rounds_max_checkpoint_comparison.pdf": {
+          "bytes": 17363,
+          "sha256": "39026578b91b060d23333950f97c7d1863c015ba35e196b7d66917a98f9a3fda"
+        },
+        "source/logo/logo.pdf": {
+          "bytes": 295933,
+          "sha256": "b86c6e87eb4378bb724b7705527fdc3709980a4da516d89f1edfa1690e77d4c8"
+        },
+        "source/macros.tex": {
+          "bytes": 2968,
+          "sha256": "0033fb0768c07f1ab13fa9dcb9995203f58e38068851a3513dd0d7a8254945b3"
+        },
+        "source/main.bib": {
+          "bytes": 45947,
+          "sha256": "7862fac473b57a1a96f0d3e8032c44389c895783bc5dff2a2653ec38b973c86a"
+        },
+        "source/sections/00_abstract.tex": {
+          "bytes": 1692,
+          "sha256": "d43811a4643a1872c7aa8e1c78e78740535821e473cf22dc9c10bbeffcf8159c"
+        },
+        "source/sections/01_intro.tex": {
+          "bytes": 5697,
+          "sha256": "bedc8a843606afdacc946e90d88476f768a3703b0fa42d4c7fe8dd099985d62e"
+        },
+        "source/sections/02_method.tex": {
+          "bytes": 14869,
+          "sha256": "11d0be6fdcd01f973fb7fc9312d97f35cdf3476ac58cb0b71b06d8490a315ccc"
+        },
+        "source/sections/03_experiments.tex": {
+          "bytes": 4230,
+          "sha256": "25e5a11d95e552638c63c66a7ffb839947cefa953a6fa0a6a785be58a6d6baaa"
+        },
+        "source/sections/04_analysis.tex": {
+          "bytes": 13356,
+          "sha256": "980a2ca7ae64fb48e2b77946c58b6e965ba496da850ff4d48c9ed4c6c8d8163e"
+        },
+        "source/sections/05_related_work.tex": {
+          "bytes": 8679,
+          "sha256": "d9362d1e139bce3977d2c832dbc12d4cabac73ef4dc844695822a5bc29685f6b"
+        },
+        "source/sections/06_imp_ccl.tex": {
+          "bytes": 1446,
+          "sha256": "e4c25317745e88e8dd821b152381631545af8dc911b613aaad38042cb019f36a"
+        },
+        "source/sections/07_appendix_supplementary.tex": {
+          "bytes": 38237,
+          "sha256": "2786834f4e751afee7ca9d69e74586b702a634b173517799fd679cb65d82cb24"
+        },
+        "source/style.cls": {
+          "bytes": 11258,
+          "sha256": "0ac38ce13f2b9f603afa798976749d577f61ed9746614710db585a57354d8dd4"
+        },
+        "source.tar.gz": {
+          "bytes": 1632237,
+          "sha256": "f2e08db4b16897a11aebe07a4f1bd4410d58125515545ad320ee8c3e0abe9ce2"
+        }
+      }
+    },
+    {
+      "title": "Reinforcement Learning with Verifiable Rewards Implicitly Incentivizes Correct Reasoning in Base LLMs",
+      "arxiv_id": "2506.14245v2",
+      "arxiv_url": "https://arxiv.org/abs/2506.14245v2",
+      "category": "opd",
+      "background": true,
+      "tldr": "Does answer-only RLVR improve reasoning itself, or just final-answer sampling? This work introduces CoT-Pass@K to assess both answers and intermediate reasoning, and studies training dynamics alongside a theoretical incentive analysis. Its insight is that verifiable outcome rewards can encourage correct reasoning under the analyzed conditions; reasoning-aware evaluation can reveal gains that final-answer pass@K alone obscures.",
+      "directory": "papers/opd/2506.14245v2",
+      "pdf": "papers/opd/2506.14245v2/paper.pdf",
+      "source": "papers/opd/2506.14245v2/source",
+      "source_archive": "papers/opd/2506.14245v2/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1828,
+          "sha256": "fda83dc25456f76c3e29d8b0204a1e84e5d76be2e77c715cf34e73949a832e03"
+        },
+        "paper.pdf": {
+          "bytes": 1171812,
+          "sha256": "e4bac6e2e35f5f436f74370d33c16fd8b2923be8c2ba2bfc80f95c3f5589faa1"
+        },
+        "source/00README.json": {
+          "bytes": 307,
+          "sha256": "5216684e15ef92483a74d5ff11a115b072a565c096789034a928cb91e057b41a"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/figures/aime24-15.png": {
+          "bytes": 7306,
+          "sha256": "a70ab89f5a7951b06b9f7ca9565423463223f3d5a16f518c9c4ca33638830c55"
+        },
+        "source/figures/aime25-11.png": {
+          "bytes": 8227,
+          "sha256": "a2ec71794642946441bbfd033f5870156f18f8bb348a67c610ddc1f023dd5761"
+        },
+        "source/figures/aime25-2.png": {
+          "bytes": 17920,
+          "sha256": "9acc9ccc0840e3747f91ddb5833bb3defdf5fb67535cb794e13fa724e210facb"
+        },
+        "source/figures/benchmark_cot_correct.pdf": {
+          "bytes": 39162,
+          "sha256": "88bfbaf7ab38d3000482966ca180b8947f6d3770c463e36134ddd50c781909d5"
+        },
+        "source/figures/dapo_process_val_pass1.pdf": {
+          "bytes": 15500,
+          "sha256": "cd5973397441844fe3278bfe66759bb2be2cdeed2b8e2c2e485f3b9a1f6765f5"
+        },
+        "source/figures/intro_fig.pdf": {
+          "bytes": 177178,
+          "sha256": "43160eef994380f3fcf7f022ca2c9d36f057f0c50f1d13d12a3daafd40834360"
+        },
+        "source/figures/multi_verify.pdf": {
+          "bytes": 95249,
+          "sha256": "ccd6c4b32373259913efc1701efa0654771b18a8045488b9cf62ea6d5be18258"
+        },
+        "source/figures/rl_process_aime_passk.pdf": {
+          "bytes": 21858,
+          "sha256": "cdac41435a0bc72f8ca312b1db6ab66ab7ee0e74b406ae41a998663886e7f8f5"
+        },
+        "source/figures/rollout_verify_easy.pdf": {
+          "bytes": 34369,
+          "sha256": "b3cb1e8ce1abd94a33b30af61d51e8bc522f814e488fbbf3453d090413d242f8"
+        },
+        "source/figures/rollout_verify_hard.pdf": {
+          "bytes": 35040,
+          "sha256": "eb3f3a18771a7c810f4cf241291de07a74bbd236b9862f6d77ffb935690840a9"
+        },
+        "source/figures/wxm_comp_sft_data_pass1.pdf": {
+          "bytes": 19843,
+          "sha256": "c0ffdfd86acac2d4148461be4ff4f81da447c81a04bba33efd8f18171aaba4ff"
+        },
+        "source/figures/wxm_comp_sft_rlvr_passk.pdf": {
+          "bytes": 31470,
+          "sha256": "fbf08a94ca512c133d69c25ea31cf93135d3b55cbcc1b87ef5eda508afa72cf2"
+        },
+        "source/figures/wxm_eval_skywork_aime.pdf": {
+          "bytes": 26823,
+          "sha256": "39d117fa31aa484df92bdb0487f36dc79ee9a4039dd5b55d433ca0894f4b3285"
+        },
+        "source/figures/wxm_eval_skywork_lcb_v6.pdf": {
+          "bytes": 25617,
+          "sha256": "b557c3ee81273be038e825791c66c16d73cd90bf7abafd3c6af8c8729451ea04"
+        },
+        "source/figures/ysy_eval_ace_lcb_all.pdf": {
+          "bytes": 27852,
+          "sha256": "fa05e889046a0f1906a6affce8f70d22834e8fdbc6732adbfb8a4e48bf1d7baf"
+        },
+        "source/iclr2026_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/iclr2026_conference.sty": {
+          "bytes": 9049,
+          "sha256": "e4760b5ad0aaf98ddfe18e444adaca233b2260a14cef47957805e74b451c91a4"
+        },
+        "source/main.bbl": {
+          "bytes": 17867,
+          "sha256": "00623e9f7b31429c7c853dffe02d4b03fc5269f9a4402bdb50e27977f6016588"
+        },
+        "source/main.tex": {
+          "bytes": 8663,
+          "sha256": "dbee2931bc7b34be154c13fd8d6b276ab7f2f6d2bade1764fb3de0a627969e92"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12284,
+          "sha256": "90473c4d0542070db244cea73ef962d6cddc5b2a746757e6a40ddf5fdfb90ba9"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source/sections_v2/1_intro.tex": {
+          "bytes": 7731,
+          "sha256": "f370ca7a028f5b88debf857d700473e41f26bb28278f60b0e21b8f0f5b66f073"
+        },
+        "source/sections_v2/2_related_work.tex": {
+          "bytes": 4781,
+          "sha256": "f7be7fc455a614c0c1d2e50fc4f62ce3ed0aaa97d46f79eb5d8e957b2c2e77f6"
+        },
+        "source/sections_v2/3_benchmark_analysis.tex": {
+          "bytes": 7536,
+          "sha256": "7f88f32f0bc1aba4d8c5e89b861aed58229e4406ab058640c7d41b51ea2516a7"
+        },
+        "source/sections_v2/4_theorem.tex": {
+          "bytes": 7264,
+          "sha256": "5972a330c689e326293139ec3bdb0d32230d14cb3005dcb606f9a8ab941dfdf4"
+        },
+        "source/sections_v2/5_training_analysis.tex": {
+          "bytes": 4066,
+          "sha256": "5c8563fc056e2a0279197f06f2a85c81271936c6eb8088dbdea8b0eacac7b816"
+        },
+        "source/sections_v2/6_cot_quality.tex": {
+          "bytes": 4097,
+          "sha256": "ae3e4a7101896056a814cc8d8bc566272f8fe39c288cafb6d3dc289b738476c4"
+        },
+        "source/sections_v2/7_conclu.tex": {
+          "bytes": 1388,
+          "sha256": "aef5c8c494683928c35cc07fd4ddcdedda6d4e32ef865479db1cb34880c28450"
+        },
+        "source/supp_sections/DAPO_model_case_analysis.tex": {
+          "bytes": 23997,
+          "sha256": "a6f31fe1700f9efc721132e891ff4bf49a27a0ea892dfb3d80c99982a609e5aa"
+        },
+        "source/supp_sections/all_case_study.tex": {
+          "bytes": 1447,
+          "sha256": "1ab5d05f5c952a35f7e12d6ade2bdaf8e8ef2c843f1f27f42a6ee22eb6da8205"
+        },
+        "source/supp_sections/base_model_aime24_case_analysis.tex": {
+          "bytes": 13402,
+          "sha256": "732d7a9e339d3dbc27d1c52e28aee9cdad0224848f017770afbb709667119cb2"
+        },
+        "source/supp_sections/base_model_aime25_case_analysis.tex": {
+          "bytes": 7150,
+          "sha256": "896c7b46177e2feeaac2e5275c30c869a36ff168b29e28c2b9d533a2a506f8ad"
+        },
+        "source/supp_sections/base_model_amc23_case_analysis.tex": {
+          "bytes": 4756,
+          "sha256": "a40a294e91503fd8f760fbfa583c1f901adc5343226b883ed459e4c7cfd4f0c6"
+        },
+        "source/supp_sections/base_model_math500_case_analysis.tex": {
+          "bytes": 4264,
+          "sha256": "aefdba699726ec56ce77b5b32bb508c6f979b70a30b14a82a053c14316be5c6a"
+        },
+        "source/supp_sections/contributions.tex": {
+          "bytes": 1599,
+          "sha256": "e6f3959c64793450002db33a03e47ff66fa7050f1c3157b9796c73e2a98936ed"
+        },
+        "source/supp_sections/dapo_repro_details.tex": {
+          "bytes": 4789,
+          "sha256": "e5cbf6d9900c21b05d3501fffebc3a3a8850884186336c428cd03337a3b738f6"
+        },
+        "source/supp_sections/data_sources.tex": {
+          "bytes": 1271,
+          "sha256": "5d9d4f2aa64cb8e8aa217a99a6f9a0bcc2834df525c35c395eead41ae9577509"
+        },
+        "source/supp_sections/discuss.tex": {
+          "bytes": 3902,
+          "sha256": "ada9537c6aa7e2c738cf6b984ac5eb287c54107e12127bd2ca1915d6b95283b9"
+        },
+        "source/supp_sections/proof.tex": {
+          "bytes": 7662,
+          "sha256": "e6ab195534ab850e5ab0bd269b7e2289fbaeb7fe41f3933d52c7463131046019"
+        },
+        "source/supp_sections/skywork_or1_benchmark_analysis.tex": {
+          "bytes": 2640,
+          "sha256": "a55a22fede3fe93c3ac51f63c9bcfc02fba799630855cf3e2e387f64317686f9"
+        },
+        "source/supp_sections/verification_details.tex": {
+          "bytes": 5627,
+          "sha256": "dcf147b74d29b2ac45136fe54d22e1d2ca4756ba31b006f205d21ead43e12a3e"
+        },
+        "source.tar.gz": {
+          "bytes": 520239,
+          "sha256": "2e85d822c89d04bb6b62a4ba0855d11da1fef2b7f5c89ffc84cb3a11ea2df59a"
+        }
+      }
+    },
+    {
+      "title": "RAGEN: Understanding Self-Evolution in LLM Agents via Multi-Turn Reinforcement Learning",
+      "arxiv_id": "2504.20073v2",
+      "arxiv_url": "https://arxiv.org/abs/2504.20073v2",
+      "category": "agent-opd",
+      "background": true,
+      "tldr": "Multi-turn agent RL can enter an \"Echo Trap\" with repetitive behavior, collapsing reward variation, and unstable gradients. RAGEN provides the StarPO training framework and studies stabilization through trajectory filtering, a critic, and gradient control. Its insight is that rollout diversity, interaction granularity, and reasoning-aware reward signals shape whether agent training develops useful reasoning or shallow strategies.",
+      "directory": "papers/agent-opd/2504.20073v2",
+      "pdf": "papers/agent-opd/2504.20073v2/paper.pdf",
+      "source": "papers/agent-opd/2504.20073v2/source",
+      "source_archive": "papers/agent-opd/2504.20073v2/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1622,
+          "sha256": "1fa3f94bd84f730f74282d2b9b5ee861f23dfde33ccaae8416369408a271f3ef"
+        },
+        "paper.pdf": {
+          "bytes": 1811298,
+          "sha256": "41d89d5e5466c13bdeda57c78e2b6f1a510fb12b9d4931203979b7af07ff1485"
+        },
+        "source/commands.tex": {
+          "bytes": 11937,
+          "sha256": "075ffe7cda72da54b5ea883b52f7a74986d779db77d8f765bd3ff567d11bbb29"
+        },
+        "source/figures/0_bandit_performance.pdf": {
+          "bytes": 22838,
+          "sha256": "d92d2c87d6a7c24adebf9fbb0d459d22b6e14ffe5647e1de4ddf222dd31139af"
+        },
+        "source/figures/0_frozenlake_performance.pdf": {
+          "bytes": 21218,
+          "sha256": "30f7618703db13d9903997ca2e39e103b1b503aba1e11e1b500eae42bce95040"
+        },
+        "source/figures/0_sokoban_performance.pdf": {
+          "bytes": 23547,
+          "sha256": "13b2acabd58c4ff64e78907e98d5cf86bd8f500c7860065862e59dc08dcc2e36"
+        },
+        "source/figures/1_1_in_group_mean.pdf": {
+          "bytes": 28409,
+          "sha256": "c76759b2d63f3f45f0d5a05e3afbd190f087730d341b8a1ee3a689d4c7e4df48"
+        },
+        "source/figures/1_1_in_group_std.pdf": {
+          "bytes": 28534,
+          "sha256": "144b8cc64f02f701b4af929652bcd78eb94297f97a0e99716a30a5a4061d1365"
+        },
+        "source/figures/1_2_entropy_loss_grpo.pdf": {
+          "bytes": 26763,
+          "sha256": "b8b3864ab177b0c9a7a69b5a65383d5897e216dc97d608b26ef68203f43adac8"
+        },
+        "source/figures/1_2_entropy_loss_ppo.pdf": {
+          "bytes": 25817,
+          "sha256": "8ecbd7efe5b0fa335cb7aafb97b8f07049610a3dcd6f9628f3e9decfe23973ef"
+        },
+        "source/figures/1_2_grad_norm_grpo.pdf": {
+          "bytes": 28216,
+          "sha256": "c0e4e14fccee04fa00f3233a02c8523354e9aa034092b2f6debb8638e848ebfb"
+        },
+        "source/figures/1_2_grad_norm_ppo.pdf": {
+          "bytes": 27361,
+          "sha256": "e94095fa29551a373eb972df0b053f554e97a63444d0df0245814def7284da53"
+        },
+        "source/figures/1_2_kl_grpo.pdf": {
+          "bytes": 29709,
+          "sha256": "6745747e70c8e663c3774ad27aabe5953f464ace1115d05c583eb5d135f90423"
+        },
+        "source/figures/1_2_kl_ppo.pdf": {
+          "bytes": 29112,
+          "sha256": "f4a1e135c66c5e5738dcbdb278cc7372c3c2a57b6504ed671b2a5e06fe9d82f2"
+        },
+        "source/figures/2_frozen_lake_filter_ppo.pdf": {
+          "bytes": 23528,
+          "sha256": "717784533d77e3d76323a7cd1a93e57d0c159a606049bcbd38b926ef04d2b8a6"
+        },
+        "source/figures/2_sokoban_filter_grpo.pdf": {
+          "bytes": 25022,
+          "sha256": "24347406de2c65b06f8c8b49669a53726d9ac213386f3d39990071dad7062886"
+        },
+        "source/figures/2_sokoban_filter_ppo.pdf": {
+          "bytes": 23100,
+          "sha256": "b0c0a4fdb5a574997874d3635056f9abcaa23d4aade027515d317a226a865112"
+        },
+        "source/figures/3_frozenlake_comparetrick_ppo.pdf": {
+          "bytes": 24724,
+          "sha256": "cd4d19dcf64c6a02bbb2566830bd264c925086aa40ae1a6873e39cc6a85f01ec"
+        },
+        "source/figures/3_sokoban_comparetrick_ppo.pdf": {
+          "bytes": 26131,
+          "sha256": "c7eb855ce00f1be2d07de3d48ca0afa9f9c32451719d286c2c37ec7834165338"
+        },
+        "source/figures/4_bandit_compare_ppo_starpo_s.pdf": {
+          "bytes": 21533,
+          "sha256": "08fdd84feb70b32be769e2012dc86d640d0fb7f9e35a445303db5166fceebb86"
+        },
+        "source/figures/4_frozenlake_compare_ppo_starpo_s.pdf": {
+          "bytes": 20029,
+          "sha256": "62dc1a220464f35c524a30a5d2322482f6f9b293fc2c3a6f5032c178e654e703"
+        },
+        "source/figures/4_sokoban_compare_ppo_starpo_s.pdf": {
+          "bytes": 19947,
+          "sha256": "4acef151ec015ff9a05bc5b01e5174f9ddd503e13afc3162ca3ffb66ebe5e4c1"
+        },
+        "source/figures/5_frozenlake_transfer_success.pdf": {
+          "bytes": 20469,
+          "sha256": "df3a7f6dbb56ab337e1e8f84e9b7332b1b6cf655c0e437cc82b91b101d5eaf1d"
+        },
+        "source/figures/5_sokoban_different_grid_success.pdf": {
+          "bytes": 21035,
+          "sha256": "cf164f69c8950d8748ed5e1c7c49bb267b3f9d1c566336603994dd58c52cda77"
+        },
+        "source/figures/5_sokoban_online_success.pdf": {
+          "bytes": 20119,
+          "sha256": "68705cc00de08d9940e5ab0d59961dc442c177f81cdc7973e5f6d47a1f9c36ff"
+        },
+        "source/figures/6_bandit_response_length.pdf": {
+          "bytes": 25387,
+          "sha256": "970d08df9474c49f3d58b01e0174d1c132de2f26a47e237a93b092ac92153ba7"
+        },
+        "source/figures/6_sokoban_response_length.pdf": {
+          "bytes": 19110,
+          "sha256": "2e93bf5374de8d6293665ff6b1455c4300c6bb7d2cac5b14c8abe8936cebddd0"
+        },
+        "source/figures/bi_level_gae.png": {
+          "bytes": 127893,
+          "sha256": "29de1b1e950fa5c197dcb7101e14ebe79d4bb738a67bda1eea489a5c0ff24fae"
+        },
+        "source/figures/example.pdf": {
+          "bytes": 98327,
+          "sha256": "51f5583683be4b24738b930811e114f4a11bf8c376a6234bda4b47fca4a8ae19"
+        },
+        "source/figures/figures_combined/figure11_reasoning_decay.pdf": {
+          "bytes": 22177,
+          "sha256": "cabc8e011abd52206693dbba51790a83ced9372880f78802003f6ac504b49685"
+        },
+        "source/figures/figures_combined/figure5_baseline_starpo.pdf": {
+          "bytes": 25956,
+          "sha256": "802ca52838691c15a4749bff9038fbc5149461374b12303fb8db8e1d8bae2714"
+        },
+        "source/figures/figures_combined/figure6_1_collapse_indicators.pdf": {
+          "bytes": 27883,
+          "sha256": "365d4e5553800e775d557c48be0bef5fe3361bd469fd69a808d8744e05842fd4"
+        },
+        "source/figures/figures_combined/figure6_2_collapse_indicators.pdf": {
+          "bytes": 29217,
+          "sha256": "2c0a0820aaae5d41958a42de9276ef366d55c9ea8bd2e975db58bf512b8d10db"
+        },
+        "source/figures/figures_combined/figure7_effect_uncertainty.pdf": {
+          "bytes": 30831,
+          "sha256": "773f3df68a9ad17f8ccf663e0c7c63f6e35d20e1f6db81ac55d7ea69944ddaa5"
+        },
+        "source/figures/figures_combined/figure8_effect_kl.pdf": {
+          "bytes": 22364,
+          "sha256": "9e9e9f8a3a0849f43a1bfe2feccdf31370609621313d2bac696ebf31130d1465"
+        },
+        "source/figures/figures_combined/figure_10_rollout_effect.pdf": {
+          "bytes": 25951,
+          "sha256": "c79a638b62c89f873cdc1a2fdd4ee5f52776ef6a68519d2a70c792f4cc0693a2"
+        },
+        "source/figures/figures_combined/figure_9_starpo_starpos.pdf": {
+          "bytes": 21520,
+          "sha256": "cedc6fda285bad5b00e4f4577b38ec588ded1eedd73d53c20d046881076b53bc"
+        },
+        "source/figures/frozenlake_env_example.png": {
+          "bytes": 179764,
+          "sha256": "2ce7fce9b6155bd56bc9762f730981ca7d810cdf416b73283fd39429029047d5"
+        },
+        "source/figures/horizontal_case_study.pdf": {
+          "bytes": 92357,
+          "sha256": "12be4b8a4fd265d764aa71d0fdb901d53bffe9effe18f9ad985e2d48e39d1e4f"
+        },
+        "source/figures/horizontal_teaser.pdf": {
+          "bytes": 227382,
+          "sha256": "0353ae449f24154c6cc817b8cb10f0d65e805e25995852d708d5f6680c445ed2"
+        },
+        "source/figures/ppo_vs_grpo.pdf": {
+          "bytes": 26482,
+          "sha256": "91bd03ff7c99b5be19d223508e5d807e58410da52c578a5b5e017bf9b5187c4d"
+        },
+        "source/figures/response_masking.png": {
+          "bytes": 61724,
+          "sha256": "5ba952bb689ea506e1ecf5b42b00a9de8cd373287854847bf758b97fc2402bb9"
+        },
+        "source/figures/rico-0406.pdf": {
+          "bytes": 133330,
+          "sha256": "28718944e666bad3d4efe499d3f9a3355b7b4e0d9ae5a2c86ed8a880b8ec9ffd"
+        },
+        "source/figures/rico-manling-feb15.pdf": {
+          "bytes": 110672,
+          "sha256": "4ad67e8d446117c5b44b26c8c6c7072581e1b4f42f277a21b2d8ef7104f513aa"
+        },
+        "source/figures/scaling_law.png": {
+          "bytes": 68933,
+          "sha256": "9593a2d26a777d3e678d9de27e52ae7696f5df7c3fa41856a36eff282992ae99"
+        },
+        "source/figures/scaling_model.pdf": {
+          "bytes": 26838,
+          "sha256": "f012c816e8b4e7b30dd6d40aad70d727b90d73b89700f892a5d4aaab357ff1f0"
+        },
+        "source/figures/sokoban_env_example.png": {
+          "bytes": 94376,
+          "sha256": "f3953b14b3462e7696735f162e20835834899285539829326c8ed9c67a21ee6a"
+        },
+        "source/figures/starpo.pdf": {
+          "bytes": 128056,
+          "sha256": "2ba38ced7125062775d6421d5ef5b773ed6efc74a4f60233b886a55e0ae897eb"
+        },
+        "source/figures/starpo_s_std.pdf": {
+          "bytes": 38512,
+          "sha256": "ce780344d632bab81bf8d0cf31a70c8599e122ba78d97e0df5563ad06b19df68"
+        },
+        "source/figures/starpo_vs_s.pdf": {
+          "bytes": 28484,
+          "sha256": "c32fcb1f98385d0c89f57f0b220f781b77016e8aba588730e849f0fd7f570c4d"
+        },
+        "source/figures/teaser-manling-feb15.pdf": {
+          "bytes": 138463,
+          "sha256": "3b26c7af97319821a7aa8b8589d23807d400363474858a51b26665616849ab36"
+        },
+        "source/figures/turn_aware_ablations.pdf": {
+          "bytes": 27293,
+          "sha256": "3dc3b0253d3b107c98e76ef16876ca4a0d6e9be0a537a35fe45afcb199e7e4dd"
+        },
+        "source/inc/inc_macros.tex": {
+          "bytes": 9314,
+          "sha256": "baeda19ef1576c03521e22618fbb94638cf32e768b35365f10b239218fec9393"
+        },
+        "source/inc/math.tex": {
+          "bytes": 12286,
+          "sha256": "8a598d91ed3072edc3547c2b2b1a562ed93a7baac5fb5609d2aa43d2b715c99d"
+        },
+        "source/logo/RAGEN.jpeg": {
+          "bytes": 100180,
+          "sha256": "4344d635bf451b577c404c741e875a78e46b5ca9f958bb3a584dd250129063ef"
+        },
+        "source/logo/logo.pdf": {
+          "bytes": 295933,
+          "sha256": "b86c6e87eb4378bb724b7705527fdc3709980a4da516d89f1edfa1690e77d4c8"
+        },
+        "source/main.bbl": {
+          "bytes": 28434,
+          "sha256": "7a6381c1db6688f2a961f57627dcc38eb2931f03082bbd6770ba5134432649db"
+        },
+        "source/main.bib": {
+          "bytes": 107149,
+          "sha256": "c5d8d13ebf5a7a2b5a79041e4fc8771fb96096b526aecbd8492404b324892d43"
+        },
+        "source/main.tex": {
+          "bytes": 4868,
+          "sha256": "b1090a5eb21905d898db739ed46abdacd00303d21db5e1a405593a5382eb7abc"
+        },
+        "source/sections/00_abstract.tex": {
+          "bytes": 7058,
+          "sha256": "fa045788744e18e711e996a35c8054144ac1a9d5b7bfcc8b023ff6929e1909e1"
+        },
+        "source/sections/01_intro.tex": {
+          "bytes": 11435,
+          "sha256": "e380246d22cb40abc492b5c1d5ace32e0e54ab3ca972e2d76d66c69c54f7bb68"
+        },
+        "source/sections/03_method.tex": {
+          "bytes": 24153,
+          "sha256": "f891154590918560684feeec02d05ae3d5dea98cfd22aaa4a7569135e9d08856"
+        },
+        "source/sections/04_experiments.tex": {
+          "bytes": 14437,
+          "sha256": "267378d49d16049c150c03239a48f87f6ea45d94c080d9439e393dfb81aa885f"
+        },
+        "source/sections/05_analysis.tex": {
+          "bytes": 27248,
+          "sha256": "426cced9a8edf20be28d0046b83b25417e51ddf3b6416009e26a75284d42ef07"
+        },
+        "source/sections/06_related_work.tex": {
+          "bytes": 14212,
+          "sha256": "df125b3c472b374e2e46c1f0b1affd4c818a9441ccc38c3d723eb58c0411bf2b"
+        },
+        "source/sections/07_imp_lim_ccl.tex": {
+          "bytes": 4044,
+          "sha256": "5e50f9b3934efa1f72e5e61d266b90a6d58ac12112cb723893af66e6e19605a5"
+        },
+        "source/sections/08_appendix.tex": {
+          "bytes": 264,
+          "sha256": "b3c6db43eba6b409e25522790e66d0554eef42ce4f3e07d3fa7f51193ec36720"
+        },
+        "source/sections/08_appendix_01_bg_rl.tex": {
+          "bytes": 8780,
+          "sha256": "9800ea5c813464413aa09148f4c06bfff80ee758ab3179d18c279d6407ba0f39"
+        },
+        "source/sections/08_appendix_02_exp_details.tex": {
+          "bytes": 25661,
+          "sha256": "0d494273ed79830758a680a1b34fb37b037e5f095f532ce89c499a5c38e5d98c"
+        },
+        "source/sections/08_appendix_03_efficient_training.tex": {
+          "bytes": 3342,
+          "sha256": "c224c0e5d8ee2f43f9325a04de1e84adbaea8e3320df78231d40be6317e2478d"
+        },
+        "source/sections/08_appendix_04_prompts.tex": {
+          "bytes": 11170,
+          "sha256": "f7ee2859badabde16d4b34ce81918a32c22eb5cd5e4f1b1e1ba3eb4e630c04df"
+        },
+        "source/sections/08_appendix_05_generalization.tex": {
+          "bytes": 18434,
+          "sha256": "bae1a35a89562dc5acb1c931cb23b91ab30a6ea51c5aa352f4087d91a12f4701"
+        },
+        "source/style.cls": {
+          "bytes": 10418,
+          "sha256": "e05852655747df1b43f998d603b0a1764b8fb4699ec61db42347ae78acbfec1e"
+        },
+        "source.tar.gz": {
+          "bytes": 2137483,
+          "sha256": "20862b4d837bf1fff820471a744abb599965a93b88169f0a24ce700ad59813d3"
+        }
+      }
+    },
+    {
+      "title": "Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?",
+      "arxiv_id": "2504.13837v5",
+      "arxiv_url": "https://arxiv.org/abs/2504.13837v5",
+      "category": "opd",
+      "background": true,
+      "tldr": "This study asks whether RLVR discovers reasoning abilities beyond the base model or mainly makes existing solutions easier to sample. Across the evaluated models, pass@k and trajectory analyses show that small-budget gains can coexist with narrower large-budget coverage. The insight is to distinguish sampling efficiency from reasoning coverage; the findings concern the tested RLVR recipes rather than a universal limit on RL.",
+      "directory": "papers/opd/2504.13837v5",
+      "pdf": "papers/opd/2504.13837v5/paper.pdf",
+      "source": "papers/opd/2504.13837v5/source",
+      "source_archive": "papers/opd/2504.13837v5/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1195,
+          "sha256": "e23fb89de78cc541b417e575c946bb3d04bc8fe23539991052f12cf51236fdb7"
+        },
+        "paper.pdf": {
+          "bytes": 2181948,
+          "sha256": "a351046d1e570d167796e546953a0ea424d9a0570a826036636960cd89e597f3"
+        },
+        "source/00README.json": {
+          "bytes": 221,
+          "sha256": "84b35f860689ef3a7e269762b6bbbf2ce9d355d28f6fd95028f965b744ba403d"
+        },
+        "source/config.tex": {
+          "bytes": 2521,
+          "sha256": "55053cf43bfa4326dd431ce77f554ed80590c4a042818475770c0e27740cc796"
+        },
+        "source/figures/logos/leap.png": {
+          "bytes": 306028,
+          "sha256": "6796afcd219a7a081b653c18e7744884720874455fee1960d661dee0c039f606"
+        },
+        "source/icml2025.bst": {
+          "bytes": 27147,
+          "sha256": "0ec3d5eb9b02efb7e0b44a32f3775882f42a743d0bdc618f34e6936309b98764"
+        },
+        "source/leaplab.sty": {
+          "bytes": 28283,
+          "sha256": "bf5dc8874d692f588863eae3374a3514218f06bb1e75bad4b861e328576f6418"
+        },
+        "source/main.bib": {
+          "bytes": 20951,
+          "sha256": "f04a788ceb11066bc934ddb3307f3115e3db2782b4602362cd2a31177d646128"
+        },
+        "source/main_leaplab.tex": {
+          "bytes": 3487,
+          "sha256": "d729707310af22b69ac37193b4fbf4d5499c308fc11d2a52a134856224bc1d53"
+        },
+        "source/tex/0-abs.tex": {
+          "bytes": 3336,
+          "sha256": "18f40aa77633e3e9821fd7440a023840763f4be26f0a953279cba08a907f603a"
+        },
+        "source/tex/1-intro.tex": {
+          "bytes": 11079,
+          "sha256": "36e8bccc5bc65809f9174f61bd5a0e76d7e6bee97dcce6d70f7234aa0d6bf59f"
+        },
+        "source/tex/2-more-related.tex": {
+          "bytes": 3039,
+          "sha256": "6388a64ba7542e318c0f2d74fb7657396e701f62ddd086c8527260d617e65069"
+        },
+        "source/tex/2-related.tex": {
+          "bytes": 6521,
+          "sha256": "f827f7c06dcf11eed3fbf69100308832f685950a12b70a53090d9e1780ef5b01"
+        },
+        "source/tex/3-method.tex": {
+          "bytes": 7648,
+          "sha256": "d42e9f8e46fc8b030bd25e695a8483bfb6b8460019abafb35cddd763a66b1dd7"
+        },
+        "source/tex/4-experiments.tex": {
+          "bytes": 30794,
+          "sha256": "4c27a8178bf9758b8d7e947e73e50bd60579383b119d91bc8d411b1d9f88f47e"
+        },
+        "source/tex/5-appendix.tex": {
+          "bytes": 21323,
+          "sha256": "162e8b30fbd8529cc3e307b7a54ff0dfc86a10fcb48d24b9840765264957bb40"
+        },
+        "source/tex/7-conclusion.tex": {
+          "bytes": 6398,
+          "sha256": "b1bec76ba4123530c58672b8e903fb67d075ddee4ea94b57100ea053ed66817b"
+        },
+        "source/tex/images/AIME24_16_Base_Answer.pdf": {
+          "bytes": 295718,
+          "sha256": "9f1944a7d9b49b09fd42d2e4dba8b01814504ef168bb6c1dd3b43b24912ddebc"
+        },
+        "source/tex/images/AIME24_24_Base_Answer.pdf": {
+          "bytes": 128937,
+          "sha256": "9de696af4c3dac32549e03bfa0330fb27a0c7da44e777a78aa3ca6cf9b8f9ca1"
+        },
+        "source/tex/images/Code-R1_prompt.pdf": {
+          "bytes": 11518,
+          "sha256": "57e729d33340e3f13dfd916f6bc269e75d26e2e0b16f46614abb30a08e3b5d66"
+        },
+        "source/tex/images/EasyR1_prompt.pdf": {
+          "bytes": 12562,
+          "sha256": "de7615bf1b07e65408e957810e858bc597cf67832d2d1a55e5fb4e119a4b3df0"
+        },
+        "source/tex/images/HumanEval+_prompt.pdf": {
+          "bytes": 12993,
+          "sha256": "4af879d03ff810936acc681e84506fbd75c3132b00c53bfc71cbe19c72b35bb0"
+        },
+        "source/tex/images/LiveCodeBench_prompt.pdf": {
+          "bytes": 10705,
+          "sha256": "b23f6292ad9ee2a1da80d36c221762baa88e1601272b813db5129a5fbc4a8c10"
+        },
+        "source/tex/images/Mistral_prompt.pdf": {
+          "bytes": 52438,
+          "sha256": "6094b91d2a8d10385cc89ed212fde2b49fb4667918382117b33aa1180c8008e5"
+        },
+        "source/tex/images/Oat_prompt.pdf": {
+          "bytes": 10438,
+          "sha256": "f6b7b23cf39ab59639cc6c20f86db3b4b41d08918a415f72be37f059b37f1616"
+        },
+        "source/tex/images/SimpleRL_prompt.pdf": {
+          "bytes": 11112,
+          "sha256": "b38f21d6ffdebdf8ed70b7d9781e69f31ee8b8b71c124914077898e0ad4a57f5"
+        },
+        "source/tex/images/VeRL_Training_and_Evaluation_Prompt.pdf": {
+          "bytes": 9598,
+          "sha256": "f971ef07508b68657d6c52b5c197cf92917bb3443725964c9e6b51720bbfa4a8"
+        },
+        "source/tex/images/aime24_coverage_oat.pdf": {
+          "bytes": 25570,
+          "sha256": "11a7f341fb867b8af9fd86156b8d06b8673a23b9d16218d4bb030f97a5d9321a"
+        },
+        "source/tex/images/box_plot_perplexity_aime24_combined_v2.pdf": {
+          "bytes": 25680,
+          "sha256": "545c0db0fe4c8e7c3ada858dffc22ec9b37da0fd95807a85159f39d4277a5e26"
+        },
+        "source/tex/images/code_qwen_7b_instruct_coverage.pdf": {
+          "bytes": 28953,
+          "sha256": "ed07f7553c987f6b76eea8051a23712676e3c0fbc23eedbb88c147381679cb97"
+        },
+        "source/tex/images/distill_Minerva.pdf": {
+          "bytes": 25254,
+          "sha256": "753d0c45d74598fa501f23b17509d3ca22599d670cee251004ef1089127c9f48"
+        },
+        "source/tex/images/dynamics_actor_entropy.pdf": {
+          "bytes": 27655,
+          "sha256": "ff0a781c61d8e21941b82201bb16bf2a18e11aed7f56ac86079f2fcfa5309036"
+        },
+        "source/tex/images/dynamics_response_length.pdf": {
+          "bytes": 29491,
+          "sha256": "ff2be899e56e08f1c77af090d6895ed06e8ac46b6a57cc411966bd7279515c76"
+        },
+        "source/tex/images/dynamics_reward.pdf": {
+          "bytes": 28703,
+          "sha256": "79cc120b7bb6290971b3c4d23f43048c6f6f38220338ec615217b60d7d38dab9"
+        },
+        "source/tex/images/livecodebench_deepcoder.pdf": {
+          "bytes": 23261,
+          "sha256": "d8dc1d863b23bd4e2c6a286f3feb9c398402f699349b95362cd73dc3dace2db9"
+        },
+        "source/tex/images/livecodebench_qwen_7b_instruct_coverage.pdf": {
+          "bytes": 26282,
+          "sha256": "ad7ae1920d7ab8fb59255e1ba057308045d81e9af2ce3d1f4eb758b9ff287771"
+        },
+        "source/tex/images/livecodebench_qwen_7b_instruct_coverage_2024-08-01_2025-02-01.pdf": {
+          "bytes": 26203,
+          "sha256": "c420a2be7a211d9cfd602e0982966d254d9a1a0ad359725350031096b1c3fe99"
+        },
+        "source/tex/images/overview2.pdf": {
+          "bytes": 59923,
+          "sha256": "72585eaf64df66c0863a4f35887cec62af6a416e4254485a8907c6ff25172333"
+        },
+        "source/tex/images/perplexity_time.png": {
+          "bytes": 132323,
+          "sha256": "b84392e6d4c732ce7931d07fcf9b28da733a92b3261a17a3ecaa26782704aeb0"
+        },
+        "source/tex/images/qwen25_7b_base_ablate_coverage.pdf": {
+          "bytes": 34671,
+          "sha256": "49bb932f67aa5c6e270c5678738a1b069740ca5f5d83555d58adccca24349c47"
+        },
+        "source/tex/images/qwen25_7b_base_algo_coverage_final.pdf": {
+          "bytes": 49822,
+          "sha256": "c90fcb7b21b427b8f4e28369f9c8b3cebcf3c955c43526bd8f7d7788eb05d077"
+        },
+        "source/tex/images/qwen25_7b_base_step_coverage_final.pdf": {
+          "bytes": 41445,
+          "sha256": "8ce8d2181eaacb4b608a988a892909e8951df81da8edd68236137eded786419f"
+        },
+        "source/tex/images/qwen25_7b_base_step_coverage_v2_only_train.pdf": {
+          "bytes": 28310,
+          "sha256": "a8c47e97d26f4994f6343ce9b0ea9a394911dc1079a8d1e04f419357df048b07"
+        },
+        "source/tex/images/qwenvl_7b_instruct_coverage_filter.pdf": {
+          "bytes": 27809,
+          "sha256": "b660119ce4cb86bf4528432c50ef63c78dc63fde5517f326176e4cdf04d7139b"
+        },
+        "source/tex/images/simpleRL_coverage_DAPO.pdf": {
+          "bytes": 23075,
+          "sha256": "1911a6bb203e3d94da7d42d4b99a03deea00e6f366646eea09a8ec7e029cfd25"
+        },
+        "source/tex/images/simpleRL_coverage_aime24_filtered.pdf": {
+          "bytes": 23226,
+          "sha256": "8fa6f861c64af1e6dd41c348cf949d60c6af520a8e8c5c9a11450d25134460bb"
+        },
+        "source/tex/images/simpleRL_coverage_appendix.pdf": {
+          "bytes": 40655,
+          "sha256": "9a1e1d5b706d42818dd6e39eaebfe596dab2ca03122352e3f9e6391c51f51f21"
+        },
+        "source/tex/images/simpleRL_coverage_difT.pdf": {
+          "bytes": 35188,
+          "sha256": "04b80abe1bd6d40fdd241a9a20c79e702c125a546d96cee6045a16402fe1b427"
+        },
+        "source/tex/images/simpleRL_coverage_entropy_T.pdf": {
+          "bytes": 47503,
+          "sha256": "efac99084ead05206932d640264b6022dcd1ea5a26b8f97453687f4d079728d2"
+        },
+        "source/tex/images/simpleRL_coverage_magistral_24-final.pdf": {
+          "bytes": 23652,
+          "sha256": "528cc6357dc11cde611fc9f11f5f6ff209301cc87b6642322de047f454042c80"
+        },
+        "source/tex/images/simpleRL_coverage_magistral_25-final.pdf": {
+          "bytes": 23708,
+          "sha256": "f1e5865d778cba8515d01bd5ab1de68b6c9f1ffb737dd7ef53462c0b6460deab"
+        },
+        "source/tex/images/simpleRL_coverage_main.pdf": {
+          "bytes": 58898,
+          "sha256": "eda7f7fad9a14b998fcc8f94622fdac018e86a2434937aa9aa6855f3c34d2338"
+        },
+        "source/tex/images/simpleRL_his.pdf": {
+          "bytes": 53795,
+          "sha256": "c8790607ad4fd9748540ec1e880c983eae44b50a4fc36048749685224639e567"
+        },
+        "source/tex/images/simpleRL_his1.pdf": {
+          "bytes": 31087,
+          "sha256": "2f13f6bb1fe7ecce1728914963476ef0a9c7e44ba7e11abef38203a09de609c3"
+        },
+        "source/tex/tables/algos.tex": {
+          "bytes": 1841,
+          "sha256": "418cf367dde9cdfe3549ac11a704621308b911016ef1968758828b7d1ae3d75e"
+        },
+        "source/tex/tables/exp_setup.tex": {
+          "bytes": 1611,
+          "sha256": "200ff53b7c380f39d8fc342dd423474287da003305ce55eaf6f89a76b4ad2301"
+        },
+        "source/tex/tables/solvable_aime24.tex": {
+          "bytes": 1269,
+          "sha256": "8852b5f49269474a0d6a14e6bb6f6d119cc9174c4a6d4a2532298efa0931b03a"
+        },
+        "source.tar.gz": {
+          "bytes": 1205379,
+          "sha256": "78da066b45f3f698956610e1ca4272c47502c443ad87b88c1915ca97406b3cec"
+        }
+      }
+    }
+  ]
+}

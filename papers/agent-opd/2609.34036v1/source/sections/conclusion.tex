@@ -1,0 +1,16 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+In this work, we investigate when teacher intervention improves the trajectories used for
+on-policy distillation of multi-turn agents. Our controlled experiments show that a teacher
+correction at a low-confidence step improves subsequent student behavior and task success,
+outperforming random intervention. Building on this
+finding, we propose UOPD, which uses teacher uncertainty to select turns for action correction
+and imitation learning while retaining standard OPD on student actions. Experiments on
+ALFWorld, WebShop, and multi-hop Search demonstrate that UOPD improves task
+performance over OPD while reducing interaction turns.
+
+Our findings highlight the value of teacher uncertainty for guiding both what an agent learns
+and the trajectories from which it learns. Selective corrections provide useful learning targets
+and steer subsequent interaction toward better outcomes. Future work could extend this approach
+to longer-horizon tasks and adapt the intervention budget to task difficulty and student progress.
