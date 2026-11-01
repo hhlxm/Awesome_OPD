@@ -1,0 +1,658 @@
+% !TEX root = main.tex
+\documentclass{article} % For LaTeX2e
+\PassOptionsToPackage{dvipsnames,svgnames,table,xcdraw}{xcolor}
+\usepackage{iclr2027_conference,times}
+
+% Content dependencies only; page layout and fonts use the ICLR template.
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{graphicx,booktabs,multirow,tabularx}
+\usepackage{xcolor}
+\usepackage{float,sidecap,subcaption}
+\usepackage{fontawesome5,nicefrac,microtype,siunitx}
+\sisetup{detect-weight=true,detect-family=true}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{groupplots}
+\usepackage{placeins}
+\usetikzlibrary{positioning,calc}
+\usepackage{svg}
+\usepackage{algorithm,algpseudocode}
+\usepackage{multicol,enumitem,appendix}
+\usepackage[most]{tcolorbox}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  citecolor=magenta,
+  pdfborder={0 0 0}
+}
+\usepackage{url}
+\usepackage{xurl} % Wrap long bibliography URLs within the template margins.
+
+% Use the paper's notation; optional template math_commands.tex overlaps it.
+\input{macros}
+\input{figures/shared_lst_values}
+\graphicspath{{figures/}{./}}
+\definecolor{lsdblue}{RGB}{65,105,225}
+\newcommand{\lsd}[1]{\textcolor{lsdblue}{#1}}
+% Match algorithm names in appendix tables to the main comparison figures.
+\definecolor{methodRL}{HTML}{FFB000}
+\definecolor{methodCRISP}{HTML}{FFD8A8}
+\definecolor{methodSGFKL}{HTML}{6F2C91}
+\definecolor{methodSGRKL}{HTML}{A56CC1}
+\definecolor{methodPGRKL}{HTML}{D8B4DC}
+\definecolor{methodLP}{HTML}{FFD166}
+% Fixed is drawn with a white fill and black outline; use the outline for text.
+\definecolor{methodFixed}{HTML}{000000}
+\newcommand{\methodname}[2]{\textcolor{method#1}{#2}}
+\newcommand{\ind}{\mathbb{I}}
+\newcommand{\sg}{\operatorname{stopgrad}}
+
+\title{Mitigating Length-Scaling Tax with Online Distillation}
+\author{
+Xu Wan$^{1,*}$ \quad Wenyue Xu$^{2,*}$ \quad Shengjie Zhao$^{2}$ \quad Mingyang Sun$^{3,\dagger}$\\
+\normalfont $^1$ByteDance Seed \quad $^2$Tongji University \quad $^3$Peking University\\
+\normalfont\small $^*$Equal contribution. \quad $^\dagger$Co-corresponding author.
+}
+\hypersetup{pdfauthor={Xu Wan, Wenyue Xu, Shengjie Zhao, Mingyang Sun}}
+
+\iclrfinalcopy
+
+\begin{document}
+\maketitle
+\lhead{Preprint}
+
+\begin{abstract}
+Length scaling during reinforcement-learning (RL) post-training is often viewed as a sign of improved reasoning ability, especially on difficult problems, but may also make responses to already-solved problems unnecessarily verbose. We quantify this side effect as the \emph{length-scaling tax} (LST): excess response length on already-solved queries without a commensurate accuracy gain. To mitigate LST, we propose \emph{Length Self-Distillation} (LSD), which routes solved prompts to on-policy distillation and retains the original RL objective for unsolved prompts.
+LSD uses an exponential moving average of the online policy as its teacher, requiring no external model. We find that LSD achieves comparable or better performance than RL across multiple variants, while substantially curbing response-length growth on easy queries. LSD reduces LST from \mainLSTRLShort\% to \mainLSTFKLShort\% on single-turn reasoning and from 31.4\% to 13.7\% on multi-turn agentic tasks, demonstrating that LSD effectively preserves concise response patterns on easy queries while supporting efficient exploration on difficult queries during RL post-training.
+% On a Qwen3-4B mathematics post-training run, easy-query accuracy saturates early while mean response
+% length continues to grow. The added tokens are behaviorally harmful rather
+% than merely stylistic: long responses contain more reflection and repeated
+% $n$-grams and are less likely to be correct. 
+
+% Experiments expose a preservation--plasticity trade-off: a fixed self-teacher sharply reduces response length but suppresses
+% Pass@1 learning, whereas EMA teachers recover much of the capability gain. At a matched training horizon, EMA Direct-FKL nearly matches the RL baseline on AMC Pass@1 while reducing mean validation length, and the complementary Pass@32 results show that the remaining gap is concentrated in per-sample
+% reliability rather than complete loss of solution support.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+Scaling the rollout budget is a common way to improve the performance of large
+language models (LLMs) on difficult reasoning tasks. At inference time,
+prompting models to think longer, sampling multiple responses, and applying
+verifier-guided search can translate additional computation into higher
+accuracy
+\citep{wei2022chain,wang2022self,lightman2024lets,snell2024scaling}.
+Yet the value of this computation depends on problem difficulty. Extended
+deliberation and self-correction can help on difficult problems, but offer
+little benefit once a problem is already solved. Therefore, adaptively allocating budgets has become an important design axis for modern reasoning models
+\citep{muennighoff2025s1,aggarwal2025l1,yang2025qwen3,
+openai2025o3,anthropic2025thinking,google2025gemini}.
+
+In parallel, reinforcement learning with verifiable rewards (RLVR) has become
+a central post-training mechanism for eliciting LLMs' reasoning and agentic capabilities \citep{shao2024deepseekmath,wanbuffer,jin2025search}.
+Since DeepSeek-R1\citep{guo2025deepseek}, the spontaneous growth of response length during RL has often been viewed as a behavioral signature of improving reasoning ability \citep{yeo2025demystifying}. However, a standard RLVR objective jointly optimizes prompts of varying difficulty. Updates that promote longer and more elaborate reasoning on hard problems can also alter the policy’s continuation distribution on easy ones. Under group-relative objectives, this spillover is difficult to correct. Once every response in an easy rollout group is correct, its relative advantages collapse toward zero. The easy group therefore provides no gradient for preserving a concise
+solution, while difficult groups continue to reshape the shared policy. 
+
+Moreover, this failure mode may be reinforced by common data-selection strategies.
+Dynamic sampling treats all-correct
+groups as uninformative and discards them from training
+\citep{yu2025dapo}, while difficulty-aware curricula downweight easy problems
+and concentrate the training distribution near the policy's competence
+frontier
+\citep{bae2026online,wanbuffer,qu2026gps}.
+
+% These strategies improve gradient efficiency on unsolved problems, but discard
+% or downweight precisely the prompts that the policy already solves. 
+
+% 然而，尽管已经有非常多reasoning-efficiency的工作，但是大家往往关注的是全局的平均长度变化across一个混合难度的数据集，或是针对难题的overthinking进行efficiency的控制\citep{yuan2026shorten,yi2026shorterbetter,xiang2025just,dai2025stable,
+% xu2026adapthink,shen2025dast}。尽管一些工作尝试对简单题的长度控制进行保留，例如difficulty-aware的长度压缩策略如LSAT，AdapThink，但并没有设计简单题的长度保护机制，也没有系统的量化长度被迫增长的指标。
+
+Despite the rapidly growing literature on reasoning efficiency, most existing work still characterizes efficiency using coarse-grained aggregate statistics, most notably average response length. A straightforward strategy is to apply stronger length control to easier problems \citep{shen2025dast,xu2026adapthink}. However, such methods do not explicitly preserve the concise behavior that the policy already exhibits on solved queries. Existing evaluations lack a systematic metric for quantifying the unintended lengthening imposed on easy queries by subsequent RL updates. Another line of work focuses on the super-long CoT, especially for difficult problems, because these responses exhibit the most pronounced overthinking behaviors \citep{yuan2026shorten,yi2026shorterbetter,xiang2025just,chen2024not,luo2026o1}. However, imposing length control in this regime often incurs an accuracy cost. Although much of a long trajectory may appear redundant, exploratory branches within that trajectory can still uncover the reasoning path that ultimately leads to the correct solution. Response-level compression may remove not only redundant computation but also reasoning steps necessary to solve the problem.
+
+Complementary to reward shaping, on-policy distillation (OPD) provides dense token-level supervision on states visited by the student \citep{agarwal2024onpolicy}. Because this supervision is evaluated on student-generated prefixes, it directly regularizes the evolving policy along its own state distribution. Recent work has adapted self- and contrastive OPD to reasoning compression, showing that distribution-level supervision can
+substantially shorten reasoning while retaining accuracy
+\citep{sang2026opsdc,ruan2026contrastive}. However, OPD is
+primarily used as a general compression objective. This does not address the asymmetric learning problem considered here. We believe that easy queries need a token-level preservation signal precisely because their relative RL advantage vanishes, whereas difficult queries that remain unsolved should continue to be governed by RLVR.
+
+Motivated by this gap, our objective is to preserve
+concise behavior where the policy is already successful without restricting exploration elsewhere. We formalize this training-induced inefficiency as the
+\emph{length-scaling tax} (LST): excess response length that emerges on already-solved queries as a shared policy undergoes RL post-training, without a commensurate gain in accuracy. 
+Conditioning on a fixed easy query set distinguishes LST from global measures of overthinking while avoiding the survivorship bias that arises from repeatedly redefining the easy set.
+
+To better understand LST, we first conduct several empirical studies to characterize
+its behavior and identify its drivers. We find that LST persists across
+multiple easy sets defined at different checkpoints, rather than arising from a particular model snapshot. Moreover, we find that training distributions concentrated on hard prompts further amplify the tax.
+
+Based on this, we propose \emph{length self-distillation} (LSD).
+At each training step, LSD uses the current rollout accuracy to route solved
+prompt groups to an OPD objective, while retaining the original RLVR objective
+for unsolved groups. In practice,
+LSD requires neither a stronger external teacher nor a separately prompted
+concise model. Instead, its teacher is a delayed version of the same policy
+lineage, instantiated as a rolling
+exponential moving average checkpoint. Within LSD, we compare supervised-gradient forward- and reverse-KL objectives with a
+sampled-action policy-gradient estimator of reverse KL, and analyze how these objectives constrain the policy at different levels of granularity.
+
+% This reframes all-correct rollout groups: rather than
+% discarding them as uninformative RL samples, we use them as on-policy states for
+% self-distillation, while prompts that remain unsolved continue to receive the
+% original RLVR objective.
+
+% Existing approaches control response length through global
+% penalties, shortest-correct rewards, or penalties adapted to online solve rate
+% \citep{yuan2026shorten,yi2026shorterbetter,xiang2025just,dai2025stable}.
+% However, they primarily optimize the aggregate accuracy--efficiency trade-off
+% rather than preserve concise behavior on prompts solved before RL. For example,
+% dynamic sampling methods discards rollout groups with zero
+% reward variance, including all-correct groups, while difficulty-aware curricula preferentially sample problems near the policy's competence frontier
+% \citep{yu2025dapo,bae2026online,mahrooghi2026goldilocks,qu2026gps}.
+% Consequently, easy prompts are either discarded or retained with zero relative
+% advantage, providing no direct signal to preserve their original behavior. Besides, uniform or overly strong length penalties create the opposite problem: they can suppress computation precisely where difficult prompts still require it,
+% and prior work reports training instability and abrupt accuracy collapse as
+% responses are shortened \citep{dai2025stable,xiang2025just}. 
+% Difficulty-aware penalties mitigate this trade-off by strengthening compression on high-solve-rate groups and relaxing it on low-solve-rate groups \citep{xu2026adapthink,shen2025dast}. Yet they still communicate only a scalar preference for shorter rather than specifying which token-level behavior should be preserved. Consequently, easy prompts are either ignored after saturation or controlled only indirectly.
+
+
+
+
+% Motivated by these findings, we propose \emph{length self-distillation} (LSD).
+% At each training step, LSD uses the current rollout rewards to route solved
+% prompt groups to an OPD objective, while retaining the original RLVR objective
+% for unsolved groups. This routing replaces the vanishing RL signal on solved
+% prompts with dense token-level supervision that preserves their concise
+% behavior, without constraining exploration on difficult prompts. In practice,
+% LSD requires neither a stronger external teacher nor a separately prompted
+% concise model. Instead, its teacher is a delayed version of the same policy
+% lineage, instantiated as either the initial checkpoint or a rolling
+% exponential moving average. We further compare two OPD instantiations within
+% LSD: direct truncated forward KL and a sampled-action policy-gradient
+% estimator of reverse KL.
+
+Our study makes three contributions. 
+
+First, we introduce LST, a query-conditional metric that measures
+excess response length on already-solved prompts relative to an
+accuracy-qualified reference. We also establish the prevalence of LST, characterize its behavioral signatures, and identify its key drivers.
+
+Second, we propose LSD, a mixed RL and
+distillation algorithm that routes solved rollout groups to self-distillation
+while retaining the original RLVR objective for unsolved groups. We develop
+three complementary implementations and analyze their
+different levels of policy-control granularity.
+
+Third, we evaluate LSD on single-turn reasoning and multi-turn agentic tasks, showing that LSD with SG-FKL matches or improves average Pass@1 over RL while reducing LST from \mainLSTRLShort\% to \mainLSTFKLShort\% on single-turn reasoning and from 31.4\% to 13.7\% on multi-turn agentic tasks. We also analyze how the distillation objective, teacher half-life, and routing threshold affect the trade-off between preserving efficient behavior and acquiring new capabilities.
+
+
+\section{The Length-Scaling Tax}
+\label{sec:lst}
+
+% \paragraph{A fixed easy-query set.}
+Let $\mathcal{X}_{\mathrm{eval}}$ denote the evaluation query set, and let
+$x\in\mathcal{X}_{\mathrm{eval}}$ be a query. At each checkpoint $k$ during RL post-training, we sample $N$ responses
+\begin{equation}
+  y_{k,i}(x)\sim\pi_k(\cdot\mid x),
+  \qquad i=1,\ldots,N,
+\end{equation}
+using a fixed decoding configuration and response budget. Let
+$r(x,y)\in\{0,1\}$ denote the correctness reward and $\ell(y)$ the number of
+response tokens. The empirical solve rate and mean response length of policy
+$\pi_k$ on query $x$ are
+\begin{equation}
+  \widehat{R}(x;\pi_k)
+  =
+  \frac{1}{N}\sum_{i=1}^{N}r\!\left(x,y_{k,i}(x)\right),
+  \qquad
+  \widehat{L}(x;\pi_k)
+  =
+  \frac{1}{N}\sum_{i=1}^{N}\ell\!\left(y_{k,i}(x)\right).
+  \label{eq:query-statistics}
+\end{equation}
+
+At an RL anchor checkpoint $b$, we define the easy-query set induced by the
+anchor policy $\pi_b$ using an evaluation threshold $\tau$, set to $1$
+unless otherwise specified:
+\begin{equation}
+  \mathcal{E}_b
+  =
+  \left\{
+    x\in\mathcal{X}_{\mathrm{eval}}:
+    \widehat{R}(x;\pi_b)\ge\tau
+  \right\}.
+  \label{eq:easy-set}
+\end{equation}
+Thus, whether a query belongs to $\mathcal{E}_b$ is determined exclusively by
+rollouts from $\pi_b$. At the default threshold $\tau=1$, every sampled
+rollout for each selected query is correct at the anchor checkpoint.
+
+To avoid survivorship bias, $\mathcal{E}_b$ is frozen after its construction. At every later
+checkpoint, we evaluate the same queries in this fixed easy set. For the frozen set $\mathcal{E}_b$, its mean accuracy and response length
+under an evaluated policy $\pi_k$ are
+\begin{equation}
+  R_b(k)
+  =
+  \frac{1}{|\mathcal{E}_b|}
+  \sum_{x\in\mathcal{E}_b}
+  \widehat{R}(x;\pi_k),
+  \qquad
+  L_b(k)
+  =
+  \frac{1}{|\mathcal{E}_b|}
+  \sum_{x\in\mathcal{E}_b}
+  \widehat{L}(x;\pi_k).
+  \label{eq:acc-length}
+\end{equation}
+Here, the subscript $b$ specifies which anchor policy defines the query
+set, whereas $k$ specifies which policy is being evaluated on that set.
+
+Let $\mathcal{K}_b$ denote all RL checkpoints evaluated on the fixed easy set
+$\mathcal{E}_b$ over the full training trajectory, including checkpoints before
+anchor $b$. We define an accuracy-constrained reference that captures the
+smallest mean token cost observed while maintaining the easy-query accuracy criterion:
+\begin{equation}
+  L_b^\star
+  =
+  \min_{\substack{j\in\mathcal{K}_b:\\
+  R_b(j)\ge \tau}}
+  L_b(j).
+  \label{eq:matched-reference}
+\end{equation}
+For fair comparisons, all methods use the same RL-frozen set $\mathcal{E}_b$
+and shared reference $L_b^\star$: the shortest mean response length among
+RL checkpoints whose accuracy on this set is at least $\tau$.
+We define the normalized length-scaling tax as
+\begin{equation}
+  \operatorname{LST}_b(k)
+  =
+  \frac{L_b(k)-L_b^\star}{L_b^\star}.
+  \label{eq:lst}
+\end{equation}
+A positive $\operatorname{LST}_b(k)$ measures the percentage of excess tokens
+used by $\pi_k$ relative to this accuracy-qualified reference.
+With $\tau=1$, the reference has perfect empirical accuracy, so additional
+length cannot correspond to higher observed accuracy than the reference.
+When $R_b(k)=1$ as well, LST compares lengths at identical empirical accuracy.
+For explicitly reported settings with $\tau<1$, LST instead measures excess
+length under an accuracy threshold; it does not by itself establish waste
+at identical accuracy.
+
+% We report five
+% anchors $b\in\{0,100,200,400,800\}$ and track their frozen sets in Figure
+
+\paragraph{LST exists under standard RLVR.} We study a standard group-relative RLVR baseline initialized from Qwen3-4B-Base~\citep{yang2025qwen3}. We post-trained the model on the deduplicated DAPO-Math-17K dataset~\cite{yu2026dapo} with a maximum response budget of $4096$ tokens and evaluate checkpoints on AMC 2023, AIME 2025, and AIME 2026. For every query
+and checkpoint, we sample $32$ responses using the same decoding
+configuration and response budget. 
+
+We first examine the dynamics of entire evaluation set in Figure~\ref{fig:rl4k-global-tracking}. As expected, RLVR improves aggregate
+accuracy, while mean response length grows steadily throughout training.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/val_acc_len_4panel_total_paper_step430_smooth9_no_band.png}
+    \caption{\textbf{Global validation accuracy and response length during RLVR.} Purple circles show mean accuracy, and orange squares show mean response length on three benchmarks and their aggregate over training.}
+    \label{fig:rl4k-global-tracking}
+\end{figure}
+
+We next examine whether the length-scaling tax emerges during RLVR by applying the fixed-easy-set protocol in Figure~\ref{fig:rl4k-easy-tracking}. Specifically, at each anchor checkpoint $b\in\{0,25,50,75,100\}$, we select queries with an empirical solve rate of at least $\tau=0.875$, freeze the resulting easy set, and track its accuracy and response length at all subsequent checkpoints. Regardless of which anchor defines the easy set, accuracy remains largely stable, whereas response length continues to increase throughout RLVR.
+% The corresponding normalized LST trajectories are shown in Appendix~\ref{app:benchmark}, Figure~\ref{fig:baseline-lst-extra}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]
+  {figures/37_selected_base_0_25_50_75_100_easy_tracking_paper_step430_no_band.png}
+  \caption{\textbf{Easy-query accuracy saturates while response length keeps
+  growing during RLVR.} At each anchor
+  $b\in\{0,25,50,75,100\}$, we select queries with solve rate at
+  least $\tau=0.875$ and freeze the resulting easy set. }
+  \label{fig:rl4k-easy-tracking}
+\end{figure}
+
+
+\begin{figure*}[ht]
+  \centering
+  \begin{minipage}[ht]{0.48\textwidth}
+    \vspace{0pt}
+    \paragraph{The extra tokens are not valuable.}
+    We further analyze $5{,}824$ responses from the 26 queries in the step-100 easy set $\mathcal{E}_{100}$. Following \citep{xu2026adapthink}, we construct a lexicon of reflection words that capture explicit hesitation, verification, and self-correction. We additionally compute the repeated bigram rate to quantify local phrase repetition within each response. Figure~\ref{fig:easy-behavior} shows that, as training proceeds, the growth in response length is accompanied by a substantial increase in reflection words and repeated bigrams, which is not a desirable behavior for easy queries.
+  \end{minipage}
+  \hfill
+  \begin{minipage}[ht]{0.48\textwidth}
+    \vspace{0pt}
+    \centering
+    \includegraphics[width=\linewidth]{figures/reflection_n_gram.png}
+    \caption{\textbf{Observable behavior on the fixed easyset.} Reflection word frequency and repeated-bigram rate in responses generated by subsequent checkpoints for the same queries in $\mathcal{E}_{100}$.}
+    \label{fig:easy-behavior}
+  \end{minipage}
+\end{figure*}
+
+
+% Figure~\ref{fig:rl4k-lst} converts these trajectories into the normalized tax
+% in Equation~\ref{eq:lst}. The tax is positive for every anchor and grows
+% markedly late in training. Table~\ref{tab:lst-change} reports the corresponding
+% accuracy changes and normalized tax at step 300. All five sets accumulate
+% $21$--$27\%$ tax, although their accuracy changes by less than two percentage
+% points except for the small step-0 set.
+
+% \begin{figure*}[htbp]
+%   \centering
+%   \includegraphics[width=\textwidth]{figures/rl4k_math_lst.png}
+%   \caption{\textbf{Multi-anchor length-scaling tax under 4k RL.}
+%   Each panel applies Equation~\ref{eq:lst} to the easy set selected at its
+%   anchor. Repeated positive growth shows that LST is not a step-0 selection
+%   artifact.}
+%   \label{fig:rl4k-lst}
+% \end{figure*}
+
+% \begin{table}[t]
+%   \centering
+%   \caption{\textbf{Multi-anchor LST for the 4k RL baseline at step 300.}
+%   $\Delta A$ is measured from each anchor checkpoint; LST uses the
+%   accuracy-matched reference in Equation~\ref{eq:matched-reference}.}
+%   \label{tab:lst-change}
+%   \small
+%   \begin{tabular}{rrrrrr}
+%     \toprule
+%     $b$ & $|\mathcal E_b|$ & $A_b(b)$ &
+%     $A_b(300)$ & $\Delta A$ (pp) & LST (\%) \\
+%     \midrule
+%       0 &  8 & 94.5 & 99.2 & $+4.69$ & 24.2 \\
+%      25 & 21 & 96.3 & 96.6 & $+0.30$ & 27.3 \\
+%      50 & 24 & 95.3 & 97.0 & $+1.69$ & 24.7 \\
+%      75 & 24 & 97.4 & 97.8 & $+0.39$ & 21.4 \\
+%     100 & 26 & 97.4 & 97.1 & $-0.24$ & 21.6 \\
+%     \bottomrule
+%   \end{tabular}
+% \end{table}
+
+\section{What Amplifies the Tax?}
+\label{sec:diagnosis}
+
+Intuitively, the rollout budget, curriculum design, and training-data difficulty can alter which trajectories contribute gradient signals and how those signals shape the shared policy, thereby affecting the severity of LST. We therefore conduct a series of controlled experiments to test these hypotheses. We refer to the configuration used in Section~2 as \textsc{All-4k}, which trains on the full DAPO-Math-17K mixture with a 4k rollout budget. \textsc{All-8k} uses the same training mixture but doubles the rollout budget to 8k. \textsc{All-4k-8k} first trains with a 4k budget and then continues training the resulting RL checkpoint with an 8k budget. Finally, \textsc{Hard-4k} retains the 4k budget but restricts training to hard prompts that the initial base model solves in at most four out of eight rollouts.
+
+
+
+Table~\ref{tab:drivers} reports five anchor-based LST scores and the overall Pass@1 improvement under four training settings.
+
+\noindent\textcircled{\small 1}\enspace\textbf{\textsc{Hard-4k} produces the highest LST across all easy sets.} It suggests that training on harder data causes stronger behavioral spillover to already-solved prompts.
+
+\noindent\textcircled{\small 2}\enspace \textbf{A larger rollout budget amplifies LST when used from the start, but mitigates it when introduced later in training.} At step 240, \textsc{All-8k} has a much higher LST than \textsc{All-4k} across all anchors. A larger budget therefore accelerates LST early in training. The later trend is different. At step 400, \textsc{All-4k-8k} has a lower LST than continued 4k training and achieves a larger Pass@1 improvement. This does not mean that the 8k setting produces shorter responses overall. Its average responses and hard-query responses remain longer, but length growth on easy queries becomes slower.
+
+\begin{table*}[ht]
+  \centering
+  \caption{\textbf{Controlled comparison of budget and training-data effects.}
+  LST is computed with the \textsc{All-4k} fixed-easy reference. Gray rows are
+  the corresponding \textsc{All-4k} anchor baselines. Each non-anchor LST entry
+  reports the value at $t^\star$, with the colored arrow showing its change from
+  the corresponding anchor baseline. Red denotes LST increase and green denotes
+  decrease. $\Delta$Pass@1 is full-test-set Pass@1 improvement over the base model.}
+  \label{tab:drivers}
+  \small
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lllllllll}
+    \toprule
+    Setting & Budget & $t^\star$ &
+    $\operatorname{LST}_{0}(t^\star)$ &
+    $\operatorname{LST}_{25}(t^\star)$ &
+    $\operatorname{LST}_{50}(t^\star)$ &
+    $\operatorname{LST}_{75}(t^\star)$ &
+    $\operatorname{LST}_{100}(t^\star)$ &
+    $\Delta$Pass@1 \\
+    \midrule
+    \rowcolor{gray!10}
+    \textsc{All-4k} & 4096 & 240
+      & $21.0$
+      & $18.1$
+      & $16.7$
+      & $13.7$
+      & $16.3$
+      & $+9.1$ pp \\
+    \textsc{All-8k} & 8192 & $240^{\ast}$
+      & $25.5\,{\scriptscriptstyle\textcolor{red}{\uparrow 4.5}}$
+      & $40.9\,{\scriptscriptstyle\textcolor{red}{\uparrow 22.8}}$
+      & $38.0\,{\scriptscriptstyle\textcolor{red}{\uparrow 21.3}}$
+      & $36.5\,{\scriptscriptstyle\textcolor{red}{\uparrow 22.8}}$
+      & $37.4\,{\scriptscriptstyle\textcolor{red}{\uparrow 21.1}}$
+      & $+9.7$ pp \\
+    \midrule
+    \rowcolor{gray!10}
+    \textsc{All-4k} & 4096 & 400
+      & $42.9$
+      & $44.6$
+      & $43.0$
+      & $40.0$
+      & $43.4$
+      & $+11.8$ pp \\
+    \textsc{All-4k-8k} & $4096\!\rightarrow\!8192$ & $100^{\dagger}$
+      & $33.7\,{\scriptscriptstyle\textcolor{green!50!black}{\downarrow 9.2}}$
+      & $42.2\,{\scriptscriptstyle\textcolor{green!50!black}{\downarrow 2.4}}$
+      & $38.8\,{\scriptscriptstyle\textcolor{green!50!black}{\downarrow 4.2}}$
+      & $37.2\,{\scriptscriptstyle\textcolor{green!50!black}{\downarrow 2.8}}$
+      & $39.2\,{\scriptscriptstyle\textcolor{green!50!black}{\downarrow 4.2}}$
+      & ${+12.6}$ pp \\
+    \textsc{All-4k-8k} & $4096\!\rightarrow\!8192$ & $400$
+      & $31.4\,{\scriptscriptstyle\textcolor{green!50!black}{\downarrow 11.5}}$
+      & $42.6\,{\scriptscriptstyle\textcolor{green!50!black}{\downarrow 2.0}}$
+      & $39.3\,{\scriptscriptstyle\textcolor{green!50!black}{\downarrow 3.7}}$
+      & $34.8\,{\scriptscriptstyle\textcolor{green!50!black}{\downarrow 5.2}}$
+      & $39.3\,{\scriptscriptstyle\textcolor{green!50!black}{\downarrow 4.1}}$
+      & $\mathbf{+15.0}$ pp \\
+    \textsc{Hard-4k} & 4096 & 400
+      & $\mathbf{53.9}\,{\scriptscriptstyle\textcolor{red}{\uparrow 11.0}}$
+      & $\mathbf{58.0}\,{\scriptscriptstyle\textcolor{red}{\uparrow 13.4}}$
+      & $\mathbf{54.7}\,{\scriptscriptstyle\textcolor{red}{\uparrow 11.7}}$
+      & $\mathbf{49.7}\,{\scriptscriptstyle\textcolor{red}{\uparrow 9.7}}$
+      & $\mathbf{54.7}\,{\scriptscriptstyle\textcolor{red}{\uparrow 11.3}}$
+      & $+11.8$ pp \\
+    \bottomrule
+  \end{tabular}
+  }
+
+  \vspace{0.3em}
+  \begin{minipage}{0.98\textwidth}
+    \footnotesize
+    $^{\ast}$For \textsc{All-8k}, we only report step 240 because the run begins to
+    collapse around step 250.
+    $^{\dagger}$\textsc{All-4k-8k} continues for 100 steps from the
+\textsc{All-4k} step-300 checkpoint, making it comparable to
+\textsc{All-4k} at step 400.
+  \end{minipage}
+\end{table*}
+
+\paragraph{Why outcome-only RL does not correct the drift.}
+We explain LST through the policy-gradient signal produced by RLVR. Consider a
+rollout group $\{y_i\}_{i=1}^{G}$. Its group-relative advantages vanish when
+all responses receive the same correct reward:
+\begin{equation}
+  R_1=\cdots=R_G
+  \quad\Longrightarrow\quad
+  A_1\approx\cdots\approx A_G\approx0.
+  \label{eq:saturation}
+\end{equation}
+Let $g_{\mathcal E}$ and $g_{\mathcal H}$ denote the expected update directions
+from easy and hard prompts. Let $\rho_{\mathcal E}$ and $\rho_{\mathcal H}$
+denote their sampling weights. The update on the mixed training distribution is
+\begin{equation}
+  g_{\mathrm{mix}}
+  =
+  \rho_{\mathcal E}g_{\mathcal E}
+  +
+  \rho_{\mathcal H}g_{\mathcal H}
+  \approx
+  \rho_{\mathcal H}g_{\mathcal H}.
+  \label{eq:gradient-dominance}
+\end{equation}
+Thus, hard prompts dominate the update after easy groups become saturated.
+
+However, a zero gradient from easy prompts does not keep their output
+distributions fixed. All prompts share the same policy parameters. An update
+from hard prompts can therefore change the token probabilities at an easy
+prefix $s^{\mathcal E}$. To first order,
+\begin{equation}
+  \Delta\log\pi_\theta(a\mid s^{\mathcal E})
+  \approx
+  \eta\rho_{\mathcal H}
+  \nabla_\theta\log\pi_\theta(a\mid s^{\mathcal E})^\top
+  g_{\mathcal H},
+  \label{eq:cross-prompt-drift}
+\end{equation}
+which is generally nonzero even when $g_{\mathcal E}\approx0$.
+
+% LST captures the behavioral consequence of this cross-prompt drift. Let
+% $T_\pi(x)$ denote the response length generated by policy $\pi$ for query $x$.
+% Its expected value can be written as
+% \begin{equation}
+%   \mathbb E[T_\pi(x)]
+%   =
+%   \sum_{t\ge 0}
+%   \Pr_{\pi}\!\left(T_\pi(x)>t\right),
+%   \label{eq:length-survival}
+% \end{equation}
+% where $\Pr_{\pi}(T_\pi(x)>t)$ is the probability that generation continues
+% beyond step $t$. Therefore, the length increase on a fixed easy set satisfies
+% \begin{equation}
+%   L_b(k)-L_b(b)
+%   =
+%   \frac{1}{|\mathcal E_b|}
+%   \sum_{x\in\mathcal E_b}
+%   \sum_{t\ge0}
+%   \left[
+%     \Pr_{\pi_k}\!\left(T(x)>t\right)
+%     -
+%     \Pr_{\pi_b}\!\left(T(x)>t\right)
+%   \right].
+%   \label{eq:length-drift}
+% \end{equation}
+% LST measures this accumulated increase in continuation probability while
+% controlling for accuracy. When hard-prompt updates shift probability away from
+% stopping and toward further deliberation, response length increases even on
+% already-solved queries. All-correct groups provide no opposing policy-gradient
+% signal, so this increase can accumulate throughout training.
+
+
+\section{Length Self-Distillation}
+\label{sec:method}
+
+In this section, we introduce Length Self-Distillation (LSD). It adds two components to the original RL trainer: an
+online difficulty router and a temporal self-teacher. 
+
+% \paragraph{Online routing.} 
+% Online routing presents a practical challenge. Ideally, every prompt that the earlier teacher policy can solve reliably should be routed to the OPD objective, thereby preserving the teacher's concise behavior. However, implementing this criterion 会 double rollout的cost. We therefore adopt a simple approximation that reuses the student’s on-policy rollouts for routing. 图easy_tracking_history_acc表明，我们设置了简单题的阈值tau=0.8 0.9 1.0，发现简单题的来源本身大部分来自于最近ckpt的高A(x)。这种affordance可以维持大概xxxstep.
+
+\paragraph{Online routing.}
+Online routing introduces a practical challenge. Ideally, if the prompt in the training batch can be reliably solved by the earlier teacher policy, it should be routed to the OPD objective to preserve the teacher's concise behavior. However, applying this rule directly would require additional teacher rollouts and would roughly double the rollout cost. For efficient training, we use the empirical solve rate of the student’s on-policy rollout group as a lightweight routing signal. To examine the validity of this proxy, we select the easy set at step 500 with thresholds $\tau\in\{0.8,0.9,1.0\}$, and trace the same prompts back through previous checkpoints to check whether earlier policies would also classify them as easy. The result in Figure~\ref{fig:easy_tracking_history_acc} suggests that most of these prompts already have high historical accuracy regardless of the chosen easy-set threshold. Even when using the step-250 checkpoint as the teacher for the step-500 policy, over \(87\%\) of the prompts classified as easy at step-500 are also classified as easy at step-250. 
+% This suggests that the easy-prompt affordance is stable over a substantial training window, making recent student accuracy a reasonable routing signal.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/easy_tracking_history_acc.png}
+  \caption{Historical accuracy of prompts selected as easy at step 500. Each point is one prompt at one previous checkpoint. Yellow indicates $A(x)=0$ and purple indicates $A(x)=1$. }
+  \label{fig:easy_tracking_history_acc}
+\end{figure*}
+
+\paragraph{Temporal self-teacher.}
+The simplest self-teacher is the pre-RL policy $\pi_0$. It provides a clean
+behavioral anchor because its easy-query responses have not yet accumulated
+LST. However, distillation from this fixed teacher can impede further capability acquisition. Since the router uses the current student's solve rate, it may route
+newly solved prompts to OPD even when $\pi_0$ cannot solve them reliably.
+Figure~\ref{fig:easy_tracking_history_acc} illustrates the underlying historical mismatch. Using \(\pi_0\) as the teacher creates a substantial mismatch between the prompts routed to OPD and those the teacher can solve.
+Strong distillation toward this fixed policy can therefore limit benchmark improvement.
+ % Moreover, \(\pi_0\) becomes increasingly outdated as the student acquires new capabilities.
+ 
+We address this problem with an \textbf{ exponential moving average (EMA) teacher} $\bar\pi_k$:
+\begin{equation}
+  \bar\theta_k
+  \leftarrow
+  \beta\bar\theta_{k-1}
+  +(1-\beta)\theta_k,
+  \label{eq:ema}
+\end{equation}
+where $\theta_k$ and $\bar\theta_k$ denote the online policy and the EMA teacher policy's parameters in training step $k$.
+The coefficient $\beta\in[0,1]$ controls
+the temporal lag of the EMA teacher. A larger $\beta$ keeps the teacher closer to
+past policies and provides a stronger behavioral anchor, while a smaller
+$\beta$ lets it track the online policy more quickly. In our implementation, we
+set $\beta$ through a half-life parameter $H$:
+\begin{equation}
+  \beta = 2^{-1/H}.
+\end{equation}
+Thus, the contribution of a past online policy decays exponentially, and its
+weight is halved after roughly $H$ EMA updates. By adjusting \(H\), we control how far the teacher lags behind the online policy.
+
+\paragraph{Routed LSD objective.} 
+Based on the temporal self-teacher, LSD combines online routing with two different optimization objectives. At training step $k$, the current policy $\pi_k$ generates $G$ responses for each
+prompt in the rollout batch $\mathcal B_k$. We compute
+$\widehat R(x;\pi_k)$ using these responses and partition the batch into an easy set $\mathcal E_k$ and a hard set $\mathcal H_k$:
+\begin{equation}
+  \mathcal E_k
+  =
+  \left\{
+    x\in\mathcal B_k:
+    \widehat R(x;\pi_k)\ge\tau
+  \right\},
+  \qquad
+  \mathcal H_k
+  =
+  \mathcal B_k\setminus\mathcal E_k.
+  \label{eq:online-routing}
+\end{equation}
+The original RLVR objective is applied to responses from $\mathcal H_k$.
+Responses from $\mathcal E_k$ instead receive an OPD objective defined by the
+temporal self-teacher.
+
+We instantiate the OPD objective for easy groups in three ways, yielding three LSD variants that differ in the direction of the Kullback--Leibler (KL) divergence and how its gradient is computed.
+\textbf{\emph{Supervised-gradient forward KL (SG-FKL)}} directly minimizes the teacher-to-student KL using the teacher's top-$K$ tokens augmented with stop tokens, with the teacher distribution normalized over this support.
+\textbf{\emph{Supervised-gradient reverse KL (SG-RKL)}} instead minimizes the student-to-teacher KL, normalizing both distributions over the same augmented support.
+Both supervised-gradient variants differentiate the loss directly through the student logits while treating the teacher distribution as fixed.
+\textbf{\emph{Policy-gradient reverse KL (PG-RKL)}} uses the teacher-minus-rollout-policy log-probability difference at each sampled token as a detached advantage in a proximal policy optimization (PPO)-style objective.
+Thus, SG-FKL and SG-RKL provide supervision over the full retained support, whereas PG-RKL updates the policy through sampled actions.
+All three variants retain the original group-relative RL objective for hard groups. Appendix~\ref{app:objectives} gives the full losses, stop-token treatment, and importance-ratio definitions.
+
+Let $\overline{\ell}^{\mathrm{RL}}$ and $\overline{\ell}^{\mathrm{OPD}}$ be sequence-mean losses on the hard and easy routes, with $n_{\mathcal H}$ and $n_{\mathcal E}$ sampled sequences, respectively.
+The number of sequences in each route naturally determines its contribution to the loss. We therefore weight the two route-level losses by their respective numbers of response sequences and get the final objective of LSD:
+
+\begin{equation}
+  \mathcal L_{\mathrm{LSD}}
+  =
+  \frac{n_{\mathcal H}}
+       {n_{\mathcal H}+n_{\mathcal E}}
+  \overline{\ell}^{\mathrm{RL}}
+  +
+  \frac{n_{\mathcal E}}
+       {n_{\mathcal H}+n_{\mathcal E}}
+  \overline{\ell}^{\mathrm{OPD}}.
+  \label{eq:lsd-objective}
+\end{equation}
+
+
+\input{sections/experiments}
+
+\section{Conclusion}
+In this paper, we identify LST as a conditional cost of RL post-training that arises when responses to already-solved queries lengthen without corresponding accuracy gains. LSD restores a token-level preservation signal on solved rollout groups while retaining RL on unsolved groups, using online accuracy-based routing and an EMA self-teacher. We instantiate LSD with three objectives and demonstrate reduced easy-query cost with strong benchmark performance on single-turn mathematical reasoning and multi-turn agentic tasks. Future work will evaluate LSD on larger models and explore how to extract denser learning signals from sampled data for more effective supervision.
+\FloatBarrier
+\clearpage
+\input{sections/research_statements}
+\bibliographystyle{iclr2027_conference}
+\bibliography{main}
+
+\clearpage
+\appendix
+\input{sections/benchmark_details}
+\clearpage
+\input{sections/ablation_details}
+\FloatBarrier
+\input{sections/objective_details}
+
+\clearpage
+\input{sections/paired_preservation}
+
+\clearpage
+\input{sections/related_work}
+
+\clearpage
+\input{sections/experimental_configurations}
+
+\end{document}

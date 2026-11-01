@@ -1,0 +1,211 @@
+\documentclass[11pt]{article}
+
+% Change "review" to "final" to generate the final (sometimes called camera-ready) version.
+% Change to "preprint" to generate a non-anonymous version with page numbers.
+\usepackage[preprint]{acl}
+
+% Standard package includes
+\usepackage{times}
+\usepackage{latexsym}
+
+% For proper rendering and hyphenation of words containing Latin characters (including in bib files)
+\usepackage[T1]{fontenc}
+% For Vietnamese characters
+% \usepackage[T5]{fontenc}
+% See https://www.latex-project.org/help/documentation/encguide.pdf for other character sets
+
+% This assumes your files are encoded as UTF8
+\usepackage[utf8]{inputenc}
+
+% This is not strictly necessary, and may be commented out,
+% but it will improve the layout of the manuscript,
+% and will typically save some space.
+\usepackage{microtype}
+
+% This is also not strictly necessary, and may be commented out.
+% However, it will improve the aesthetics of text in
+% the typewriter font.
+\usepackage{inconsolata}
+
+% Including images in your LaTeX document requires adding
+% additional package(s)
+\usepackage{graphicx}
+
+% -----------------------------------------------------------------------------
+% Packages used by the original ICLR paper
+% -----------------------------------------------------------------------------
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs,array,tabularx,multirow}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage[nameinlink,capitalise,noabbrev]{cleveref}
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{makecell}
+\usepackage{pifont}
+\usepackage{enumitem}
+\usepackage{titletoc}
+\usepackage[most]{tcolorbox}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+\newcommand{\ours}{CriticOPD}
+\hyphenation{Critic-OPD}
+\newtcolorbox{prompt}[1][]{enhanced,breakable,colback=gray!4,colframe=black!65,coltitle=white,fonttitle=\small\bfseries,fontupper=\small,boxrule=0.5pt,arc=1.5pt,left=5pt,right=5pt,top=4pt,bottom=4pt,before skip=6pt,after skip=8pt,#1}
+
+% -----------------------------------------------------------------------------
+% Theorem environments
+% -----------------------------------------------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{plain}
+
+\Crefname{theorem}{Theorem}{Theorems}
+\crefname{proposition}{Proposition}{Propositions}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefname{lemma}{Lemma}{Lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{corollary}{Corollary}{Corollaries}
+\Crefname{corollary}{Corollary}{Corollaries}
+\crefname{definition}{Definition}{Definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{assumption}{Assumption}{Assumptions}
+\Crefname{assumption}{Assumption}{Assumptions}
+\crefname{equation}{Equation}{Equations}
+\Crefname{equation}{Equation}{Equations}
+\crefname{algorithm}{Algorithm}{Algorithms}
+\Crefname{algorithm}{Algorithm}{Algorithms}
+\crefname{table}{Table}{Tables}
+\Crefname{table}{Table}{Tables}
+\crefname{figure}{Figure}{Figures}
+\Crefname{figure}{Figure}{Figures}
+\crefname{section}{Section}{Sections}
+\Crefname{section}{Section}{Sections}
+
+% -----------------------------------------------------------------------------
+% Notation
+% -----------------------------------------------------------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\KL}{\mathrm{KL}}
+\newcommand{\TV}{\mathrm{TV}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert_2}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\pos}[1]{\left(#1\right)_{+}}
+\newcommand{\Lset}{\mathcal{L}}
+\newcommand{\Qclass}{\mathcal{Q}}
+\newcommand{\Pclass}{\mathfrak{P}}
+\newcommand{\Mclass}{\mathcal{M}}
+\newcommand{\Xclass}{\mathfrak{X}}
+\newcommand{\Rclass}{\mathfrak{R}}
+\newcommand{\URisk}{\mathfrak{R}}
+\newcommand{\PhiBar}{\overline\Phi}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\mstar}{m^{\star}}
+\newcommand{\mstarmax}{m^{\star\star}}
+\newcommand{\argminop}{\operatorname*{arg\,min}}
+\newcommand{\sgn}{\operatorname{sign}}
+\newcommand{\Uset}{\mathcal{U}}
+\newcommand{\Mdown}{\mathcal{M}_{\downarrow}}
+
+% If the title and author information does not fit in the area allocated, uncomment the following
+%
+%\setlength\titlebox{<dim>}
+%
+% and set <dim> to something 5cm or larger.
+
+\title{
+Recovering Reliable Supervision via Critique-Guided On-Policy Distillation
+}
+% \title{Critique, Not Only Imitation: Teacher Feedback for On-Policy Distillation of Reasoning Models}
+
+\author{
+\textbf{Kaixiang Zhao}$^{1}$ \quad \textbf{Tianrun Yu}$^{1}$ \quad \textbf{Shangzhe Li}$^{2}$ \quad \textbf{Yuxiao Yang}$^{2}$ \\
+\textbf{Amanda Hughes}$^{1}$ \quad \textbf{Weitong Zhang}$^{2}$ \quad \textbf{Taylor W. Killian}$^{1}$ \\
+$^{1}$Brigham Young University \quad $^{2}$University of North Carolina at Chapel Hill \\
+\texttt{kzhao2@byu.edu} \quad \texttt{tkillian@cs.byu.edu}}
+
+\begin{document}
+\maketitle
+
+
+% We study on-policy distillation (OPD) for large language model reasoning, where a student learns from token-level teacher feedback along its own rollouts. When a rollout contains an error, this feedback scores each token of the erroneous continuation but does not indicate where the reasoning failed or how to correct it. We present \ours{}, which adds a critique step to OPD. For each rollout whose final answer differs from the reference answer, the teacher locates the first erroneous step and writes a short critique, and the student rewrites its solution from that step with the critique in its context. The critique is removed before training, so that the student learns to produce the correction without it, and the teacher scores the rewritten continuation with the critique in its own context. Distilling Qwen3-1.7B from Qwen3-4B-Instruct-2507, \ours{} improves the average of OPD on six mathematical reasoning benchmarks from 50.2 to 52.4, with the largest gains on AIME and AMC. Ablations show that the critique is necessary, since rewriting from the same step without it does not improve OPD.
+
+
+\begin{abstract}
+On-policy distillation (OPD) trains a student model on its own rollouts with token-level supervision from a teacher, assuming that the teacher can reach a correct answer from any prefix the student writes. We call this property the recoverability of the teacher and show it fails on incorrect rollouts: the teacher follows student errors, although it recognizes them. We propose CriticOPD, using error recognition to restore recoverability. The teacher critiques an incorrect rollout, allowing the student to rewrite its solution following the error. The resulting output, including the critique as privileged information, is scored by the teacher while the student uses the revision without the critique for training. On two Qwen3 students and six mathematical reasoning benchmarks, CriticOPD improves OPD, with the largest gains on competition problems. Code is available at\newline {\small\urlstyle{same}\href{https://github.com/kzhao5/CriticOPD}{\nolinkurl{github.com/kzhao5/CriticOPD}}}.
+\end{abstract}
+
+\input{section/Introduction}
+\input{section/Preliminaries}
+\input{section/Method}
+\input{section/Experiments}
+\input{section/RelatedWork}
+
+
+\section*{Limitations}
+
+\noindent\textbf{Reference answers.}
+CriticOPD uses reference answers to decide which rollouts receive a critique and
+to ground the critic, so it applies directly to tasks with verifiable answers,
+such as mathematics. Tasks without verifiable answers would need a reward model
+or a critic that judges correctness on its own, which we leave to future work.
+For code, unit tests could play the role of the reference answer.
+
+\noindent\textbf{Models and domains.}
+Our experiments distill Qwen3 students of two sizes from one Qwen3 teacher in
+non-thinking mode, and an OLMo-3 student from an OLMo-3 teacher with one seed
+(Appendix~\ref{app:olmo}), all on mathematical problems. The students preserve
+their performance outside mathematics (Appendix~\ref{app:ood}), but students that
+reason in thinking mode, training domains such as code, and larger teachers and
+students remain to be tested.
+
+\noindent\textbf{Training cost.}
+Each critiqued rollout needs one more generation of the teacher and one more
+generation of the student, although
+CriticOPD reaches its selected step earlier and uses $0.42$ times the total
+training compute of OPD (Appendix~\ref{app:cost}).
+
+\noindent\textbf{Quality of the critique.}
+The teacher serves as the critic, and $73\%$ to $81\%$ of the errors that it
+lists are real under our judge (Section~\ref{sec:critique-ability}). CriticOPD
+improves OPD with this critic, and a more accurate critic may further improve
+the rewrite. We also use one critique per rollout, and sampling
+several critiques could further reduce noise. The diagnosis also relies on a
+model judge, which may disagree with human annotators in some cases.
+
+% \noindent\textbf{Seeds.}
+% Because of compute, the main results use three seeds, whereas the ablations and
+% the sensitivity analysis use one seed, so small differences among these variants
+% should be read against the standard deviations in Table~\ref{tab:main}.
+
+
+% For anonymous submission, acknowledgments that reveal author identity
+% should be omitted. Uncomment for the camera-ready version.
+%
+% \section*{Acknowledgments}
+% We thank ...
+
+
+% Bibliography entries for the entire Anthology, followed by custom entries
+%\bibliography{custom,anthology-overleaf-1,anthology-overleaf-2}
+
+% Custom bibliography entries only
+\bibliography{custom}
+\appendix
+\input{section/Appendix}
+
+
+\end{document}
+```

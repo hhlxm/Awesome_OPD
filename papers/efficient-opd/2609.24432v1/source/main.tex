@@ -1,0 +1,101 @@
+\documentclass[]{antgroup}
+\PassOptionsToPackage{numbers, compress}{natbib}
+\usepackage{antgroup}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage{natbib}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{placeins}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{enumitem}
+\usepackage[table]{xcolor}
+\input{math_commands}
+\input{setting-ai}
+\usepackage{mdframed}
+\usepackage{xcolor}
+
+\definecolor{LightGray}{gray}{0.9}
+
+\definecolor{myPink}{HTML}{EE6B98}
+\definecolor{myBlue}{HTML}{6BB8FA}
+\definecolor{myPurple}{HTML}{9F63F0}
+\definecolor{myBlueBase}{HTML}{147BFF}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem*{restatedtheorem}{Theorem}
+\newtheorem*{restatedproposition}{Proposition}
+\newtheorem*{restatedcorollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\newcommand{\best}[1]{\mathbf{#1}}
+\newcommand{\second}[1]{\underline{#1}}
+
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\IER}{\operatorname{IER}}
+\newcommand{\Signal}{\operatorname{Signal}}
+\newcommand{\Noise}{\operatorname{Noise}}
+\newcommand{\TopK}{\operatorname{TopK}}
+\newcommand{\clip}{\operatorname{clip}}
+
+\newcommand{\overfullopd}[1]{\underline{#1}}
+\newcommand{\overteacher}[1]{\underline{\textbf{#1}}}
+\newcommand{\noimprove}[1]{\textcolor{black!45}{#1}}
+\newcommand{\iervariant}[1]{\hspace{0.25em}\( + \)IER\_#1}
+\newcommand{\diagnosticcaption}[1]{%
+  \par\smallskip{\centering\footnotesize #1\par}}
+
+\newcommand{\jian}[1]{{\footnotesize\textcolor{red}{[Jian: #1]}}}
+\newcommand{\huanxin}[1]{{\footnotesize\textcolor{blue}{[Huanxin: #1]}}}
+
+\renewcommand\thefootnote{}
+
+\title{1\% of Tokens Can Be Enough: On Gradient Estimation in On-Policy Distillation}
+
+\author{\centering
+Huanxin Sheng$^{1,2}$ \quad
+Zhiling Ye$^{2}$ \quad
+Haonan Wang$^{1}$ \quad
+Jian Wang$^{2}$ \quad
+Jinjie Gu$^{2}$ \quad
+Jian Kang$^{1}$
+}
+\affiliation{$^1$MBZUAI, $^2$Ant Group \\ \vspace{.5em} \{huanxin.sheng, jian.kang\}@mbzuai.ac.ae}
+
+\begin{document}
+\maketitle
+
+% main document
+\begin{abstract}
+Sparse on-policy distillation (OPD) allocates teacher supervision to a small subset of tokens in student-generated trajectories. However, useful teacher guidance can yield a noisy update when its gradient is estimated from a sampled next token. We study this estimation problem at a fixed prefix in information geometry and propose an information-efficiency ratio (IER) based on a signal-to-noise decomposition. IER characterizes relative gradient estimation error under an optimal scalar baseline. A candidate-set approximation enables token selection based on IER and its combination with existing usefulness scores, while retaining the sampled reverse-KL training objective. On mathematical and medical reasoning tasks, adding IER improves existing selectors in multiple settings, with sparse configurations matching or exceeding full OPD without token selection at small token budgets of 0.1\%--1\%. These results support accounting for both usefulness and gradient-estimation reliability when allocating sparse supervision. Our code is available at \url{https://github.com/BruceSheng1202/IER-OPD}.
+\end{abstract}
+
+% Main body sections
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_theory}
+\input{sections/04_ier_opd}
+\input{sections/05_experiments}
+\input{sections/06_conclusions}
+
+% \clearpage
+\bibliography{references}
+\bibliographystyle{reference-style}
+
+\appendix
+\input{sections/96_appendix_literature_discussion.tex}
+\input{sections/97_appendix_proofs}
+\input{sections/98_appendix_experimental_details}
+\input{sections/99_appendix_token_selection_examples}
+
+\end{document}

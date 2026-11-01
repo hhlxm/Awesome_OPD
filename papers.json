@@ -2,6 +2,144 @@
   "schema_version": 1,
   "papers": [
     {
+      "title": "Recovering Reliable Supervision via Critique-Guided On-Policy Distillation",
+      "arxiv_id": "2610.20572v1",
+      "arxiv_url": "https://arxiv.org/abs/2610.20572v1",
+      "category": "opd",
+      "background": false,
+      "tldr": "A teacher can recognize student errors yet follow them when continuing an incorrect prefix, undermining OPD supervision. CriticOPD has the teacher critique a failed rollout and the student revise it; the teacher scores the revision with the critique as privileged context, while the student trains without that context. This uses error recognition to recover reliable supervision on mathematical reasoning tasks.",
+      "directory": "papers/opd/2610.20572v1",
+      "pdf": "papers/opd/2610.20572v1/paper.pdf",
+      "source": "papers/opd/2610.20572v1/source",
+      "source_archive": "papers/opd/2610.20572v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1298,
+          "sha256": "ef4b975fa29681c4f5382d24a700db6e7a9a43c3b9ed8b8392675f97d4caec12"
+        },
+        "paper.pdf": {
+          "bytes": 1502927,
+          "sha256": "f7b47c22eac8bf508a8ea2bd4b95b56bf35a57296ab51984fa890610b2ad418f"
+        },
+        "source/00README.json": {
+          "bytes": 218,
+          "sha256": "f667cc0b758bff99447a0d28636e991d450bd3563304c85dd71804fb3f522ed7"
+        },
+        "source/acl.sty": {
+          "bytes": 11615,
+          "sha256": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de"
+        },
+        "source/acl_latex.tex": {
+          "bytes": 9966,
+          "sha256": "10a363a29244a2802a02894519fb8ab1c212520bdbcb2681c02e7a08c5f3c021"
+        },
+        "source/acl_natbib.bst": {
+          "bytes": 45442,
+          "sha256": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e"
+        },
+        "source/custom.bib": {
+          "bytes": 22392,
+          "sha256": "be1a94fdaa88b0d342accdf43d00ba716c380a548d50afacf8be2c7f678f629a"
+        },
+        "source/figures/fig_budget.pdf": {
+          "bytes": 15065,
+          "sha256": "2df870ec52e3c9a0ac65c77ff6a3abdc216b132e71ee492d4eb667764d20c0e0"
+        },
+        "source/figures/fig_cost.pdf": {
+          "bytes": 27739,
+          "sha256": "1883c30c2b8e8a24fc714e366775cced6efe30cd39cf2d30d4554d133d7a9587"
+        },
+        "source/figures/fig_critique.pdf": {
+          "bytes": 16208,
+          "sha256": "4389992b84af05e7a22f9dd079bf905256940d1fce90982626ea3d9ab190a326"
+        },
+        "source/figures/fig_critique_small.pdf": {
+          "bytes": 16208,
+          "sha256": "1da663468be35c70fdf0f94d7851d85324d63913520cbe69e758641e16e8af0c"
+        },
+        "source/figures/fig_dynamics.pdf": {
+          "bytes": 47243,
+          "sha256": "f455a9a9cb5764300afd803ee7da983c0f425995d5d3776adbd0bf5b78789352"
+        },
+        "source/figures/fig_example.pdf": {
+          "bytes": 118564,
+          "sha256": "a7509eecb0e48f4b910af730b76d8016aa50ef5866ce911f731e03bc998ee3b1"
+        },
+        "source/figures/fig_failure_region.pdf": {
+          "bytes": 13210,
+          "sha256": "cebf931f8612074cda7124188adc4c8128ca29f2a948614d28567c8fa45599d6"
+        },
+        "source/figures/fig_failure_region_small.pdf": {
+          "bytes": 13241,
+          "sha256": "ba0824db851db8a5f8c57f378032a7e2347692e36a3b248b1587b1b07beaca8b"
+        },
+        "source/figures/fig_hyper.pdf": {
+          "bytes": 11969,
+          "sha256": "3233d413ab176205d91edc71dc9051afead908949200a753b3ab6efd3a622071"
+        },
+        "source/figures/fig_mechanism.pdf": {
+          "bytes": 16395,
+          "sha256": "3315224a5a02a7ac5f6fe9aa8b78d1e7798d2a5966a224bb1ea8e401b7150a77"
+        },
+        "source/figures/fig_mismatch.pdf": {
+          "bytes": 20818,
+          "sha256": "9cbcb6269ac8c67238531c44a55fb764ba36593c83a0e1d5a4471433c7c18ab8"
+        },
+        "source/figures/fig_mismatch_hidden.pdf": {
+          "bytes": 309048,
+          "sha256": "11116d0c608ea58883a81c84e8d3e3dbc37f5424bee4ec396d309c5b718e33fd"
+        },
+        "source/figures/fig_mismatch_positions.pdf": {
+          "bytes": 251680,
+          "sha256": "b752df1ec5da86eb2543ed6d41f6d52df148c8984e2c7b60a30143ff3b104b71"
+        },
+        "source/figures/fig_pipeline.pdf": {
+          "bytes": 81742,
+          "sha256": "548da961116e10ab68806363e225b6837ee9a2bd3442a39b8e89525fdd65f0d5"
+        },
+        "source/figures/fig_rewrite.pdf": {
+          "bytes": 14386,
+          "sha256": "f35bba872ec4e613ddac8101f96d90f09e801481bec7c56c90a8a1aa6bf883f4"
+        },
+        "source/figures/fig_rewrite_small.pdf": {
+          "bytes": 14268,
+          "sha256": "fffb153629ba9253c8d31d0e968a096a3386b99c223f5ce6a2b45349cdec243f"
+        },
+        "source/figures/schematic.pdf": {
+          "bytes": 31811,
+          "sha256": "a48e6ae8149f23d6c04fde55780c26667fc2528c068d6edb40a96883f4f922eb"
+        },
+        "source/section/Appendix.tex": {
+          "bytes": 44341,
+          "sha256": "219b4dbd01b0237491346322fb768c39aa2f7a4bf44aa9b03a745d1d2c6e144a"
+        },
+        "source/section/Experiments.tex": {
+          "bytes": 18907,
+          "sha256": "6a7e1165f892ae5ca70c12ee7926f99c840dce84ed8e47f6bc06f43804364119"
+        },
+        "source/section/Introduction.tex": {
+          "bytes": 10912,
+          "sha256": "67e92aabd23f66775e214c4651243aee1c6fd75e281bce876f7b8f8c5d1ad6c0"
+        },
+        "source/section/Method.tex": {
+          "bytes": 14548,
+          "sha256": "2954819efa2ab8e3fa7b7d504dbc71bdca40bf41c54a169b9ec4d2d4e6e6a924"
+        },
+        "source/section/Preliminaries.tex": {
+          "bytes": 15253,
+          "sha256": "16df37f3ba442cfa00e0a01c6590c26bff91f08fea1a2a38a9b15b3fe1947fb5"
+        },
+        "source/section/RelatedWork.tex": {
+          "bytes": 2431,
+          "sha256": "ba57f7f0e568bb278892c169c5d9e331a939ab73a7a7e287042385dd86324aab"
+        },
+        "source.tar.gz": {
+          "bytes": 973053,
+          "sha256": "30afc37bc202dd9f955d7fb55d0d63a0af640e1a405b1cf077411b13ceaafc47"
+        }
+      }
+    },
+    {
       "title": "Transfer-Stratified On-Policy Distillation for RL-Improved Reasoning Teachers",
       "arxiv_id": "2610.05974v1",
       "arxiv_url": "https://arxiv.org/abs/2610.05974v1",
@@ -174,6 +312,176 @@
       }
     },
     {
+      "title": "Mitigating the Length-Scaling Tax with Online Distillation",
+      "arxiv_id": "2609.38854v1",
+      "arxiv_url": "https://arxiv.org/abs/2609.38854v1",
+      "category": "opsd",
+      "background": false,
+      "tldr": "RL post-training can make already-solved queries unnecessarily verbose without improving accuracy. Length Self-Distillation routes solved prompts to on-policy distillation from an exponential-moving-average teacher while retaining RL for unsolved prompts. The insight is to preserve concise successful behavior while allowing exploration on harder problems, without requiring an external teacher.",
+      "directory": "papers/opsd/2609.38854v1",
+      "pdf": "papers/opsd/2609.38854v1/paper.pdf",
+      "source": "papers/opsd/2609.38854v1/source",
+      "source_archive": "papers/opsd/2609.38854v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1555,
+          "sha256": "ad90b84927c1aa4ff22c8743a8e42f49dae32ab8b86f0a77db12f4c2a207e5dd"
+        },
+        "paper.pdf": {
+          "bytes": 3979079,
+          "sha256": "d16f9509cd02896af005449fd27caf45a84c4b8c6c054c78b7d594d2c8c2c130"
+        },
+        "source/00README.json": {
+          "bytes": 213,
+          "sha256": "d1f6b1a71c9accb812ec5121d1fff7910c025ca7bb201948bacdb40941bc14e5"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/figures/37_selected_base_0_25_50_75_100_easy_tracking_paper_step430_no_band.png": {
+          "bytes": 207887,
+          "sha256": "a9c4c1ab73d1e5f04a63ac97c5d07eafad5e7cd8a094f7b414a496704962cb44"
+        },
+        "source/figures/ablation_hl.png": {
+          "bytes": 498978,
+          "sha256": "3541429ae98a0cf68e65400497033005b9655e4238fed15e880b0c136ae660c6"
+        },
+        "source/figures/ablation_tau.png": {
+          "bytes": 499923,
+          "sha256": "5a0252ebc17d4757610267b1e53213ffc4a9d8b408ecc4570bed0704b6ed3bae"
+        },
+        "source/figures/avg_pass1_avg_turns_lst50.png": {
+          "bytes": 178411,
+          "sha256": "ba56d30b0ee2fbdf4e3a42090668193f65c67b47f0b2dca5da0cda64d672d919"
+        },
+        "source/figures/easy_tracking_history_acc.png": {
+          "bytes": 737664,
+          "sha256": "a770cb1d37b753eb185dda46907580643cf39d10aafb9be593e4e39fc14e446a"
+        },
+        "source/figures/easy_tracking_v1.png": {
+          "bytes": 498224,
+          "sha256": "fd6bcbad6af979133954c67ac871751c4400e2bc7ac3235419225f8edfa56606"
+        },
+        "source/figures/lsd_single_all.png": {
+          "bytes": 197824,
+          "sha256": "239f85d698cdc4420e5faf90a3bd03dcb45d0e56470bd64703c6d1250f86df90"
+        },
+        "source/figures/paired_easy_preservation.pdf": {
+          "bytes": 22357,
+          "sha256": "fc3ed78e900a78731a9f586a8430a32c131a36e04965289431600459e6997ff3"
+        },
+        "source/figures/paired_main_cohort_table.tex": {
+          "bytes": 1310,
+          "sha256": "729bcb4b30f1738d410f2e42c8b543901f4db34e356e8d4e61e6b0daf595fc7d"
+        },
+        "source/figures/paired_preservation_table.tex": {
+          "bytes": 1706,
+          "sha256": "dd38e48589e9f408c617f3754b3dd5b31617d7113205afa6c08234c59ffad05d"
+        },
+        "source/figures/paired_query_examples.pdf": {
+          "bytes": 14397,
+          "sha256": "b5410ad971a7e85b5e7d7b0f4aef09e7ef18edf6e45791fcc4f6a3dc078f9e32"
+        },
+        "source/figures/reflection_n_gram.png": {
+          "bytes": 230789,
+          "sha256": "75e588bdf09e1fa3c9e5abaaf268922432bb403b4be2f5d67ef3f2d79a2db670"
+        },
+        "source/figures/shared_lst_values.tex": {
+          "bytes": 887,
+          "sha256": "ebea3cbf84204b3bb245431d9fb3d51281a285e56abf4bba9ce4aa79ce8cf707"
+        },
+        "source/figures/val_acc_len_4panel_total_paper_step430_smooth9_no_band.png": {
+          "bytes": 233632,
+          "sha256": "d49fb98d55fd78c80560ecd2da3e331691128cbfc4ad11e75265b5c9a68e662c"
+        },
+        "source/figures/wandb_half_life_diagnostics.pdf": {
+          "bytes": 268829,
+          "sha256": "00ab6f458151fffdc19ff1718207d33608c3a1c28dcaaca2b1d7d701884ad812"
+        },
+        "source/figures/wandb_objective_diagnostics.pdf": {
+          "bytes": 122294,
+          "sha256": "eb8841104fd5c47452d5836e7751705d8bef9a3c6f730234775b1a46c7170dc7"
+        },
+        "source/figures/wandb_threshold_diagnostics.pdf": {
+          "bytes": 293349,
+          "sha256": "595b80e583155f3f4a6562ac76ec33e397b0ce17a536361c9a3f37aeb6111a39"
+        },
+        "source/figures/wandb_training_token_routes.pdf": {
+          "bytes": 179488,
+          "sha256": "ef6634a2cd468b25c24ab666131621d4dbea23482b0f3faa52e9d474a8d4f75f"
+        },
+        "source/iclr2027_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/iclr2027_conference.sty": {
+          "bytes": 9025,
+          "sha256": "797deef41724e93761426ac0cbcca46279a91cc650dd1f0ce76a4f08d2098ea6"
+        },
+        "source/iclr2027_conference.tex": {
+          "bytes": 39256,
+          "sha256": "3b67830b835f744b195018563da17d8ef5803e1649fe54dacebf98f13f9509c3"
+        },
+        "source/macros.tex": {
+          "bytes": 9002,
+          "sha256": "99d6b8fb5909c12aac6d6889c3242f13c55a12c7905fbe76eac430e3f06fbca0"
+        },
+        "source/main.bib": {
+          "bytes": 13365,
+          "sha256": "f71f7381095446bbaadd6477068ed4441e147f508aea2a50f9599c6f3baa68e3"
+        },
+        "source/main.tex": {
+          "bytes": 129,
+          "sha256": "ff31b5b28ea4d2c56fe93c1fa756c3793aa7c615a1d84759115301f3b5ee18b1"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source/sections/ablation_details.tex": {
+          "bytes": 5208,
+          "sha256": "ce5a57b348ab3842904dd783a970e2b0b2aeb05a669e7d8dd3c2bcb6873c974d"
+        },
+        "source/sections/benchmark_details.tex": {
+          "bytes": 6104,
+          "sha256": "e67506da33783ce5647ad3358bc4f4f1c1c565ecd11a54510557d1c0f635806c"
+        },
+        "source/sections/experimental_configurations.tex": {
+          "bytes": 4163,
+          "sha256": "52f8da088be4ac3d7e8c32c93ed8198f03e9e6785db8c4462bf07ccda46aca5c"
+        },
+        "source/sections/experiments.tex": {
+          "bytes": 9707,
+          "sha256": "c7f23ff91fafeed4572b7feabbf9c9bafc896fe28f72ab82f8f63a19fa15a0bc"
+        },
+        "source/sections/objective_details.tex": {
+          "bytes": 9083,
+          "sha256": "4260ed7c4cc22737bbc7a6873b8e810ec6515b6aa5236790566f3235160035fb"
+        },
+        "source/sections/paired_preservation.tex": {
+          "bytes": 3508,
+          "sha256": "0e3925b7cfc76258b109e991465716824f2ec470e8854179e7775626de87fd12"
+        },
+        "source/sections/random_routing_control.tex": {
+          "bytes": 229,
+          "sha256": "e625b1829308429da2b90b1a80505c25b758a3f74a179aa30a5d4b7eea5aa6e9"
+        },
+        "source/sections/related_work.tex": {
+          "bytes": 3260,
+          "sha256": "35c5e3dde7e9d5d37dc4ca12dbd17a5eb7b4b41d1ec95b4f6a407ff99a75c639"
+        },
+        "source/sections/research_statements.tex": {
+          "bytes": 682,
+          "sha256": "77a6c1f205abd5b1a0525279ce32c8732b8899721bdf3deb73a0baf6a32f4cf1"
+        },
+        "source.tar.gz": {
+          "bytes": 3946099,
+          "sha256": "5ef9af3871f1a7067104edb85800790238df2de68d5573c06852b6f9560d6714"
+        }
+      }
+    },
+    {
       "title": "UOPD: Uncertainty-Aware Intervention for On-Policy Distillation of Multi-Turn Agents",
       "arxiv_id": "2609.34036v1",
       "arxiv_url": "https://arxiv.org/abs/2609.34036v1",
@@ -300,6 +608,128 @@
       }
     },
     {
+      "title": "Dense Is Not Enough: Hierarchical Supervision Allocation for Long-Horizon On-Policy Distillation",
+      "arxiv_id": "2609.33409v1",
+      "arxiv_url": "https://arxiv.org/abs/2609.33409v1",
+      "category": "agent-opd",
+      "background": false,
+      "tldr": "Uniform token matching can waste supervision on guidance that has little future benefit or is beyond the student’s current ability. LENS-OPD allocates supervision hierarchically: locate an intervention, validate its benefit for the student’s subsequent behavior, then refine the policy on decisive token conflicts. The insight is to jointly track future utility and current learnability as the student improves.",
+      "directory": "papers/agent-opd/2609.33409v1",
+      "pdf": "papers/agent-opd/2609.33409v1/paper.pdf",
+      "source": "papers/agent-opd/2609.33409v1/source",
+      "source_archive": "papers/agent-opd/2609.33409v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1171,
+          "sha256": "50daf027f98524b57e3c30986a75c462e183880920509f86caf1fc820194e2c6"
+        },
+        "paper.pdf": {
+          "bytes": 2364411,
+          "sha256": "15754d82069ffddb940112c8d4dfe40d59cb3af60f20731f2f59466eb3de0a01"
+        },
+        "source/00README.json": {
+          "bytes": 213,
+          "sha256": "d1f6b1a71c9accb812ec5121d1fff7910c025ca7bb201948bacdb40941bc14e5"
+        },
+        "source/authors.tex": {
+          "bytes": 784,
+          "sha256": "739031114be6dc5183248113bb5ace17ebd0d224c80361bec6ba5a74c6b06dfc"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/figures/curriculum_pace.png": {
+          "bytes": 91937,
+          "sha256": "6d18b6171a317ffa9219ce11fd81ddb4b90047c1ec29ce8b028f7ee3a2bbabf4"
+        },
+        "source/figures/curriculum_termination.png": {
+          "bytes": 133092,
+          "sha256": "fab2c57783ccc67168b00819ca6382384b082257e17bdbcc1ee131c1ef8e6316"
+        },
+        "source/figures/future_gain_distribution.png": {
+          "bytes": 66135,
+          "sha256": "a71aa0b7cc2e42dd796349ec2aafa5696db42403e46a91f0ec5516c6d4f6e015"
+        },
+        "source/figures/future_validation_mean.png": {
+          "bytes": 109858,
+          "sha256": "908a755190786090c5a0508acb7bf18c080a501951e591c738eda9995605db86"
+        },
+        "source/figures/gi_internalization.png": {
+          "bytes": 160263,
+          "sha256": "19f347b094c267c49ba0fee17296fcde1fd42773eaf4cab9ec49ec0c63377f9b"
+        },
+        "source/figures/intro.pdf": {
+          "bytes": 739256,
+          "sha256": "cd84eef33544d1a9acdb90720a24a104b143bd9a19b21e20baafae9c20089dda"
+        },
+        "source/figures/motivation_future_gain.png": {
+          "bytes": 131189,
+          "sha256": "69c89a10a7f0b76d550d38eab69b83ae6c7e6dff7de3fc32f635521b271d43f3"
+        },
+        "source/figures/motivation_support_dynamics.png": {
+          "bytes": 126689,
+          "sha256": "70147c3bb0d0349918fe916faf22da52c6eeb1b3370996fb8bedbc110bd51166"
+        },
+        "source/figures/motivation_token_response.png": {
+          "bytes": 85196,
+          "sha256": "c99cdf061298a1f81b1e8c7d7f28f0a47bd5907cb250d17d7a6f14126b08ea0d"
+        },
+        "source/figures/scienceworld_curriculum_dynamics.png": {
+          "bytes": 467368,
+          "sha256": "e504c6e2ee3172104f7a3b7652897e3fea454663802eb601b15ab223b498f453"
+        },
+        "source/figures/scienceworld_future_validation.png": {
+          "bytes": 317191,
+          "sha256": "4a9a9bca86fd713551cde20f75ad0f3875b17f586ce13079dc5bde935fadf837"
+        },
+        "source/figures/token_supervision_concentration.png": {
+          "bytes": 134331,
+          "sha256": "23037d8a5edebf4dfdce6a9ae5984c8b31ccd9d10509682909bdddc873d1d9a4"
+        },
+        "source/figures/webshop_curriculum_dynamics.pdf": {
+          "bytes": 32029,
+          "sha256": "97c25f8b97422819f63ae190835c415c67346dba353922dbd2f9705dc8076e77"
+        },
+        "source/figures/webshop_future_validation.pdf": {
+          "bytes": 32417,
+          "sha256": "7e89d0a846e1952a4e28a87073426d3935cd60a45416cf13f967f59cdbea0bfb"
+        },
+        "source/iclr2027_conference.bib": {
+          "bytes": 629,
+          "sha256": "cdd86e7d4c31854dcf2145871657c944588a6d44c3b72e160ff4baa8df1a52fb"
+        },
+        "source/iclr2027_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/iclr2027_conference.sty": {
+          "bytes": 8995,
+          "sha256": "aaf56c3c9e972f4715b7221a250227a55927a3ce7b1ff4c92907b3fb3cd67fd9"
+        },
+        "source/main.tex": {
+          "bytes": 65072,
+          "sha256": "28bf29a22e11dc295ef290c206ce86b90373c540301e0c28f7dc7d179d3d5db0"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12284,
+          "sha256": "90473c4d0542070db244cea73ef962d6cddc5b2a746757e6a40ddf5fdfb90ba9"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source/related_work_dblp.bib": {
+          "bytes": 14988,
+          "sha256": "827ef6b5f75bd190bb15213d4237344492d0e34df06831f6890c161ce58da633"
+        },
+        "source.tar.gz": {
+          "bytes": 2482127,
+          "sha256": "cc97b421569349b066bb33a057a75c77022052627938dd8b25b7f47c98229696"
+        }
+      }
+    },
+    {
       "title": "From Self-Distillation to Self-Practice: Privileged Information for Multi-Turn Agents",
       "arxiv_id": "2609.29051v1",
       "arxiv_url": "https://arxiv.org/abs/2609.29051v1",
@@ -386,6 +816,200 @@
         "source.tar.gz": {
           "bytes": 418781,
           "sha256": "b7c26606bf88f2342be7480b14f710cdbb6b7885a83537a0e86444d58c203667"
+        }
+      }
+    },
+    {
+      "title": "1% of Tokens Can Be Enough: On Gradient Estimation in On-Policy Distillation",
+      "arxiv_id": "2609.24432v1",
+      "arxiv_url": "https://arxiv.org/abs/2609.24432v1",
+      "category": "efficient-opd",
+      "background": false,
+      "tldr": "Useful teacher guidance can still produce noisy sampled-token gradient estimates. This work derives an information-efficiency ratio from a signal-to-noise decomposition under an optimal scalar baseline and approximates it for sparse token selection. Combining usefulness with estimation reliability matches or exceeds full OPD in some mathematical and medical reasoning settings using only 0.1%–1% token budgets.",
+      "directory": "papers/efficient-opd/2609.24432v1",
+      "pdf": "papers/efficient-opd/2609.24432v1/paper.pdf",
+      "source": "papers/efficient-opd/2609.24432v1/source",
+      "source_archive": "papers/efficient-opd/2609.24432v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1600,
+          "sha256": "8b6a8ca24a83e90bd655496c3ee0df2f4ec6561b01644305285e334bb5ab03fb"
+        },
+        "paper.pdf": {
+          "bytes": 3472251,
+          "sha256": "e5318b63d9cf84b10599ee6649218373db4ed447714393b6fc76e999c8d0a572"
+        },
+        "source/00README.json": {
+          "bytes": 213,
+          "sha256": "d1f6b1a71c9accb812ec5121d1fff7910c025ca7bb201948bacdb40941bc14e5"
+        },
+        "source/antgroup.cls": {
+          "bytes": 2477,
+          "sha256": "1686beccf3bc741fa427c22cc4e9c832f0cd12f7e074fb5e9a6fe4bf38ca9b23"
+        },
+        "source/antgroup.sty": {
+          "bytes": 11833,
+          "sha256": "dc02d7e15ae4ca425c34853565c9e9dbf9a6113cf001f10a37bb66017c6fed24"
+        },
+        "source/assets/mbzuai_antgroup.png": {
+          "bytes": 364256,
+          "sha256": "1b3523a741808f0ad708cc91aedcb561434309f08c1ffc48ec48480f48f65ca3"
+        },
+        "source/examples/math_token_comparison_page_01.pdf": {
+          "bytes": 34536,
+          "sha256": "b128258f032b36d4c9b276f807cc82b5765d4c0ac7849d348de7f5c059a0834c"
+        },
+        "source/examples/math_token_comparison_page_02.pdf": {
+          "bytes": 34181,
+          "sha256": "e24cbe838515fcb99d9244610309e373ae788b08a3a65658be09cc1cb1e76d2b"
+        },
+        "source/examples/math_token_comparison_page_03.pdf": {
+          "bytes": 36149,
+          "sha256": "1539777ed3a1ca71e507e36fbb3508805e5b76507f98320c47a17eaf630b6eaf"
+        },
+        "source/examples/math_token_comparison_page_04.pdf": {
+          "bytes": 70425,
+          "sha256": "2a94eb2eb0d086c8d34967af65bca93138ccb6f6c7c28483a16504a2b149078f"
+        },
+        "source/examples/medical_token_comparison_page_01.pdf": {
+          "bytes": 55303,
+          "sha256": "257aeffb4c9f4244968abbbebe6f1b7c4ed9d3bfb9a0375d70e0c89b3d87c7dd"
+        },
+        "source/examples/medical_token_comparison_page_02.pdf": {
+          "bytes": 61236,
+          "sha256": "4bcace003a96e12910dd6c4d8085e36208caefedc46220846b5b0db1ab8836ea"
+        },
+        "source/examples/medical_token_comparison_page_03.pdf": {
+          "bytes": 53431,
+          "sha256": "fa14dba75cc2283f1589c2c6bfb83be5c7630e4605cd53b791990c0118add78b"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/figures/IER_positions.png": {
+          "bytes": 40151,
+          "sha256": "df3ee2ff2db868e80981d69facff738f5cc6f8a06bb993e54641c600538a3c6f"
+        },
+        "source/figures/comparisons/nemotron_0p1_full_opd_comparison.pdf": {
+          "bytes": 45008,
+          "sha256": "efa4d2a887e9e56160a30b63b4892f9611d74001cc51bb7d10b4ab637a19bd01"
+        },
+        "source/figures/comparisons/nemotron_10_full_opd_comparison.pdf": {
+          "bytes": 44631,
+          "sha256": "a9def3a77689172d628b31b916f1b9b09ab2e9d971b84f35eb531363bec9e908"
+        },
+        "source/figures/comparisons/nemotron_1_full_opd_comparison.pdf": {
+          "bytes": 44656,
+          "sha256": "62f9bf0e44f131272218d26c8704e8ebb66d4fb70426a6724188dd8eb8aadf26"
+        },
+        "source/figures/comparisons/qwen3_0p1_full_opd_comparison.pdf": {
+          "bytes": 45406,
+          "sha256": "18510acc99a563f2973f067c4a490d7cff7afc91dad1e066ecc479a3811dda5f"
+        },
+        "source/figures/comparisons/qwen3_10_full_opd_comparison.pdf": {
+          "bytes": 44919,
+          "sha256": "f30b5c9a35f410680eb65eca4b161f96e1e086bf48c1904e3cf3fbfa8fb5b974"
+        },
+        "source/figures/comparisons/qwen3_1_full_opd_comparison.pdf": {
+          "bytes": 45146,
+          "sha256": "a0e7811012aebbb8153140d23f10704090ffe557370de54f0273580982d448d2"
+        },
+        "source/figures/heatmap_nemotron_qwen3_new.png": {
+          "bytes": 579416,
+          "sha256": "bcf03e8ec9d69bcd15ea7beccd8de324f35b254da5e97938553d126c20994b73"
+        },
+        "source/figures/medical_budget_scale_new.png": {
+          "bytes": 844609,
+          "sha256": "2cc5b023bed5e96850d64c67ad4df31d5d78a090bbec5f9f248ff273386e3228"
+        },
+        "source/figures/prefix_softor.png": {
+          "bytes": 734417,
+          "sha256": "dddc05794648d6e43576134bce323a862666dcba774610eb45ff7f809bf1e9db"
+        },
+        "source/figures/taopd_softor.png": {
+          "bytes": 771274,
+          "sha256": "98840361bdf50a041cd1524352b07479be5674d2997359eb90f95a0a43012418"
+        },
+        "source/figures/thinkon_thinkoff.png": {
+          "bytes": 791493,
+          "sha256": "559d65e0d5c943e56aa8b00dbe8eacf6065877c996a112c431d66454e8185eaa"
+        },
+        "source/main.tex": {
+          "bytes": 3837,
+          "sha256": "2ab121bd1c79698f4121cb789fd5fe081e6721738a1e77cb4a5baca79229be60"
+        },
+        "source/math_commands.tex": {
+          "bytes": 12139,
+          "sha256": "d9d5d204430a8c6b87e2713c5245fba73c5e3f54860859d1f5b71382d82c2dac"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source/reference-style.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/references.bib": {
+          "bytes": 39797,
+          "sha256": "91dab0a9cec13a8676de9fd37fb451f1b7efda491ffa39e1fad20624288f195f"
+        },
+        "source/sections/01_introduction.tex": {
+          "bytes": 5341,
+          "sha256": "3a2e1bd9d5c82247ac9f063598636e05fe15eaa166daa3f6d31df49346c6042e"
+        },
+        "source/sections/02_related_work.tex": {
+          "bytes": 3623,
+          "sha256": "d94cdb5706cf3228916ac1f0bd3cab2436941bfb1a411c57ae96a86f7014858b"
+        },
+        "source/sections/03_theory.tex": {
+          "bytes": 7337,
+          "sha256": "e071a1110a5c14173f36b33804d1f04c2a750de6324c63b9648465c352677084"
+        },
+        "source/sections/04_ier_opd.tex": {
+          "bytes": 4490,
+          "sha256": "bddf7f6f563fd38f44b4f93da6717e8a371ba41658996a912229c03805794fea"
+        },
+        "source/sections/05_experiments.tex": {
+          "bytes": 13535,
+          "sha256": "13c7845a2b37ac4c211c40c08cd3fa7a7a92561cc96b28b306958961cfb6845d"
+        },
+        "source/sections/06_conclusions.tex": {
+          "bytes": 1264,
+          "sha256": "7f0818aef84e021f52e8192ec81a70a01f0692001ca5c1c74ed557fb77a16cd0"
+        },
+        "source/sections/96_appendix_literature_discussion.tex": {
+          "bytes": 7062,
+          "sha256": "30682460ddb5e2767f987bf28799896794d13d80735ce2b0dd3091ad7879906b"
+        },
+        "source/sections/97_appendix_proofs.tex": {
+          "bytes": 10289,
+          "sha256": "84b35f160f08d93252402a3fb1cc04b15d51dfccd6a1bdea44bfa9fb12f622da"
+        },
+        "source/sections/98_appendix_experimental_details.tex": {
+          "bytes": 9727,
+          "sha256": "a062435bdd07083c3c6fa0aa65fe480f43161640a31fa2b9ac1bf2f2d913867c"
+        },
+        "source/sections/99_appendix_token_selection_examples.tex": {
+          "bytes": 2666,
+          "sha256": "b17c863409b69f32b4e456392eac113ca07ec3b45904e1b8d123eabaf730e65a"
+        },
+        "source/setting-ai.tex": {
+          "bytes": 4689,
+          "sha256": "191a049540a2c254a87ddfee941c8eccbfcba7a606ef2266e946b03d0c9a4e5c"
+        },
+        "source/tables/01_IER_basic_math.tex": {
+          "bytes": 13599,
+          "sha256": "6d8b48a0ae906b97a1559fae9615489c9c3a38021dc6b51db7a6c2526a68fb98"
+        },
+        "source/tables/02_IER_basic_health.tex": {
+          "bytes": 4555,
+          "sha256": "bf3f3d45f185b28940968152518c5183404dc9871033884490088b25508fa729"
+        },
+        "source.tar.gz": {
+          "bytes": 4349585,
+          "sha256": "b9a43251b57f7c8510546b753816eecb654e233c52b501f3e6498b3ed030f3d1"
         }
       }
     },
@@ -1052,6 +1676,132 @@
         "source.tar.gz": {
           "bytes": 2784773,
           "sha256": "0ccd6390ccc9e61447e1d85a93db168127072d3c02f7c064e64a5fd7567dc148"
+        }
+      }
+    },
+    {
+      "title": "Pass the Baton: Trajectory-Relayed On-Policy Distillation",
+      "arxiv_id": "2607.26057v1",
+      "arxiv_url": "https://arxiv.org/abs/2607.26057v1",
+      "category": "opd",
+      "background": false,
+      "tldr": "After a wrong reasoning turn, student continuations can waste compute and receive unreliable supervision. Relay-OPD detects teacher–student continuation asymmetry and briefly hands generation to the teacher before returning control to the student. A limited relay budget targets critical early positions, improving mathematical reasoning while shortening training trajectories in the evaluated settings.",
+      "directory": "papers/opd/2607.26057v1",
+      "pdf": "papers/opd/2607.26057v1/paper.pdf",
+      "source": "papers/opd/2607.26057v1/source",
+      "source_archive": "papers/opd/2607.26057v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1483,
+          "sha256": "d98a24380753553a063226af9d58c5824972cac47eee7cec589318fb3779a181"
+        },
+        "paper.pdf": {
+          "bytes": 2051401,
+          "sha256": "42df71b4502374f1c4cb55047014ec2acae85051d5c794296104e737b80cea31"
+        },
+        "source/00README.json": {
+          "bytes": 322,
+          "sha256": "66dcdc2fcf8e0077e8ee43c49678a7f46f172953f4ef308da598485c19e84442"
+        },
+        "source/fancyhdr.sty": {
+          "bytes": 20521,
+          "sha256": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+        },
+        "source/figures/absolute_position_gap.pdf": {
+          "bytes": 12233,
+          "sha256": "1c213cd4071bf16aa1809ffe04e7a1f8e09ac751fc10387e47df493aedfa87ba"
+        },
+        "source/figures/hmmt_passk.pdf": {
+          "bytes": 14542,
+          "sha256": "5473fd7c09e2138953175bc9a8c4ca665dcae457d727d99f6f1e4a8fe6823ff7"
+        },
+        "source/figures/inference_length_benchmarks.pdf": {
+          "bytes": 12391,
+          "sha256": "aab9960ce470325bf1852eaac7807095d10972b926d624f5153e9e03b60d0e36"
+        },
+        "source/figures/method.pdf": {
+          "bytes": 1210018,
+          "sha256": "1cbbff3804c92f0936c53f53ea59f9cbd5f5edf1e1ba706c4d91c9fa6222cadf"
+        },
+        "source/figures/motivation_intervention.pdf": {
+          "bytes": 36604,
+          "sha256": "769cec704e0a395eeec29c1a069a4d53e8f6e1b71537ec560637a0154ded27d2"
+        },
+        "source/figures/relay_logo.png": {
+          "bytes": 70986,
+          "sha256": "3351455522037297240a05fdbc917c5d30beb8e201a3f561ecf1baf4535c36ca"
+        },
+        "source/figures/sensitivity_analysis.pdf": {
+          "bytes": 19024,
+          "sha256": "22e4dde737e2bc2e98beeb05fb6083e820c2a7bffb1bdcbcb63d2ba6b965c62a"
+        },
+        "source/figures/teaser.pdf": {
+          "bytes": 359973,
+          "sha256": "e8e6335ba8b6cd0c59f7096ae54b05f69b77c51a3ca9387c33f30f68d99a760a"
+        },
+        "source/figures/training_dynamics.pdf": {
+          "bytes": 15333,
+          "sha256": "e810b32411fc18ddd8656985eac73c6a30f9b725f87e6d4a34e4a84738d0599f"
+        },
+        "source/iclr2026_conference.bbl": {
+          "bytes": 13626,
+          "sha256": "0b6ec6a8ed8c246b36a17dd8d0b674ecc0ed19dbd2e36a47614b4f85d6b33e8f"
+        },
+        "source/iclr2026_conference.bst": {
+          "bytes": 26973,
+          "sha256": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5"
+        },
+        "source/iclr2026_conference.sty": {
+          "bytes": 9025,
+          "sha256": "a4852f68e080d6c5245057ca2039100b409e31727898aa93c03d78ddb84374a3"
+        },
+        "source/iclr2026_conference.tex": {
+          "bytes": 56272,
+          "sha256": "e03152f1b7e4ed17fa41d58f48c94f47743e8a0e02682dd62f7754f72872d5dd"
+        },
+        "source/math_commands.tex": {
+          "bytes": 10697,
+          "sha256": "1597a55933b23a7154ae0d62db45d6da0571ac3a6ef8240151eff5fe3bbabf3b"
+        },
+        "source/natbib.sty": {
+          "bytes": 45154,
+          "sha256": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d"
+        },
+        "source/tables/fastopd_truncation_sweep.tex": {
+          "bytes": 1783,
+          "sha256": "a9fa87fd7525c1c281ee2cb45daa530aa91ce8b10f2e924ea6143b51c5440183"
+        },
+        "source/tables/main_results.tex": {
+          "bytes": 3731,
+          "sha256": "c6b37425c7cf12b7f90963984186131a4d3c64da96cca60d7ca22b70addb01f4"
+        },
+        "source/tables/method_comparison_overview.tex": {
+          "bytes": 1502,
+          "sha256": "ec2f589348c271dd4eacd33c9ca7d2f81aa69fbab0c1ab7128c118d6a27ebf47"
+        },
+        "source/tables/sensitivity_results.tex": {
+          "bytes": 1875,
+          "sha256": "039af06236b746d34f9b8ea0bde1136f6c6cb09f897cca6318e36eb77baedde2"
+        },
+        "source/tables/skd_repetition_distributions.tex": {
+          "bytes": 851,
+          "sha256": "e03ee08a838b7ed1dfd3afd099c232e07c2306b4fc00dd3dd217c8e9baa5e1a4"
+        },
+        "source/tables/teacher_leg_ablation.tex": {
+          "bytes": 1648,
+          "sha256": "71e6477ac0ee8bf1c9d0fcc6bf06a990c7aa02668fe8b94dd85fc40112a3dd43"
+        },
+        "source/tables/teacher_student_distributions.tex": {
+          "bytes": 966,
+          "sha256": "1f8d64d6d71cfdb0a6e228637e4a62040911868f086f172feb9db48a41190bc5"
+        },
+        "source/tables/training_hyperparameters.tex": {
+          "bytes": 1620,
+          "sha256": "9b40326aa4179c68203be353238b1f865df43e7f6bdb4b824dc080282500ebbf"
+        },
+        "source.tar.gz": {
+          "bytes": 1630917,
+          "sha256": "110a940a19f6c83b4f186ee92fcf384847c551493ac3a3e6cbacebcb651e8c99"
         }
       }
     },
@@ -1886,6 +2636,68 @@
         "source.tar.gz": {
           "bytes": 2104825,
           "sha256": "7b0e4e018498c20a77601f435181b13f61e3ca79db13e54ac271667af63300fa"
+        }
+      }
+    },
+    {
+      "title": "KL for a KL: On-Policy Distillation with Control Variate Baseline",
+      "arxiv_id": "2605.07865v1",
+      "arxiv_url": "https://arxiv.org/abs/2605.07865v1",
+      "category": "opd",
+      "background": false,
+      "tldr": "Single-sample OPD gradients can have high variance and destabilize training. vOPD subtracts a detached control variate baseline computed from the per-token negative reverse KL, using the existing forward pass without an additional critic. Approximating this action-independent baseline with top-k tokens preserves unbiasedness while reducing cost; experiments show improved stability and competitive reasoning performance.",
+      "directory": "papers/opd/2605.07865v1",
+      "pdf": "papers/opd/2605.07865v1/paper.pdf",
+      "source": "papers/opd/2605.07865v1/source",
+      "source_archive": "papers/opd/2605.07865v1/source.tar.gz",
+      "files": {
+        "metadata.json": {
+          "bytes": 1041,
+          "sha256": "b74d4833694c28dccb2d55635cc0490a47935cca75ef4a915cf2abc250791125"
+        },
+        "paper.pdf": {
+          "bytes": 2773431,
+          "sha256": "454cee826bde3b7db9bc2fe41c33612020a4635bb7847861b2037a6f18d7a029"
+        },
+        "source/00README.json": {
+          "bytes": 295,
+          "sha256": "a61742cc1d436b13504fb9ffb7f29819b37f1c6edbfde6a6f1b3338520f97450"
+        },
+        "source/figures/full_plot_square.pdf": {
+          "bytes": 21857,
+          "sha256": "a66b1351429f550a64a75f178665978265d7b04a12cca53fc53f8720752cba26"
+        },
+        "source/figures/grad_norm.pdf": {
+          "bytes": 18037,
+          "sha256": "40d6fe26ca9cb1c4e4c8916206409937fa8d2443a26dba60afdb69bbf2ff6c17"
+        },
+        "source/figures/reward.pdf": {
+          "bytes": 716424,
+          "sha256": "2614458422b2ae05a8877c4d08108412007e49b8756e480846c12db72dbf9652"
+        },
+        "source/figures/reward_vs_logp_combined.pdf": {
+          "bytes": 1543570,
+          "sha256": "ba9779c6f1a02a386b6e21b211314ff5055e5ce791ae0b53cf26114bd687c8c6"
+        },
+        "source/figures/time.pdf": {
+          "bytes": 16579,
+          "sha256": "9eac35a66d07f23d9586799ee796c92a99c52c3ccc1bba605638bfae5320e9a3"
+        },
+        "source/main.tex": {
+          "bytes": 65344,
+          "sha256": "e9a4e8ac7beacaad639604e80f4570ffb4bf1f8d50b416132277fd617a2d56d7"
+        },
+        "source/neurips.bib": {
+          "bytes": 19934,
+          "sha256": "bfd2ebb2075e5db7fc6ace839e4b0d5c156f265f4bac0bd57cc8a93fabefed21"
+        },
+        "source/neurips_2026.sty": {
+          "bytes": 13462,
+          "sha256": "0c1ad36961fcd9198dcc2558cf2793e1df39973bde8264fd701f5e7970672757"
+        },
+        "source.tar.gz": {
+          "bytes": 2311575,
+          "sha256": "7bead1aba8666dd5629bf1d81a500da59f06d76c8e84bbb753cf398f508d5e7d"
         }
       }
     },

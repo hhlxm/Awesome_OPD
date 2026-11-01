@@ -1,0 +1,140 @@
+\section{Additional benchmark results}
+\label{app:benchmark}
+
+\subsection{Single-turn reasoning}
+\begin{table}[htbp]
+  \centering
+  \caption{\textbf{Evaluation results for single-turn reasoning.}
+  Panel (a) reports accuracy in percent; panel (b) reports the mean token counts, and LST.
+  Avg.\ Acc.\ weights benchmarks by their numbers of evaluation prompts.
+  Avg.\ Len.\ covers all 143 prompts. Easy and Hard Len.\ use the fixed
+  RL step-100 easy set ($A(x)\ge 0.9$) and its hard-query complement.
+  $\mathrm{LST}_{1000}$ uses the $\tau=1$ RL step-1000 cohort in
+  Table~\ref{tab:paired-preservation}. On this fixed easy set, RL step
+  \sharedLSTReferenceStep{} has the lowest mean response length among RL
+  checkpoints satisfying the accuracy constraint (100\%). Its mean length,
+  \sharedLSTReferenceLength{} tokens, is the shared reference for all methods.}
+  \label{tab:lsd-best-each-max}
+  \small
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lrrrrrrrr}
+    \toprule
+    \multicolumn{9}{l}{\textbf{(a) Task performance (\%)}} \\
+    \midrule
+    & \multicolumn{2}{c}{\textbf{AMC}}
+    & \multicolumn{2}{c}{\textbf{AIME25}}
+    & \multicolumn{2}{c}{\textbf{AIME26}}
+    & \multicolumn{2}{c}{\textbf{Avg. Acc.}} \\
+    \cmidrule(lr){2-3}
+    \cmidrule(lr){4-5}
+    \cmidrule(lr){6-7}
+    \cmidrule(lr){8-9}
+    Method
+    & Pass@1 & Pass@32
+    & Pass@1 & Pass@32
+    & Pass@1 & Pass@32
+    & Pass@1 & Pass@32 \\
+    \midrule
+    \methodname{RL}{RL}
+      & 60.09 & 84.34
+      & \underline{22.19} & \textbf{43.33}
+      & 16.04 & \underline{36.67}
+      & 42.90 & \underline{65.73} \\
+
+    \methodname{CRISP}{CRISP}
+      & 58.48 & \underline{86.75}
+      & 18.36 & 36.67
+      & 13.18 & 33.33
+      & 40.56 & 65.04 \\
+
+    \methodname{Fixed}{Fixed SG-FKL}
+      & 45.07 & \textbf{87.95}
+      & 11.46 & \underline{40.00}
+      & 8.96 & \underline{36.67}
+      & 30.44 & \textbf{67.13} \\
+
+    \methodname{SGFKL}{LSD (SG-FKL)}
+      & \textbf{61.30} & \underline{86.75}
+      & \textbf{22.92} & \textbf{43.33}
+      & \textbf{18.15} & \underline{36.67}
+      & \textbf{44.20} & \textbf{67.13} \\
+
+    \methodname{SGRKL}{LSD (SG-RKL)}
+      & \underline{60.87} & \textbf{87.95}
+      & 19.65 & 36.67
+      & 15.94 & \textbf{40.00}
+      & 42.80 & \textbf{67.13} \\
+
+    \methodname{PGRKL}{LSD (PG-RKL)}
+      & 60.70 & \textbf{87.95}
+      & 21.96 & \textbf{43.33}
+      & \underline{17.76} & 33.33
+      & \underline{43.56} & \textbf{67.13} \\
+    \bottomrule
+  \end{tabular}
+  }
+  \par\medskip
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{lrrrrr}
+    \toprule
+    \multicolumn{6}{l}{\textbf{(b) Response length and LST}} \\
+    \midrule
+    Method & Avg.\ Len. & Easy Len. & Hard Len.
+      & $\mathrm{LST}_{0}$ (\%) & $\mathrm{LST}_{1000}$ (\%) \\
+    \midrule
+    \methodname{RL}{RL}                 & \underline{2124} & 997 & \underline{2329} & 67.2 & \mainLSTRL \\
+    \methodname{CRISP}{CRISP}              & 2150 & 972 & 2364 & 61.2 & \mainLSTCRISP \\
+    \methodname{Fixed}{Fixed SG-FKL}   & \textbf{1226} & \textbf{691} & \textbf{1323} & \underline{11.0} & \underline{\mainLSTFixed} \\
+    \methodname{SGFKL}{LSD (SG-FKL)} & 2257 & 859 & 2511 & 31.5 & \mainLSTFKL \\
+    \methodname{SGRKL}{LSD (SG-RKL)} & 2143 & \underline{757} & 2395 & \textbf{9.1} & $\mathbf{\mainLSTRKL}$ \\
+    \methodname{PGRKL}{LSD (PG-RKL)} & 2148 & 802 & 2393 & 14.0 & \mainLSTPG \\
+    \bottomrule
+  \end{tabular}%
+  }
+\end{table}
+
+The fixed hard-query cohort is the complement
+of the evaluation easy set; it is distinct from the dynamically routed
+hard groups used during training.
+
+\subsection{Multi-turn agentic tasks}
+\begin{table}[htbp]
+  \centering
+  \caption{\textbf{Evaluation results on multi-turn agentic tasks.}
+  Values correspond to Figure~\ref{fig:agent-main}.
+  Pass@1 and LST are in percent; lengths are in tokens.}
+  \label{tab:agent-main-results}
+  \small
+  \setlength{\tabcolsep}{5pt}
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{lrrrrrrr}
+    \toprule
+    \multirow{2}{*}{Method} & \multicolumn{7}{c}{\textbf{BrowseComp-Plus}} \\
+    \cmidrule(lr){2-8}
+    & Pass@1 & Avg.\ Turns & Easy Len. & Hard Len.
+      & $\mathrm{LST}_{0}$ & $\mathrm{LST}_{50}$ & $\mathrm{LST}_{100}$ \\
+    \midrule
+    \methodname{RL}{RL}                 & 29.50 & 5.41 & 3531.9 & 4065.3 & 42.3 & 31.4 & 11.8 \\
+    \methodname{LP}{RL + Length Penalty} & 22.58 & \textbf{4.66} & 2708 & 3426 & & \textbf{1.2} & \\
+    \methodname{SGFKL}{LSD (SG-FKL)} & \underline{30.72} & 5.24 & \underline{2706.0} & 4252.0 & \underline{24.9} & 13.7 & \underline{1.2} \\
+    \methodname{SGRKL}{LSD (SG-RKL)} & 29.60 & \underline{4.93} & \textbf{2146.5} & 4034.8 & \textbf{13.6} & \underline{9.2} & $\mathbf{-6.2}$ \\
+    \methodname{PGRKL}{LSD (PG-RKL)} & \textbf{31.65} & 5.66 & 2715.2 & 4139.5 & 31.4 & 16.1 & 2.4 \\
+    \bottomrule
+  \end{tabular}%
+  }
+\end{table}
+
+SG-FKL and SG-RKL reduce both LST and average interaction turns while increasing
+Pass@1. PG-RKL attains the highest Pass@1 but uses more turns than RL,
+showing that lower LST does not necessarily imply fewer interactions.
+RL + Length Penalty obtains the lowest $\mathrm{LST}_{50}$ and fewest turns, but its
+Pass@1 falls to 22.58\% from RL's 29.50\%.
+
+% \subsection{Additional baseline LST diagnostics}
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=\linewidth]{figures/rl4k_math_lst.png}
+%   \caption{\textbf{Multi-anchor LST under the 4k RL baseline.} The five panels track frozen easy cohorts anchored at steps 0, 25, 50, 75, and 100. LST grows late in training for every cohort, complementing the accuracy and length curves in Figure~\ref{fig:rl4k-easy-tracking}. Cohort sizes differ across anchors, so cross-panel levels are not estimates on an identical query set.}
+%   \label{fig:baseline-lst-extra}
+% \end{figure}
+% The shared upward trend shows that length growth is not confined to queries solved by the initial policy. Later-anchor cohorts also accumulate excess length. This complements the checkpoint-conditional evidence in Section~\ref{sec:lst}, without assuming that the different anchors define independent replications.

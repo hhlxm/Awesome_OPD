@@ -1,0 +1,31 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Teacher-Leg Ablations.} Using Qwen3-1.7B-Non-Thinking as student; all other settings are identical to the main experiments. \textbf{Top:} teacher leg vs.\ trigger-stop, where both variants set $M=1$. \textbf{Bottom:} training objective for the teacher leg.}
+\label{tab:teacher-leg-trigger-stop}
+\label{tab:teacher-leg-objective}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.1}
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lccccccccc}
+\toprule
+\textbf{Variant} & \textbf{AIME24} & \textbf{AIME25} & \textbf{AIME26} & \textbf{MATH} & \textbf{AMC23} & \textbf{Olymp.} & \textbf{\makecell{HMMT\\Feb26}} & \textbf{\makecell{HMMT\\Nov25}} & \textbf{Avg} \\
+\midrule
+\multicolumn{10}{c}{\textit{Teacher leg vs.\ trigger-stop}} \\
+\midrule
+Trigger-Stop ($M=1$, No Teacher Leg) & 39.48 & 28.75 & 24.48 & 87.00 & 71.56 & 55.27 & 23.11 & 18.23 & 43.48 \\
+\rowcolor{cyan!10}
+\textbf{Relay-OPD} ($M=1$, $L=3$) & \textbf{42.40} & \textbf{31.98} & \textbf{29.69} & \textbf{88.55} & \textbf{75.47} & \textbf{58.38} & \textbf{23.30} & \textbf{20.21} & \textbf{46.25} \\
+\midrule
+\multicolumn{10}{c}{\textit{Training objective for the teacher leg}} \\
+\midrule
+Student Draft Token & 38.54 & 27.60 & 26.25 & 88.10 & 75.94 & 57.42 & 23.67 & 18.96 & 44.56 \\
+Teacher FKL ($k=128$) & 41.77 & 28.96 & 26.56 & 88.20 & 72.73 & 55.68 & 21.69 & 17.08 & 44.08 \\
+\rowcolor{cyan!10}
+Relay Token (Ours) & \textbf{42.71} & \textbf{32.81} & \textbf{30.52} & \textbf{89.50} & \textbf{76.88} & \textbf{58.79} & \textbf{24.72} & 19.79 & \textbf{46.96} \\
+\bottomrule
+\end{tabular}%
+}
+\endgroup
+\end{table}

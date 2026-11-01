@@ -1,0 +1,23 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{\textbf{Paired accuracy and response length.} Easy and hard columns use the RL step-100 cohort ($\tau=0.9$) and its complement; LSD and Random Routing Hard Acc. is derived from overall and easy-set accuracy. $\mathrm{LST}_{1000}$ uses the strict step-1000 cohort and shared reference in Table~\ref{tab:paired-preservation}.}
+\label{tab:paired-main-easy-set}
+\setlength{\tabcolsep}{4pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+\multirow{2}{*}{Method} & \multirow{2}{*}{\shortstack{Avg.\\Pass@1 (\%)}} & \multicolumn{2}{c}{Easy queries} & \multicolumn{2}{c}{Hard queries} & \multirow{2}{*}{$\mathrm{LST}_{1000}$ (\%)} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+& & Acc. (\%) & Mean tokens & Acc. (\%) & Mean tokens & \\
+\midrule
+\methodname{RL}{RL} & 42.90 & 98.15 & 996.9 & 32.85 & 2329.3 & 19.03 \\
+\methodname{SGFKL}{LSD (SG-FKL)} & 44.20 & 99.10 & 859 & 34.22 & 2511 & -3.72 \\
+\methodname{SGRKL}{LSD (SG-RKL)} & 42.80 & 99.43 & 757.2 & 32.50 & 2395.0 & -10.92 \\
+\methodname{PGRKL}{LSD (PG-RKL)} & 43.56 & 99.15 & 801.6 & 33.45 & 2392.5 & 1.45 \\
+Random Routing & 22.08 & 89.74 & 895.0 & 9.78 & 2006.6 & -11.00 \\
+\methodname{Fixed}{Fixed SG-FKL} & 30.44 & 94.89 & 690.6 & 18.72 & 1322.8 & -10.81 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

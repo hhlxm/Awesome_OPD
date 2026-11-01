@@ -1,0 +1,31 @@
+\begin{table}[H]
+\centering
+\caption{\textbf{FastOPD Fixed Truncation Length Comparison.} Subscripts in the Avg column indicate the training step of the best checkpoint; Train Len denotes average rollout response length from training start to that checkpoint.}
+\label{tab:fastopd-truncation}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.1}
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{ccccccccccc}
+\toprule
+\textbf{\makecell{Truncation\\Length}} & \textbf{AIME24} & \textbf{AIME25} & \textbf{AIME26} & \textbf{MATH} & \textbf{AMC23} & \textbf{Olymp.} & \textbf{\makecell{HMMT\\Feb26}} & \textbf{\makecell{HMMT\\Nov25}} & \textbf{Avg} & \textbf{\makecell{Train\\Len}} \\
+\midrule
+\multicolumn{11}{c}{\textit{Student: Qwen3-0.6B-Non-Thinking}} \\
+\midrule
+1,024 & 15.94 & 20.42 & 12.40 & 74.65 & 54.69 & 43.95 & 10.51 & 9.58 & 30.27$_{\text{@105}}$ & 987 \\
+2,048 & 15.83 & 19.38 & 15.42 & 76.90 & 51.48 & 44.77 & 10.51 & 8.33 & 30.33$_{\text{@95}}$ & 1,827 \\
+\textbf{4,096} & 15.83 & 20.10 & 13.54 & 75.30 & 53.67 & 44.81 & 11.55 & 8.54 & \textbf{30.42}$_{\text{@100}}$ & 3,302 \\
+8,192 & 14.79 & 18.44 & 11.88 & 75.35 & 51.80 & 43.36 & 9.66 & 8.65 & 29.24$_{\text{@60}}$ & 5,055 \\
+\midrule
+\multicolumn{11}{c}{\textit{Student: Qwen3-1.7B-Non-Thinking}} \\
+\midrule
+1,024 & 39.06 & 26.46 & 25.21 & 86.00 & 70.70 & 57.08 & 23.20 & 19.17 & 43.36$_{\text{@105}}$ & 983 \\
+2,048 & 43.23 & 29.58 & 28.33 & 88.35 & 72.11 & 57.42 & 23.67 & 19.17 & 45.23$_{\text{@75}}$ & 1,753 \\
+\textbf{4,096} & 42.29 & 30.42 & 26.35 & 87.95 & 74.30 & 58.16 & 23.58 & 20.73 & \textbf{45.47}$_{\text{@45}}$ & 2,709 \\
+8,192 & 40.52 & 27.60 & 26.56 & 86.70 & 72.81 & 56.27 & 21.88 & 20.31 & 44.08$_{\text{@50}}$ & 4,004 \\
+\bottomrule
+\end{tabular}%
+}
+\endgroup
+\end{table}

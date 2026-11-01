@@ -1,0 +1,47 @@
+{
+  "arxiv_id": "2607.26057v1",
+  "title": "Pass the Baton: Trajectory-Relayed On-Policy Distillation",
+  "authors": [
+    "Xu, Haolei",
+    "Xu, Xiaowen",
+    "Hong, Haiwen",
+    "Ni, Zixuan",
+    "Li, Hongxing",
+    "Qiu, Yiwen",
+    "Lu, Weiming",
+    "Shen, Yongliang"
+  ],
+  "submitted_date": "2026/07/28",
+  "abs_url": "https://arxiv.org/abs/2607.26057v1",
+  "schema_version": 2,
+  "requested_input": "2607.26057",
+  "requested_id": "2607.26057",
+  "source_url": "https://arxiv.org/src/2607.26057v1",
+  "downloaded_at": "2026-10-26T03:21:43.789174+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "110a940a19f6c83b4f186ee92fcf384847c551493ac3a3e6cbacebcb651e8c99",
+  "tex_files": [
+    "iclr2026_conference.tex",
+    "math_commands.tex",
+    "tables/fastopd_truncation_sweep.tex",
+    "tables/main_results.tex",
+    "tables/method_comparison_overview.tex",
+    "tables/sensitivity_results.tex",
+    "tables/skd_repetition_distributions.tex",
+    "tables/teacher_leg_ablation.tex",
+    "tables/teacher_student_distributions.tex",
+    "tables/training_hyperparameters.tex"
+  ],
+  "main_tex_candidates": [
+    "iclr2026_conference.tex"
+  ],
+  "source_file_count": 25,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2607.26057v1",
+    "sha256": "42df71b4502374f1c4cb55047014ec2acae85051d5c794296104e737b80cea31",
+    "downloaded_at": "2026-10-26T03:21:45.700016+00:00",
+    "content_type": "application/pdf"
+  }
+}

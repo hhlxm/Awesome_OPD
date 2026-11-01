@@ -1,0 +1,50 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Main Experimental Results.} Mean accuracy is reported; bold and underline denote the best and second-best results for each student model. Subscripts in the Avg column indicate the training step of the best checkpoint. Train Len denotes the average rollout response length from the start of training to the best checkpoint.}
+\label{tab:main-results}
+\begingroup
+\small
+\newcommand{\dv}[1]{\textcolor{deltagreen}{#1}}
+\renewcommand{\arraystretch}{1.1}
+\setlength{\tabcolsep}{3pt}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lcccccccccc}
+\toprule
+\textbf{Method} & \textbf{AIME24} & \textbf{AIME25} & \textbf{AIME26} & \textbf{MATH} & \textbf{AMC23} & \textbf{Olymp.} & \textbf{\makecell{HMMT\\Feb26}} & \textbf{\makecell{HMMT\\Nov25}} & \textbf{Avg} & \textbf{\makecell{Train\\Len}} \\
+\midrule
+Teacher & 60.42 & 46.04 & 52.19 & 94.20 & 93.83 & 70.62 & 31.25 & 41.88 & 61.30 & — \\
+\midrule
+\multicolumn{11}{c}{\textit{Student: Qwen3-0.6B-Non-Thinking}} \\
+\midrule
+Student & 1.77 & 2.40 & 0.73 & 44.10 & 24.45 & 16.36 & 0.76 & 3.85 & 11.80 & — \\
+SFT & 4.90 & 7.60 & 4.06 & 59.45 & 34.92 & 26.74 & 1.89 & 3.02 & 17.82$_{\text{@110}}$ & 4262 \\
+KD & 4.17 & 7.19 & 4.79 & 57.75 & 35.23 & 27.15 & 2.94 & 2.71 & 17.74$_{\text{@110}}$ & 4262 \\
+GRPO & 8.23 & 15.21 & 10.00 & 68.60 & 46.56 & 35.42 & 7.86 & 6.04 & 24.74$_{\text{@110}}$ & 3379 \\
+OPD & 13.44 & 17.92 & 11.98 & 75.30 & 51.25 & 41.32 & 7.39 & 5.62 & 28.03$_{\text{@110}}$ & 6900 \\
+TRD & 4.58 & 8.54 & 3.96 & 57.60 & 36.33 & 26.93 & 3.79 & 2.81 & 18.07$_{\text{@20}}$ & 3275 \\
+FastOPD & \underline{15.83} & \underline{20.10} & \underline{13.54} & \underline{75.30} & \underline{53.67} & \underline{44.81} & \textbf{11.55} & \underline{8.54} & \underline{30.42}$_{\text{@100}}$ & 3302 \\
+SKD & 8.44 & 16.98 & 9.79 & 66.65 & 43.67 & 35.76 & 8.14 & 5.62 & 24.38$_{\text{@20}}$ & 5800 \\
+\rowcolor{cyan!10}
+\textbf{Relay-OPD} & \textbf{15.94} & \textbf{20.94} & \textbf{14.06} & \textbf{76.80} & \textbf{55.55} & \textbf{45.03} & \underline{11.17} & \textbf{8.85} & \textbf{31.04}$_{\text{@75}}$ & \textbf{2490} \\
+\rowcolor{cyan!10}
+\dv{$\Delta$ vs OPD} & \dv{+2.50} & \dv{+3.02} & \dv{+2.08} & \dv{+1.50} & \dv{+4.30} & \dv{+3.71} & \dv{+3.78} & \dv{+3.23} & \dv{+3.01} & \dv{-63.9\%} \\
+\midrule
+\multicolumn{11}{c}{\textit{Student: Qwen3-1.7B-Non-Thinking}} \\
+\midrule
+Student & 12.60 & 9.58 & 7.40 & 71.95 & 47.89 & 38.54 & 6.34 & 4.38 & 24.84 & — \\
+SFT & 23.33 & 19.48 & 16.15 & 81.40 & 59.45 & 46.62 & 12.59 & 6.56 & 33.20$_{\text{@110}}$ & 4262 \\
+KD & 23.54 & 21.15 & 15.31 & 81.45 & 60.23 & 48.07 & 12.78 & 7.50 & 33.75$_{\text{@110}}$ & 4262 \\
+GRPO & 24.58 & 22.08 & 15.62 & 80.35 & 60.16 & 48.74 & 14.49 & 9.38 & 34.42$_{\text{@105}}$ & 2558 \\
+OPD & 35.83 & 25.52 & 23.33 & 85.70 & 70.08 & 55.27 & 20.08 & 14.06 & 41.23$_{\text{@55}}$ & 4658 \\
+TRD & 19.27 & 19.69 & 12.71 & 77.70 & 55.47 & 44.18 & 11.93 & 4.58 & 30.69$_{\text{@40}}$ & 2785 \\
+FastOPD & \underline{42.29} & 30.42 & 26.35 & \underline{87.95} & \underline{74.30} & \underline{58.16} & \underline{23.58} & \textbf{20.73} & \underline{45.47}$_{\text{@45}}$ & 2709 \\
+SKD & 33.12 & \underline{30.73} & \underline{28.85} & 87.35 & 72.42 & 54.41 & 20.08 & 11.88 & 42.35$_{\text{@35}}$ & 4753 \\
+\rowcolor{cyan!10}
+\textbf{Relay-OPD} & \textbf{42.71} & \textbf{32.81} & \textbf{30.52} & \textbf{89.50} & \textbf{76.88} & \textbf{58.79} & \textbf{24.72} & \underline{19.79} & \textbf{46.96}$_{\text{@35}}$ & \textbf{2296} \\
+\rowcolor{cyan!10}
+\dv{$\Delta$ vs OPD} & \dv{+6.88} & \dv{+7.29} & \dv{+7.19} & \dv{+3.80} & \dv{+6.80} & \dv{+3.52} & \dv{+4.64} & \dv{+5.73} & \dv{+5.73} & \dv{-50.7\%} \\
+\bottomrule
+\end{tabular}%
+}
+\endgroup
+\end{table}

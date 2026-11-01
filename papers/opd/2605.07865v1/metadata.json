@@ -1,0 +1,35 @@
+{
+  "arxiv_id": "2605.07865v1",
+  "title": "KL for a KL: On-Policy Distillation with Control Variate Baseline",
+  "authors": [
+    "Oh, Minjae",
+    "Song, Sangjun",
+    "Choi, Gyubin",
+    "Choi, Yunho",
+    "Jo, Yohan"
+  ],
+  "submitted_date": "2026/05/08",
+  "abs_url": "https://arxiv.org/abs/2605.07865v1",
+  "schema_version": 2,
+  "requested_input": "2605.07865",
+  "requested_id": "2605.07865",
+  "source_url": "https://arxiv.org/src/2605.07865v1",
+  "downloaded_at": "2026-11-01T03:13:21.188081+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "7bead1aba8666dd5629bf1d81a500da59f06d76c8e84bbb753cf398f508d5e7d",
+  "tex_files": [
+    "main.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 9,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2605.07865v1",
+    "sha256": "454cee826bde3b7db9bc2fe41c33612020a4635bb7847861b2037a6f18d7a029",
+    "downloaded_at": "2026-11-01T03:13:24.098609+00:00",
+    "content_type": "application/pdf"
+  }
+}

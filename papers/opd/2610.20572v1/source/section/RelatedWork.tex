@@ -1,0 +1,21 @@
+\section{Related Work}
+\label{sec:related}
+
+\noindent\textbf{On-policy distillation and its supervision.}
+On-policy distillation trains the student on its own sequences with feedback from the teacher \citep{agarwal2024onpolicy,gu2023minillm,ko2024distillm,yang2026eos}, and its transfer depends on whether the reasoning of the student and the teacher is compatible \citep{li2026rethinking}.
+As prefixes degrade, the feedback of the teacher can lose its corrective value \citep{liu2026prefix,xin2026escaping}, and existing methods truncate, select, or reweight the supervision \citep{zhang2026fast,yang2026pruneopd,wang2026teachability,zheng2026scope,lee2026sead}.
+These methods choose where to supervise, whereas \ours{} rewrites the rollout after its last error.
+
+\noindent\textbf{Teacher intervention and trajectory repair.}
+Other methods let the teacher write tokens into the trajectory through interleaved generation, revisions, or takeovers \citep{xu2025speculative,jiang2026trajectory,xu2026relay}, or regenerate from an earlier reliable context \citep{wang2026backtracking}.
+In \ours{}, the teacher writes only a critique, which is removed before training, so every supervised token comes from the student.
+
+\noindent\textbf{Privileged context and language feedback.}
+Context distillation trains a model to match itself with a fixed context \citep{askell2021general,snell2022learning}, and OPSD applies it to OPD with the reference answer as the context \citep{zhao2026selfdistilled,yang2026ogls}.
+Other work trains on revisions guided by language feedback \citep{scheurer2023training,zhang2026critiquegrpo} or on self-correction in a later turn \citep{kumar2025training,qu2024recursive}.
+In \ours{}, the teacher writes the critique for each incorrect rollout, and the student needs neither feedback nor an extra turn at inference.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We show that on-policy distillation relies on the recoverability of the teacher, which fails after the student errs because the teacher follows the errors of the student while still recognizing them. CriticOPD uses the critique of the teacher to restore recoverability and improves OPD on mathematical reasoning benchmarks at two student scales. The critique changes only the context in which the teacher scores the rewrite, so the student writes every supervised token and needs no feedback at inference. It restores reliable token-level credit.

@@ -1,0 +1,43 @@
+{
+  "arxiv_id": "2610.20572v1",
+  "title": "Recovering Reliable Supervision via Critique-Guided On-Policy Distillation",
+  "authors": [
+    "Zhao, Kaixiang",
+    "Yu, Tianrun",
+    "Li, Shangzhe",
+    "Yang, Yuxiao",
+    "Hughes, Amanda",
+    "Zhang, Weitong",
+    "Killian, Taylor W."
+  ],
+  "submitted_date": "2026/10/14",
+  "abs_url": "https://arxiv.org/abs/2610.20572v1",
+  "schema_version": 2,
+  "requested_input": "2610.20572",
+  "requested_id": "2610.20572",
+  "source_url": "https://arxiv.org/src/2610.20572v1",
+  "downloaded_at": "2026-10-26T02:40:51.601080+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "30afc37bc202dd9f955d7fb55d0d63a0af640e1a405b1cf077411b13ceaafc47",
+  "tex_files": [
+    "acl_latex.tex",
+    "section/Appendix.tex",
+    "section/Experiments.tex",
+    "section/Introduction.tex",
+    "section/Method.tex",
+    "section/Preliminaries.tex",
+    "section/RelatedWork.tex"
+  ],
+  "main_tex_candidates": [
+    "acl_latex.tex"
+  ],
+  "source_file_count": 28,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2610.20572v1",
+    "sha256": "afda80924da2257d5e9a070671a9798518451f5f47e4d68008924b864fbd05e9",
+    "downloaded_at": "2026-10-26T02:40:53.962924+00:00",
+    "content_type": "application/pdf"
+  }
+}

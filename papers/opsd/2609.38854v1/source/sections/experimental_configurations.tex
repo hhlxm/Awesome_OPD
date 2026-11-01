@@ -1,0 +1,79 @@
+\section{Experimental Configurations}
+\label{app:experimental-configurations}
+
+Table~\ref{tab:task-configurations} consolidates shared settings and task-specific
+differences. Table~\ref{tab:method-configurations} specifies the RL and LSD variants.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{\textbf{Training and inference configurations for RL and LSD.} Values spanning both
+  columns are shared. Agent mini-batches count transformed training rows.
+  A dash indicates an unspecified setting.}
+  \label{tab:task-configurations}
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabularx}{\linewidth}{@{}lXX@{}}
+    \toprule
+    Parameter & Single-turn reasoning & Multi-turn agentic tasks \\
+    \midrule
+    Optimizer & \multicolumn{2}{c}{AdamW; $\beta=(0.9,0.999)$} \\
+    Learning rate / weight decay & \multicolumn{2}{c}{$10^{-6}$ / $0.01$} \\
+    Training batch & \multicolumn{2}{c}{32 prompts $\times$ 8 rollouts = 256 trajectories} \\
+    PPO epochs / advantage & \multicolumn{2}{c}{1 / GRPO} \\
+    PPO clip $(\epsilon_{\mathrm{low}},\epsilon_{\mathrm{high}})$ & \multicolumn{2}{c}{$(0.20,0.28)$} \\
+    Entropy / RL KL coef. & \multicolumn{2}{c}{0 / 0} \\
+    Sampling / top-$k$ / TP & \multicolumn{2}{c}{Enabled / $-1$ / 1} \\
+    \midrule
+    Backbone & Qwen3-4B-Base & Qwen3-8B-Base \\
+    Training data & DAPO-Math-17K & CutTheBill \texttt{train} \\
+    Evaluation data & AMC23 / AIME25 / AIME26 (83 / 30 / 30 queries) & BrowseComp-Plus \texttt{test} (830 queries) \\
+    Agent / tools & Single-turn math agent / none & DeepResearch / retrieval + Refine \\
+    Max.\ prompt / response tokens & 4096 / 4096 & 700 / 20,000 \\
+    Max.\ interaction turns & 1 & 48 \\
+    Stopping & EOS or response-token limit & EOS, response-token limit, or turn limit \\
+    PPO mini-batch & 64 trajectories & 2048 transformed rows \\
+    Dynamic micro-batch limit & 16,384 tokens/GPU & 24,576 tokens/GPU \\
+    Dual-clip $c$ & 3 & 10 \\
+    LR schedule / warmup & Constant / 0 & Constant / 10 steps \\
+    Loss aggregation & \texttt{seq-mean-token-mean} & \texttt{token-mean} \\
+    Train $(T,\mathrm{top}\text{-}p,n)$ & $(0.6,1,8)$ & $(1.0,1,8)$ \\
+    Validation $(T,\mathrm{top}\text{-}p,n)$ & $(0.6,1,32)$ & $(1.0,0.7,8)$ \\
+    Inference engine & vLLM & SGLang \\
+    Max.\ model length & 8192 & 20,700 \\
+    GPU memory utilization & 0.8 & 0.65 \\
+    Runtime options / max.\ sequences & -- / -- & Eager; overlap scheduling off / 128 \\
+    Validation / saving interval & -- & Every 25 steps \\
+    Parallelism / model precision & FSDP / BF16 & FSDP2 / FP16 \\
+    EMA accumulation precision & FP32 (EMA teachers only) & -- \\
+    Hardware & 1 node $\times$ 8 GPUs & 1 node $\times$ 8 H20 GPUs \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{\textbf{RL and LSD configurations.} LSD retains GRPO on the hard
+  route; the gradient row describes only the distillation route. The three
+  online LSD variants share these settings across tasks. Fixed SG-FKL
+  results are reported for single-turn reasoning.}
+  \label{tab:method-configurations}
+  \small
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{@{}lccccc@{}}
+    \toprule
+    Parameter & \methodname{RL}{RL} & \methodname{Fixed}{\shortstack{Fixed\\SG-FKL}} & \methodname{SGFKL}{SG-FKL} & \methodname{SGRKL}{SG-RKL} & \methodname{PGRKL}{PG-RKL} \\
+    \midrule
+    Teacher & -- & Frozen $\pi_0$ & \multicolumn{3}{c}{EMA} \\
+    Routing & -- & Fixed map & \multicolumn{3}{c}{Online rollout-group accuracy} \\
+    Routing threshold $\tau$ & -- & \multicolumn{4}{c}{1.0} \\
+    EMA half-life $H$ & -- & -- & \multicolumn{3}{c}{4} \\
+    Distillation objective & -- & \multicolumn{2}{c}{Top-32 FKL} & Top-32 RKL & Sample-token RKL \\
+    Distillation gradient & -- & \multicolumn{3}{c}{Supervised} & Policy gradient \\
+    LSD coefficient & -- & \multicolumn{4}{c}{1.0} \\
+    Easy-route RL coefficient & -- & \multicolumn{4}{c}{0} \\
+    PG advantage clip & -- & -- & -- & -- & 10 \\
+    \midrule
+    Single-turn W\&B ID & \texttt{s71jbnha} & \texttt{tuabqb6l} & \texttt{z7hhhn5x} & \texttt{kvjksgpr} & \texttt{178n91ko} \\
+    \bottomrule
+  \end{tabular}
+\end{table}

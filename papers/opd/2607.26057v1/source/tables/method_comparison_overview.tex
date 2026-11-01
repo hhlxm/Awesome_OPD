@@ -1,0 +1,25 @@
+\begin{table}[H]
+\centering
+\caption{\textbf{Method Comparison Overview.} Original FKL-based papers use full vocabulary or varying top-$k$ settings; we uniformly adopt top-$k{=}128$. The original SKD paper uses acceptance top-$k{=}25$, but in our teacher--student configuration top-25 barely filters any student draft tokens, so we adopt top-$k{=}5$.}
+\label{tab:method-comparison}
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.1}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\tabularxcolumn}[1]{m{#1}}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}m{0.14\linewidth}>{\centering\arraybackslash}m{0.13\linewidth}>{\raggedright\arraybackslash}m{0.20\linewidth}>{\centering\arraybackslash}m{0.09\linewidth}L}
+\toprule
+\textbf{Method} & \textbf{Policy} & \textbf{Trajectory Source} & \textbf{Loss} & \textbf{Method-Specific Settings} \\
+\midrule
+SFT & Off-policy & Teacher trajectory & CE & — \\
+KD & Off-policy & Teacher trajectory & FKL & — \\
+TRD & Off-policy & Rewritten student trajectory & FKL & rewrite prompt (B.2) \\
+GRPO & On-policy & Student rollout & Outcome RL & 8 rollouts per prompt \\
+OPD & On-policy & Student rollout & RKL & max response = 16384 \\
+FastOPD & On-policy & Student rollout & RKL & fixed truncation $\in\{1024,2048,4096,8192\}$ (C.5) \\
+SKD & On-policy & Speculative mixed rollout & FKL & acceptance top-$K{=}5$ (C.4) \\
+Relay-OPD & On-policy & Relay rollout & RKL & handoff top-$K$; relay budget $(M,L)$ \\
+\bottomrule
+\end{tabularx}
+\endgroup
+\end{table}

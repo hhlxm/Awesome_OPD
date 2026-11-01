@@ -1,0 +1,315 @@
+
+\newcommand{\chg}[1]{\textcolor{blue}{#1}}
+
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\KL}{\mathrm{KL}}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem*{definition*}{Definition}
+\DeclareMathOperator*{\argmax}{arg\,max} 
+\DeclareMathOperator*{\argmin}{arg\,min} 
+\newcommand{\yu}[1]{\textcolor{red}{\textbf{Yu:} #1}}
+\newcommand{\mert}[1]{\textcolor{RoyalBlue}{\textbf{Mert:} #1}}
+\newcommand{\fede}[1]{\textcolor{DarkOrange}{\textbf{Fede:} #1}}
+\newcommand{\james}[1]{\textcolor{red}{\textbf{James:} #1}}
+\newcommand{\carlos}[1]{\textcolor{red}{\textbf{Carlos:} #1}}
+\newcommand{\xinhao}[1]{\textcolor{DarkGreen}{\textbf{XH.} #1}}
+\newcommand{\daniel}[1]{\textcolor{DarkOrange}{\textbf{DK.} #1}}
+\newcommand{\ssota}{s_{\text{sota}}}
+\newcommand{\rsota}{r_{\text{sota}}}
+\newcommand{\name}{TTT-Discover}
+\newcommand{\longname}{Test-Time Training to Discover}
+\newcommand{\githubcode}{\href{https://github.com/test-time-training/discover}{code}}
+\newcommand{\init}{\texttt{<empty>}}
+\newcommand{\sinit}{s_{\text{init}}}
+\newcommand{\erdos}{Erd\H{o}s'}
+% Pastel palette
+\definecolor{pastelblue}{HTML}{E3F2FD}
+\definecolor{pastelgreen}{HTML}{E8F5E9}
+\definecolor{pastellavender}{HTML}{EDE7F6}
+\definecolor{pastelpeach}{HTML}{FFF3E0}
+\definecolor{pastelrose}{HTML}{FCE4EC}
+\definecolor{pastelmint}{HTML}{E0F2F1}
+
+\newtcolorbox{reviewbox}[2][]{%
+  enhanced,
+  breakable,
+  colback=#2,
+  colframe=#2!60!black!20,
+  boxrule=0pt,
+  arc=4mm,
+  outer arc=4mm,
+  left=5mm, right=5mm, top=4mm, bottom=4mm,
+  shadow={1.5mm}{-1.5mm}{0mm}{black!8},
+  % Title styling
+  attach boxed title to top left={yshift=-3mm, xshift=5mm},
+  boxed title style={
+    colback=white,
+    colframe=white,
+    arc=2mm,
+    outer arc=2mm,
+    boxrule=0pt,
+    left=2mm, right=2mm, top=1mm, bottom=1mm,
+    shadow={1mm}{-1mm}{0mm}{black!6},
+  },
+  fonttitle=\normalsize\bfseries,
+  coltitle=black,
+  title={Human Expert Review~---~#1},
+}
+
+% Required packages - add these to your preamble
+% \usepackage{tcolorbox}
+% \usepackage{listings}
+% \usepackage{xcolor}
+% \tcbuselibrary{listings, skins, breakable}
+
+% ============================================================================
+% COLOR DEFINITIONS
+% ============================================================================
+
+% Artifact (code) colors
+\definecolor{artifactbg}{HTML}{ffffff}
+\definecolor{artifactframe}{HTML}{d0d0d0}
+\definecolor{artifacttitle}{HTML}{333333}
+
+% Syntax highlighting colors
+\definecolor{codegreen}{HTML}{228B22}
+\definecolor{codeblue}{HTML}{0000CD}
+\definecolor{codegray}{HTML}{808080}
+
+% Prompt colors
+\definecolor{promptbg}{HTML}{f9f6f2}
+\definecolor{promptframe}{HTML}{d4c4b0}
+\definecolor{promptaccent}{HTML}{5a4a3a}
+
+% ============================================================================
+% LISTINGS STYLE FOR CODE
+% ============================================================================
+% Artifact (code) colors
+\definecolor{artifactbg}{HTML}{ffffff}
+\definecolor{artifactframe}{HTML}{d0d0d0}
+\definecolor{artifacttitle}{HTML}{333333}
+
+% Syntax highlighting colors
+\definecolor{codegreen}{HTML}{228B22}
+\definecolor{codeblue}{HTML}{0000CD}
+\definecolor{codegray}{HTML}{808080}
+
+% Prompt colors
+\definecolor{promptbg}{HTML}{f9f6f2}
+\definecolor{promptframe}{HTML}{d4c4b0}
+\definecolor{promptaccent}{HTML}{5a4a3a}
+
+% ============================================================================
+% LISTINGS STYLE FOR CODE
+% ============================================================================
+
+% Recommended (prevents curly-quote weirdness without touching parsing)
+\usepackage{upquote}
+\usepackage{listingsutf8}
+\lstdefinestyle{artifactstyle}{
+    basicstyle=\ttfamily\scriptsize,
+    backgroundcolor=\color{artifactbg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codeblue},
+    stringstyle=\color{codegreen},
+    numberstyle=\tiny\color{codegray},
+    breakatwhitespace=false,
+    breaklines=true,
+    keepspaces=true,
+    numbers=left,
+    numbersep=8pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    xleftmargin=12pt,
+    framexleftmargin=12pt,
+    aboveskip=0pt,
+    belowskip=0pt,
+    inputencoding=utf8,
+    columns=fullflexible,
+    upquote=true,
+    literate=
+        {→}{{$\rightarrow$}}1
+        {←}{{$\leftarrow$}}1
+        {↔}{{$\leftrightarrow$}}1
+        {≤}{{$\leq$}}1
+        {≥}{{$\geq$}}1
+        {≠}{{$\neq$}}1
+        {−}{{-}}1
+        {—}{{--}}1
+        {–}{{-}}1
+        {"}{{\textquotedblleft}}1
+        {"}{{\textquotedblright}}1
+        {'}{{\textquoteleft}}1
+        {'}{{\textquoteright}}1
+        {…}{{...}}1
+        {×}{{$\times$}}1
+        {÷}{{$\div$}}1
+        {±}{{$\pm$}}1
+        {∞}{{$\infty$}}1
+        {α}{{$\alpha$}}1
+        {β}{{$\beta$}}1
+        {γ}{{$\gamma$}}1
+        {δ}{{$\delta$}}1
+        {ε}{{$\epsilon$}}1
+        {λ}{{$\lambda$}}1
+        {π}{{$\pi$}}1
+        {σ}{{$\sigma$}}1
+        {∑}{{$\sum$}}1
+        {∏}{{$\prod$}}1
+        {√}{{$\sqrt{}$}}1
+        {∈}{{$\in$}}1
+        {∉}{{$\notin$}}1
+        {⊂}{{$\subset$}}1
+        {⊃}{{$\supset$}}1
+        {∩}{{$\cap$}}1
+        {∪}{{$\cup$}}1
+        {∀}{{$\forall$}}1
+        {∃}{{$\exists$}}1
+        {¬}{{$\neg$}}1
+        {∧}{{$\land$}}1
+        {∨}{{$\lor$}}1,
+}
+
+% ============================================================================
+% LISTINGS STYLE FOR PROMPTS (no syntax highlighting, no line numbers)
+% ============================================================================
+
+\lstdefinestyle{promptstyle}{
+    basicstyle=\small\scriptsize,
+    backgroundcolor=\color{promptbg},
+    breakatwhitespace=false,
+    breaklines=true,
+    breakindent=0pt,
+    breakautoindent=false,
+    keepspaces=true,
+    numbers=none,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    aboveskip=0pt,
+    belowskip=0pt,
+    xleftmargin=0pt,
+    framexleftmargin=0pt,
+    extendedchars=true,
+    inputencoding=utf8,
+    upquote=true,
+    literate=
+        {→}{{$\rightarrow$}}1
+        {←}{{$\leftarrow$}}1
+        {↔}{{$\leftrightarrow$}}1
+        {≤}{{$\leq$}}1
+        {≥}{{$\geq$}}1
+        {≠}{{$\neq$}}1
+        {−}{{-}}1
+        {—}{{--}}1
+        {–}{{-}}1
+        {"}{{\textquotedblleft}}1
+        {"}{{\textquotedblright}}1
+        {'}{{\textquoteleft}}1
+        {'}{{\textquoteright}}1
+        {…}{{...}}1
+        {×}{{$\times$}}1
+        {÷}{{$\div$}}1
+        {±}{{$\pm$}}1
+        {∞}{{$\infty$}}1
+        {α}{{$\alpha$}}1
+        {β}{{$\beta$}}1
+        {γ}{{$\gamma$}}1
+        {δ}{{$\delta$}}1
+        {ε}{{$\epsilon$}}1
+        {λ}{{$\lambda$}}1
+        {π}{{$\pi$}}1
+        {σ}{{$\sigma$}}1
+        {∑}{{$\sum$}}1
+        {∏}{{$\prod$}}1
+        {√}{{$\sqrt{}$}}1
+        {∈}{{$\in$}}1
+        {∉}{{$\notin$}}1
+        {⊂}{{$\subset$}}1
+        {⊃}{{$\supset$}}1
+        {∩}{{$\cap$}}1
+        {∪}{{$\cup$}}1
+        {∀}{{$\forall$}}1
+        {∃}{{$\exists$}}1
+        {¬}{{$\neg$}}1
+        {∧}{{$\land$}}1
+        {∨}{{$\lor$}}1,
+}
+
+
+% ============================================================================
+% ARTIFACT BOX (for code)
+% ============================================================================
+% Usage: \begin{artifact}[language]{Title}
+%        \begin{artifact}[python]{My Python Script}
+%        \begin{artifact}[C++]{My C++ Code}  <-- Note: use C++ not cpp
+
+\newtcblisting{artifact}[2][python]{%
+    enhanced,
+    breakable,
+    colback=artifactbg,
+    colframe=artifactframe,
+    boxrule=0.5pt,
+    arc=3mm,
+    outer arc=3mm,
+    left=0mm, right=3mm, top=2mm, bottom=2mm,
+    shadow={1.5mm}{-1.5mm}{0mm}{black!10},
+    % Title styling
+    attach boxed title to top left={yshift=-3mm, xshift=5mm},
+    boxed title style={
+        colback=white,
+        colframe=artifactframe,
+        arc=2mm,
+        outer arc=2mm,
+        boxrule=0.5pt,
+        left=2mm, right=2mm, top=1mm, bottom=1mm,
+    },
+    fonttitle=\normalsize\bfseries,
+    coltitle=artifacttitle,
+    title={#2},
+    % Listings settings
+    listing only,
+    listing options={
+        style=artifactstyle,
+        language=#1,
+    },
+}
+
+
+\newtcblisting{prompt}[1]{%
+    enhanced,
+    breakable,
+    colback=promptbg,
+    colframe=promptframe,
+    boxrule=0.5pt,
+    arc=3mm,
+    outer arc=3mm,
+    left=5mm, right=5mm, top=4mm, bottom=4mm,
+    shadow={1.5mm}{-1.5mm}{0mm}{black!8},
+    % Title styling
+    attach boxed title to top left={yshift=-3mm, xshift=5mm},
+    boxed title style={
+        colback=white,
+        colframe=promptframe,
+        arc=2mm,
+        outer arc=2mm,
+        boxrule=0.5pt,
+        left=2mm, right=2mm, top=1mm, bottom=1mm,
+    },
+    fonttitle=\normalsize,
+    coltitle=promptaccent,
+    title={#1},
+    % Listings settings (no language = plain text, handles special chars)
+    listing only,
+    listing options={
+        style=promptstyle,
+    },
+}

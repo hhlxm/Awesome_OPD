@@ -1,0 +1,58 @@
+\begin{table}[H]
+\centering
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.1}
+\setlength{\tabcolsep}{2pt}
+\begin{minipage}[t]{0.485\linewidth}
+\vspace{0pt}
+\begin{minipage}[t][3.5\baselineskip][t]{\linewidth}
+\caption{Training hyperparameters for online distillation methods.}
+\label{tab:hyperparameters-online}
+\end{minipage}
+\begin{tabularx}{\linewidth}{L>{\raggedright\arraybackslash}p{0.27\linewidth}}
+\toprule
+\textbf{Hyperparameter} & \textbf{Value} \\
+\midrule
+Max Prompt Length & 2048 \\
+Max Response Length & 16384 \\
+Rollout Temperature & 1.0 \\
+Rollout Top-$p$ & 1.0 \\
+Rollout Number per Prompt ($n$) & 1 \\
+Global Batch Size & 128 \\
+PPO Mini-Batch Size & 128 \\
+PPO Epochs & 1 \\
+PPO Clipping Range & 0.2 \\
+Learning Rate & $1\times10^{-6}$ \\
+Learning-Rate Schedule & constant \\
+Training Epochs & 1 \\
+\bottomrule
+\end{tabularx}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}
+\vspace{0pt}
+\begin{minipage}[t][3.5\baselineskip][t]{\linewidth}
+\caption{Training hyperparameters for GRPO.}
+\label{tab:hyperparameters-grpo}
+\end{minipage}
+\begin{tabularx}{\linewidth}{L>{\raggedright\arraybackslash}p{0.27\linewidth}}
+\toprule
+\textbf{Hyperparameter} & \textbf{Value} \\
+\midrule
+Max Prompt Length & 2048 \\
+Max Response Length & 16384 \\
+Rollout Temperature & 1.0 \\
+Rollout Top-$p$ & 1.0 \\
+Rollout Number per Prompt ($n$) & 8 \\
+Global Batch Size & 128 \\
+PPO Mini-Batch Size & 128 \\
+PPO Epochs & 1 \\
+PPO Clipping Range & 0.2 \\
+Learning Rate & $1\times10^{-6}$ \\
+Learning-Rate Schedule & constant \\
+Training Epochs & 1 \\
+\bottomrule
+\end{tabularx}
+\end{minipage}
+\endgroup
+\end{table}

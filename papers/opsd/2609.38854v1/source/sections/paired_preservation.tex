@@ -1,0 +1,75 @@
+\section{Paired Accuracy and Length on Fixed Easy Sets}
+\label{app:paired-preservation}
+
+\paragraph{Evaluation on identical queries.}
+We freeze query IDs using RL anchors $b\in\{100,500,1000\}$ and
+$\tau=1$: every selected query has 32/32 correct anchor rollouts.
+
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.84\linewidth]{figures/paired_easy_preservation.pdf}
+  \caption{\textbf{Accuracy and length evaluated on the same fixed queries.}
+  Each column uses one RL-frozen cohort with $\tau=1$.
+  The top row reports empirical accuracy; the bottom row reports mean
+  response length. The dashed line marks the 100\% anchor accuracy.
+  F, R, and P denote SG-FKL, SG-RKL, and PG-RKL, respectively.
+  Every method is evaluated on the
+  identical query IDs within a column.}
+  \label{fig:paired-preservation}
+\end{figure}
+
+\input{figures/paired_preservation_table}
+
+All three LSD variants use fewer tokens and have higher reported accuracy
+than RL on each cohort; all retain 100\% accuracy at $b=100$.
+
+\subsection{The main-table cohort and individual examples}
+
+Table~\ref{tab:paired-main-easy-set} jointly reports accuracy and length
+on the easy-query set used in Table~\ref{tab:lsd-best-each-max}, using its
+explicitly relaxed RL step-100 cohort ($\tau=0.9$). SG-RKL and PG-RKL
+reach 99.43\% and 99.15\% accuracy on these same queries, compared with
+98.15\% for RL, while reducing mean length from 997 to 757 and 802
+tokens. Fixed produces still shorter responses but lower accuracy,
+illustrating why length and correctness must be reported together.
+Their hard-query accuracies are 32.50\% and 33.45\%, respectively,
+compared with 32.85\% for RL.
+SG-FKL reaches 99.10\% and 34.22\% accuracy on the easy and hard
+cohorts, with mean lengths of 859 and 2511 tokens, respectively.
+
+\input{sections/random_routing_control}
+
+\input{figures/paired_main_cohort_table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/paired_query_examples.pdf}
+  \caption{\textbf{Query-level examples from the strict step-1000 cohort.}
+  Bar height is mean response length; labels give correct rollouts out
+  of 32. All three queries were answered correctly in all 32 RL anchor
+  rollouts. The examples include unchanged correctness, an LSD
+  regression, and a Fixed regression. F, R, and P denote SG-FKL,
+  SG-RKL, and PG-RKL, respectively.}
+  \label{fig:paired-query-examples}
+\end{figure}
+
+For \texttt{amc23\_45}, RL and all three LSD variants answer 32/32
+correctly, while mean length falls from 475.2 to 401, 400.4, and
+393.2 tokens under SG-FKL, SG-RKL, and PG-RKL, respectively.
+This is a direct example of shortening at identical observed accuracy.
+It is selected near the median joint length reduction among queries
+with 32/32 correctness for RL, SG-RKL, and PG-RKL and shorter responses
+under both RKL variants.
+
+The other examples expose the limits of the aggregate result.
+For \texttt{aime25\_6}, correctness falls from RL's 31/32 to 28/32
+under SG-RKL and 30/32 under PG-RKL despite shorter responses;
+SG-FKL retains 31/32 while reducing mean length from 1640.9 to 1453 tokens.
+For \texttt{amc23\_60}, RL and all three LSD variants retain 32/32
+correctness; SG-FKL reduces mean length from 720.4 to 637 tokens, while Fixed drops
+to 16/32 while shortening its response.
+These examples are selected as the largest respective correctness
+regressions among shortened queries in the cohort, so that the case
+analysis includes failure cases as well as successful preservation.
+

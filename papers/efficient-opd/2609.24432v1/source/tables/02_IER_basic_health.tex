@@ -1,0 +1,49 @@
+\begin{wraptable}{r}{0.482\textwidth}
+\vspace{-0.8\baselineskip}
+\centering
+\definecolor{HBGain}{HTML}{137D80}
+\definecolor{HBLoss}{HTML}{C77D45}
+\caption{HealthBench overall/hard at nominal budgets. Teal/orange indicates +IER gains/losses over the base. Standard errors are around \(0.5/1\).}
+\label{tab:healthbench_ratio_sweep}
+\fontsize{9}{10.5}\selectfont
+\setlength{\fboxsep}{0.5pt}
+\def\hbscore#1#2{\colorbox{#1}{\makebox[2.35em][r]{#2}}}
+\def\hbsep{\hspace{0.06em}/\hspace{0.06em}}
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.03}
+\setlength{\aboverulesep}{0.25ex}
+\setlength{\belowrulesep}{0.25ex}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Budget & 10\% & 1\% & 0.1\% \\
+\midrule
+\textbf{IER} & \hbscore{white}{45.85}\hbsep\hbscore{white}{19.68} & \hbscore{white}{44.95}\hbsep\hbscore{white}{18.39} & \hbscore{white}{45.25}\hbsep\hbscore{white}{18.37} \\
+\midrule
+Prefix & \hbscore{white}{42.17}\hbsep\hbscore{white}{14.11} & \hbscore{white}{39.91}\hbsep\hbscore{white}{10.97} & \hbscore{white}{38.30}\hbsep\hbscore{white}{8.68} \\
+\hspace{0.4em}\textbf{+IER-OR} & \hbscore{HBGain!30.00}{45.34}\hbsep\hbscore{HBGain!30.00}{19.68} & \hbscore{HBGain!30.00}{44.79}\hbsep\hbscore{HBGain!30.00}{19.07} & \hbscore{HBGain!30.00}{44.98}\hbsep\hbscore{HBGain!30.00}{19.49} \\
+\hspace{0.4em}\textbf{+IER-AND} & \hbscore{HBGain!23.10}{44.48}\hbsep\hbscore{HBGain!21.40}{16.25} & \hbscore{HBGain!26.70}{42.58}\hbsep\hbscore{HBGain!30.00}{14.96} & \hbscore{HBGain!30.00}{41.55}\hbsep\hbscore{HBGain!30.00}{12.72} \\
+\addlinespace[1pt]
+Entropy & \hbscore{white}{45.47}\hbsep\hbscore{white}{19.00} & \hbscore{white}{44.20}\hbsep\hbscore{white}{17.32} & \hbscore{white}{42.75}\hbsep\hbscore{white}{15.36} \\
+\hspace{0.4em}\textbf{+IER-OR} & \hbscore{HBGain!5.00}{45.97}\hbsep\hbscore{HBGain!10.70}{20.07} & \hbscore{HBGain!8.90}{45.09}\hbsep\hbscore{HBGain!27.80}{20.10} & \hbscore{HBGain!28.90}{45.64}\hbsep\hbscore{HBGain!30.00}{19.91} \\
+\hspace{0.4em}\textbf{+IER-AND} & \hbscore{HBLoss!2.80}{45.19}\hbsep\hbscore{HBGain!0.10}{19.01} & \hbscore{HBGain!12.00}{45.40}\hbsep\hbscore{HBGain!17.00}{19.02} & \hbscore{HBGain!21.70}{44.92}\hbsep\hbscore{HBGain!30.00}{18.77} \\
+\addlinespace[1pt]
+TIP & \hbscore{white}{45.03}\hbsep\hbscore{white}{19.96} & \hbscore{white}{43.99}\hbsep\hbscore{white}{16.85} & \hbscore{white}{42.87}\hbsep\hbscore{white}{14.27} \\
+\hspace{0.4em}\textbf{+IER-OR} & \hbscore{HBGain!5.60}{45.59}\hbsep\hbscore{HBGain!2.10}{20.17} & \hbscore{HBGain!9.30}{44.92}\hbsep\hbscore{HBGain!22.00}{19.05} & \hbscore{HBGain!30.00}{46.08}\hbsep\hbscore{HBGain!30.00}{19.61} \\
+\hspace{0.4em}\textbf{+IER-AND} & \hbscore{HBGain!1.50}{45.18}\hbsep\hbscore{HBLoss!3.50}{19.61} & \hbscore{HBGain!4.20}{44.41}\hbsep\hbscore{HBGain!25.90}{19.44} & \hbscore{HBGain!21.80}{45.05}\hbsep\hbscore{HBGain!30.00}{19.37} \\
+\addlinespace[1pt]
+TA-OPD & \hbscore{white}{44.02}\hbsep\hbscore{white}{18.02} & \hbscore{white}{45.19}\hbsep\hbscore{white}{19.22} & \hbscore{white}{44.71}\hbsep\hbscore{white}{18.61} \\
+\hspace{0.4em}\textbf{+IER-OR} & \hbscore{HBGain!11.90}{45.21}\hbsep\hbscore{HBGain!2.40}{18.26} & \hbscore{HBLoss!1.40}{45.05}\hbsep\hbscore{HBGain!10.90}{20.31} & \hbscore{HBGain!9.80}{45.69}\hbsep\hbscore{HBGain!10.70}{19.68} \\
+\hspace{0.4em}\textbf{+IER-AND} & \hbscore{HBGain!20.90}{46.11}\hbsep\hbscore{HBGain!24.30}{20.45} & \hbscore{HBLoss!0.90}{45.10}\hbsep\hbscore{HBGain!7.90}{20.01} & \hbscore{HBLoss!2.50}{44.46}\hbsep\hbscore{HBGain!7.70}{19.38} \\
+\addlinespace[1pt]
+CA-SoftOR & \hbscore{white}{45.14}\hbsep\hbscore{white}{19.88} & \hbscore{white}{44.02}\hbsep\hbscore{white}{17.23} & \hbscore{white}{41.98}\hbsep\hbscore{white}{14.86} \\
+\hspace{0.4em}\textbf{+IER-OR} & \hbscore{HBLoss!9.80}{44.16}\hbsep\hbscore{HBLoss!5.10}{19.37} & \hbscore{HBGain!8.00}{44.82}\hbsep\hbscore{HBGain!23.50}{19.58} & \hbscore{HBGain!26.50}{44.63}\hbsep\hbscore{HBGain!30.00}{18.44} \\
+\hspace{0.4em}\textbf{+IER-AND} & \hbscore{HBGain!4.20}{45.56}\hbsep\hbscore{HBLoss!6.20}{19.26} & \hbscore{HBGain!4.70}{44.49}\hbsep\hbscore{HBGain!24.50}{19.68} & \hbscore{HBGain!3.90}{42.37}\hbsep\hbscore{HBGain!30.00}{18.41} \\
+\bottomrule
+\end{tabular}
+\par\vspace{3pt}
+\fontsize{8}{9.5}\selectfont
+{\centering \mbox{Student 38.23/8.78}; \mbox{Full OPD 45.77/19.77}; \mbox{Teacher 46.37/20.24}.\par}
+\vspace{3pt}
+{\scriptsize $\Delta$ to base (points): \colorbox{HBLoss!30}{\strut $\leq -3$}~\colorbox{HBLoss!10}{\strut $-1$}~$0$~\colorbox{HBGain!10}{\strut $+1$}~\colorbox{HBGain!30}{\strut $\geq +3$}\par}
+\vspace{-1\baselineskip}
+\end{wraptable}

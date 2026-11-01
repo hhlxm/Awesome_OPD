@@ -1,0 +1,48 @@
+{
+  "arxiv_id": "2609.38854v1",
+  "title": "Mitigating the Length-Scaling Tax with Online Distillation",
+  "authors": [
+    "Wan, Xu",
+    "Xu, Wenyue",
+    "Zhao, Shengjie",
+    "Sun, Mingyang"
+  ],
+  "submitted_date": "2026/09/30",
+  "abs_url": "https://arxiv.org/abs/2609.38854v1",
+  "schema_version": 2,
+  "requested_input": "2609.38854",
+  "requested_id": "2609.38854",
+  "source_url": "https://arxiv.org/src/2609.38854v1",
+  "downloaded_at": "2026-10-30T14:24:01.327964+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "5ef9af3871f1a7067104edb85800790238df2de68d5573c06852b6f9560d6714",
+  "tex_files": [
+    "figures/paired_main_cohort_table.tex",
+    "figures/paired_preservation_table.tex",
+    "figures/shared_lst_values.tex",
+    "iclr2027_conference.tex",
+    "macros.tex",
+    "main.tex",
+    "sections/ablation_details.tex",
+    "sections/benchmark_details.tex",
+    "sections/experimental_configurations.tex",
+    "sections/experiments.tex",
+    "sections/objective_details.tex",
+    "sections/paired_preservation.tex",
+    "sections/random_routing_control.tex",
+    "sections/related_work.tex",
+    "sections/research_statements.tex"
+  ],
+  "main_tex_candidates": [
+    "iclr2027_conference.tex"
+  ],
+  "source_file_count": 36,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2609.38854v1",
+    "sha256": "6928fe4cfaf8e548b5ab5c3434ddab235c7dcfd04fb1f69bc30ccc8d731cb99d",
+    "downloaded_at": "2026-10-30T14:24:03.278538+00:00",
+    "content_type": "application/pdf"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "arxiv_id": "2609.24432v1",
+  "title": "1% of Tokens Can Be Enough: On Gradient Estimation in On-Policy Distillation",
+  "authors": [
+    "Sheng, Huanxin",
+    "Ye, Zhiling",
+    "Wang, Haonan",
+    "Wang, Jian",
+    "Gu, Jinjie",
+    "Kang, Jian"
+  ],
+  "submitted_date": "2026/09/21",
+  "abs_url": "https://arxiv.org/abs/2609.24432v1",
+  "schema_version": 2,
+  "requested_input": "2609.24432",
+  "requested_id": "2609.24432",
+  "source_url": "https://arxiv.org/src/2609.24432v1",
+  "downloaded_at": "2026-11-01T03:13:29.216690+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "b9a43251b57f7c8510546b753816eecb654e233c52b501f3e6498b3ed030f3d1",
+  "tex_files": [
+    "main.tex",
+    "math_commands.tex",
+    "sections/01_introduction.tex",
+    "sections/02_related_work.tex",
+    "sections/03_theory.tex",
+    "sections/04_ier_opd.tex",
+    "sections/05_experiments.tex",
+    "sections/06_conclusions.tex",
+    "sections/96_appendix_literature_discussion.tex",
+    "sections/97_appendix_proofs.tex",
+    "sections/98_appendix_experimental_details.tex",
+    "sections/99_appendix_token_selection_examples.tex",
+    "setting-ai.tex",
+    "tables/01_IER_basic_math.tex",
+    "tables/02_IER_basic_health.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 42,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2609.24432v1",
+    "sha256": "e5318b63d9cf84b10599ee6649218373db4ed447714393b6fc76e999c8d0a572",
+    "downloaded_at": "2026-11-01T03:13:30.347055+00:00",
+    "content_type": "application/pdf"
+  }
+}

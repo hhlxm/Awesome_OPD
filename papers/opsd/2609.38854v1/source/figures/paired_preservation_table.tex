@@ -1,0 +1,31 @@
+\begin{table}[!htbp]
+\centering
+\small
+\caption{\textbf{Paired evaluation on RL-frozen easy sets ($\tau=1$).} $\Delta A$ is the accuracy difference from RL (pp). For $b=1000$, the shared reference is RL step \sharedLSTReferenceStep{}: \sharedLSTReferenceLength{} tokens at 100\% accuracy, the minimum over 345 RL checkpoints.}
+\label{tab:paired-preservation}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llrrrr}
+\toprule
+Anchor & Method & Correct / total & Acc. (\%) & Mean tokens & $\Delta A$ (pp) \\
+\midrule
+\multirow{5}{*}{$b=100$} & \methodname{RL}{RL} & 318/320 & 99.38 & 783.1 & +0.00 \\
+ & \methodname{SGFKL}{LSD (SG-FKL)} & 320/320 & 100.00 & 592.0 & +0.63 \\
+ & \methodname{SGRKL}{LSD (SG-RKL)} & 320/320 & 100.00 & 585.3 & +0.63 \\
+ & \methodname{PGRKL}{LSD (PG-RKL)} & 320/320 & 100.00 & 585.1 & +0.63 \\
+ & \methodname{Fixed}{Fixed SG-FKL} & 314/320 & 98.13 & 568.1 & -1.25 \\
+\midrule
+\multirow{5}{*}{$b=500$} & \methodname{RL}{RL} & 695/704 & 98.72 & 1013.5 & +0.00 \\
+ & \methodname{SGFKL}{LSD (SG-FKL)} & 704/704 & 100.00 & 794.0 & +1.28 \\
+ & \methodname{SGRKL}{LSD (SG-RKL)} & 702/704 & 99.72 & 763.0 & +0.99 \\
+ & \methodname{PGRKL}{LSD (PG-RKL)} & 701/704 & 99.57 & 815.1 & +0.85 \\
+ & \methodname{Fixed}{Fixed SG-FKL} & 624/704 & 88.64 & 710.8 & -10.09 \\
+\midrule
+\multirow{5}{*}{$b=1000$} & \methodname{RL}{RL} & 726/736 & 98.64 & 1016.2 & +0.00 \\
+ & \methodname{SGFKL}{LSD (SG-FKL)} & 734/736 & 99.73 & 822.0 & +1.09 \\
+ & \methodname{SGRKL}{LSD (SG-RKL)} & 730/736 & 99.18 & 760.5 & +0.54 \\
+ & \methodname{PGRKL}{LSD (PG-RKL)} & 727/736 & 98.78 & 866.1 & +0.14 \\
+ & \methodname{Fixed}{Fixed SG-FKL} & 631/736 & 85.73 & 761.4 & -12.91 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

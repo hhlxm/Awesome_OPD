@@ -1,0 +1,40 @@
+{
+  "arxiv_id": "2609.33409v1",
+  "title": "Dense Is Not Enough: Hierarchical Supervision Allocation for Long-Horizon On-Policy Distillation",
+  "authors": [
+    "Sun, Yuhao",
+    "Wu, Binrui",
+    "Xu, Zhuoer",
+    "Wen, Ming",
+    "Xu, Haoxiang",
+    "Chen, Bin",
+    "Lin, Yan",
+    "Zhang, Qianzijing"
+  ],
+  "submitted_date": "2026/09/27",
+  "abs_url": "https://arxiv.org/abs/2609.33409v1",
+  "schema_version": 2,
+  "requested_input": "2609.33409",
+  "requested_id": "2609.33409",
+  "source_url": "https://arxiv.org/src/2609.33409v1",
+  "downloaded_at": "2026-10-26T02:41:02.585169+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "cc97b421569349b066bb33a057a75c77022052627938dd8b25b7f47c98229696",
+  "tex_files": [
+    "authors.tex",
+    "main.tex",
+    "math_commands.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 24,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2609.33409v1",
+    "sha256": "15754d82069ffddb940112c8d4dfe40d59cb3af60f20731f2f59466eb3de0a01",
+    "downloaded_at": "2026-10-26T02:41:11.465334+00:00",
+    "content_type": "application/pdf"
+  }
+}
