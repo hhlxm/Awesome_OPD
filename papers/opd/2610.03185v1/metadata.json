@@ -1,0 +1,55 @@
+{
+  "arxiv_id": "2610.03185v1",
+  "title": "Gains and Collapse in On-Policy Distillation: A Reinforcement Learning Perspective",
+  "authors": [
+    "Cui, Han",
+    "Yan, Jianhao",
+    "Luo, Yun",
+    "Zhang, Hongbo",
+    "Fu, Zhizhang",
+    "Zhang, Yue"
+  ],
+  "submitted_date": "2026/10/02",
+  "abs_url": "https://arxiv.org/abs/2610.03185v1",
+  "schema_version": 2,
+  "requested_input": "2610.03185",
+  "requested_id": "2610.03185",
+  "source_url": "https://arxiv.org/src/2610.03185v1",
+  "downloaded_at": "2026-11-04T12:24:19.458905+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "758821a443b10965a0cefdf1ec3e4ba1f8558b63042a9add10298ac13a360fc7",
+  "tex_files": [
+    "figures/S1/main_teaser_original.tex",
+    "figures/S4/qualitative_response_examples.tex",
+    "figures/opd_plot_styles.tex",
+    "main.tex",
+    "sections/S1_rm_straight_giving.tex",
+    "sections/S2_implicit_reward.tex",
+    "sections/S3_opd_phenomena.tex",
+    "sections/S4_reward_hacking.tex",
+    "sections/S5_fixing.tex",
+    "sections/S6_related_work.tex",
+    "sections/S7_conclusion.tex",
+    "sections/appendix.tex",
+    "sections/appendix_sinit_examples.tex",
+    "sections/limitations.tex",
+    "sections/statements.tex",
+    "tables/S4/candidate_pool_interventions.tex",
+    "tables/S4/endpoint_generation_characteristics.tex",
+    "tables/appendix/coverage_records.tex",
+    "tables/appendix/deepscaler_teacher_temperature.tex",
+    "title_links.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 33,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2610.03185v1",
+    "sha256": "e57ff75dd340c0cf74ec939b19ad576b5efc6a82ef5fe83ce5e09d47912c53cc",
+    "downloaded_at": "2026-11-04T12:24:20.818088+00:00",
+    "content_type": "application/pdf"
+  }
+}

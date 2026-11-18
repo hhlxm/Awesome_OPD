@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{The vanilla student inherits the teacher's endings; the repaired student does not.} Held-out episodes that run out of turns (\%) and turns per episode, seen split, over three decodes.}
+\label{tab:timeouts}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\multirow{2}{*}{Method} & \multicolumn{2}{c}{ALFWorld} & \multicolumn{2}{c}{WebShop} & \multicolumn{2}{c}{ScienceWorld} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7}
+ & Out of turns & Turns & Out of turns & Turns & Out of turns & Turns \\
+\midrule\midrule
+Teacher alone & $39.8{\pm}1.5$ & $20.0$ & $56.7{\pm}0.9$ & $11.9$ & $35.7{\pm}1.9$ & $19.7$ \\
+Student alone & $55.0{\pm}3.6$ & $22.3$ & $56.7{\pm}1.2$ & $11.9$ & $38.6{\pm}2.1$ & $17.7$ \\
+\midrule
+Vanilla OPD & \secondscore{$34.3{\pm}4.7$} & \secondscore{$19.0$} & \secondscore{$55.9{\pm}4.3$} & \secondscore{$11.8$} & \secondscore{$31.9{\pm}1.5$} & \secondscore{$18.9$} \\
+\textbf{\textcolor{box_green}{\method{} (ours)}} & \bestscore{$19.5{\pm}2.2$} & \bestscore{$14.7$} & \bestscore{$27.5{\pm}2.7$} & \bestscore{$9.0$} & \bestscore{$17.1{\pm}0.7$} & \bestscore{$14.5$} \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,43 @@
+%
+%
+%
+%
+\begin{wraptable}{r}{0.49\textwidth}
+    \centering
+
+    \vspace{-2mm}
+    \footnotesize
+    \setlength{\tabcolsep}{2pt}
+    \renewcommand{\arraystretch}{1.15}
+    %
+    \caption{
+        \textbf{Masking improves average accuracy across teachers.}
+        Accuracy (\%) and the four-benchmark mean; teachers are Qwen3 models,
+        and Base/SFT denote Qwen3-1.7B initializations.
+    }
+    \label{tab:candidate_pool_interventions}
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{lrrrrr}
+        \toprule
+        \multirow{2}{*}{\textbf{Setting}} & \textbf{AMC}
+        & \multicolumn{3}{c}{\textbf{AIME}} & \multirow{2}{*}{\textbf{Avg.}} \\
+        \cmidrule(lr){2-2}\cmidrule(lr){3-5}
+        & \textbf{23} & \textbf{24} & \textbf{25} & \textbf{26} & \\
+        \midrule
+        Base (pre-OPD) & 2.41 & 1.67 & 0.00 & 1.67 & 1.44 \\
+        \midrule
+        4B $\rightarrow$ Base & 29.82 & 3.33 & 3.33 & 4.17 & 10.16 \\
+        \quad + mask & 34.64 & 8.33 & 5.83 & 4.17 & 13.24 \\
+        \midrule
+        8B $\rightarrow$ Base & 28.31 & 5.00 & 3.33 & 5.00 & 10.41 \\
+        \quad + mask & 32.83 & 5.00 & 2.50 & 3.33 & 10.92 \\
+        \midrule
+        30B-A3B $\rightarrow$ Base & 28.61 & 6.67 & 2.50 & 4.17 & 10.49 \\
+        \quad + mask & 33.13 & 10.00 & 4.17 & 5.00 & 13.07 \\
+        \midrule
+        4B $\rightarrow$ SFT$^{\dagger}$ (warmup) & 38.86 & 9.17 & 10.00 & 7.50 & 16.38 \\
+        \bottomrule
+    \end{tabular}%
+    }
+    \vspace{-2mm}
+\end{wraptable}

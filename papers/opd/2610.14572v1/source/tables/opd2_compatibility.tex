@@ -1,0 +1,24 @@
+\caption{RAD compatibility with OPD$^2$: RAD at step 100 versus baselines
+at step 200. Values are mean
+math accuracy over AIME24/25 and
+HMMT2025-Feb/Nov.}
+\label{tab:opd2-compatibility}
+\centering
+\normalsize
+\setlength{\tabcolsep}{1.5pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcc@{}}
+\toprule
+Method & \shortstack{Qwen3-1.7B\\(non-thinking)} & \shortstack{Qwen3-4B-\\Instruct-2507} \\
+\midrule
+Teacher & 59.79 & 59.79 \\
+\midrule
+Base & 8.23 & 47.34 \\
+\addlinespace[1pt]
+Uniform OPD & 25.42 & 47.81 \\
+OPD$^2$ & \underline{28.33} & \underline{53.13} \\
+OPD$^2$ + RAD & \textbf{30.99} & \textbf{59.64} \\
+\midrule
+\shortstack[l]{$\Delta$ vs.\ OPD$^2$} & +2.66 & +6.51 \\
+\bottomrule
+\end{tabular*}

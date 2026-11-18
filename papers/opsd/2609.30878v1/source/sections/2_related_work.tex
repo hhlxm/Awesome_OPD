@@ -1,0 +1,38 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{On-policy (self-)distillation.}
+On-policy self-distillation (OPSD) derives dense targets from a student-derived teacher conditioned on privileged information. SDPO~\citep{hubotter2026sdpo} and the Self-Distilled Reasoner~\citep{zhao2026sdr} use successful rollouts or environment feedback to construct teacher targets, while RLTF~\citep{song2026rltf} formalizes learning from text feedback and analyzes its optimization behavior. 
+\citet{kim2026why} further identify suppression of uncertainty expression as a source of degraded out-of-distribution reasoning in self-distillation.
+Related OPD methods modify how teacher guidance is provided along student trajectories: TGPO~\citep{liu2026teacherguidedpolicyoptimizationonpolicy} trains the student to predict the teacher's argmax token at each visited prefix, while Trajectory-aware OPD~\citep{jiang2026topd} uses near-future trajectory information to identify divergent states and distribute guidance across subsequent tokens. TRD~\citep{jiang2026trajectory} changes the training trajectory itself by using a privileged-context teacher to rewrite the student response before distillation. \method{} uses teacher guidance to change the trajectory through a single branch action, then returns generation to the student. The student regenerates the suffix without privileged context, and the privileged-context teacher provides dense targets along the resulting trajectory.
+
+
+\vspace{-0.1cm}\paragraph{Credit assignment and selective token signals.} Prior work improves learning from response-level rewards through process reward models~\citep{lightman2024verify,wang2024mathshepherd}, Monte Carlo value estimation~\citep{kazemnejad2024vineppo}, return decomposition~\citep{parthasarathi2025grpolambda}, implicit process rewards~\citep{cui2025prime}, execution-derived penalties~\citep{liu2023rltf}, and revision from execution feedback~\citep{gehring2025rlef}. Other studies show that token-level signals are highly non-uniform: low-probability tokens can dominate policy-gradient updates~\citep{yang2025lowprob}, and high-entropy minority tokens disproportionately drive RL gains~\citep{wang2025beyond8020}. Selective distillation methods use token-importance signals to select or weight supervision~\citep{xu2026tip,tavor2026rethinking,huang2026selectkd}. 
+\method{} instead uses teacher–student divergence to select a branch point and forces the teacher-preferred token. The student then regenerates the suffix, exposing new prefixes for dense teacher supervision. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

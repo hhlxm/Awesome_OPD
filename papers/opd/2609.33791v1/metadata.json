@@ -1,0 +1,34 @@
+{
+  "schema_version": 2,
+  "arxiv_id": "2609.33791v1",
+  "title": "Do We Really Need KL Divergence for On-Policy Distillation of Large Language Models?",
+  "authors": [
+    "Wenze Lin",
+    "Jiyuan Long",
+    "Jiale Zhao",
+    "Shenzhi Wang",
+    "Xitai Jiang",
+    "Ce Luo",
+    "Rui Lan",
+    "Qianli Ma",
+    "Fukang Wen",
+    "Hui Wu",
+    "Liyuan Chen",
+    "Shuoling Liu",
+    "Jiangpeng Yan",
+    "Gao Huang"
+  ],
+  "submitted_date": "2026/09/27",
+  "abs_url": "https://arxiv.org/abs/2609.33791v1",
+  "source_url": "https://arxiv.org/src/2609.33791v1",
+  "archive_file": "source.tar.gz",
+  "sha256": "18e4b35f1e1983ea7b9bd77ddd0d10d62494c36fbfdf4e63d3eceadaf1540bab",
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2609.33791v1",
+    "sha256": "442a6a99c307668845f2cbeefee1827855f8fec7a0be5754ea4e2167dd434064"
+  }
+}

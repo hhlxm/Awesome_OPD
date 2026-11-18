@@ -1,0 +1,98 @@
+\pdfoutput=1
+\documentclass{article}
+\usepackage{iclr2027_conference,times}
+
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xspace}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{pifont}
+\usepackage{wrapfig}
+\usepackage{needspace}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.misc,fit,backgrounds,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[capitalize,nameinlink]{cleveref}
+\definecolor{linkblue}{RGB}{30,60,140}\definecolor{citegreen}{RGB}{20,110,60}
+\hypersetup{colorlinks=true, linkcolor=linkblue, citecolor=citegreen, urlcolor=linkblue}
+\setlist[itemize]{leftmargin=*, topsep=2pt, itemsep=1pt}
+\setlength{\textfloatsep}{8pt plus 2pt minus 3pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{7pt plus 2pt minus 2pt}
+\renewcommand{\topfraction}{0.9}\renewcommand{\bottomfraction}{0.6}\renewcommand{\textfraction}{0.07}
+
+\newcommand{\method}{R2S\xspace}
+\newcommand{\methodlong}{Rollout-to-Scorer Distillation\xspace}
+\newcommand{\student}{\pi_\theta}
+\newcommand{\teacher}{T}
+\newcommand{\thinkspan}{y^{\mathrm{think}}}
+
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+\definecolor{takeawaygreen}{rgb}{0.18, 0.55, 0.34}
+\definecolor{box_green}{RGB}{0, 180, 139}
+\definecolor{box_red}{RGB}{239, 99, 75}
+\newtcolorbox{takeaway}[1]{
+  enhanced,
+  colback=takeawaygreen!8,
+  colframe=takeawaygreen,
+  boxrule=0.7pt,
+  arc=5pt,
+  left=3pt, right=3pt, top=2pt, bottom=2pt, boxsep=2pt,
+  fontupper=\footnotesize\raggedright,
+  title={#1},
+  coltitle=white,
+  fonttitle=\bfseries\footnotesize,
+  colbacktitle=takeawaygreen!90!black}
+\newcommand{\bestscore}[1]{\cellcolor{box_green!12}\textcolor{box_green}{#1}}
+\newcommand{\secondscore}[1]{\cellcolor{box_red!12}\textcolor{box_red}{#1}}
+
+\crefname{equation}{Eq.}{Eqs.}
+\Crefname{equation}{Eq.}{Eqs.}
+
+\title{Capable Teacher, Myopic Scorer:\\Reward-Free Teacher Repair for Agentic On-Policy Distillation}
+
+\author{Shu Zhao, Tan Yu \\
+NVIDIA \\
+\texttt{shuzhao.cs@gmail.com}}
+
+\iclrfinalcopy
+
+\begin{document}
+
+\maketitle
+\lhead{Preprint}
+
+\input{sections/0_abstract}
+
+\input{sections/1_introduction}
+\input{sections/2_related_work}
+\input{sections/3_problem_analysis}
+\input{sections/4_method}
+\input{sections/5_experiments}
+\input{sections/6_conclusion}
+
+\section*{Limitations}
+\textbf{Compute.} Before distillation, \method{} spends the untrained student's episodes, $N{\times}K=19{,}200$ takeover episodes, the selection step and one teacher fine-tune. Every method then trains for 150 steps; Guided-OPD and FutureBridge also spend teacher generation inside training. \textbf{One model family.} Evidence comes from text-agent benchmarks and Qwen3 and Qwen3.5 models. \textbf{Replayable environments.} Takeovers start from the student's own states, so \method{} needs an environment that can be replayed to a given state; all three benchmarks here can.
+
+\bibliography{references}
+\bibliographystyle{iclr2027_conference}
+
+\appendix
+\crefalias{section}{appendix}\crefalias{subsection}{appendix}
+\crefname{appendix}{Appendix}{Appendices}\Crefname{appendix}{Appendix}{Appendices}
+\input{sections/x_appendix_analysis_method}
+
+\end{document}

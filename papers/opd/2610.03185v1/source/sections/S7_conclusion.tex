@@ -1,0 +1,10 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We interpret on-policy distillation as an RL-like process in which the teacher acts as an implicit reward model for the student's own responses.
+Across our experiments on competition mathematics, OPD improves sampling efficiency without expanding the observed solvable set.
+Its gains primarily come from making correct responses already accessible to the initial student easier to sample.
+This view also helps explain why OPD can collapse despite normal convergence.
+In the collapsed setting, the student increasingly follows the teacher's preferences while producing longer and more repetitive responses.
+These responses receive high teacher advantage even before training, although the teacher rarely generates them itself.
+Masking the loss on truncated responses and initializing the student from an SFT checkpoint mitigate this failure while keeping the teacher fixed.

@@ -1,0 +1,22 @@
+\section{Preparation: protocols and additional measurements}
+\label{app:preparation}
+
+\input{sec_app_preparation_multisetup}
+
+\subsection{Preparation-dose study}
+\label{app:preparation-legacy}
+
+We follow the same preparation (cold start) procedure as before, except we vary the number of passes over the cold-start corpus and study subsequent OPD performance. Evaluation uses the first 250 MATH-500 problems, four responses per problem, temperature $0.6$, top-$p=0.95$, a 16,384-new-token cap, and the deployment template. \Cref{tab:dose-figure} reports strict pass@1 and 95\% problem-bootstrap intervals with 2,000 resamples.
+
+The 1.5B OPD series uses the step-100 checkpoint. The 7B series uses the best checkpoint evaluated every ten steps within the first 100 OPD steps: steps 30, 50, and 90 for one, two, and four preparation passes, respectively. Its intervals are computed at the selected checkpoint and do not adjust for checkpoint selection.
+
+
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\input{data/dose_table_figure.tex}
+\caption{The dose panels of \cref{fig:preparation-aime}: strict MATH-500 pass@1 (first 250 problems, 4 samples per problem) after 1, 2 and 4 preparation passes. The OPD column uses step 100 at 1.5B and the best evaluated checkpoint within 100 steps at 7B. Brackets give 95\% problem-bootstrap intervals at each checkpoint.}
+\label{tab:dose-figure}
+\end{table}
+

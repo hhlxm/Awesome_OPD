@@ -1,0 +1,29 @@
+\begin{minipage}[t]{0.47\linewidth}
+\captionof{table}{Shared math training hyperparameters.}
+\label{tab:shared-training-hparams}
+\centering
+\normalsize
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabular}{@{}C{0.66\linewidth}c@{}}
+\toprule
+Hyperparameter & Value \\
+\midrule
+Training prompts per step & 64 \\
+Rollouts per prompt & 8 \\
+Actor epochs & 1 \\
+Maximum prompt length & 2,048 \\
+Maximum response length & 32,768 \\
+Training temperature & 1.0 \\
+Training top-\(p\) & 1.0 \\
+Optimizer & AdamW \\
+Learning rate & \(1\times10^{-6}\) \\
+Weight decay & 0.01 \\
+Global gradient clipping & 1.0 \\
+Random seed & 42 \\
+RAD / baseline steps & 100 / 200 \\
+Evaluation interval & 10 steps \\
+Responses per eval problem & 16 \\
+\bottomrule
+\end{tabular}
+\end{minipage}

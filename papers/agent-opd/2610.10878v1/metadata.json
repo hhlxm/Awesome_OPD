@@ -1,0 +1,44 @@
+{
+  "arxiv_id": "2610.10878v1",
+  "title": "Stochastic Teacher Intervention for Agentic On-Policy Distillation",
+  "authors": [
+    "Liu, Junnan",
+    "Luo, Linhao",
+    "Chen, Zhijun",
+    "Mao, Qianren",
+    "Vu, Thuy-Trang",
+    "Haffari, Gholamreza"
+  ],
+  "submitted_date": "2026/10/07",
+  "abs_url": "https://arxiv.org/abs/2610.10878v1",
+  "schema_version": 2,
+  "requested_input": "2610.10878",
+  "requested_id": "2610.10878",
+  "source_url": "https://arxiv.org/src/2610.10878v1",
+  "downloaded_at": "2026-11-13T05:25:39.528291+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "d2bc767d6baf871ff75f682196a56caa10bd4694d54142cd19bfd40acc50e8c6",
+  "tex_files": [
+    "main.tex",
+    "math_commands.tex",
+    "sections/1.abstract.tex",
+    "sections/2.introduction.tex",
+    "sections/3.related.tex",
+    "sections/4.method.tex",
+    "sections/5.experiment.tex",
+    "sections/6.conclusion.tex",
+    "sections/7.appendix.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 23,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2610.10878v1",
+    "sha256": "f0b367dd7c1eded20fae49046456a554096183c50e538c6108da7430cb6e39fb",
+    "downloaded_at": "2026-11-13T05:25:42.896733+00:00",
+    "content_type": "application/pdf"
+  }
+}

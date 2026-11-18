@@ -1,0 +1,20 @@
+\begin{wraptable}{r}{0.5\textwidth}
+\vspace{-10pt}
+\centering
+\caption{\raggedright Ablation on \textbf{takeover selection}. Success (\%). Ground truth reads the task reward and is not ranked.}
+\label{tab:selection}
+\fontsize{8}{9.5}\selectfont
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+& \textbf{ALFWorld} & \textbf{WebShop} & \textbf{ScienceWorld} \\
+\midrule\midrule
+Vanilla OPD & $65.8{\pm}2.6$ & $34.6{\pm}2.9$ & $34.6{\pm}3.5$ \\
+Consensus vote & \secondscore{$81.9{\pm}2.4$} & \bestscore{$63.1{\pm}1.6$} & \secondscore{$39.5{\pm}2.9$} \\
+LLM judge & \bestscore{$82.6{\pm}0.9$} & \secondscore{$55.9{\pm}1.4$} & \bestscore{$50.3{\pm}1.5$} \\
+\midrule
+Ground truth & $85.9{\pm}1.2$ & $65.0{\pm}1.4$ & $49.0{\pm}1.1$ \\
+\bottomrule
+\end{tabular}
+\vspace{-9pt}
+\end{wraptable}

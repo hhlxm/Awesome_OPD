@@ -1,0 +1,24 @@
+\section{Related Work}
+\label{sec:related_work}
+
+\textbf{Distillation paradigms and capability transfer.}
+Knowledge distillation matches teacher distributions \citep{hinton2015distilling} or trains on teacher sequences \citep{kim2016sequence}; for reasoning models, the supervision is teacher rationales and trajectories \citep{ho2023large, hsieh2023distilling, mukherjee2023orcaprogressivelearningcomplex, mitra2023orca2teachingsmall, guo2025deepseek}, which extend coverage beyond the base model \citep{yue2025does}.
+OPD instead supervises student-generated trajectories at student-visited states \citep{gu2024minillm, agarwal2023gkd}, with extensions to
+self-distillation \citep{zhao2026selfdistilledreasoneronpolicyselfdistillation, ye2026onpolicycontextdistillationlanguage, he2026selfdistillationzeroselfrevisionturns},
+representation-level supervision \citep{yang2026oprdonpolicyrepresentationdistillation},
+multiple teachers \citep{ma2026mopdmultiteacheronpolicydistillation, yang2026learningteachergeneralizedonpolicy, team2026kimi},
+and cross-tokenizer transfer \citep{he2026simpleopdsimpletokenizeragnosticonpolicy, wang2026crosstokenizeronpolicydistillationbyteprefix}.
+These broaden teacher supervision but retain the reliance on student rollouts, over which our runs mainly redistribute probability rather than expanding the student's observed solvable set.
+
+\textbf{Failure modes and stabilization of OPD.}
+OPD failures arise from mismatches among student rollouts, teacher supervision, and token-level objectives.
+\citet{li2026rethinkingopd} show that a stronger teacher need not help under reasoning-pattern mismatch; \citet{fu2026revisiting} and \citet{zhu2026facesonpolicydistillationpitfalls} identify unreliable guidance on student prefixes and bias from approximate reverse-KL updates.
+Remedies include off-policy warm starts, data selection, stop-gradient objectives, trust regions \citep{xing2026trustregiononpolicydistillation}, and prefix correction \citep{jiang2026trajectoryrefineddistillation}.
+Rollout-signal feedback creates another failure class: \citet{wang2026demystifyingonpolicydistillationroles} identify signal-correctness mismatch and length exploitation, while \citet{luo2026demystifyingopdlengthinflation} link length inflation to truncation and repetition collapse, motivating clipping, reference regularization, rollout mixing, and length control \citep{he2026simpleopdsimpletokenizeragnosticonpolicy, heo2026onpolicydeltadistillation}.
+We instead view OPD as selecting among student-accessible behaviors by teacher preference, and analyze how biases in that preference affect training.
+
+\textbf{Rollout pathologies in on-policy post-training.}
+On-policy optimization trains only on trajectories sampled from the current model and is therefore exposed to the pathologies of its own rollout distribution.
+For RLVR, pass@k and likelihood analyses show that training mainly redistributes probability over solution paths already accessible to the base model \citep{yue2025does}, and related studies find that reinforcement learning can amplify behaviors acquired during pretraining \citep{zhao2025echochamberrlposttraining} and reduce the diversity of reasoning trajectories \citep{dang2025assessing}.
+Rollouts can further carry degenerate patterns such as malformed formats, excessive length, truncation, and self-reinforcing repetition. Repetition can be reinforced by token co-occurrence effects \citep{yan2024understanding}, while RLVR systems counter rollout pathologies with format rewards \citep{guo2025deepseek}, length-debiased advantage estimation \citep{liu2025understandingr1zeroliketrainingcritical}, and dynamic sampling with overlong filtering \citep{yu2025dapoopensourcellmreinforcement}.
+OPD inherits this dependence on student rollouts but evaluates them through a teacher-derived signal; we show that degenerate student behaviors can bias the induced preference itself and thereby become preferentially retained during training.

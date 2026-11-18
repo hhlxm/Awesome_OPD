@@ -1,0 +1,28 @@
+\begin{table}[H]
+\caption{Total training time (hours) for RAD at step 100 versus baselines at
+step 200, matching generated training responses. RAD-Simple is included only
+for math, at step 200. Checkpoint saves
+are included; periodic validation, startup, and restart downtime are
+excluded.}
+\label{tab:training-step-comparison}
+\centering
+\normalsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lccrr@{}}
+\toprule
+Method & Steps & \shortstack{Student\\GPUs}
+& \shortstack{Qwen3-1.7B\\(non-thinking), math}
+& \shortstack{OLMo3-7B-Instruct\\Coding} \\
+\midrule
+OPD & 200 & 6 & 14.28 & 136.51 \\
+TIP & 200 & 6 & 34.09 & 166.79 \\
+RLAD & 200 & 6 & 14.11 & 123.81 \\
+ExOPD & 200 & 6 & 51.02 & --- \\
+OPD$^2$ & 200 & 4 & 33.99 & --- \\
+\midrule
+RAD & 100 & 6 & 16.66 & 101.61 \\
+RAD-Simple & 200 & 6 & 32.48 & --- \\
+\bottomrule
+\end{tabular*}
+\end{table}

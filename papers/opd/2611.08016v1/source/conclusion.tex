@@ -1,0 +1,21 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+
+
+\textbf{Findings.}
+We studied on-policy distillation as a feedback loop between teacher supervision, student response, and the rollout distribution that supplies future supervision.
+Our analysis separates two mechanisms in this loop: \emph{conversion}, and \emph{broadcast}. Across our settings, these mechanisms explain both stalled transfer and deterioration despite improving local teacher agreement. Offline preparation changes the starting point of this loop: even with little immediate accuracy improvement, it can enable
+substantial gains from subsequent OPD.
+
+\textbf{Limitations and discussion.}
+Our empirical analysis is confined to mathematical reasoning and a select set of LLM models due to resource limitations. We also present a more detailed Q\&A in Appendix \ref{app:clarifications} to further clarify potential ambiguities in our work.  
+
+\section*{AI Use Statement}
+Generative AI tools were also used for language editing, rewriting and presentation. We used generative AI tools to assist with code implementation, debugging, experimental scripting, and parts of experiment execution.
+The research questions, theoretical development, experimental design, interpretation, and scientific
+conclusions were determined by the authors. All AI-assisted code and text were reviewed and validated by the authors. We take responsibility for the final content of this work, including text, claims, and artifacts produced with the aid of generative AI.
+
+\section*{Reproducibility statement}
+
+Precise experimental details are provided in the appendix, including model specifications, training pipeline and evaluation details.

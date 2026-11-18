@@ -1,0 +1,31 @@
+\begin{table}[H]
+\caption{Math accuracy for Qwen3-1.7B (non-thinking) at comparable training
+times, relative to RAD at step 90. RAD-Simple uses its latest evaluated
+checkpoint within this budget.
+Accuracy is the mean over AIME24/25 and HMMT2025-Feb/Nov, with standard deviation
+across 16 sample-position accuracies. Budget used is the fraction of RAD's
+cumulative training time. Bold/underline mark the best/second-best
+means; parentheses give RAD's gain over the strongest displayed baseline (pp).}
+\label{tab:math-wallclock-matched-results}
+\centering
+\normalsize
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
+\toprule
+Method & Step & Training (h) & Budget used & Accuracy (\%) \\
+\midrule
+\multicolumn{5}{l}{\textit{\textbf{Student: Qwen3-1.7B (non-thinking)}; budget 12.09 h}} \\
+\addlinespace[2pt]
+GRPO & 290 & 11.98 & 99.1\% & \meanstd{26.98}{2.22} \\
+OPD & 160 & 11.72 & 96.9\% & \meanstd{23.23}{2.20} \\
+TIP & 70 & 12.19 & 100.9\% & \meanstd{24.27}{2.62} \\
+RLAD & 170 & 12.08 & 99.9\% & \meanstd{25.10}{2.67} \\
+ExOPD & 50 & 12.40 & 102.6\% & \meanstd{27.34}{2.70} \\
+\midrule
+\textbf{\method{} (ours)} & 90 & 12.09 & 100.0\% & \secondmeanstd{32.81}{2.84} \\
+RAD-Simple & 140 & 8.97 & 74.2\% & \bestmeanstd{34.64}{2.57} \\
+\(\Delta\) RAD vs.\ best & --- & --- & --- & \baselinegain{+5.47} \\
+\bottomrule
+\end{tabular*}
+\end{table}

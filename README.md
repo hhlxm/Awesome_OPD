@@ -2,23 +2,29 @@
 
 A reading collection on **on-policy distillation (OPD)** for language models and agents, covering general OPD, agent training, efficiency, latent context, and on-policy self-distillation.
 
-**34 papers**, each with an English TL;DR explaining the problem and core insight. Every entry links to its versioned arXiv page and an archived PDF; available LaTeX sources and original source archives are included.
+**49 papers**, each with an English TL;DR explaining the problem and core insight. Every entry links to its arXiv or OpenReview page and an archived PDF; available LaTeX sources and original source archives are included.
 
 ## Contents
 
 | Category | Focus | Papers |
 | --- | --- | ---: |
-| [OPD](#opd) | General methods, optimization, supervision reliability, teacher selection, and analysis. | 13 |
-| [Agent OPD](#agent-opd) | Distillation for multi-turn interaction, tool use, trajectory correction, and agent credit assignment. | 10 |
-| [Efficient OPD](#efficient-opd) | Data efficiency, example selection, prefix training, and compute allocation. | 5 |
+| [OPD](#opd) | General methods, optimization, supervision reliability, teacher selection, and analysis. | 23 |
+| [Agent OPD](#agent-opd) | Distillation for multi-turn interaction, tool use, trajectory correction, and agent credit assignment. | 13 |
+| [Efficient OPD](#efficient-opd) | Data efficiency, example selection, prefix training, and compute allocation. | 6 |
 | [LatentOPD](#latentopd) | Learned latent privileged context for on-policy self-distillation. | 1 |
-| [OPSD](#opsd) | On-policy self-distillation with privileged information, including its mechanisms and failure modes. | 5 |
+| [OPSD](#opsd) | On-policy self-distillation with privileged information, including its mechanisms and failure modes. | 6 |
 
-Papers are listed once under their primary topic, ordered by arXiv identifier within each group. Related RL and SFT papers are explicitly marked as **background**. The five categories overlap conceptually; placement reflects each paper’s main contribution.
+Papers are listed once under their primary topic, with arXiv entries ordered by identifier within each group. Related RL and SFT papers are explicitly marked as **background**. The five categories overlap conceptually; placement reflects each paper’s main contribution.
 
 ## OPD
 
 General methods, optimization, supervision reliability, teacher selection, and analysis.
+
+### Learning Dynamics of On-Policy Distillation
+
+[arXiv: 2611.08016v1](https://arxiv.org/abs/2611.08016v1) · [PDF](papers/opd/2611.08016v1/paper.pdf) · [LaTeX source](papers/opd/2611.08016v1/source)
+
+**TL;DR:** OPD updates change both the student’s predictions and the rollout distribution that supplies its next training batch. The study separates how teacher signals turn into parameter updates from how those updates spread across prefixes, showing that better local agreement can make unsuccessful continuations more likely. Offline distillation can prepare the student for useful OPD even when it brings little immediate validation gain.
 
 ### Recovering Reliable Supervision via Critique-Guided On-Policy Distillation
 
@@ -26,17 +32,59 @@ General methods, optimization, supervision reliability, teacher selection, and a
 
 **TL;DR:** A teacher can recognize student errors yet follow them when continuing an incorrect prefix, undermining OPD supervision. CriticOPD has the teacher critique a failed rollout and the student revise it; the teacher scores the revision with the critique as privileged context, while the student trains without that context. This uses error recognition to recover reliable supervision on mathematical reasoning tasks.
 
+### Reward-Aligned Distillation
+
+[arXiv: 2610.14572v1](https://arxiv.org/abs/2610.14572v1) · [PDF](papers/opd/2610.14572v1/paper.pdf) · [LaTeX source](papers/opd/2610.14572v1/source)
+
+**TL;DR:** Teacher preferences at individual tokens can conflict with the task reward. Reward-Aligned Distillation differentiates through a temporary student optimizer step to estimate how each token’s distillation update affects reward. It uses signed weights to strengthen, suppress, or reverse individual contributions according to their predicted effect on the student’s performance.
+
+### MetaOPD: Meta-Learned Token Weighting for On-Policy Distillation
+
+[arXiv: 2610.11989v1](https://arxiv.org/abs/2610.11989v1) · [PDF](papers/opd/2610.11989v1/paper.pdf) · [LaTeX source](papers/opd/2610.11989v1/source)
+
+**TL;DR:** Fixed token-weighting rules can miss how the student’s learning needs change over training. MetaOPD trains a lightweight weighting network by measuring the loss on reference solutions after a virtual weighted OPD step. This connects token weights to the effect of the student update on reference-solution prediction and lets the weighting rule evolve with the student.
+
+### UP-MOPD: Update Projection in Multi-Teacher On-Policy Distillation
+
+[arXiv: 2610.08398v1](https://arxiv.org/abs/2610.08398v1) · [PDF](papers/opd/2610.08398v1/paper.pdf) · [LaTeX source](papers/opd/2610.08398v1/source)
+
+**TL;DR:** In multi-teacher OPD, AdamW can turn a corrected gradient into a parameter update that still harms a domain to first order. UP-MOPD computes the optimizer’s candidate update and projects violating candidates onto the set of updates that satisfy each domain’s local loss constraint. The projection acts on the actual parameter displacement, accounting for momentum, adaptive scaling, and weight decay.
+
 ### Transfer-Stratified On-Policy Distillation for RL-Improved Reasoning Teachers
 
 [arXiv: 2610.05974v1](https://arxiv.org/abs/2610.05974v1) · [PDF](papers/opd/2610.05974v1/paper.pdf) · [LaTeX source](papers/opd/2610.05974v1/source)
 
 **TL;DR:** RL improvements in a teacher do not transfer uniformly to smaller students. TS-OPD stratifies problems by joint teacher–student success, uses gated forward KL for knowledge acquisition and gated reverse KL for consolidation, and adds an entropy brake. The insight is to match supervision to the student’s learning need; gains in average correctness need not translate uniformly to pass@K.
 
+### Gains and Collapse in On-Policy Distillation: A Reinforcement Learning Perspective
+
+[arXiv: 2610.03185v1](https://arxiv.org/abs/2610.03185v1) · [PDF](papers/opd/2610.03185v1/paper.pdf) · [LaTeX source](papers/opd/2610.03185v1/source)
+
+**TL;DR:** OPD can improve accuracy or collapse into long, repetitive responses. The authors trace both outcomes to the teacher’s implicit reward on student rollouts, which can make existing correct answers easier to sample or favor repetition that the teacher rarely generates itself. Masking unhealthy rollouts and starting from an SFT checkpoint both mitigate collapse in the tested settings.
+
+### Interactive-Policy Distillation with Bidirectional Propose-and-Verify
+
+[arXiv: 2609.36546v1](https://arxiv.org/abs/2609.36546v1) · [PDF](papers/opd/2609.36546v1/paper.pdf) · [LaTeX source](papers/opd/2609.36546v1/source)
+
+**TL;DR:** Student reasoning can drift into prefixes where teacher supervision is unreliable. Interactive-Policy Distillation lets the two models switch proposer and verifier roles during a rollout, then uses reverse KL at student-generated positions and forward KL at teacher-generated positions. Handing control back to the student after a correction lets it practice continuing from the repaired prefix.
+
+### Do We Really Need KL Divergence for On-Policy Distillation of Large Language Models?
+
+[arXiv: 2609.33791v1](https://arxiv.org/abs/2609.33791v1) · [PDF](papers/opd/2609.33791v1/paper.pdf) · [LaTeX source](papers/opd/2609.33791v1/source)
+
+**TL;DR:** How much of reverse-KL supervision does OPD need? Binary rewards that retain only the teacher’s preferred update direction match conventional OPD in the tested settings, and ablations find that direction matters most at a small set of strongly disputed tokens. The paper uses this result to build a consensus signal from multiple teachers for each example.
+
 ### Towards Understanding On-Policy Distillation through the Lens of Test-Time Scaling
 
 [arXiv: 2608.11829v3](https://arxiv.org/abs/2608.11829v3) · [PDF](papers/opd/2608.11829v3/paper.pdf) · [LaTeX source](papers/opd/2608.11829v3/source)
 
 **TL;DR:** An OPD model can improve pass@1 yet lose pass@K at larger sampling budgets, even with a more accurate teacher. This work analyzes that reversal and proposes Teacher Advantage Score at K to compare candidate teachers before training. The insight is to select teachers for the intended inference budget, since stronger average accuracy does not guarantee better sampled coverage.
+
+### Weak-to-Strong On-Policy Distillation
+
+[arXiv: 2607.26246v2](https://arxiv.org/abs/2607.26246v2) · [PDF](papers/opd/2607.26246v2/paper.pdf) · [LaTeX source](papers/opd/2607.26246v2/source)
+
+**TL;DR:** A strong student may have no stronger teacher, and training specialist teachers at the student’s scale is costly. Weak-to-Strong OPD adds a logit difference from a pair of smaller models to the strong student’s base logits and distills this proxy teacher on student rollouts. The contrast transfers a targeted skill while keeping the teacher distribution close to the student’s starting point.
 
 ### Pass the Baton: Trajectory-Relayed On-Policy Distillation
 
@@ -49,6 +97,12 @@ General methods, optimization, supervision reliability, teacher selection, and a
 [arXiv: 2607.13399v1](https://arxiv.org/abs/2607.13399v1) · [PDF](papers/opd/2607.13399v1/paper.pdf) · [LaTeX source](papers/opd/2607.13399v1/source)
 
 **TL;DR:** Why can a stronger teacher or more OPD training still produce worse reasoning? This study identifies student–teacher mismatch and length exploitation as failures of the dense supervision signal. Advantage clipping and log-scale compression suppress extreme signals while preserving useful preferences. Its experiments frame OPD as an exploration catalyst whose success depends on signal quality and compatibility rather than teacher size alone.
+
+### Trust Region Policy Distillation
+
+[arXiv: 2607.04751v2](https://arxiv.org/abs/2607.04751v2) · [PDF](papers/opd/2607.04751v2/paper.pdf) · [LaTeX source](papers/opd/2607.04751v2/source)
+
+**TL;DR:** Large teacher–student gaps can produce high-variance updates in standard OPD. TOP-D constructs a proximal teacher by interpolating the target teacher and current student distributions, yielding a lower-bounded reward through an algebraic transformation of ordinary OPD scores. The softened target supports stable trust-region updates and rollout reuse without another teacher forward pass.
 
 ### Trust Region On-Policy Distillation
 
@@ -80,6 +134,12 @@ General methods, optimization, supervision reliability, teacher selection, and a
 
 **TL;DR:** Standard OPD implicitly fixes the balance between a dense teacher-derived reward and KL regularization. G-OPD exposes this balance and the reference model as explicit choices; ExOPD strengthens the reward through extrapolation. The insight is that teacher matching is one constrained-RL operating point, and adjusting it can improve transfer or surpass domain teachers in the tested expert-merging setting.
 
+### Learning When to Imitate: Counterfactual Value Modeling for On-Policy Distillation
+
+[OpenReview](https://openreview.net/forum?id=Bd47PXo8f6) · [PDF](papers/opd/openreview-Bd47PXo8f6/paper.pdf)
+
+**TL;DR:** A valid teacher step can lead to a worse outcome if the student cannot continue from it. CFOPD compares teacher and student alternatives by sampling both continuations with the same frozen student, then learns a counterfactual value model to guide imitation and track progress. In the reported analysis, the student’s own action worked better at 30–50% of evaluated states despite the teacher’s higher overall accuracy.
+
 ### Related background
 
 These papers provide relevant context rather than an OPD algorithm.
@@ -105,6 +165,24 @@ These papers provide relevant context rather than an OPD algorithm.
 ## Agent OPD
 
 Distillation for multi-turn interaction, tool use, trajectory correction, and agent credit assignment.
+
+### Capable Teacher, Myopic Scorer: Reward-Free Teacher Repair for Agentic On-Policy Distillation
+
+[arXiv: 2610.28586v1](https://arxiv.org/abs/2610.28586v1) · [PDF](papers/agent-opd/2610.28586v1/paper.pdf) · [LaTeX source](papers/agent-opd/2610.28586v1/source)
+
+**TL;DR:** A teacher can finish an agent task from a difficult state while its next-token scores still reward delaying moves. Rollout-to-Scorer Distillation (R2S) uses teacher takeovers selected by consensus or an LLM judge to teach the scorer to reproduce hindsight-informed token predictions. The repaired teacher then supervises standard OPD without task rewards or takeovers during student training.
+
+### Stochastic Teacher Intervention for Agentic On-Policy Distillation
+
+[arXiv: 2610.10878v1](https://arxiv.org/abs/2610.10878v1) · [PDF](papers/agent-opd/2610.10878v1/paper.pdf) · [LaTeX source](papers/agent-opd/2610.10878v1/source)
+
+**TL;DR:** Early student errors can corrupt later observations, while fixed schedules or hard thresholds can intervene at the wrong turns. STI-OPD turns teacher–student KL into a probability of executing a teacher action, then importance-weights reverse KL on teacher-generated tokens to account for the sampling mismatch. This couples adaptive trajectory repair with an objective that targets the student’s policy.
+
+### PivotOPD: Learning to Recover from Pivotal Mistakes in Multi-Turn Agents
+
+[arXiv: 2609.40285v1](https://arxiv.org/abs/2609.40285v1) · [PDF](papers/agent-opd/2609.40285v1/paper.pdf) · [LaTeX source](papers/agent-opd/2609.40285v1/source)
+
+**TL;DR:** Early pivotal mistakes can derail a multi-turn agent, yet a short sequence of corrective actions can often restore progress. PivotOPD trains prevention with reverse KL at the pivotal turn and recovery with forward KL on teacher-guided continuations. The recovery objective teaches useful behaviors in post-error states, even when the student rarely samples those behaviors on its own.
 
 ### UOPD: Uncertainty-Aware Intervention for On-Policy Distillation of Multi-Turn Agents
 
@@ -174,6 +252,12 @@ These papers provide relevant context rather than an OPD algorithm.
 
 Data efficiency, example selection, prefix training, and compute allocation.
 
+### ResOPD: Tail Residualization for Sparse On-Policy Distillation
+
+[arXiv: 2610.04882v1](https://arxiv.org/abs/2610.04882v1) · [PDF](papers/efficient-opd/2610.04882v1/paper.pdf) · [LaTeX source](papers/efficient-opd/2610.04882v1/source)
+
+**TL;DR:** Sparse teacher interfaces make full-vocabulary distillation expensive, while sampled-token estimators are noisy and naive top-k objectives are biased. ResOPD computes the exact gradient of the aggregated vocabulary tail and samples only the remaining within-tail correction. This preserves an unbiased reverse-KL gradient under on-policy sampling and reduces variance with the same teacher payload.
+
 ### 1% of Tokens Can Be Enough: On Gradient Estimation in On-Policy Distillation
 
 [arXiv: 2609.24432v1](https://arxiv.org/abs/2609.24432v1) · [PDF](papers/efficient-opd/2609.24432v1/paper.pdf) · [LaTeX source](papers/efficient-opd/2609.24432v1/source)
@@ -226,6 +310,12 @@ Here, **OPSD** means **on-policy self-distillation**: a privileged view of the m
 
 **TL;DR:** RL post-training can make already-solved queries unnecessarily verbose without improving accuracy. Length Self-Distillation routes solved prompts to on-policy distillation from an exponential-moving-average teacher while retaining RL for unsolved prompts. The insight is to preserve concise successful behavior while allowing exploration on harder problems, without requiring an external teacher.
 
+### TISD: On-Policy Self-Distillation with Trajectory Intervention
+
+[arXiv: 2609.30878v1](https://arxiv.org/abs/2609.30878v1) · [PDF](papers/opsd/2609.30878v1/paper.pdf) · [LaTeX source](papers/opsd/2609.30878v1/source)
+
+**TL;DR:** A privileged self-teacher can prefer a branch that the student rarely visits, leaving its later states unsupervised. TISD inserts one teacher-selected token at peak disagreement, gives suffix generation back to the student, and distills along the resulting trajectory. The intervention exposes new student continuation states that a local loss on the original rollout cannot reach.
+
 ### From Self-Distillation to Self-Practice: Privileged Information for Multi-Turn Agents
 
 [arXiv: 2609.29051v1](https://arxiv.org/abs/2609.29051v1) · [PDF](papers/opsd/2609.29051v1/paper.pdf) · [LaTeX source](papers/opsd/2609.29051v1/source)
@@ -253,9 +343,9 @@ Here, **OPSD** means **on-policy self-distillation**: a privileged view of the m
 ## Archive
 
 - [papers/](papers/) contains one directory per paper, grouped by the five categories above.
-- Each directory contains `paper.pdf` and `metadata.json`; the 33 papers with local sources also include `source/` and `source.tar.gz`.
+- Each directory contains `paper.pdf` and `metadata.json`; the 47 papers with archived sources also include `source/` and `source.tar.gz`.
 - [papers.json](papers.json) provides the categorized index, TL;DRs, file sizes, and SHA-256 checksums.
 - The two *Rethinking On-Policy Distillation* papers are archived separately: the first studies mechanisms and recipes; Part II studies one-example training.
-- PDFs and sources correspond to the arXiv versions shown in the entries. Existing download metadata is preserved; archive paths and checksums are recorded in `papers.json`.
+- arXiv PDFs and sources correspond to the versions shown in their entries. Existing download metadata is preserved; archive paths and checksums are recorded in `papers.json`.
 
 Paper copyrights and any licenses embedded in the archived materials remain with their respective authors and rights holders.

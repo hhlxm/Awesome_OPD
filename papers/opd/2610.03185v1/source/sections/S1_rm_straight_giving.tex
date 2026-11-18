@@ -1,0 +1,51 @@
+\section{Introduction}
+
+On-policy distillation (OPD) has become an important approach for developing frontier language models and has been adopted in large-scale post-training pipelines~\citep{deepseekai2026deepseekv4highlyefficientmilliontoken, team2026kimi, xiao2026mimo, yang2025qwen3technicalreport, zeng2026glm}.
+At each iteration, the current student samples its own responses, and the teacher supervises it through token-level KL divergence at student-generated prefixes~\citep{agarwal2023gkd,gu2024minillm}.
+While prior work has demonstrated the potential of OPD to improve student performance, recent studies have reported unstable training and degenerate behaviors, including excessive response length and repetition~\citep{li2026rethinkingopd,zhu2026facesonpolicydistillationpitfalls}.
+It remains unclear what OPD actually learns during training, and why this learning process can sometimes lead to collapse.
+
+In this paper, we view OPD from an RL perspective, in which the teacher implicitly rewards the student's own responses.
+We investigate OPD on mathematical tasks using different types of teachers, including RL-trained reasoning models and larger general-purpose models.
+Our experiments show that
+\textbf{OPD does not directly extend the student's capability. Instead, it changes the relative probability of responses the student already produces according to the teacher's preferences.} 
+When these preferences align with response quality, this reweighting can improve sampling efficiency; 
+when they do not, it can lead to reward hacking, with the student increasingly producing responses that receive high implicit rewards despite poor quality. 
+We substantiate this view through three findings.
+
+
+First, we show that successful OPD reinforces correct responses the student can already generate.
+We compare the initial and trained students across sampling budgets, combining pass@$k$ evaluation with additional sampling and manual audits.
+Although OPD substantially improves single-sample accuracy(pass@1), the gains progressively diminish as the sampling budget increases.
+At the same time, we find no expansion of the observed solvable set: problems solved after OPD can also be solved by the initial student given sufficient sampling.
+Together, these results suggest that OPD makes existing capabilities easier to elicit rather than expanding the student model's problem-solving capabilities.
+
+
+In contrast, we find that the observed OPD collapse reflects reward hacking: training reinforces poor-quality responses favored by the teacher.
+We compare a successful OPD run with a reproduction of the collapsed setting reported by~\citet{li2026rethinkingopd}.
+Despite their sharply different outcomes, both runs converge normally and concentrate on responses with low negative log-likelihood under the initial student, suggesting that collapse is not simply a failure of optimization or convergence.
+In the collapsed run, the student produces increasingly overlong and repetitive responses.
+At the same time, its response distribution shifts markedly toward responses preferred by the teacher over those the teacher disfavors, indicating that the student is fitting the teacher's preference signal increasingly well.
+The student thus learns the teacher's preferences even as its generation quality deteriorates.
+
+Building on this diagnosis, we mitigate OPD collapse with a standard remedy for reward hacking: limiting the reinforcement of pathological responses.
+Before training, higher implicit rewards favor correct and concise responses in the successful setting, but overlong and repetitive responses in the collapsed setting, with both types of behavior later amplified during training.
+Notably, the teacher itself rarely generates such pathological responses, showing that generation quality does not reliably reflect feedback quality on student rollouts.
+Keeping the teacher fixed, masking rollouts that reach the generation limit mitigates degeneration and improves average evaluation accuracy by 3.08 percentage points, 
+and SFT warmup provides a complementary solution by improving the quality of the student's initial rollout distribution.
+Together, these results show that collapse can be mitigated by controlling which student rollouts are available for reinforcement.
+
+
+Our contributions are summarized as follows:
+%
+\begingroup
+\setlength{\topsep}{4pt}
+\setlength{\partopsep}{0pt}
+\setlength{\itemsep}{4pt}
+\setlength{\parsep}{0pt}
+\begin{itemize}
+    \item We interpret OPD as an RL-like process with the teacher acting as an implicit reward model, linking its performance gains to improved sampling efficiency.
+    \item We identify reward hacking in the observed collapse: the student fits the teacher's preferences increasingly well even as its generation quality deteriorates.
+    \item We trace the collapse to a biased teacher reward signal. Limiting the reinforcement of this biased signal through masking, or reducing exposure to pathological rollouts through SFT warmup, mitigates collapse.
+\end{itemize}
+\endgroup

@@ -1,0 +1,216 @@
+\begin{thebibliography}{30}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Chen et~al.(2026)Chen, Fan, Sun, Yang, Sun, Mao, Qiao, Zhang, Wang,
+  Sun, et~al.]{futurebridge2026}
+Chishui Chen, Yaoyou Fan, Te~Sun, Yi~Yang, Chenghao Sun, Delin Mao, Hongbo
+  Qiao, Zuowei Zhang, Junxi Wang, Chenxing Sun, et~al.
+\newblock {Look Ahead Before You Distill: Future Trajectory Validation of
+  Teacher Guidance for Agentic On-Policy Distillation}.
+\newblock \emph{arXiv preprint arXiv:2608.01953}, 2026.
+
+\bibitem[Gkountouras et~al.(2026)Gkountouras, Juki{\'c}, and Titov]{canon2026}
+John Gkountouras, Josip Juki{\'c}, and Ivan Titov.
+\newblock {Consensus as Privileged Context for Label-Free Self-Distillation}.
+\newblock \emph{arXiv preprint arXiv:2607.13643}, 2026.
+
+\bibitem[Hao et~al.(2025)Hao, Kong, Yin, Wang, Zhang, Diao, and
+  Zhao]{hao2025safemap}
+Xiaoshuai Hao, Lingdong Kong, Rong Yin, Pengwei Wang, Jing Zhang, Yunfeng Diao,
+  and Shu Zhao.
+\newblock {SafeMap: Robust HD Map Construction from Incomplete Observations}.
+\newblock In \emph{International Conference on Machine Learning (ICML)}, 2025.
+
+\bibitem[H{\"u}botter et~al.(2026)H{\"u}botter, L{\"u}beck, Behric, Baumann,
+  Bagatella, Marta, Hakimi, Shenfeld, Buening, Guestrin, et~al.]{sdpo2026}
+Jonas H{\"u}botter, Frederike L{\"u}beck, Lejs Behric, Anton Baumann, Marco
+  Bagatella, Daniel Marta, Ido Hakimi, Idan Shenfeld, Thomas~Kleine Buening,
+  Carlos Guestrin, et~al.
+\newblock {Reinforcement Learning via Self-Distillation}.
+\newblock \emph{arXiv preprint arXiv:2601.20802}, 2026.
+
+\bibitem[Kaur et~al.(2026)Kaur, Ri, He, Fowl, and Arora]{rethinkingopsd2026}
+Simran Kaur, Narutatsu Ri, Yinghui He, Liam Fowl, and Sanjeev Arora.
+\newblock {Rethinking On-Policy Self-Distillation for Thinking Models}.
+\newblock \emph{arXiv preprint arXiv:2607.05184}, 2026.
+
+\bibitem[Li et~al.(2026{\natexlab{a}})Li, Zheng, Song, Liu, Yang, Sun, Zhong,
+  Guo, Fang, Zhang, et~al.]{guidedopd2026}
+Gengsheng Li, Mao Zheng, Mingyang Song, Ruiqi Liu, Tianyu Yang, Jie Sun, Qiyong
+  Zhong, Haiyun Guo, Junfeng Fang, Dan Zhang, et~al.
+\newblock {On-Policy Distillation with Curriculum Turn-level Guidance for
+  Multi-turn Agents}.
+\newblock \emph{arXiv preprint arXiv:2606.15912}, 2026{\natexlab{a}}.
+
+\bibitem[Li et~al.(2026{\natexlab{b}})Li, Zuo, He, Zhang, Xiao, Qian, Yu, Gao,
+  Yang, Liu, et~al.]{li2026bestval}
+Yaxuan Li, Yuxin Zuo, Bingxiang He, Jinqian Zhang, Chaojun Xiao, Cheng Qian,
+  Tianyu Yu, Huan{-}ang Gao, Wenkai Yang, Zhiyuan Liu, et~al.
+\newblock {Rethinking On-Policy Distillation of Large Language Models:
+  Phenomenology, Mechanism, and Recipe}.
+\newblock \emph{arXiv preprint arXiv:2604.13016}, 2026{\natexlab{b}}.
+
+\bibitem[Liao et~al.(2026)Liao, Dong, Monz, Xu, Dong, and Wei]{reopd2026}
+Baohao Liao, Hanze Dong, Christof Monz, Xinxing Xu, Li~Dong, and Furu Wei.
+\newblock {Multi-Turn On-Policy Distillation with Prefix Replay}.
+\newblock \emph{arXiv preprint arXiv:2607.04763}, 2026.
+
+\bibitem[Lu et~al.(2026)Lu, Yao, Han, Wang, Wu, Gu, Cai, Lu, Xiao, Zhuang,
+  et~al.]{sdar2026}
+Zhengxi Lu, Zhiyuan Yao, Zhuowen Han, Zi{-}Han Wang, Jinyang Wu, Qi~Gu,
+  Xunliang Cai, Weiming Lu, Jun Xiao, Yueting Zhuang, et~al.
+\newblock {Self-Distilled Agentic Reinforcement Learning}.
+\newblock \emph{arXiv preprint arXiv:2605.15155}, 2026.
+
+\bibitem[{Qwen Team}(2026)]{qwen352026}
+{Qwen Team}.
+\newblock {Qwen3.5: Towards Native Multimodal Agents}, 2026.
+\newblock URL \url{https://qwen.ai/blog?id=qwen3.5}.
+
+\bibitem[Ross et~al.(2011)Ross, Gordon, and Bagnell]{dagger2011}
+St{\'{e}}phane Ross, Geoffrey~J. Gordon, and Drew Bagnell.
+\newblock {A Reduction of Imitation Learning and Structured Prediction to
+  No-Regret Online Learning}.
+\newblock In \emph{International Conference on Artificial Intelligence and
+  Statistics (AISTATS)}, 2011.
+
+\bibitem[Shao et~al.(2024)Shao, Wang, Zhu, Xu, Song, Bi, Zhang, Zhang, Li, Wu,
+  et~al.]{grpo2024}
+Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei
+  Zhang, Mingchuan Zhang, YK~Li, Yang Wu, et~al.
+\newblock {DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open
+  Language Models}.
+\newblock \emph{arXiv preprint arXiv:2402.03300}, 2024.
+
+\bibitem[Shenfeld et~al.(2026)Shenfeld, Damani, H{\"u}botter, and
+  Agrawal]{sdft2026}
+Idan Shenfeld, Mehul Damani, Jonas H{\"u}botter, and Pulkit Agrawal.
+\newblock {Self-Distillation Enables Continual Learning}.
+\newblock \emph{arXiv preprint arXiv:2601.19897}, 2026.
+
+\bibitem[Shridhar et~al.(2021)Shridhar, Yuan, C{\^{o}}t{\'{e}}, Bisk,
+  Trischler, and Hausknecht]{alfworld2021}
+Mohit Shridhar, Xingdi Yuan, Marc{-}Alexandre C{\^{o}}t{\'{e}}, Yonatan Bisk,
+  Adam Trischler, and Matthew~J. Hausknecht.
+\newblock {ALFWorld: Aligning Text and Embodied Environments for Interactive
+  Learning}.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2021.
+
+\bibitem[Wang et~al.(2026)Wang, Zhang, Shi, Li, and Cheng]{tcod2026}
+Jiaqi Wang, Wenhao Zhang, Weijie Shi, Yaliang Li, and James Cheng.
+\newblock {TCOD: Exploring Temporal Curriculum in On-Policy Distillation for
+  Multi-turn Autonomous Agents}.
+\newblock \emph{arXiv preprint arXiv:2604.24005}, 2026.
+
+\bibitem[Wang et~al.(2022)Wang, Jansen, C{\^{o}}t{\'{e}}, and
+  Ammanabrolu]{scienceworld2022}
+Ruoyao Wang, Peter~A. Jansen, Marc{-}Alexandre C{\^{o}}t{\'{e}}, and Prithviraj
+  Ammanabrolu.
+\newblock {ScienceWorld: Is your Agent Smarter than a 5th Grader?}
+\newblock In \emph{Conference on Empirical Methods in Natural Language
+  Processing (EMNLP)}, 2022.
+
+\bibitem[Xiao et~al.(2026)Xiao, Xia, Yang, Gao, Shen, Zhang, He, Lou, Luo,
+  Wang, et~al.]{mimo2026}
+Bangjun Xiao, Bingquan Xia, Bo~Yang, Bofei Gao, Bowen Shen, Chen Zhang,
+  Chenhong He, Chiheng Lou, Fuli Luo, Gang Wang, et~al.
+\newblock {MiMo-V2-Flash Technical Report}.
+\newblock \emph{arXiv preprint arXiv:2601.02780}, 2026.
+
+\bibitem[Yang et~al.(2025)Yang, Li, Yang, Zhang, Hui, Zheng, Yu, Gao, Huang,
+  Lv, et~al.]{qwen32025}
+An~Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo~Zheng, Bowen
+  Yu, Chang Gao, Chengen Huang, Chenxu Lv, et~al.
+\newblock {Qwen3 Technical Report}.
+\newblock \emph{arXiv preprint arXiv:2505.09388}, 2025.
+
+\bibitem[Yang et~al.(2026)Yang, Liu, Chen, Dai, Wang, Lin, Lee, Chen, Jiang,
+  He, et~al.]{nemotroncascade22026}
+Zhuolin Yang, Zihan Liu, Yang Chen, Wenliang Dai, Boxin Wang, Sheng{-}Chieh
+  Lin, Chankyu Lee, Yangyi Chen, Dongfu Jiang, Jiafan He, et~al.
+\newblock {Nemotron-Cascade 2: Post-Training LLMs with Cascade RL and
+  Multi-Domain On-Policy Distillation}.
+\newblock \emph{arXiv preprint arXiv:2603.19220}, 2026.
+
+\bibitem[Yao et~al.(2022)Yao, Chen, Yang, and Narasimhan]{webshop2022}
+Shunyu Yao, Howard Chen, John Yang, and Karthik Narasimhan.
+\newblock {WebShop: Towards Scalable Real-World Web Interaction with Grounded
+  Language Agents}.
+\newblock In \emph{Conference on Neural Information Processing Systems
+  (NeurIPS)}, 2022.
+
+\bibitem[Ye et~al.(2026)Ye, Dong, Wu, Huang, and Wei]{opcd2026}
+Tianzhu Ye, Li~Dong, Xun Wu, Shaohan Huang, and Furu Wei.
+\newblock {On-Policy Context Distillation for Language Models}.
+\newblock \emph{arXiv preprint arXiv:2602.12275}, 2026.
+
+\bibitem[Yu et~al.(2026)Yu, Li, Zhao, Liu, Zhang, Wang, Luo, Wu, Mittal,
+  Fredrikson, et~al.]{mropd2026}
+Weichen Yu, Xiaomin Li, Yizhou Zhao, Xiaoze Liu, Ruowang Zhang, Haixin Wang,
+  Yinyi Luo, Chen~Henry Wu, Gaurav Mittal, Matt Fredrikson, et~al.
+\newblock {Multi-Rollout On-Policy Distillation via Peer Successes and
+  Failures}.
+\newblock \emph{arXiv preprint arXiv:2605.12652}, 2026.
+
+\bibitem[Zhan et~al.(2026)Zhan, Jing, Rutkowski, and Tao]{trapsguards2026}
+Weixiao Zhan, Yongcheng Jing, Leszek Rutkowski, and Dacheng Tao.
+\newblock {Distillation Traps and Guards: A Calibration Knob for LLM
+  Distillability}.
+\newblock In \emph{Annual Meeting of the Association for Computational
+  Linguistics (ACL)}, 2026.
+
+\bibitem[Zhao \& Yu(2026)Zhao and Yu]{zhao2026value}
+Shu Zhao and Tan Yu.
+\newblock {The Value of Being Wrong: Self-Mined Visual In-Context Learning from
+  Errors}.
+\newblock \emph{arXiv preprint arXiv:2610.16977}, 2026.
+
+\bibitem[Zhao et~al.(2024)Zhao, Zou, Yu, and Xu]{zhao2024reconstruct}
+Shu Zhao, Xiaohan Zou, Tan Yu, and Huijuan Xu.
+\newblock {Reconstruct before Query: Continual Missing Modality Learning with
+  Decomposed Prompt Collaboration}.
+\newblock \emph{arXiv preprint arXiv:2403.11373}, 2024.
+
+\bibitem[Zhao et~al.(2025{\natexlab{a}})Zhao, Yu, Hao, Ma, and
+  Narayanan]{zhao2025kalahash}
+Shu Zhao, Tan Yu, Xiaoshuai Hao, Wenchao Ma, and Vijaykrishnan Narayanan.
+\newblock {KALAHash: Knowledge-Anchored Low-Resource Adaptation for Deep
+  Hashing}.
+\newblock In \emph{AAAI Conference on Artificial Intelligence (AAAI)},
+  2025{\natexlab{a}}.
+
+\bibitem[Zhao et~al.(2025{\natexlab{b}})Zhao, Yu, Xu, Singh, Shukla, and
+  Akkiraju]{zhao2025parallelsearch}
+Shu Zhao, Tan Yu, Anbang Xu, Japinder Singh, Aaditya Shukla, and Rama Akkiraju.
+\newblock {ParallelSearch: Train your LLMs to Decompose Query and Search
+  Sub-queries in Parallel with Reinforcement Learning}.
+\newblock \emph{arXiv preprint arXiv:2508.09303}, 2025{\natexlab{b}}.
+
+\bibitem[Zhao et~al.(2026{\natexlab{a}})Zhao, Ahuja, Yu, Shen, and
+  Narayanan]{zhao2026mora}
+Shu Zhao, Nilesh Ahuja, Tan Yu, Tianyi Shen, and Vijaykrishnan Narayanan.
+\newblock {MoRA: Missing Modality Low-Rank Adaptation for Visual Recognition}.
+\newblock In \emph{International Conference on Learning Representations
+  (ICLR)}, 2026{\natexlab{a}}.
+
+\bibitem[Zhao et~al.(2026{\natexlab{b}})Zhao, Xie, Liu, Huang, Pang, Chen, and
+  Grover]{opsd2026}
+Siyan Zhao, Zhihui Xie, Mengchen Liu, Jing Huang, Guan Pang, Feiyu Chen, and
+  Aditya Grover.
+\newblock {Self-Distilled Reasoner: On-Policy Self-Distillation for Large
+  Language Models}.
+\newblock \emph{arXiv preprint arXiv:2601.18734}, 2026{\natexlab{b}}.
+
+\bibitem[Zou et~al.(2025)Zou, Ma, and Zhao]{zou2025learning}
+Xiaohan Zou, Wenchao Ma, and Shu Zhao.
+\newblock {Learning Conditional Space-Time Prompt Distributions for Video
+  Class-Incremental Learning}.
+\newblock In \emph{IEEE/CVF Conference on Computer Vision and Pattern
+  Recognition (CVPR)}, 2025.
+
+\end{thebibliography}

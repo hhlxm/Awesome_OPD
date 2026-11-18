@@ -1,0 +1,46 @@
+{
+  "arxiv_id": "2610.04882v1",
+  "title": "ResOPD: Tail Residualization for Sparse On-Policy Distillation",
+  "authors": [
+    "Yang, Penghui",
+    "Xing, Long",
+    "Dai, Xuanlang",
+    "Liu, Ziyu",
+    "Chen, Kai",
+    "Zang, Yuhang"
+  ],
+  "submitted_date": "2026/10/04",
+  "abs_url": "https://arxiv.org/abs/2610.04882v1",
+  "schema_version": 2,
+  "requested_input": "2610.04882",
+  "requested_id": "2610.04882",
+  "source_url": "https://arxiv.org/src/2610.04882v1",
+  "downloaded_at": "2026-11-03T06:15:02.753992+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "f49402cfee73309a0940c29084c7024960c673367ff16ebd634236922bcc1b1b",
+  "tex_files": [
+    "authors.tex",
+    "main.tex",
+    "math_commands.tex",
+    "sections/0_abs.tex",
+    "sections/1_intro.tex",
+    "sections/2_related.tex",
+    "sections/3_method.tex",
+    "sections/3_unified.tex",
+    "sections/4_exp.tex",
+    "sections/5_conclusion.tex",
+    "sections/appendix.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 24,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2610.04882v1",
+    "sha256": "91ebbbd8fe9024d113b0328139966aaafbba067d2fe3f272170cc878bdcfdca3",
+    "downloaded_at": "2026-11-03T06:15:06.989790+00:00",
+    "content_type": "application/pdf"
+  }
+}

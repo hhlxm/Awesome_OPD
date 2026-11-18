@@ -1,0 +1,858 @@
+\clearpage
+\raggedbottom
+\appendix 
+\part{Appendix}
+\startcontents
+\printcontents{}{1}{\textbf{Contents of Appendix}\vskip3pt\hrule\vskip5pt}
+\vskip3pt\hrule\vskip5pt
+\clearpage 
+
+
+
+
+
+
+
+\section{Algorithmic Details of \name} 
+\label{app:algorithmic_details}
+
+We present the complete algorithmic details of \name in \Cref{alg:method}.
+
+\begin{algorithm}[ht]
+    \caption{\name: Stochastic Teacher Intervention for Agentic On-Policy Distillation}
+    \label{alg:method}
+    \small
+    \begin{algorithmic}[1]
+        \Require Task distribution $\mathcal{D}$; fixed teacher $\pi_T$;
+        student $\pi_\theta$; maximum horizon $H$
+        \Ensure Optimized student parameters $\theta$
+
+        \While{not converged}
+            \State Sample a task minibatch $\mathcal{Q}\sim\mathcal{D}$
+            \State Initialize student and teacher buffers
+            $\mathcal{B}_S,\mathcal{B}_T\gets\emptyset$
+
+            \ForAll{$q\in\mathcal{Q}$}
+                \State Sample $o_1\sim\rho_0(\cdot\mid q)$ and set
+                $h_1\gets(q,o_1)$
+
+                \For{$t=1,\ldots,H$}
+                    \State Sample a student proposal
+                    $\widetilde a_t=(\widetilde x_{t,1},\ldots,
+                    \widetilde x_{t,\widetilde L_t})
+                    \sim\pi_\theta(\cdot\mid h_t)$
+
+                    \For{$k=1,\ldots,\widetilde L_t$}
+                        \State $\widetilde c_{t,k}\gets
+                        (h_t,\widetilde x_{t,<k})$
+                        \State $r_{t,k}\gets
+                        \dfrac{
+                        \pi_T(\widetilde x_{t,k}\mid\widetilde c_{t,k})
+                        }{
+                        \pi_\theta(\widetilde x_{t,k}\mid\widetilde c_{t,k})
+                        }$
+                        \State $g_{t,k}\gets
+                        r_{t,k}-1-\log r_{t,k}$
+                    \EndFor
+
+                    \State $s_t\gets
+                    \widetilde L_t^{-1}
+                    \sum_{k=1}^{\widetilde L_t}g_{t,k}$
+                    \State $\alpha_t\gets s_t/(1+s_t)$
+                    \State Sample
+                    $z_t\sim\operatorname{Bernoulli}(\alpha_t)$
+
+                    \If{$z_t=1$}
+                        \State Sample a complete teacher turn
+                        $a_t^T=(x^T_{t,1},\ldots,x^T_{t,L_t^T})
+                        \sim\pi_T(\cdot\mid h_t)$
+
+                        \For{$k=1,\ldots,L_t^T$}
+                            \State $c^T_{t,k}\gets(h_t,x^T_{t,<k})$
+                            \State Add $(x^T_{t,k},c^T_{t,k})$
+                            to $\mathcal{B}_T$
+                        \EndFor
+
+                        \State Execute $a_t\gets a_t^T$
+                    \Else
+                        \For{$k=1,\ldots,\widetilde L_t$}
+                            \State Add
+                            $(\widetilde x_{t,k},\widetilde c_{t,k})$
+                            to $\mathcal{B}_S$
+                        \EndFor
+
+                        \State Execute $a_t\gets\widetilde a_t$
+                    \EndIf
+
+                    \State Observe
+                    $o_{t+1}\sim P(\cdot\mid h_t,a_t)$
+                    and update $h_{t+1}$
+
+                    \If{the environment terminates}
+                        \State \textbf{break}
+                    \EndIf
+                \EndFor
+            \EndFor
+
+            \State Define
+            $\ell_\theta(x,c)\gets
+            \log\pi_\theta(x\mid c)-\log\pi_T(x\mid c)$
+
+            \State $\mathcal{L}_S\gets
+            \displaystyle
+            \sum_{(x,c)\in\mathcal{B}_S}
+            \ell_\theta(x,c)$
+
+            \State $\mathcal{L}_T\gets
+            \displaystyle
+            \sum_{(x,c)\in\mathcal{B}_T}
+            \frac{\pi_\theta(x\mid c)}
+                 {\pi_T(x\mid c)}
+            \ell_\theta(x,c)$
+
+            \State $\widehat{\mathcal{L}}_{\name}\gets
+            \dfrac{\mathcal{L}_S+\mathcal{L}_T}
+            {|\mathcal{B}_S|+|\mathcal{B}_T|}$
+
+            \State Update $\theta$ using
+            $\nabla_\theta\widehat{\mathcal{L}}_{\name}$
+        \EndWhile
+    \end{algorithmic}
+\end{algorithm}
+
+\section{Additional Experimental Details}
+\label{app:experimental_details}
+
+\subsection{Datasets}
+\label{app:datasets}
+
+\paragraph{Training Corpus.}
+Our tool-integrated reasoning corpus combines mathematical, coding, and scientific problems from three public sources.  
+We use the English subset of DAPO-Math, the code subset of Skywork-OR1-RL-Data, and 10,000 examples from MegaScience. 
+The resulting mixture contains 34,501 training prompts: 14,116 from DAPO-Math, 10,385 from Skywork-OR1-RL-Data, and 10,000 from MegaScience.  
+The original responses associated with these datasets are not used as fixed distillation targets, instead, each prompt initiates a fresh rollout under the policy specified by the corresponding distillation method.
+
+\paragraph{DAPO-Math.}
+DAPO-Math-17K is a collection of 17,000 mathematical reasoning prompts curated from Web sources and official competition materials~\citep{abs-2503-14476}. 
+The source dataset transforms each problem so that its target is an integer-valued answer, which enables reliable rule-based verification while retaining a broad range of competition-style reasoning patterns. 
+We retain only its English-language examples for training.
+
+\paragraph{Skywork-OR1-RL-Data.}
+Skywork-OR1-RL-Data was developed for reinforcement-learning post-training of long-chain-of-thought reasoning models~\citep{abs-2505-22312}.  
+Its released code portion contains 13,700 executable programming problems after quality filtering and deduplication, including 2,700 problems derived from LeetCode and 11,000 from TACO\@. 
+We use this code subset to expose the student to algorithm design, program synthesis, and execution-based correctness signals.
+
+\paragraph{MegaScience.}
+MegaScience is a 1.25-million-example mixture of open scientific reasoning datasets spanning seven disciplines~\citep{abs-2507-16812}. 
+It is designed to broaden post-training beyond mathematics and coding by providing diverse, verifiable scientific questions. 
+We sample 10,000 examples from MegaScience and include them as the scientific component of our training mixture.
+
+\paragraph{AIME 2024--2026.}
+The American Invitational Mathematics Examination (AIME) consists of 15 short-answer problems whose answers are integers between 000 and 999. 
+We use the 2024, 2025, and 2026 contests~\citep{aime24,aime25,aime26}. 
+Their recency and emphasis on multi-step algebraic, geometric, combinatorial, and number-theoretic reasoning make them useful for evaluating mathematical generalization across successive competition years.
+
+\paragraph{HMMT February 2026.}
+The February 2026 Harvard--MIT Mathematics Tournament benchmark contains recent olympiad-style problems covering several areas of high-school mathematics. 
+We include it as an additional out-of-corpus evaluation of challenging mathematical reasoning~\citep{abs-2605-00674}.
+
+\paragraph{GPQA.}
+GPQA is a graduate-level multiple-choice benchmark comprising 448 questions written and validated by domain experts in biology, physics, and chemistry~\citep{abs-2311-12022}. 
+The questions are designed to remain difficult even for skilled non-experts with unrestricted Web access. 
+GPQA therefore evaluates whether the distilled student transfers scientific reasoning ability beyond the scientific prompts seen during post-training.
+
+\paragraph{LiveCodeBench v6.}
+LiveCodeBench is a continuously updated code benchmark constructed from recent problems collected from LeetCode, AtCoder, and Codeforces~\citep{JainHGLYZWSSS25}. 
+It evaluates generated programs with executable test cases and reduces contamination risk by introducing newly released contest problems over time. 
+We use version~6 for all code-generation evaluations.
+
+\paragraph{ALFWorld.}
+ALFWorld aligns a text-based simulator with embodied household tasks from the ALFRED benchmark~\citep{ShridharYCBTH21}. 
+An agent receives a natural-language goal and must interact with the environment through a sequence of textual actions, such as navigation, object manipulation, cleaning, heating, cooling, and placement.  Because every action changes the observations available at later turns, early mistakes can alter the remainder of the trajectory.
+
+\paragraph{ScienceWorld.}
+ScienceWorld is an interactive text environment grounded in an elementary science curriculum~\citep{WangJCA22}. 
+Its tasks require agents to explore the environment, manipulate objects, conduct simple experiments, and use the resulting observations to achieve a scientific goal. 
+The environment tests both procedural knowledge and long-horizon adaptation to feedback, making it a
+complementary setting to ALFWorld for studying inter-turn error accumulation.
+
+Unless stated otherwise, all methods use identical training instances and evaluation tasks within each setting. 
+This controls for variation in task composition and isolates the effect of the distillation procedure. 
+
+\begin{table*}[t]
+    \centering
+    \caption{Training and rollout parameters.  Unless stated otherwise, these
+    settings are shared by \name and all distillation baselines.}
+    \label{tab:training_parameters}
+    \small
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Category} & \textbf{Parameter} & \textbf{Value} \\
+        \midrule
+        Model
+        & Student
+        & Qwen3-0.6B; Qwen3-1.7B \\
+        & Teacher
+        & Qwen3-4B; Qwen3-32B \\
+        \midrule
+        Data 
+        & \multicolumn{2}{c}{\textit{Tool-Integrated Reasoning}} \\
+        \cmidrule(lr){2-3}
+        & \# Training prompts
+        & 34,501 \\
+        & Training epochs
+        & 1 \\
+        & Batch size
+        & 128 \\ 
+        \cmidrule(lr){2-3}
+        & \multicolumn{2}{c}{\textit{ALFWorld}} \\
+        \cmidrule(lr){2-3}
+        & \# Training prompts
+        & 3,553 \\
+        & Training steps
+        & 200 \\
+        & Batch size
+        & 32 \\
+        \cmidrule(lr){2-3}
+        & \multicolumn{2}{c}{\textit{ScienceWorld}} \\
+        \cmidrule(lr){2-3}
+        & \# Training prompts
+        & 2,294 \\
+        & Training steps
+        & 200 \\
+        & Batch size
+        & 32 \\
+        \midrule
+        Rollout
+        & Rollouts per training prompt
+        & 1 \\
+        & Sampling temperature
+        & 1.0 \\
+        & Top-$p$
+        & 1.0 \\
+        & Maximum response length per turn
+        & 32,768 tokens \\
+        & Maximum model context length
+        & 40,960 tokens \\
+        \cmidrule(lr){2-3}
+        & \multicolumn{2}{c}{\textit{Maximum Turns}} \\
+        \cmidrule(lr){2-3}
+        & Tool-integrated reasoning
+        & 5 \\
+        & ALFWorld
+        & 30 \\
+        & ScienceWorld
+        & 30 \\
+        \midrule
+        Optimization
+        & Learning rate
+        & $1\times10^{-6}$ \\
+        & Gradient clipping
+        & 1.0 \\
+        \midrule
+        Evaluation
+        & Policy used at inference
+        & Student only; no teacher intervention \\
+        & Reported aggregation
+        & Mean across different runs \\
+        \midrule
+        Hardware
+        & GPU 
+        & 4 NVIDIA GB200 GPUs \\
+        & CPU
+        & Neoverse-v2 \\
+        \midrule
+        Software
+        & CUDA
+        & 13.0 \\
+        & Pytorch~\citep{PaszkeGMLBCKLGA19}
+        & 2.11.0 \\
+        & vLLM~\citep{KwonLZ0ZY0ZS23} 
+        & 0.23.0 \\
+        & Flash-Attention~\citep{DaoFERR22} 
+        & 0.8.3 \\
+        & Trinity-RFT~\citep{abs-2505-17826} 
+        & 0.6.0 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table*} 
+
+\subsection{Baselines}
+\label{app:baselines}
+
+\paragraph{\textsc{Vanilla}.}
+\textsc{Vanilla} is the original student checkpoint without additional post-training. 
+It measures the capability supplied by the pretrained model and provides a reference for quantifying the net effect of distillation.
+
+\paragraph{\textsc{OPD}.}
+\textsc{OPD} denotes standard on-policy distillation~\citep{AgarwalVZSGGB24,Gu0WH24}. 
+It collects rollouts from the student and minimizes the token-level reverse KL divergence to a fixed teacher on the student-visited contexts. 
+It therefore reduces the sequence-level mismatch between offline training and student inference, but does not explicitly control trajectory drift in multi-turn interaction.
+
+\paragraph{\textsc{SAGE-OPD}.}
+\textsc{SAGE-OPD} selectively allocates teacher supervision at the turn level~\citep{abs-2606-19659}.  After observing environment feedback, it uses teacher judgment to decide whether a student turn should be skipped or supervised. 
+It further weights token-level distillation by teacher confidence and normalizes the loss to preserve the scale of the standard OPD objective.
+
+\paragraph{\textsc{Guided-OPD}.}
+\textsc{Guided-OPD} mixes teacher- and student-generated turns within each trajectory~\citep{abs-2606-15912}. 
+A curriculum begins with frequent teacher intervention to keep early rollouts close to the teacher-induced history distribution and gradually decays the intervention probability to zero, recovering student-only rollouts toward the end of training.
+
+\paragraph{\textsc{Relay-OPD}.}
+\textsc{Relay-OPD} targets prefix failures by detecting locations where teacher and student continuations exhibit different tendencies~\citep{abs-2607-26057}. 
+At a detected trigger, the teacher temporarily takes over to generate a short teacher relay segment, after which control returns to the student. 
+A limited relay budget concentrates guidance at selected positions while restricting the deviation from student-generated trajectories.
+
+\paragraph{\textsc{TCOD}.}
+\textsc{TCOD} introduces a temporal curriculum over interaction depth~\citep{abs-2604-24005}. 
+It initially exposes the student to short trajectory prefixes and progressively increases the number of student-controlled turns. 
+This curriculum is designed to prevent early inter-turn errors from immediately pushing training trajectories far from the teacher-induced distribution.
+
+\paragraph{\textsc{FutureBridge-OPD}.}
+\textsc{FutureBridge-OPD} evaluates teacher guidance through its downstream effect on the student trajectory~\citep{abs-2608-01953}. 
+At a high-discrepancy state, it inserts a short teacher-generated bridge and then examines the subsequent student continuation to determine whether the bridge increases the density of useful distillation signals.
+It thereby selects interventions using future trajectory validation rather than only the current turn's discrepancy.
+
+All methods use the same student initialization, teacher checkpoint, training prompts, rollout budget, and evaluation protocol for a given comparison.  
+We also apply the same context and response limits across methods. 
+This setup ensures that performance differences are attributable to the distillation and intervention strategies rather than to differences in models or data budgets. 
+
+\subsection{Training Configuration and Parameters}
+\label{app:training_parameters}
+
+We use Qwen3-0.6B and Qwen3-1.7B as students and Qwen3-4B as the default teacher~\citep{abs-2505-09388}.  
+We additionally use Qwen3-32B as a stronger teacher to study whether \name scales with teacher capability. 
+Shared training and rollout parameters are summarized in \Cref{tab:training_parameters}.
+
+For every training prompt, a distillation method collects one rollout using temperature~1.0 and top-$p$~1.0. 
+At each turn, the model generates at most 32,768 response tokens and maximum model context length is 40,960 tokens.  
+We cap tool-integrated reasoning trajectories at five turns and trajectories in ALFWorld and ScienceWorld at 30 turns. 
+All methods are trained for one epoch for TIR and 200 steps for ALFWorld and ScienceWorld with a learning rate of $1\times10^{-6}$.
+
+During \name training, the teacher scores each student-proposed turn, the intervention decision is sampled according to \Cref{eq:intervention_probability}, and the student is optimized on teacher-generated tokens using the importance-weighted objective in \Cref{eq:intervention_corrected_objective}. 
+The teacher is used only during training and evaluation runs the student policy alone. 
+We report the mean over multiple independent runs, with standard deviations taken across those runs, and
+reproduce all task prompts verbatim in \Cref{app:prompts}. 
+
+In terms of engineering implementation, we optimize \name based on a policy gradient-style workflow. 
+Specifically, we treat $-\ell_\theta$ in \Cref{eq:intervention_corrected_objective} as the reward and then compute the PPO-style loss. 
+This allows us to leverage well-established techniques such as clipping to achieve more stable optimization. 
+For instance, $\omega^{T}_{t,k}$ in \Cref{eq:intervention_corrected_objective} will be clipped to enable stable and controllable step-wise optimization. 
+
+\subsection{Prompt Templates}
+\label{app:prompts}
+
+For reproducibility, we provide the complete task prompts used in our experiments. 
+Mathematical and scientific reasoning examples share the same \texttt{MATH\_PROMPT}. 
+Only the task-specific \texttt{\{question\}} field is substituted. 
+Code-generation examples use a separate template that enforces a Python-only output format. 
+ALFWorld and ScienceWorld use environment-specific system prompts that define the interaction protocol and valid action space.
+
+For interactive tasks, each environment observation is supplied in a user message prefixed by \texttt{Observation:}. In ALFWorld, an observation containing \texttt{Nothing happens.} is additionally followed by a reminder to check action validity and output formatting. 
+In ScienceWorld, the initial observation is also prefixed by the task description. 
+The prompt text below is otherwise reproduced verbatim from the training workflow.
+
+\begin{prompt}{Mathematical and Scientific Reasoning}{math-science}
+{\footnotesize\ttfamily\raggedright
+\agePromptLine{Analyze and solve the following mathematics problem step by step.}
+\agePromptBlank
+\agePromptLine{Question:}
+\agePromptLine{{question}}
+\agePromptBlank
+\agePromptLine{You may use available tools to perform precise calculations, validate intermediate results, and verify your final answer when helpful.}
+\agePromptBlank
+\agePromptLine{Instructions:}
+\agePromptLine{1. First, analyze the problem and formulate a high-level solution strategy.}
+\agePromptLine{2. Carry out the solution step by step, using tools only when they improve accuracy or efficiency.}
+\agePromptLine{3. Before finalizing, verify that the result satisfies all conditions in the problem.}
+\agePromptLine{4. Once you have determined the final answer, do not call any additional tools.}
+\agePromptBlank
+\agePromptLine{Your final response must contain the answer in exactly this format:}
+\noindent\textbackslash boxed\{\{The final answer goes here.\}\}\par
+}
+\end{prompt}
+
+\begin{prompt}{Code Generation}{code-generation}
+{\footnotesize\ttfamily\raggedright
+\agePromptLine{You will be given a programming problem specification. Write a correct Python program that solves the problem and passes all test cases.}
+\agePromptBlank
+\agePromptLine{Question:}
+\agePromptLine{{question}}
+\agePromptBlank
+\agePromptLine{Instructions:}
+\agePromptLine{1. Analyze the problem and formulate a high-level solution strategy.}
+\agePromptLine{2. Derive the algorithm, considering correctness, edge cases, and complexity.}
+\agePromptLine{3. You may use available tools to validate reasoning or test edge cases when helpful.}
+\agePromptLine{4. Do not execute the program directly on the provided sample inputs.}
+\agePromptLine{5. Once you are confident that the solution is correct, do not call additional tools.}
+\agePromptBlank
+\agePromptLine{The program must read from stdin, write only the required output to stdout, be self-contained, and be compatible with Python.}
+\agePromptBlank
+\agePromptLine{Return only the final code in this format:}
+\noindent\textasciigrave\textasciigrave\textasciigrave python\par
+\noindent\# YOUR CODE HERE\par
+\noindent\textasciigrave\textasciigrave\textasciigrave\par
+}
+\end{prompt}
+
+\begin{prompt}{ALFWorld System}{alfworld-system}
+{\footnotesize\ttfamily\raggedright
+\agePromptLine{You are an agent interacting with a virtual text-based environment.}
+\agePromptBlank
+\noindent\#\# Notes:\par
+\agePromptLine{At each step, you should first think then perform action to fulfill the instruction. You should ALWAYS wrap your thinking with the <think> </think> tag and wrap your action with the <action> </action> tag.}
+\agePromptLine{You should ALWAYS take one action each step.}
+\agePromptLine{DO NOT try to interact with the user at anytime. Finish the task by yourself.}
+\agePromptBlank
+\noindent\#\# Action Format:\par
+\agePromptLine{Below are the available commands you can use:}
+\agePromptLine{  look:                             look around your current location}
+\agePromptLine{  inventory:                        check your current inventory(you can only have 1 item in your inventory)}
+\agePromptLine{  go to (receptacle):               move to a receptacle}
+\agePromptLine{  open (receptacle):                open a receptacle}
+\agePromptLine{  close (receptacle):               close a receptacle}
+\agePromptLine{  take (object) from (receptacle):  take an object from a receptacle}
+\agePromptLine{  move (object) to (receptacle):    place an object in or on a receptacle}
+\agePromptLine{  examine (something):              examine a receptacle or an object}
+\agePromptLine{  use (object):                     use an object}
+\agePromptLine{  heat (object) with (receptacle):  heat an object using a receptacle}
+\agePromptLine{  clean (object) with (receptacle): clean an object using a receptacle}
+\agePromptLine{  cool (object) with (receptacle):  cool an object using a receptacle}
+\agePromptLine{  slice (object) with (object):     slice an object using a sharp object}
+\agePromptBlank
+\agePromptLine{For example your output should be like this:}
+\agePromptLine{<think> To solve the task, I need first to ... </think><action>go to cabinet 1</action>}
+}
+\end{prompt}
+
+\begin{prompt}{ScienceWorld System}{scienceworld-system}
+{\footnotesize\ttfamily\raggedright
+\agePromptLine{You are an agent, your job is to do some scientific experiment in a virtual text-based environment.}
+\agePromptBlank
+\noindent\#\# Notes:\par
+\agePromptLine{At each step, you should first think then perform action to fulfill the instruction. You should ALWAYS wrap your thinking with the <think> </think> tag and wrap your action with the <action> </action> tag.}
+\agePromptLine{You should ALWAYS take one action each step.}
+\agePromptLine{DO NOT try to interact with the user at anytime. Finish the task by yourself.}
+\agePromptBlank
+\noindent\#\# Action Format:\par
+\agePromptLine{Below are the available commands you can use:}
+\agePromptLine{    open OBJ: open a container}
+\agePromptLine{    close OBJ: close a container}
+\agePromptLine{    activate OBJ: activate a device}
+\agePromptLine{    deactivate OBJ: deactivate a device}
+\agePromptLine{    connect OBJ to OBJ: connect electrical components}
+\agePromptLine{    disconnect OBJ: disconnect electrical components}
+\agePromptLine{    use OBJ [on OBJ]: use a device/item}
+\agePromptLine{    look around: describe the current room}
+\agePromptLine{    examine OBJ: describe an object in detail}
+\agePromptLine{    look at OBJ: describe a container's contents}
+\agePromptLine{    read OBJ: read a note or book}
+\agePromptLine{    move OBJ to OBJ: move an object to a container}
+\agePromptLine{    pick up OBJ: move an object to the inventory}
+\agePromptLine{    pour OBJ into OBJ: pour a liquid into a container}
+\agePromptLine{    mix OBJ: chemically mix a container}
+\agePromptLine{    teleport to LOC: teleport to a specific room}
+\agePromptLine{    focus on OBJ: signal intent on a task object}
+\agePromptLine{    wait: task no action for 10 steps}
+\agePromptLine{    wait1: task no action for a step}
+\agePromptBlank
+\agePromptLine{For example your output should be like this:}
+\agePromptLine{<think> Now I will check the bedroom ... </think><action>teleport to bedroom</action>}
+}
+\end{prompt}
+
+
+\section{Additional Experimental Results}
+\label{app:additional_results}
+
+\subsection{\name Results with Larger Teacher} 
+\label{app:larger_teacher_results} 
+
+To demonstrate the effectiveness of \name with a larger teacher model, we conduct experiments on ALFWorld and ScienceWorld using Qwen3-32B as the teacher. 
+We focus on these benchmarks due to computational constraints and our primary interest in long-horizon agentic tasks.
+
+\paragraph{\name Remains Effective With A Larger Teacher.} 
+As shown in \Cref{tab:larger_teacher_results}, \name achieves the highest success rate among the
+distillation methods in every reported ALFWorld category and on ScienceWorld, at both student
+sizes, when Qwen3-32B is used as the teacher. Its advantage holds not only over standard OPD but also over the stronger intervention-based baselines, indicating that the benefit of discrepancy-adaptive intervention is preserved as teacher capacity increases. The framework is therefore not specific to the Qwen3-4B teacher used in the main experiments. 
+
+\paragraph{The Largest Gains Occur on Tasks with Longer Dependencies.}
+Relative to the best competing method, the margins are most pronounced on ScienceWorld and
+\textsc{Look} ($+10.1$ and $+7.4$ points for the 1.7B student), while remaining positive on every
+task category. These settings require information and action outcomes to be propagated across multiple turns, making them especially sensitive to early trajectory deviations. This pattern is consistent with the intended role of \name: stronger teacher supervision is most useful when combined with adaptive intervention at histories where student errors would otherwise affect subsequent decisions. 
+
+\begin{table}[t]
+\centering 
+\caption{Success rates on long-horizon agentic benchmarks with Qwen3-32B as teacher. We report results for six ALFWorld task categories and the average across ScienceWorld tasks. Bold and underlined values denote the best and second-best results, respectively.}
+\label{tab:larger_teacher_results}
+\resizebox{1.\linewidth}{!}{
+\begin{tabular}{lccccccc}
+\toprule
+\multirow{2}{*}{\textbf{Method}} & \multicolumn{6}{c}{\cellcolor{cyan!20} \textbf{ALFWorld}} & \cellcolor{LimeGreen!20} \\
+& \cellcolor{cyan!20} \textbf{Pick} 
+& \cellcolor{cyan!20} \textbf{Pick Two} 
+& \cellcolor{cyan!20} \textbf{Pick \& Clean} 
+& \cellcolor{cyan!20} \textbf{Pick \& Heat} 
+& \cellcolor{cyan!20} \textbf{Pick \& Cool} 
+& \cellcolor{cyan!20} \textbf{Look} 
+& \cellcolor{LimeGreen!20} \multirow{-2}{*}{\textbf{ScienceWorld}} \\
+\midrule 
+\multicolumn{8}{c}{\cellcolor{gray!10} \textit{\textbf{Qwen3-32B}}} \\
+\textsc{Teacher} & $91.7_{\pm 0.4}$ & $72.1_{\pm 0.3}$ & $62.1_{\pm 0.3}$ & $80.4_{\pm 0.5}$ & $65.5_{\pm 0.4}$ & $93.1_{\pm 0.3}$ & $47.8_{\pm 0.4}$ \\
+\midrule
+\multicolumn{8}{c}{\cellcolor{gray!10} \textit{\textbf{Qwen3-0.6B}}} \\
+\textsc{Vanilla} & $4.2_{\pm 0.3}$ & $0.0_{\pm 0.2}$ & $1.1_{\pm 0.2}$ & $0.0_{\pm 0.2}$ & $0.0_{\pm 0.2}$ & $3.5_{\pm 0.3}$ & $0.8_{\pm 0.2}$ \\
+\textsc{OPD} & $66.9_{\pm 0.4}$ & $22.4_{\pm 0.5}$ & $34.7_{\pm 0.4}$ & $13.3_{\pm 0.3}$ & $42.2_{\pm 0.5}$ & $16.0_{\pm 0.4}$ & $22.6_{\pm 0.5}$ \\
+\textsc{SAGE-OPD} & $68.3_{\pm 0.5}$ & $27.5_{\pm 0.4}$ & $37.9_{\pm 0.3}$ & $21.5_{\pm 0.4}$ & $44.6_{\pm 0.4}$ & $25.7_{\pm 0.5}$ & $25.0_{\pm 0.4}$ \\
+\textsc{Relay-OPD} & $69.8_{\pm 0.4}$ & $32.9_{\pm 0.5}$ & $41.0_{\pm 0.4}$ & $31.3_{\pm 0.5}$ & $47.2_{\pm 0.6}$ & $35.6_{\pm 0.4}$ & $25.9_{\pm 0.6}$ \\
+\textsc{Guided-OPD} & $71.2_{\pm 0.5}$ & $38.9_{\pm 0.6}$ & $44.0_{\pm 0.5}$ & $40.0_{\pm 0.4}$ & $49.9_{\pm 0.5}$ & $47.5_{\pm 0.5}$ & $29.2_{\pm 0.5}$ \\
+\textsc{TCOD} & $72.6_{\pm 0.4}$ & $45.7_{\pm 0.5}$ & $47.1_{\pm 0.4}$ & $49.8_{\pm 0.5}$ & \underline{$53.1_{\pm 0.4}$} & $57.5_{\pm 0.6}$ & $29.9_{\pm 0.4}$ \\
+\textsc{FutureBridge-OPD} & \underline{$73.8_{\pm 0.5}$} & \underline{$51.0_{\pm 0.5}$} & \underline{$49.2_{\pm 0.4}$} & \underline{$56.5_{\pm 0.6}$} & $52.5_{\pm 0.5}$ & \underline{$65.7_{\pm 0.5}$} & \underline{$32.4_{\pm 0.5}$} \\
+\midrule
+\name & \textbf{75.6}$_{\pm \mathbf{0.4}}$ & \textbf{55.6}$_{\pm \mathbf{0.6}}$ & \textbf{52.2}$_{\pm \mathbf{0.5}}$ & \textbf{61.3}$_{\pm \mathbf{0.5}}$ & \textbf{56.4}$_{\pm \mathbf{0.6}}$ & \textbf{72.8}$_{\pm \mathbf{0.6}}$ & \textbf{40.5}$_{\pm \mathbf{0.6}}$ \\
+\midrule
+\multicolumn{8}{c}{\cellcolor{gray!10} \textit{\textbf{Qwen3-1.7B}}} \\
+\textsc{Vanilla} & $62.5_{\pm 0.3}$ & $1.5_{\pm 0.2}$ & $12.9_{\pm 0.3}$ & $7.7_{\pm 0.2}$ & $3.6_{\pm 0.2}$ & $36.1_{\pm 0.4}$ & $6.3_{\pm 0.3}$ \\
+\textsc{OPD} & $87.2_{\pm 0.4}$ & $42.6_{\pm 0.5}$ & $54.6_{\pm 0.4}$ & $30.5_{\pm 0.5}$ & $62.4_{\pm 0.5}$ & $31.4_{\pm 0.4}$ & $32.4_{\pm 0.5}$ \\
+\textsc{SAGE-OPD} & $88.6_{\pm 0.5}$ & $47.8_{\pm 0.4}$ & $57.8_{\pm 0.5}$ & $39.1_{\pm 0.4}$ & $64.8_{\pm 0.6}$ & $42.0_{\pm 0.5}$ & $36.9_{\pm 0.4}$ \\
+\textsc{Relay-OPD} & $90.1_{\pm 0.4}$ & $53.1_{\pm 0.6}$ & $60.9_{\pm 0.3}$ & $49.4_{\pm 0.5}$ & $67.5_{\pm 0.4}$ & $52.8_{\pm 0.6}$ & $33.5_{\pm 0.5}$ \\
+\textsc{Guided-OPD} & $91.5_{\pm 0.5}$ & $59.2_{\pm 0.5}$ & $63.7_{\pm 0.4}$ & $58.2_{\pm 0.4}$ & $69.6_{\pm 0.5}$ & $65.3_{\pm 0.4}$ & $42.8_{\pm 0.6}$ \\
+\textsc{TCOD} & $92.8_{\pm 0.4}$ & $66.0_{\pm 0.5}$ & $66.8_{\pm 0.5}$ & $68.4_{\pm 0.6}$ & \underline{$72.9_{\pm 0.5}$} & $76.2_{\pm 0.5}$ & $45.6_{\pm 0.5}$ \\
+\textsc{FutureBridge-OPD} & \underline{$94.0_{\pm 0.5}$} & \underline{$71.2_{\pm 0.6}$} & \underline{$68.5_{\pm 0.4}$} & \underline{$76.2_{\pm 0.5}$} & $72.3_{\pm 0.4}$ & \underline{$90.4_{\pm 0.6}$} & \underline{$46.2_{\pm 0.4}$} \\
+\midrule
+\name & \textbf{95.8}$_{\pm \mathbf{0.5}}$ & \textbf{75.9}$_{\pm \mathbf{0.5}}$ & \textbf{71.0}$_{\pm \mathbf{0.3}}$ & \textbf{81.5}$_{\pm \mathbf{0.6}}$ & \textbf{76.2}$_{\pm \mathbf{0.6}}$ & \textbf{97.8}$_{\pm \mathbf{0.5}}$ & \textbf{56.3}$_{\pm \mathbf{0.6}}$ \\
+\bottomrule
+\end{tabular}
+} 
+\vspace{-0.8em}
+\end{table} 
+
+\subsection{Preserving the Reverse-KL Objective Helps Mitigate Forgetting} 
+\label{app:reverse_kl_forgetting} 
+
+% \begin{wraptable}{r}{.5\linewidth}
+\begin{table}[ht]
+    \centering
+    \small
+    \caption{Impact of preserving the reverse-KL objective on mitigating forgetting.}
+    \label{tab:reverse_kl_forgetting}
+    \resizebox{.5\linewidth}{!}{
+    \begin{tabular}{@{}lcc@{}}
+        \toprule
+        \bf Method & \bf IFEval & \bf Arena-Hard \\
+        \midrule
+        \multicolumn{3}{c}{\cellcolor{gray!10}\textit{\textbf{Qwen3-0.6B}}} \\
+        \midrule
+        \textsc{Vanilla} & 60.1 & 8.6 \\
+        \name $w/$ forward KL & 55.8\drop{4.3} & 7.2\drop{1.4} \\
+        \name & \bf 64.3\up{4.2} & \bf 9.1\up{0.5} \\
+        \midrule
+        \multicolumn{3}{c}{\cellcolor{gray!10}\textit{\textbf{Qwen3-1.7B}}} \\
+        \midrule
+        \textsc{Vanilla} & 71.3 & 41.3 \\
+        \name $w/$ forward KL & 65.7\drop{5.6} & 36.4\drop{4.9} \\
+        \name & \bf 74.3\up{3.0} & \bf 43.6\up{2.3} \\
+        \bottomrule
+    \end{tabular}
+    }
+    \vspace{-1.0em}
+\end{table}
+
+
+
+
+Some distillation methods learn from teacher-generated tokens using a forward-KL objective, which may compromise previously acquired capabilities.
+Beyond improving task performance~(\Cref{sec:ablation_study}), we investigate whether preserving the reverse-KL objective helps mitigate forgetting during distillation with teacher intervention.
+
+We evaluate capability retention on IFEval~\citep{abs-2311-07911} and Arena-Hard~\citep{arenahard2024}, which are benchmarks designed to assess the subjective ability of LLMs.
+We compare \name with a variant that replaces reverse KL with forward KL, using the original student checkpoint (\textsc{Vanilla}) as the reference for measuring changes in performance.
+
+As shown in \Cref{tab:reverse_kl_forgetting}, the forward-KL variant underperforms the original checkpoint on both benchmarks at both student sizes, indicating degradation in previously acquired capabilities.
+In contrast, \name improves over the original checkpoint across all four comparisons.
+These results suggest that preserving the reverse-KL objective helps retain general capabilities while acquiring task-specific behaviors, providing an additional benefit beyond the agentic performance gains.
+
+\subsection{Stochastic Intervention v.s. Deterministic Threshold} \label{app:stochastic_vs_deterministic} 
+
+\paragraph{Setpup. }
+To isolate the effect of stochastic intervention, we replace the proposed stochastic decision rule with deterministic thresholding while keeping all other training and evaluation settings unchanged.
+Specifically, given the same turn-level discrepancy score $s_t$, the deterministic variant triggers teacher intervention whenever $s_t>\tau$, i.e.,
+$z_t=\mathbf{1}[s_t>\tau]$.
+We consider three thresholds, $\tau\in\{0.5,1.0,2.0\}$, covering increasingly conservative intervention policies.
+All variants use the same student and teacher models, training data, optimization hyperparameters, rollout budget, and evaluation protocol as \name, so that the comparison isolates the effect of converting the discrepancy score into a stochastic intervention probability rather than a hard decision boundary.
+We report results on the two long-horizon interactive benchmarks, ALFWorld and ScienceWorld, where compounding inter-turn errors make intervention decisions particularly consequential. 
+
+\begin{table}[ht]
+\centering 
+\caption{Comparison of stochastic intervention and deterministic threshold on ALFWorld and ScienceWorld benchmarks.}
+\label{tab:stochastic_vs_deterministic}
+\resizebox{1.\linewidth}{!}{
+\begin{tabular}{lccccccc}
+\toprule
+\multirow{2}{*}{\textbf{Method}} & \multicolumn{6}{c}{\cellcolor{cyan!20} \textbf{ALFWorld}} & \cellcolor{LimeGreen!20} \\
+& \cellcolor{cyan!20} \textbf{Pick} 
+& \cellcolor{cyan!20} \textbf{Pick Two} 
+& \cellcolor{cyan!20} \textbf{Pick \& Clean} 
+& \cellcolor{cyan!20} \textbf{Pick \& Heat} 
+& \cellcolor{cyan!20} \textbf{Pick \& Cool} 
+& \cellcolor{cyan!20} \textbf{Look} 
+& \cellcolor{LimeGreen!20} \multirow{-2}{*}{\textbf{ScienceWorld}} \\
+\midrule
+Thre. $0.5$ & $88.5_{\pm 0.5}$ & $62.7_{\pm 0.4}$ & $36.5_{\pm 0.4}$ & $55.1_{\pm 0.5}$ & $49.7_{\pm 0.4}$ & $65.3_{\pm 0.5}$ & $20.8_{\pm 0.4}$ \\
+Thre. $1.0$ & $89.8_{\pm 0.4}$ & $64.8_{\pm 0.4}$ & $38.0_{\pm 0.3}$ & $57.2_{\pm 0.5}$ & $51.8_{\pm 0.4}$ & $68.4_{\pm 0.4}$ & $23.2_{\pm 0.5}$ \\
+Thre. $2.0$ & $89.0_{\pm 0.4}$ & $63.3_{\pm 0.5}$ & $35.8_{\pm 0.5}$ & $54.5_{\pm 0.6}$ & $49.2_{\pm 0.5}$ & $64.7_{\pm 0.6}$ & $20.3_{\pm 0.5}$ \\
+\midrule
+\name & \textbf{93.7}$_{\pm \mathbf{0.5}}$ & \textbf{69.1}$_{\pm \mathbf{0.5}}$ & \textbf{41.2}$_{\pm \mathbf{0.2}}$ & \textbf{62.0}$_{\pm \mathbf{0.6}}$ & \textbf{56.0}$_{\pm \mathbf{0.6}}$ & \textbf{73.7}$_{\pm \mathbf{0.5}}$ & \textbf{27.5}$_{\pm \mathbf{0.6}}$ \\
+\bottomrule
+\end{tabular}
+} 
+\end{table} 
+
+\paragraph{Results and Analysis. }
+\Cref{tab:stochastic_vs_deterministic} compares our stochastic intervention strategy with deterministic intervention using several fixed discrepancy thresholds.
+Among the deterministic variants, a threshold of $1.0$ performs best across all tasks, while both smaller and larger thresholds lead to consistent degradation.
+This non-monotonic behavior indicates that deterministic intervention is sensitive to the choice of decision boundary: a small threshold may trigger teacher intervention too frequently, whereas a large threshold may fail to intervene when corrective guidance is beneficial.
+In contrast, \name consistently outperforms all deterministic variants across every ALFWorld category and ScienceWorld.
+These results indicate that the performance of deterministic intervention depends noticeably on the selected threshold, whereas the stochastic strategy avoids introducing a manually tuned decision boundary and performs consistently better across the evaluated tasks.
+By mapping discrepancy continuously to an intervention probability, \name allows teacher control to increase gradually with teacher--student disagreement while preserving opportunities for student execution.
+This provides empirical support for using discrepancy-conditioned stochastic intervention rather than a fixed threshold.
+
+\subsection{Teacher Computation Matched Comparison} \label{app:teacher_computation_matched} 
+
+\paragraph{Setup.}
+To examine whether the gains of \name arise simply from increased teacher usage, we compare all intervention-based methods under a matched teacher-intervention budget.
+Specifically, we impose the same maximum number of teacher interventions for each method and terminate training once this budget is exhausted.
+For methods with configurable intervention schedules or frequencies, we adjust these controls so that all methods consume the same total number of teacher interventions over training.
+All other training and evaluation settings, including the student and teacher models, training data, optimization hyperparameters, rollout configuration, and evaluation protocol, are kept identical to the corresponding main experiments.
+This comparison therefore controls for the amount of teacher intervention and focuses on how effectively each method allocates and learns from a fixed teacher budget.
+
+
+\begin{table}[ht]
+\centering 
+\caption{Results of \name and baselines under the same teacher computation budget.}
+\label{tab:teacher_computation_matched}
+\resizebox{1.\linewidth}{!}{
+\begin{tabular}{lccccccc}
+\toprule
+\multirow{2}{*}{\textbf{Method}} & \multicolumn{6}{c}{\cellcolor{cyan!20} \textbf{ALFWorld}} & \cellcolor{LimeGreen!20} \\
+& \cellcolor{cyan!20} \textbf{Pick} 
+& \cellcolor{cyan!20} \textbf{Pick Two} 
+& \cellcolor{cyan!20} \textbf{Pick \& Clean} 
+& \cellcolor{cyan!20} \textbf{Pick \& Heat} 
+& \cellcolor{cyan!20} \textbf{Pick \& Cool} 
+& \cellcolor{cyan!20} \textbf{Look} 
+& \cellcolor{LimeGreen!20} \multirow{-2}{*}{\textbf{ScienceWorld}} \\
+\midrule
+\textsc{Relay-OPD} & $84.9_{\pm 0.5}$ & $44.8_{\pm 0.5}$ & $33.5_{\pm 0.4}$ & $32.4_{\pm 0.4}$ & $47.3_{\pm 0.5}$ & $35.1_{\pm 0.5}$ & $14.6_{\pm 0.4}$ \\
+\textsc{Guided-OPD} & $86.2_{\pm 0.4}$ & $50.3_{\pm 0.5}$ & $34.8_{\pm 0.4}$ & $39.5_{\pm 0.4}$ & $48.2_{\pm 0.4}$ & $45.4_{\pm 0.5}$ & $13.1_{\pm 0.5}$ \\
+\textsc{FutureBridge-OPD} & \underline{$88.3_{\pm 0.4}$} & \underline{$61.0_{\pm 0.5}$} & \underline{$36.7_{\pm 0.3}$} & \underline{$53.8_{\pm 0.4}$} & $49.7_{\pm 0.4}$ & \underline{$62.9_{\pm 0.5}$} & \underline{$18.7_{\pm 0.4}$} \\
+\midrule
+\name & \textbf{90.8}$_{\pm \mathbf{0.4}}$ & \textbf{65.8}$_{\pm \mathbf{0.4}}$ & \textbf{38.1}$_{\pm \mathbf{0.2}}$ & \textbf{58.6}$_{\pm \mathbf{0.5}}$ & \textbf{52.8}$_{\pm \mathbf{0.4}}$ & \textbf{69.9}$_{\pm \mathbf{0.4}}$ & \textbf{24.2}$_{\pm \mathbf{0.4}}$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table} 
+
+\paragraph{Results and Analysis.}
+As shown in \Cref{tab:teacher_computation_matched}, \name consistently outperforms all competing intervention-based OPD methods under the same teacher-intervention budget.
+Compared with the strongest baseline, \textsc{FutureBridge-OPD}, \name improves performance by $1.4$--$7.0$ points across all seven reported tasks, with an average gain of approximately $4.2$ points.
+The largest improvements are observed on \textsc{Look} ($+7.0$), ScienceWorld ($+5.5$), and \textsc{Pick Two}/\textsc{Pick \& Heat} ($+4.8$ each), where successful completion requires sustained decision making over multiple interaction steps.
+These results indicate that the advantage of \name cannot be explained solely by using more teacher interventions.
+Instead, under a fixed teacher budget, its discrepancy-conditioned stochastic intervention allocates teacher guidance more effectively across interaction states, while the importance-weighted objective enables the student to learn from the resulting teacher-generated tokens without changing the conditional reverse-KL target.
+Overall, the comparison suggests that the gains of \name arise from more effective use of teacher supervision rather than simply greater teacher involvement.
+
+
+\subsection{Case Studies} 
+\label{app:case_studies}
+
+We pair early- and late-training trajectories from the same ALFWorld dataset instances. 
+The controller column identifies the policy that generated the executed action, and $s_t$ is the turn-level discrepancy score of \Cref{eq:normalized_turn_score}. 
+Scores on teacher-controlled turns are computed from the discarded student proposals. 
+We abbreviate repeated search steps while preserving every action needed for the conclusions below.
+
+\begin{case}{Local Transfer --- The Microwave Subtask Becomes Student-Controlled}{case_local_skill_transfer}
+\begin{agetaskbox}
+\textbf{Task:} Cool an apple and place it in a microwave.
+\hfill \textbf{Dataset instance:} 15\\
+\textbf{Early trajectory:} batch 1; 5 consecutive ineffective actions in the
+shown segment.
+\hfill \textbf{Later trajectory:} batch 112; 0 ineffective actions.\\
+\textbf{Outcome:} Both trajectories succeed, but control of the previously problematic microwave subtask transfers from teacher to student.
+\end{agetaskbox}
+
+\vspace{0.4em}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}Xcc@{}}
+\toprule
+\textbf{Turn} & \textbf{Executed action and environment response (abbreviated)}
+& \textbf{Controller} & \textbf{$s_t$} \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Early training --- the student reaches an invalid local state and requires correction}} \\
+15 & \texttt{cool apple 1 with fridge 1} $\rightarrow$ apple cooled
+& Student & 0.993 \\
+16--20 & Attempts to move/open the microwave $\rightarrow$
+\texttt{Nothing happens.} five times
+& Student & 0.478--0.835 \\
+21 & \texttt{go to microwave 1} $\rightarrow$ arrives at closed microwave
+& \cellcolor{ageTeacherBg}\textbf{Teacher} & 0.845 \\
+22 & \texttt{open microwave 1} $\rightarrow$ microwave opened
+& \cellcolor{ageTeacherBg}\textbf{Teacher} & 0.846 \\
+23 & \texttt{move apple 1 to microwave 1} $\rightarrow$ reward 1
+& Student & 0.506 \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Later training --- the same local subtask is completed without intervention}} \\
+23 & \texttt{cool apple 1 with fridge 1} $\rightarrow$ apple cooled
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.286 \\
+24 & \texttt{go to microwave 1} $\rightarrow$ arrives at closed microwave
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.231 \\
+25 & \texttt{open microwave 1} $\rightarrow$ microwave opened
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.287 \\
+26 & \texttt{move apple 1 to microwave 1} $\rightarrow$ reward 1
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.462 \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.6em}
+\begin{ageanalysisbox}
+\footnotesize
+Early in training, the student cools the apple but attempts to manipulate the microwave before navigating to it. 
+The teacher restores a valid state by navigating to and opening the microwave. 
+When the same instance reappears, the student independently executes this corrected sequence, and the navigation and opening scores decrease from $0.845/0.846$ to $0.231/0.287$. 
+The case therefore provides evidence of \emph{local} skill acquisition: intervention is converted into student-controlled behavior on the corrected subtask. 
+Because two teacher actions still occur earlier in the later trajectory, we do not interpret this example as end-to-end teacher independence.
+\end{ageanalysisbox}
+\end{case}
+
+\begin{case}{End-to-End Transfer --- Search and Placement without Intervention}{case_search_place_transfer}
+\begin{agetaskbox}
+\textbf{Task:} Find two pens and place both in the desk.
+\hfill \textbf{Dataset instance:} 713\\
+\textbf{Early trajectory:} batch 23; 24 turns, 9 teacher interventions, and 4
+ineffective actions.
+\hfill \textbf{Later trajectory:} batch 134; 21 turns, 0 teacher interventions,
+and 0 ineffective actions.\\
+\textbf{Outcome:} Both trajectories receive reward 1 but the later trajectory is generated entirely by the student.
+\end{agetaskbox}
+
+\vspace{0.4em}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}Xcc@{}}
+\toprule
+\textbf{Phase} & \textbf{Executed action sequence (abbreviated)}
+& \textbf{Controller} & \textbf{$s_t$} \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Early training --- intervention spans exploration, object acquisition, and return navigation}} \\
+Initialize search & \texttt{go drawer 1; open drawer 1; go drawer 2}
+& \cellcolor{ageTeacherBg}\textbf{Teacher} & 0.292, 0.414, 0.698 \\
+Locate first pen & Search shelves; \texttt{go shelf 5};
+\texttt{take pen 1 from shelf 5}
+& Mixed & 0.430 at intervention \\
+Locate second pen & \texttt{go shelf 6; take pen 2 from shelf 6}
+& \cellcolor{ageTeacherBg}\textbf{Teacher} & 0.454, 0.614 \\
+Return and place & Teacher navigates to the desk; student eventually places
+both pens $\rightarrow$ reward 1
+& Mixed & 0.554, 0.288 at interventions \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Later training --- all search and placement decisions are student-generated}} \\
+Initialize search & \texttt{go drawer 1; open drawer 1; go drawer 2; open drawer 2}
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.322--0.516 \\
+Locate first pen & Search shelves; \texttt{go shelf 6; take pen 2 from shelf 6}
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.406--0.472 \\
+Place first pen & \texttt{go desk 1; move pen 2 to desk 1}
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.161--0.357 \\
+Locate and place second pen & \texttt{go shelf 5; take pen 1; go desk 1;
+move pen 1 to desk 1} $\rightarrow$ reward 1
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.185--0.413 \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.6em}
+\begin{ageanalysisbox}
+\footnotesize
+This instance requires a longer dependency chain than Case~A: the agent must search multiple receptacles, remember two object locations, transport each object, and revisit the target desk. 
+The early trajectory invokes the teacher at nine decisions distributed across these phases. 
+In the later trajectory, the student reproduces the useful search and transport actions---including navigating to shelves 5 and 6, collecting both pens, and returning to the desk---without any teacher-generated turn. 
+The simultaneous reductions in teacher interventions ($9\rightarrow0$), ineffective actions ($4\rightarrow0$), and trajectory length ($24\rightarrow21$) indicate that the improvement is not explained by longer exploration. 
+Rather, the student executes the same multi-stage task autonomously and more efficiently.
+\end{ageanalysisbox}
+\end{case}
+
+\begin{case}{Compositional Transfer --- The Full Skill Chain Becomes Student-Controlled}{case_compositional_transfer}
+\begin{agetaskbox}
+\textbf{Task:} Place a cooled bowl on the dining table.
+\hfill \textbf{Dataset instance:} 176\\
+\textbf{Early trajectory:} batch 6; 19 turns, 7 teacher interventions, and 2
+ineffective actions.
+\hfill \textbf{Later trajectory:} batch 117; 8 turns, 0 teacher interventions,
+and 0 ineffective actions.\\
+\textbf{Outcome:} Both trajectories receive reward 1 but the later student
+executes the complete manipulation chain directly.
+\end{agetaskbox}
+
+\vspace{0.4em}
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}Xcc@{}}
+\toprule
+\textbf{Phase} & \textbf{Executed action sequence (abbreviated)}
+& \textbf{Controller} & \textbf{$s_t$} \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Early training --- the student detours and the teacher supplies the critical manipulation chain}} \\
+Acquire object & Student opens cabinet; teacher executes
+\texttt{take bowl 1} and \texttt{go fridge 1}
+& Mixed & 0.834, 0.754 at interventions \\
+Detour & Student returns to the table, moves the bowl back, and repeatedly
+examines the scene
+& Student & 0.427--1.076 \\
+Recover object & \texttt{take bowl 1 from diningtable 1}
+& \cellcolor{ageTeacherBg}\textbf{Teacher} & 0.748 \\
+Cool object & \texttt{open fridge 1; cool bowl 1 with fridge 1}
+& \cellcolor{ageTeacherBg}\textbf{Teacher} & 0.417, 0.490 \\
+Complete task & Teacher navigates to the table and finally executes
+\texttt{move bowl 1 to diningtable 1} $\rightarrow$ reward 1
+& Mixed & 0.601, 0.603 at interventions \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Later training --- the student executes a direct valid chain without intervention}} \\
+Acquire object & \texttt{go cabinet 1; open cabinet 1; take bowl 1}
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.290--0.323 \\
+Cool object & \texttt{go fridge 1; open fridge 1; cool bowl 1 with fridge 1}
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.308--0.491 \\
+Complete task & \texttt{go diningtable 1; move bowl 1 to diningtable 1}
+$\rightarrow$ reward 1
+& \cellcolor{ageStudentBg}\textbf{Student} & 0.342--0.533 \\
+\bottomrule
+\end{tabularx}
+
+\vspace{2.0em}
+\begin{ageanalysisbox}
+\footnotesize
+The early trajectory exposes a compositional failure rather than a single
+invalid action: after acquiring the bowl, the student returns it to the dining table before cooling it and then stalls on repeated examination. 
+The teacher must re-acquire the object and supply the state-changing actions that open the fridge, cool the bowl, and complete the placement. 
+On the later occurrence, the student executes precisely the required dependency order---acquire, navigate, open, cool, return, and place---in eight valid actions. 
+Teacher use falls from seven turns to zero while trajectory length falls by more than half. 
+Together with Case~\ref{cs:case_search_place_transfer}, this demonstrates full-trajectory student control in two distinct task families, complementing the local transfer illustrated by Case~\ref{cs:case_local_skill_transfer}.
+\end{ageanalysisbox}
+\end{case}
+
+
+
+
+
+\section{Limitations and Future Work}
+\label{app:limitations} 
+
+While \name offers practical benefits, it also comes with a few limitations that point to interesting future work.
+All experiments use the text-only LLMs, two student scales, two teacher scales, and two families of text-based interactive tasks. 
+We do not test multimodal or embodied settings, or environments with irreversible external side effects. 
+Whether discrepancy-calibrated intervention transfers to those settings is open.
+The routing score in \Cref{eq:teacher_student_ratio} needs the teacher's per-token probabilities on student-proposed tokens, and the correction in \Cref{eq:importance_weighted_reverse_kl} needs them again on teacher-generated tokens. 
+\name is therefore inapplicable to teachers exposed only through a sampling API, which excludes many of the strongest available models. 
+When $z_t=1$ the teacher regenerates the entire turn. This preserves coherence between
+the reasoning, the action, and the environment transition, but it spends teacher supervision on the whole response even when discrepancy is concentrated in a single decision, and it offers no mechanism for correcting part of a turn.
+

@@ -1,0 +1,132 @@
+\usepackage{appendix}
+\usepackage{enumitem}
+\setlist{topsep=0pt, leftmargin=*}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newtheoremstyle{named}{}{}{\itshape}{}{\bfseries}{.}{.5em}{\thmnote{#3's }#1}
+\theoremstyle{named}
+\newtheorem*{namedtheorem}{Theorem}
+
+\theoremstyle{plain} %
+\newcommand{\thistheoremname}{}
+\newtheorem{genericthm}[theorem]{\thistheoremname}
+\newenvironment{namedthm}[1]
+  {\renewcommand{\thistheoremname}{#1}%
+   \begin{genericthm}}
+  {\end{genericthm}}
+  
+\newtheorem*{genericthm*}{\thistheoremname}
+\newenvironment{namedthm*}[1]
+  {\renewcommand{\thistheoremname}{#1}%
+   \begin{genericthm*}}
+  {\end{genericthm*}}
+
+\newcounter{numrel}%
+\counterwithin*{numrel}{section}%
+\newcommand{\numrel}[1]{%
+  \stepcounter{numrel}%
+  \overset{(\roman{numrel})}{#1}%
+}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}    
+
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert }
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\inner}[1]{\left\langle#1\right\rangle}
+
+\newcommand{\expect}[1]{\mathop{\mathbb{E}}#1}
+\newcommand{\E}[1]{\mathop{\mathbb{E}}#1}
+\newcommand{\prob}[1]{\mathbb{P}\left(#1\right)}
+\newcommand{\bracket}[1]{\left[#1\right]}
+\newcommand{\parenth}[1]{\left(#1\right)}
+\newcommand{\braces}[1]{\left\{#1\right\}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+\newcommand{\defeq}{\triangleq}
+\newcommand{\defined}{\triangleq}
+\newcommand{\Reals}{\mathbb{R}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\dif}{\textrm{d}}
+\newcommand{\rX}{\textnormal{X}}
+\newcommand{\rY}{\textnormal{Y}}
+\newcommand{\rZ}{\textnormal{Z}}
+\newcommand{\bA}{\mathbf{A}}
+\newcommand{\bB}{\mathbf{B}}
+\newcommand{\bC}{\mathbf{C}}
+\newcommand{\bD}{\mathbf{D}}
+\newcommand{\bH}{\mathbf{H}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bW}{\mathbf{W}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\bY}{\mathbf{Y}}
+\newcommand{\bZ}{\mathbf{Z}}
+
+\newcommand{\cD}{\mathcal{D}}
+
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\bbA}{\mathcal{A}}
+\newcommand{\bbS}{\mathcal{S}}
+\newcommand{\bbP}{\mathcal{P}}
+
+\newcommand{\bu}{\bm{u}}
+\newcommand{\ba}{\bm{a}}
+\newcommand{\bb}{\bm{b}}
+\newcommand{\bc}{\bm{c}}
+\newcommand{\be}{\bm{e}}
+\newcommand{\bg}{\bm{g}}
+\newcommand{\bh}{\bm{h}}
+\newcommand{\bp}{\bm{p}}
+\newcommand{\bq}{\bm{q}}
+\newcommand{\br}{\bm{r}}
+\newcommand{\bx}{\bm{x}}
+\newcommand{\by}{\bm{y}}
+\newcommand{\bv}{\bm{v}}
+\newcommand{\bz}{\bm{z}}
+\newcommand{\bw}{\bm{w}}
+
+\newcommand{\balpha}{\bm{\alpha}}
+\newcommand{\bbeta}{\bm{\beta}}
+\newcommand{\btheta}{\bm{\theta}}
+\newcommand{\bphi}{\bm{\phi}}
+\newcommand{\bsigma}{\bm{\sigma}}
+\newcommand{\tr}{\textnormal{Tr}}
+\newcommand{\indicator}{\mathbb{I}}
+\newcommand{\KL}{\mathbb{D}_{\text{KL}}}
+\newcommand{\Var}{\textnormal{Var}}
+\newcommand{\Cov}{\textnormal{Cov}}
+
+\newcommand{\sg}{\operatorname{sg}}
+\newcommand{\Ent}{\operatorname{Ent}}
+
+\newcommand{\lipschitz}{L}
+\newcommand{\smooth}{\beta}
+\newcommand{\alg}{\mathcal{A}}
+\newcommand{\dataset}{\{(\bx_i, \by_i)\}_{i=1}^{n}}
+\newcommand{\datasetz}{\{\bz_i\}_{i=1}^{n}}
+
+\newcommand{\lipschitzz}{L_{\bz}}
+\newcommand{\smoothz}{\beta_{\bz}}

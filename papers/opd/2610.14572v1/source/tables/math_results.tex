@@ -1,0 +1,50 @@
+\begin{table}[ht]
+\caption{Math accuracy (\%): RAD at step 100 versus baselines and RAD-Simple at step 200.
+Values are mean $\pm$ standard deviation over
+16 sampled responses; Mean equally weights six benchmarks.
+\textbf{Bold}/\underline{underline} mark the best/second-best trained means, with ties sharing a rank.
+Parentheses give gains of the higher RAD or RAD-Simple score in each column
+over the best baselines. Time denotes total training time in hours.
+}
+\label{tab:main-results}
+\centering
+\small
+\renewcommand{\bestmeanstd}[2]{\ensuremath{\mathbf{#1}_{\pm #2}}}
+\setlength{\tabcolsep}{0.5pt}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabularx}{\linewidth}{@{\hspace{\tabcolsep}}l*{7}{>{\centering\arraybackslash}X}>{\centering\arraybackslash}p{3.2em}@{\hspace{\tabcolsep}}}
+\toprule
+\radhead \multicolumn{1}{c}{Method} & AIME24 & AIME25 & AIME26 & \begin{tabular}[c]{@{}c@{}}HMMT25\\Feb\end{tabular} & \begin{tabular}[c]{@{}c@{}}HMMT25\\Nov\end{tabular} & \begin{tabular}[c]{@{}c@{}}Olympiad\\Bench\end{tabular} & Mean & \shortstack{Time\\(h)} \\
+\midrule
+Teacher & \meanstd{74.79}{3.72} & \meanstd{61.46}{3.53} & \meanstd{74.79}{4.56} & \meanstd{43.75}{5.38} & \meanstd{59.17}{5.59} & \meanstd{77.15}{0.52} & \meanstd{65.18}{1.66} & --- \\
+\midrule
+\radhead\multicolumn{9}{l}{\textit{\textbf{Student: Qwen3-1.7B (non-thinking)}}} \\
+\addlinespace[1pt]
+Base & \meanstd{12.08}{3.89} & \meanstd{11.04}{4.20} & \meanstd{8.13}{2.63} & \meanstd{6.04}{3.38} & \meanstd{3.75}{2.00} & \meanstd{39.30}{0.82} & \meanstd{13.39}{1.49} & --- \\
+\addlinespace[1pt]
+GRPO & \meanstd{29.58}{5.64} & \meanstd{19.58}{3.89} & \meanstd{18.96}{5.98} & \meanstd{15.63}{2.82} & \meanstd{10.21}{4.93} & \meanstd{53.07}{0.93} & \meanstd{24.51}{1.46} & 5.12 \\
+OPD & \meanstd{40.00}{5.65} & \meanstd{27.29}{4.44} & \meanstd{26.46}{5.83} & \meanstd{17.71}{3.67} & \meanstd{16.67}{6.24} & \meanstd{58.19}{1.17} & \meanstd{31.05}{2.01} & 14.28 \\
+TIP & \meanstd{39.17}{4.93} & \meanstd{28.54}{4.40} & \meanstd{31.04}{5.98} & \meanstd{17.08}{3.09} & \meanstd{18.33}{4.08} & \meanstd{57.93}{1.18} & \meanstd{32.02}{1.70} & 34.09 \\
+RLAD & \meanstd{35.21}{4.08} & \meanstd{27.71}{4.20} & \meanstd{26.04}{6.89} & \meanstd{16.88}{3.43} & \meanstd{17.08}{4.55} & \meanstd{58.06}{1.27} & \meanstd{30.16}{1.58} & 14.11 \\
+ExOPD & \meanstd{36.88}{4.33} & \meanstd{31.67}{4.08} & \meanstd{31.25}{5.51} & \meanstd{16.67}{2.89} & \meanstd{19.38}{5.43} & \meanstd{59.69}{1.12} & \meanstd{32.59}{1.81} & 51.02 \\
+\midrule
+\radrow\radlabel{\method{}} & \bestmeanstd{47.50}{7.41} & \bestmeanstd{36.04}{3.58} & \bestmeanstd{38.96}{3.86} & \bestmeanstd{22.50}{4.17} & \bestmeanstd{24.79}{4.08} & \bestmeanstd{64.60}{1.05} & \bestmeanstd{39.07}{1.59} & 16.66 \\
+\radrow\radlabel{RAD-Simple} & \secondmeanstd{46.88}{5.83} & \secondmeanstd{34.58}{5.64} & \secondmeanstd{38.54}{5.27} & \secondmeanstd{21.67}{3.54} & \secondmeanstd{24.38}{3.05} & \secondmeanstd{64.47}{1.07} & \secondmeanstd{38.42}{1.70} & 32.48 \\
+\radgainrow \parbox[c]{6em}{\raggedright\baselinegainlabel} & \radgain{+7.50} & \radgain{+4.38} & \radgain{+7.71} & \radgain{+4.79} & \radgain{+5.42} & \radgain{+4.92} & \radgain{+6.48} & --- \\
+\midrule
+\radhead\multicolumn{9}{l}{\textit{\textbf{Student: Qwen3-4B-Instruct-2507}}} \\
+\addlinespace[1pt]
+Base & \meanstd{64.17}{5.95} & \meanstd{48.33}{5.53} & \meanstd{53.13}{5.46} & \meanstd{32.29}{4.52} & \meanstd{44.58}{4.06} & \meanstd{71.77}{0.96} & \meanstd{52.38}{1.47} & --- \\
+\addlinespace[1pt]
+GRPO & \meanstd{67.92}{6.44} & \meanstd{55.63}{3.67} & \secondmeanstd{62.29}{4.52} & \meanstd{34.58}{3.51} & \meanstd{48.75}{5.38} & \meanstd{74.58}{0.84} & \meanstd{57.29}{1.72} & 14.77 \\
+OPD & \meanstd{65.21}{6.23} & \meanstd{50.63}{4.60} & \meanstd{55.42}{5.25} & \meanstd{33.96}{3.95} & \meanstd{41.46}{5.00} & \meanstd{71.89}{0.74} & \meanstd{53.09}{1.72} & 12.47 \\
+TIP & \meanstd{61.04}{4.82} & \meanstd{49.79}{5.71} & \meanstd{53.96}{6.79} & \meanstd{33.96}{4.44} & \meanstd{41.04}{6.09} & \meanstd{71.77}{0.83} & \meanstd{51.93}{1.85} & 24.46 \\
+RLAD & \meanstd{59.79}{5.06} & \meanstd{47.71}{4.96} & \meanstd{53.33}{6.12} & \meanstd{32.29}{4.67} & \meanstd{39.58}{5.64} & \meanstd{72.50}{0.93} & \meanstd{50.87}{1.60} & 13.30 \\
+ExOPD & \meanstd{58.13}{5.13} & \meanstd{50.42}{3.51} & \meanstd{55.21}{5.52} & \meanstd{33.33}{4.08} & \meanstd{40.63}{5.17} & \meanstd{71.26}{0.92} & \meanstd{51.49}{2.02} & 39.61 \\
+\midrule
+\radrow\radlabel{\method{}} & \secondmeanstd{71.25}{5.51} & \bestmeanstd{62.50}{3.63} & \secondmeanstd{62.29}{5.23} & \secondmeanstd{36.04}{5.30} & \secondmeanstd{51.25}{5.12} & \secondmeanstd{75.46}{0.87} & \secondmeanstd{59.80}{2.07} & 26.79 \\
+\radrow\radlabel{RAD-Simple} & \bestmeanstd{71.88}{5.13} & \secondmeanstd{60.63}{3.77} & \bestmeanstd{63.96}{5.17} & \bestmeanstd{40.00}{4.41} & \bestmeanstd{52.29}{5.36} & \bestmeanstd{76.30}{0.79} & \bestmeanstd{60.84}{1.50} & 27.88 \\
+\radgainrow \parbox[c]{6em}{\raggedright\baselinegainlabel} & \radgain{+3.96} & \radgain{+6.88} & \radgain{+1.67} & \radgain{+5.42} & \radgain{+3.54} & \radgain{+1.71} & \radgain{+3.55} & --- \\
+\bottomrule
+\end{tabularx}
+\end{table}

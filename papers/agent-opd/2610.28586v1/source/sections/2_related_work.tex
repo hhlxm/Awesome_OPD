@@ -1,0 +1,23 @@
+\section{Related Work}
+\label{sec:related}
+
+\textbf{On-policy distillation for agents.}
+ReOPD identifies a prefix trap: histories closer to the student's distribution can make the teacher's targets less reliable, motivating a curriculum over replayed teacher prefixes~\citep{reopd2026}.
+Our compared methods address related trajectory-level difficulties: TCOD-F2B schedules rollout depth, Guided-OPD allocates teacher-controlled turns, and FutureBridge validates teacher bridges from high-disagreement states~\citep{tcod2026,guidedopd2026,futurebridge2026}.
+These methods retain the original scorer.
+\method{} repairs its token scores before student training, a change that can be combined with student-side curricula.
+
+\textbf{Context and self-distillation.}
+SDFT and Self-Distilled Reasoner use demonstration-conditioned self-teachers to supervise student rollouts~\citep{sdft2026,opsd2026}.
+SDPO instead conditions on textual feedback or successful attempts~\citep{sdpo2026}, while OPCD internalizes experiential knowledge and system prompts through on-policy context distillation~\citep{opcd2026}.
+CANON selects privileged solutions by consensus without gold labels~\citep{canon2026}.
+These works establish that useful distillation signals need not come from task rewards.
+\method{} uses teacher takeovers to repair an external scorer, then freezes it for a separate student's OPD.
+
+\textbf{Teacher quality and repair.}
+\citet{li2026bestval} show that a higher-scoring teacher need not transfer better: compatible reasoning patterns and new capabilities matter.
+\citet{rethinkingopsd2026} find that privileged context can suppress self-correction and degrade thinking models.
+These results motivate checking what the teacher's local signal teaches, beyond its standalone performance.
+Distillation Traps and Guards directly calibrates an external teacher with utility and calibration rewards~\citep{trapsguards2026}.
+\method{} instead fits takeover-informed token targets without task reward and evaluates the repaired scorer through target fidelity and downstream completion.
+\Cref{app:compare,app:related} give the detailed comparisons and extended discussion.

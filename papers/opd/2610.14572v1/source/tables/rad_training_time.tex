@@ -1,0 +1,27 @@
+\begin{table}[H]
+\caption{RAD math training-time breakdown for Qwen3-1.7B (non-thinking),
+averaged over the same 100 updates as \cref{tab:training-step-comparison}.
+Entries give seconds per training step and each stage's share of recorded
+training-step time. Checkpoint saves are amortized over all steps;
+validation is excluded and reported separately in the text.}
+\label{tab:rad-training-time}
+\centering
+\normalsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}>{\raggedright\arraybackslash}p{0.60\linewidth}rr@{}}
+\toprule
+Stage & Seconds & Share \\
+\midrule
+Distillation rollout pipeline & 211.1 & 35.2\% \\
+Student log-probabilities and advantages & 11.9 & 2.0\% \\
+Lookahead stage & 283.2 & 47.2\% \\
+Weight computation and student update & 87.5 & 14.6\% \\
+Rollout weight synchronization & 5.3 & 0.9\% \\
+Checkpoint saves & 0.6 & 0.1\% \\
+Other in-step overhead & 0.3 & 0.1\% \\
+\midrule
+\textbf{Total training step} & \textbf{599.9} & 100\% \\
+\bottomrule
+\end{tabular*}
+\end{table}

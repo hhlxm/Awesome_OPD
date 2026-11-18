@@ -1,0 +1,731 @@
+\section{Derivations and proofs for the main text}
+\label{app:derivations}
+This appendix follows \cref{sec:setup,sec:theory}. It gives the assumptions and proofs for the main-text identities, then the specializations used to interpret the experiments.
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{.36\linewidth}p{.59\linewidth}@{}}
+\toprule
+Main-text result & Complete derivation \\
+\midrule
+\Cref{sec:setup}: policies and request field & \Cref{app:standing}: finite-tree conventions and exact-loss request \\
+\Cref{sec:loop}, \cref{eq:response-law} & \Cref{app:ftc}: exact response and explicit finite-step remainder \\
+\Cref{sec:local}, \cref{eq:collective-response,eq:pac} & \Cref{app:collective-proof,app:collective-frozen}: conversion and frozen-field geometry \\
+\Cref{sec:broadcast}, \cref{eq:rd-law,eq:rd-velocity} & \Cref{app:rd-flow}: routing and conditional drift \\
+\Cref{sec:broadcast}, \cref{eq:broadcast-source-renewal} & \Cref{app:broadcast-prefix-reweighting}: source normalization and support \\
+\Cref{sec:broadcast}, \cref{eq:rd-estimators} & \Cref{app:rd-theory}: endpoint accounting and path-integral error \\
+\Cref{sec:broadcast}, \cref{eq:broadcast-continuations} & \Cref{app:outcome-proof}: continuation values and terminal outcomes \\
+\Cref{sec:broadcast}: entropy versus fitting & \Cref{app:rd-entropy-response}: entropy and checking sensitivities \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Setup: policies, requests, and standing assumptions}
+\label{app:standing}
+\textbf{Connection to \cref{sec:setup}.} We distinguish the model distribution, the sampling distribution, and the numerical field pulled back into parameter space. This distinction is needed for both the proofs and the experimental diagnostics.
+
+\paragraph{Notation.}
+A prompt is denoted by $b$, a source prefix by $s$, and a receiver prefix by $x$. A complete trajectory is $\xi$; $\tau>0$ is reserved for sampling temperature. The integer $k$ indexes optimizer updates, $j$ indexes generated-token depth, and $t$ indexes continuous training time. All gradients of scalar functions are column vectors. The matrix $\Phi_\theta(x)\in\mathbb R^{|\cV|\times d}$ has row $a$ equal to $\nabla_\theta z_\theta(x,a)^\top$, so $K_\theta(x,s)=\Phi_\theta(x)\Phi_\theta(s)^\top$. We write $\mathsf A^p=I-\mathbf1p^\top$ for the log-softmax normalization matrix, $A$ for scalar accessibility, and $\mathcal A^Y$ for continuation advantage. A logit-space readout gradient is denoted by $\chi\in\mathbb R^{|\cV|}$; its parameter-space pullback is $\psi=\Phi^\top\chi\in\mathbb R^d$. Norms without a subscript are Euclidean. $\|\cdot\|_{\rm op}$ denotes the induced operator norm.
+
+\begin{assumption}[Finite generation trees and regular parameter paths]
+\label[assumption]{ass:regularity}
+The prompt set $\mathcal B$ and vocabulary $\cV$ are finite, and generation has a finite cap $H_{\max}$. Each prefix contains its prompt and its full generated ancestry. Appending a token is deterministic. A node is terminal after a stopping token or at the cap, and has no further decisions. The terminal rule and chat template are fixed. The prompt distribution $\beta$ is fixed (and independent of model parameters); prompts of zero probability are omitted.
+
+The parameter path $\theta:I\to\mathbb R^d$, on a compact interval $I$, is continuous and piecewise $C^1$ with finitely many pieces. For every prefix under consideration, $z_\theta(x)$ is $C^2$ on an open neighborhood of the path and of any parameter segment used for a finite-step calculation. The model distribution is the full-vocabulary policy $p_\theta=\softmax(z_\theta)$. The teacher $q$ is fixed and is positive on every coordinate used in an exact-KL calculation (which softmax-output models do satisfy).
+
+For the sampling identities, each nonterminal prefix $x$ has a fixed nonempty allowed vocabulary set $\mathcal V_\pi(x)\subseteq\cV$ and
+\[
+ \pi_\theta(a\mid x)=
+ \frac{\exp(z_\theta(x,a)/\tau)}{\sum_{c\in\mathcal V_\pi(x)}\exp(z_\theta(x,c)/\tau)}
+ \quad(a\in\mathcal V_\pi(x)),\qquad
+ \pi_\theta(a\mid x)=0\quad(a\notin\mathcal V_\pi(x)).
+\]
+The temperature $\tau>0$, allowed sets, and any observation or source masks are fixed. The full-vocabulary sampler is the case $\mathcal V_\pi(x)=\cV$.
+\end{assumption}
+
+Let $\mathcal S$ and $\mathcal T$ be the resulting finite sets of nonterminal and terminal prefixes. A trajectory $\xi=(b,a_0,\ldots,a_{N-1})$ ends at its first terminal node, with $N\le H_{\max}$, and has probability
+\[
+ \Pi_t(\xi)=\beta(b)\prod_{j=0}^{N-1}\pi_t(a_j\mid x_j).
+\]
+For any node $x$, including a terminal node, $d_t(x)$ is its reach-probability. It is the same product truncated at depth $h(x)$. On terminal nodes $d_t(x)=\Pi_t(x)$; on nonterminal nodes the sum $\sum_xd_t(x)$ is generally not one. Every allowed trajectory has positive probability. Finiteness and the stated regularity justify every interchange of sums and derivatives below. Identities for derivatives hold on each smooth piece, hence almost everywhere, and integrate across the entire interval. The results take the path as given and are independent of any existence or uniqueness theorem for an autonomous training flow.
+
+The raw direction is
+\[
+ g_t(s)=\Phi_t(s)^\top B_t(s),\qquad
+ u_t=\sum_s\mu_t(s)g_t(s),\qquad \Gamma_t(s)=\mu_t(s)B_t(s).
+\]
+Here $B_t$ is a declared numerical logit-space field. The specialization $\dot\theta_t=u_t$ is called the raw flow. An actual optimizer path uses its realized $\dot\theta_t$. Restricted diagnostic fields are extended by zero outside their recorded token coordinates, and their Jacobians are restricted consistently; these diagnostic supports leave the sampler's allowed set unchanged.
+
+\begin{lemma}[Log-softmax differentiation and centering]
+\label[lemma]{lem:logsoftmax}\label[lemma]{lem:centering}
+Write $\pi=\pi_\theta(\cdot\mid x)$ as a vector in the full vocabulary, with zeros outside its fixed allowed set, and let $\mathsf A^\pi=I-\mathbf1\pi^\top$. For each allowed token $a$,
+\[
+ \nabla_\theta\log\pi_\theta(a\mid x)
+ =\tau^{-1}\Phi_\theta(x)^\top(e_a-\pi),\qquad
+ \sum_a\pi(a\mid x)\nabla_\theta\log\pi(a\mid x)=0.
+\]
+Consequently $\zeta_t(x,a):=\partial_t\log\pi_t(a\mid x)$ satisfies $\sum_a\pi_t(a\mid x)\zeta_t(x,a)=0$. If $\mathbf1^\top w=0$, then $(\mathsf A^\pi)^\top w=w$. Sums involving $\log\pi$ or $\zeta$ range only over allowed tokens.
+\end{lemma}
+\begin{proof}
+For allowed $a$, the logarithm of the displayed sampler in Assumption~\ref{ass:regularity} is
+\[
+ \log\pi(a\mid x)=\tau^{-1}z(x,a)
+ -\log\sum_{c\in\mathcal V_\pi(x)}\exp(z(x,c)/\tau).
+\]
+Its partial derivative with respect to any full-vocabulary logit $z(x,c)$ is $\tau^{-1}(\mathbf1\{a=c\}-\pi(c\mid x))$, including the value zero when $c$ is disallowed. The chain rule proves the gradient formula. Averaging over allowed $a$ yields
+\[
+ \tau^{-1}\Phi(x)^\top\left(\sum_a\pi(a\mid x)e_a
+                 -\pi\sum_a\pi(a\mid x)\right)=0.
+\]
+Pairing this equality with $\dot\theta_t$ gives the zero-mean velocity. Finally,
+$(\mathsf A^\pi)^\top w=(I-\pi\mathbf1^\top)w=w-\pi(\mathbf1^\top w)=w$.
+\end{proof}
+
+\begin{proposition}[Exact reverse-KL request]
+\label[proposition]{prop:request}
+At a fixed prefix, let $c=\sum_a p_a\log(p_a/q_a)$, $\ell_a=\log(p_a/q_a)$, and $\bar\ell=\sum_a p_a\ell_a$, with $p=\softmax(z)$ and $q_a>0$. Then
+\begin{equation}
+ B_a=-\partial_{z_a}c=p_a(\bar\ell-\ell_a),\qquad
+ \mathbf1^\top B=0,\qquad g=\Phi^\top B=-\nabla_\theta c.
+ \label{eq:request}
+\end{equation}
+For fixed source weights $\mu$, $u=\sum_s\mu(s)g(s)$ is the negative gradient of $\sum_s\mu(s)c(s)$.
+\end{proposition}
+\begin{proof}
+Positivity makes the logarithms differentiable. Since
+$\partial_{z_a}p_b=p_b(\mathbf1\{a=b\}-p_a)$ and
+$\partial_{p_b}[p_b\log(p_b/q_b)]=\ell_b+1$, we have
+\begin{align*}
+ \partial_{z_a}c
+ &=\sum_b p_b(\mathbf1\{a=b\}-p_a)(\ell_b+1)\\
+ &=p_a(\ell_a+1)-p_a\sum_b p_b(\ell_b+1)
+ =p_a(\ell_a-\bar\ell).
+\end{align*}
+Thus $\sum_a B_a=\bar\ell\sum_a p_a-\sum_a p_a\ell_a=0$.
+The chain rule gives $\nabla_\theta c=\Phi^\top\nabla_z c$; linearity of the finite sum proves the last assertion when $\mu$ is held fixed.
+\end{proof}
+
+This is a full-distribution identity. For an implemented objective, such as a truncated-support loss or detached-coefficient surrogate, $B$ must be that objective's own complete numerical negative logit derivative, including the softmax coupling. For the conversion diagnostic, $B$ denotes the explicitly specified audit field in \cref{app:collective-conventions}. The response and conversion results hold for this field's pullback, whether or not that pullback coincides with exact-KL descent. Holding $\mu$ fixed applies to computing one update; subsequent source populations can change.
+
+\subsection{Response law: exact finite steps and controlled remainders}
+\label{app:ftc}
+\textbf{Connection to \cref{sec:loop}, \cref{eq:response-law}.} The integral is exact for an arbitrary realized step. The main-text kernel expression is its raw-gradient, first-order specialization.
+
+\begin{proposition}[Exact response and Taylor remainder]
+\label[proposition]{prop:ftc}
+Let $\Delta\theta=\theta_{k+1}-\theta_k$, and let $\theta_r=\theta_k+r\Delta\theta$ for $0\le r\le1$. For any fixed receiver $x$ and token $a$,
+\begin{equation}
+ \delta_k^p(x,a)=\int_0^1\nabla_\theta\log p_{\theta_r}(a\mid x)^\top\Delta\theta\,dr.
+ \label{eq:ftc}
+\end{equation}
+If $M_k(x,a)=\sup_{0\le r\le1}\|\nabla_\theta^2\log p_{\theta_r}(a\mid x)\|_{\rm op}$, then
+\[
+ \delta_k^p(x,a)=\nabla_\theta\log p_k(a\mid x)^\top\Delta\theta+R_k(x,a),
+ \qquad |R_k(x,a)|\le\tfrac12M_k(x,a)\|\Delta\theta\|^2.
+\]
+The corresponding exact logit displacement is
+$z_{k+1}(x)-z_k(x)=\int_0^1\Phi_{\theta_r}(x)\Delta\theta\,dr$.
+\end{proposition}
+\begin{proof}
+Define $f(r)=\log p_{\theta_r}(a\mid x)$. Its first two derivatives are
+\[
+ f'(r)=\nabla_\theta\log p_{\theta_r}(a\mid x)^\top\Delta\theta,
+ \qquad
+ f''(r)=\Delta\theta^\top\nabla_\theta^2\log p_{\theta_r}(a\mid x)\Delta\theta.
+\]
+The fundamental theorem of calculus gives \cref{eq:ftc}. Applying it also to $f'$ and changing the order of integration over $0\le v\le r\le1$ gives
+\[
+ f(1)-f(0)-f'(0)=\int_0^1\int_0^r f''(v)\,dv\,dr
+               =\int_0^1(1-v)f''(v)\,dv.
+\]
+The Hessian is continuous on a compact segment, so $M_k(x,a)<\infty$.
+The bound follows from $|f''(v)|\le M_k(x,a)\|\Delta\theta\|^2$ and $\int_0^1(1-v)\,dv=1/2$.
+Applying the same first-derivative calculation to each logit proves the vector identity.
+\end{proof}
+
+\begin{corollary}[Small-step response law]
+\label[corollary]{cor:response}
+For $\Delta\theta_k=\eta u_k$ with $u_k=\sum_s\mu_k(s)\Phi_k(s)^\top B_k(s)$,
+\[
+ \delta_k^p(x,a)=\eta\sum_s\mu_k(s)
+ [\mathsf A_k^p(x)K_k(x,s)B_k(s)]_a+R_k(x,a),\qquad
+ |R_k(x,a)|\le\tfrac12\eta^2M_k(x,a)\|u_k\|^2.
+\]
+For fixed $\theta_k,u_k$ and sufficiently small $\eta$, the remainder is $O(\eta^2)$, as in \cref{eq:response-law}.
+\end{corollary}
+\begin{proof}
+At temperature one, \cref{lem:logsoftmax} gives
+$\nabla_\theta\log p_k(a\mid x)^\top=e_a^\top\mathsf A_k^p(x)\Phi_k(x)$.
+Substituting $u_k$ in \cref{prop:ftc} therefore yields
+\[
+ \nabla_\theta\log p_k(a\mid x)^\top u_k
+ =\sum_s\mu_k(s)e_a^\top\mathsf A_k^p(x)
+        \Phi_k(x)\Phi_k(s)^\top B_k(s),
+\]
+which is the asserted kernel term. The remainder bound follows by substituting $\Delta\theta_k=\eta u_k$. To justify the asymptotic notation, choose $\eta_0>0$ so that all segments with $|\eta|\le\eta_0$ lie in a compact neighborhood where the Hessian is continuous. Its supremum on this neighborhood supplies a single bound independent of $\eta$. A family of varying directions requires a uniform bound on their norms as well.
+\end{proof}
+
+\paragraph{Velocity and the optimizer.}
+At every differentiable time on an actual parameter path,
+\[
+ v_t(x):=\dot z_t(x)=\Phi_t(x)\dot\theta_t,
+ \qquad \zeta_t(x,a)=\tau^{-1}(e_a-\pi_t(\cdot\mid x))^\top v_t(x).
+\]
+These follow directly by the chain rule and \cref{lem:logsoftmax}. Under gradient flow, substituting $\dot\theta_t=u_t$ gives $v_t(x)=\sum_sK_t(x,s)\Gamma_t(s)$ and hence \cref{eq:rd-velocity}. With momentum, preconditioning, clipping, or weight decay, the actual $\dot\theta_t$ in general differs from the raw $u_t$. However, with the rich tradition of theoretical analysis on the learning dynamics of neural networks including the seminal \cite{ren2025learning, jacot2018neural, pmlr-v97-arora19a}, gradient-flow analysis is still genuinely informative in obtaining rich theoretical insights. We leave extensions to the more convoluted optimizer settings to future work.
+
+\subsection{Collective response and its geometry}
+\label{app:collective-proof}\label{app:pac}
+\textbf{Connection to \cref{sec:local}, \cref{eq:collective-response,eq:pac}.} We fix the checkpoint, output coordinates, and normalized bank $\nu$ in this subsection. Zero-weight sites are omitted. The space $\mathcal H_\nu$ of fields on the remaining finite bank has the inner product
+\[
+ \langle F,G\rangle_\nu=\sum_s\nu(s)F(s)^\top G(s),\qquad
+ \|F\|_\nu^2=\langle F,F\rangle_\nu.
+\]
+Define $\mathcal J:\mathbb R^d\to\mathcal H_\nu$ by $(\mathcal Jv)(s)=\Phi(s)v$. This is a finite-dimensional Hilbert space, so orthogonal projections and adjoints are well-defined.
+
+\begin{proposition}[Collective response and conversion factorization]
+\label[proposition]{prop:collective}\label[proposition]{prop:pac}
+Let $g(s)=\Phi(s)^\top B(s)$, $u=\Ex_\nu g$, $P=\|B\|_\nu^2$, and $D_g=\Ex_\nu\|g\|^2$. The adjoint is $\mathcal J^*B=u$, and $\mathcal K=\mathcal J\mathcal J^*$ is self-adjoint and positive semidefinite. For the same-bank raw direction and $P>0$,
+\[
+ \dot z=\mathcal K B=\Xi B+r,\qquad
+ \Xi=\frac{\langle B,\mathcal K B\rangle_\nu}{P}
+     =\frac{\|u\|^2}{P}\ge0,\qquad \langle B,r\rangle_\nu=0.
+\]
+If also $D_g>0$, then
+\[
+ A=\frac{D_g}{P},\qquad C=\frac{\|u\|^2}{D_g},\qquad
+ \Xi=AC,\qquad \|u\|^2=PAC,\qquad 0\le C\le1.
+\]
+Here $C=1$ exactly when $g(s)=u$ at every positive-weight site, and $C=0$ exactly when $u=0$. If $P>0$ but $D_g=0$, then $u=0$, $A=\Xi=0$, and $C$ is undefined. If $P=0$, then $B=g=u=0$ on the bank and $A,C,\Xi$ are not defined by these ratios.
+\end{proposition}
+\begin{proof}
+For any field $F$ and parameter vector $v$,
+\[
+ \langle F,\mathcal Jv\rangle_\nu
+ =\sum_s\nu(s)F(s)^\top\Phi(s)v
+ =\left(\sum_s\nu(s)\Phi(s)^\top F(s)\right)^\top v.
+\]
+This proves the adjoint formula. It also gives
+\[
+ \langle F,\mathcal KG\rangle_\nu
+ =(\mathcal J^*F)^\top(\mathcal J^*G)
+ =\langle\mathcal KF,G\rangle_\nu,
+ \qquad \langle F,\mathcal KF\rangle_\nu=\|\mathcal J^*F\|^2\ge0.
+\]
+By the chain rule, the logit velocity generated by $u$ is $\mathcal Ju=\mathcal KB$. Thus $\langle B,\dot z\rangle_\nu=\|u\|^2$. Since $P>0$, the strictly convex quadratic $\alpha\mapsto\|\dot z-\alpha B\|_\nu^2$ has its unique minimum at $\alpha=\langle B,\dot z\rangle_\nu/P$. This is $\Xi$, and the residual has the stated orthogonality.
+
+For $D_g>0$, multiplication of the defined ratios gives $\Xi=AC$ and $\|u\|^2=PAC$. Expanding a centered squared norm gives
+\[
+ \Ex_\nu\|g-u\|^2
+ =\Ex_\nu\|g\|^2-2u^\top\Ex_\nu g+\|u\|^2
+ =D_g-\|u\|^2\ge0.
+\]
+This proves $C\le1$ and its equality condition; nonnegativity of $C$ and its zero condition follow from its numerator. If $D_g=0$, every nonnegative summand $\nu(s)\|g(s)\|^2$ vanishes, so $g=u=0$. If $P=0$, the same argument first gives $B=0$, then $g=u=0$. These cases cannot be handled by cancelling zero denominators.
+\end{proof}
+
+
+\begin{proposition}[Joint singular modes]
+\label[proposition]{prop:joint-modes}
+Stack the blocks $\sqrt{\nu(s)}\Phi(s)$ into $\mathsf J\in\mathbb R^{N_\nu\times d}$ and $\sqrt{\nu(s)}B(s)$ into $\mathbf B\in\mathbb R^{N_\nu}$. Let the compact singular-value decomposition be $\mathsf J=U\Sigma V^\top$, of rank $r$, with orthonormal columns $U_j,V_j$ and positive singular values $\sigma_j$. If $P>0$,
+\begin{equation}
+ u=\sum_{j=1}^r\sigma_j(U_j^\top\mathbf B)V_j,\qquad
+ \Xi=\sum_{j=1}^r\sigma_j^2\frac{|U_j^\top\mathbf B|^2}{\|\mathbf B\|^2}.
+ \label{eq:collective-modes}
+\end{equation}
+The component of $\mathbf B$ orthogonal to $\operatorname{range}(\mathsf J)$ produces zero parameter response.
+\end{proposition}
+\begin{proof}
+The stacking gives $\mathsf J^\top\mathbf B=\sum_s\nu(s)\Phi(s)^\top B(s)=u$ and $\|\mathbf B\|^2=P$. Substitution of the singular-value decomposition proves the first identity. Since $V_i^\top V_j=\mathbf1\{i=j\}$, its squared norm is $\sum_j\sigma_j^2|U_j^\top\mathbf B|^2$; division by $P$ proves the second. Finally $\mathsf J^\top\mathbf B_\perp=V\Sigma U^\top\mathbf B_\perp=0$ when $U^\top\mathbf B_\perp=0$. If $r=0$, these are empty sums and $u=\Xi=0$.
+\end{proof}
+
+Joint modes span multiple prefixes and tokens. Their parameter-space components are orthogonal, whereas individual per-prefix gradients need not be. Strong cancellation between local gradients is therefore compatible with large self-kernel responses but a small joint response; independently sorted self-kernel spectra do not determine \cref{eq:collective-modes}.
+
+\begin{proposition}[Coherence and interference]
+\label[proposition]{prop:coherence}
+For independent $s,s'\sim\nu$,
+\[
+ \|u\|^2=\Ex\langle g(s),g(s')\rangle
+        =\Ex_\nu\|g(s)\|^2-\tfrac12\Ex\|g(s)-g(s')\|^2.
+\]
+If $B=\sum_{m=1}^M B^{(m)}$ is any finite field decomposition and $u^{(m)}=\Ex_\nu[\Phi^\top B^{(m)}]$, then
+$\|u\|^2=\sum_m\|u^{(m)}\|^2+2\sum_{m<n}\langle u^{(m)},u^{(n)}\rangle$.
+\end{proposition}
+\begin{proof}
+Independence gives the explicit finite-sum identity
+\[
+ \Ex\langle g(s),g(s')\rangle
+ =\sum_{s,s'}\nu(s)\nu(s')g(s)^\top g(s')
+ =\left(\sum_s\nu(s)g(s)\right)^\top\left(\sum_{s'}\nu(s')g(s')\right).
+\]
+This is $\|u\|^2$. Expanding the squared difference and using the identical marginals yields $\Ex\|g(s)-g(s')\|^2=2D_g-2\|u\|^2$. The field decomposition gives $u=\sum_m u^{(m)}$ by linearity, and the last formula follows by expanding the square and collecting both copies of each off-diagonal inner product.
+\end{proof}
+
+\begin{proposition}[Finite-sample correction of the mean-gradient energy]
+\label[proposition]{prop:gradient-norm-correction}
+Let $g_1,\ldots,g_n$, $n>1$, be independent identically distributed parameter vectors with finite second moment and mean $u$. Define $\bar g=n^{-1}\sum_i g_i$ and $\widehat D_g=n^{-1}\sum_i\|g_i\|^2$. Then
+\[
+ \widehat U=\frac{n\|\bar g\|^2-\widehat D_g}{n-1}
+           =\frac{1}{n(n-1)}\sum_{i\ne j}g_i^\top g_j
+\]
+has expectation $\|u\|^2$.
+\end{proposition}
+\begin{proof}
+Expanding $n^2\|\bar g\|^2$ gives $\sum_i\|g_i\|^2+\sum_{i\ne j}g_i^\top g_j$. Subtracting $n\widehat D_g=\sum_i\|g_i\|^2$ and dividing by $n(n-1)$ proves the second expression. Independence gives $\Ex[g_i^\top g_j]=(\Ex g_i)^\top(\Ex g_j)=\|u\|^2$ for each of its $n(n-1)$ terms. Thus its expectation is $\|u\|^2$. The finite second moment makes every term integrable. Positive clipping and division by the random $\widehat D_g$ are nonlinear, so the bias of the resulting coherence ratio falls outside this linear expectation calculation. Other sampling designs, including sampling without replacement from a fixed finite population, require their own design-specific bias calculation.
+\end{proof}
+
+\paragraph{Policy-level observation of a logit response.}
+\label{app:contrast-observation}
+For a fixed vector $w(x)$ with $\mathbf1^\top w(x)=0$,
+\[
+ w(x)^\top[z_{\theta'}(x)-z_\theta(x)]
+ =w(x)^\top[\log p_{\theta'}(\cdot\mid x)-\log p_\theta(\cdot\mid x)].
+\]
+Indeed, $\log p_\theta=z_\theta-\log\sum_a e^{z_\theta(a)}\mathbf1$, and both scalar-normalizer terms disappear under $w^\top$. The identity holds for finite displacements, for zero-extended contrasts on a recorded support, and for centered and uncentered training fields alike. The experimental contrast is specified in \cref{app:collective-conventions}.
+
+\subsection{Why the frozen spectral probe measures accessibility}
+\label{app:collective-frozen}
+\textbf{Connection to \cref{sec:local} and the fixed-bank diagnostic in \cref{sec:preparation}.} All time dependence below is in the tangent map; the bank, coordinates, and numerical field are fixed.
+
+\begin{proposition}[Frozen-field Rayleigh expansion]
+\label[proposition]{prop:frozen-rayleigh}
+Let $P_0=\Ex_{\nu_0}\|B_0\|^2>0$, and define on nonzero-request sites
+\[
+ \omega_0(s)=\frac{\nu_0(s)\|B_0(s)\|^2}{P_0},\qquad
+ b_0(s)=\frac{B_0(s)}{\|B_0(s)\|}.
+\]
+Zero-request sites have weight zero and are omitted from sums involving $b_0$. For any nonzero field on a specified bank,
+\begin{equation}
+ A[B]=\frac{\Ex_\nu[B(s)^\top K(s,s)B(s)]}{\Ex_\nu\|B(s)\|^2}.
+ \label{eq:rayleigh}
+\end{equation}
+Let $(\lambda_{j,t}(s),v_{j,t}(s))$ be a complete orthonormal eigendecomposition of $K_t(s,s)$. Then
+\begin{equation}
+ \begin{aligned}
+ a_t(s)&=b_0(s)^\top K_t(s,s)b_0(s)
+       =\sum_j\lambda_{j,t}(s)|v_{j,t}(s)^\top b_0(s)|^2,\\
+ A_t[B_0]&=\sum_s\omega_0(s)a_t(s).
+ \end{aligned}
+ \label{eq:afrozen}
+\end{equation}
+The weights sum to one. In particular, $A_t[B_0]$ is constant whenever the self-kernels are constant on the bank.
+\end{proposition}
+\begin{proof}
+For each site,
+$\|\Phi(s)^\top B(s)\|^2=B(s)^\top\Phi(s)\Phi(s)^\top B(s)=B(s)^\top K(s,s)B(s)$.
+Substituting into the definition $A=D_g/P$ proves \cref{eq:rayleigh}. In the frozen case, write $B_0(s)=\|B_0(s)\|b_0(s)$ at each nonzero site and divide the weighted sum by $P_0$; this gives $A_t[B_0]=\sum_s\omega_0(s)b_0(s)^\top K_t(s,s)b_0(s)$. The weights sum to $P_0/P_0=1$.
+
+Each $K_t(s,s)=\Phi_t(s)\Phi_t(s)^\top$ is symmetric and positive semidefinite: for every vector $v$, $v^\top K_t(s,s)v=\|\Phi_t(s)^\top v\|^2\ge0$. The finite-dimensional spectral theorem therefore gives $K_t=\sum_j\lambda_{j,t}v_{j,t}v_{j,t}^\top$ with $\lambda_{j,t}\ge0$. Inserting this sum into the quadratic form proves \cref{eq:afrozen}. All coefficients except $K_t$ are fixed, which proves the constancy assertion. Repeated eigenvalues do not affect the full sum: the sum of squared projections within an eigenspace is basis-invariant.
+\end{proof}
+
+The live quantity $A_t[B_t]$ can also change through its field and energy weights. The frozen collective gain is $\Xi_t[B_0]=A_t[B_0]C_t[B_0]$ when the denominators are nonzero; both factors use $B_0$, whereas $A_t[B_0]C_t[B_t]$ mixes two fields and is a different quantity.
+
+
+\subsection{Routing and conditional drift on moving prefix populations}
+\label{app:rd-flow}
+\textbf{Connection to \cref{sec:broadcast}, \cref{eq:rd-law,eq:rd-velocity}.} Let $m^{\rm obs}(x)\ge0$ be a fixed weight on the nonterminal prefixes of the observation tree. Assume at least one eligible prefix has positive reach probability, and define
+\begin{equation}
+ \nu_t(x)=\frac{m^{\rm obs}(x)d_t(x)}{Z_t^{\rm obs}},\qquad
+ Z_t^{\rm obs}=\sum_xm^{\rm obs}(x)d_t(x)>0.
+ \label{eq:rd-observation}
+\end{equation}
+This is normalization of expected weighted counts, which allows fixed depth masks, context classes defined by a fixed reference learner, and empirical minibatches of unequal length.
+
+\begin{proposition}[Routing and conditional drift]
+\label[proposition]{prop:rd-law}
+Let $Y_t(x)$ be a scalar readout that is continuous and piecewise $C^1$ along the parameter path, and put $J_Y(t)=\sum_x\nu_t(x)Y_t(x)$. For a positive-reach prefix with ancestry $(x_j,a_j)_{j<h(x)}$, define
+\[
+ \lambda_t(x)=\partial_t\log d_t(x)
+            =\sum_{j<h(x)}\zeta_t(x_j,a_j).
+\]
+Then, almost everywhere,
+\begin{align*}
+ \dot\nu_t(x)&=\nu_t(x)\bigl(\lambda_t(x)-\Ex_{\nu_t}\lambda_t\bigr),\\
+ \dot J_Y(t)&=R_Y(t)+D_Y(t),\qquad
+ R_Y(t)=\operatorname{Cov}_{\nu_t}(Y_t,\lambda_t),\quad
+ D_Y(t)=\Ex_{\nu_t}\dot Y_t.
+\end{align*}
+If $Y_t(x)=Y(z_t(x),x)$ for a $C^1$ local function $Y$ with no explicit time dependence, then $\dot Y_t(x)=\nabla_zY(z_t(x),x)^\top v_t(x)$. Under raw flow, $v_t=K_t\Gamma_t$. For every subinterval $[a,b]$, $J_Y(b)-J_Y(a)=\int_a^b(R_Y+D_Y)\,dt$.
+\end{proposition}
+\begin{proof}
+For fixed $x$, the prompt $b_x$ and all tokens in its ancestry are fixed while training time changes. Thus
+\[
+ d_t(x)=\beta(b_x)\prod_{j<h(x)}\pi_t(a_j\mid x_j),\qquad
+ \partial_t\log d_t(x)=\sum_{j<h(x)}\partial_t\log\pi_t(a_j\mid x_j).
+\]
+This proves the formula for $\lambda_t$; at a root the product is empty and $\lambda_t=0$. Also $\dot d_t(x)=d_t(x)\lambda_t(x)$. Differentiating the finite normalizer gives
+\[
+ \frac{\dot Z_t^{\rm obs}}{Z_t^{\rm obs}}
+ =\frac{\sum_xm^{\rm obs}(x)d_t(x)\lambda_t(x)}{Z_t^{\rm obs}}
+ =\Ex_{\nu_t}\lambda_t.
+\]
+The quotient rule now gives the asserted formula for $\dot\nu_t$ at each eligible site. For a site with zero fixed mask, both $\nu_t$ and $\dot\nu_t$ are zero, so the same expression holds with that site omitted.
+
+The product rule and the definition of covariance yield
+\begin{align*}
+ \dot J_Y
+ &=\sum_x\dot\nu_t(x)Y_t(x)+\sum_x\nu_t(x)\dot Y_t(x)\\
+ &=\Ex_{\nu_t}(Y_t\lambda_t)
+   -(\Ex_{\nu_t}Y_t)(\Ex_{\nu_t}\lambda_t)
+   +\Ex_{\nu_t}\dot Y_t.
+\end{align*}
+For a local readout, the chain rule gives $\dot Y_t=\nabla_zY^\top\dot z_t$; the raw specialization follows from \cref{app:ftc}. All functions are continuous and piecewise $C^1$ on a finite partition of the compact interval. Integrating the derivative on each piece and telescoping the boundary values proves the final equality.
+\end{proof}
+
+\paragraph{The two roles of the same parameter change.}
+Define $\mathcal F(\theta_g,\theta_e)=\sum_x\nu_{\theta_g}(x)Y_{\theta_e}(x)$. Applying the multivariable chain rule to $\mathcal F(\theta_t,\theta_t)$ gives its generator derivative $\sum_x\dot\nu_tY_t=R_Y$ and evaluator derivative $\sum_x\nu_t\dot Y_t=D_Y$. Both are contributions of the same parameter change to one derivative. A readout depending on the full parameter vector, rather than only the logits at $x$, uses $\dot Y_t(x)=\nabla_\theta Y_\theta(x)^\top\dot\theta_t$ instead. This distinction will matter for continuation values.
+
+If prompt weights or observation masks vary explicitly, the formula for $\lambda_t$ alone is insufficient. On positive coordinates the quotient-rule calculation instead centers $\partial_t\log[m_t^{\rm obs}(x)d_t(x)]$; $\partial_t\log d_t$ includes $\partial_t\log\beta_t(b_x)$ for a changing prompt law. Zero weights or changes of support require separate boundary accounting. The fixed-weight assumptions are therefore substantive.
+
+\subsection{Finite-window exposure and regenerated source weights}
+\label{app:broadcast-prefix-reweighting}\label{app:broadcast-finite-window}
+\textbf{Connection to \cref{sec:broadcast}, \cref{eq:broadcast-source-renewal}.} Use a superscript ${\rm tr}$ when training and observation employ different fixed prompt laws or samplers. In particular, $\tau_{\rm tr}$ can differ from the observation temperature. For a fixed training mask $m^{\rm tr}(s)\ge0$, let
+\[
+ \mu_t(s)=\frac{m^{\rm tr}(s)d_t^{\rm tr}(s)}{Z_t^{\rm tr}},\qquad
+ Z_t^{\rm tr}=\sum_s m^{\rm tr}(s)d_t^{\rm tr}(s)>0.
+\]
+The following proposition assumes one fixed eligible support throughout the interval, as guaranteed by Assumption~\ref{ass:regularity}. Merely sharing some positive-support states at the endpoints is not sufficient for the unrestricted normalization formula.
+
+\begin{proposition}[Source reweighting across a training window]
+\label[proposition]{prop:source-reweighting}
+For $a\le b$, let $\Lambda_{a:b}(s)=\int_a^b\lambda_t^{\rm tr}(s)\,dt$, where $\lambda_t^{\rm tr}$ is the ancestral log reach-probability velocity under the training sampler. On every allowed prefix,
+\begin{equation}
+ \frac{d_b^{\rm tr}(s)}{d_a^{\rm tr}(s)}=e^{\Lambda_{a:b}(s)},\qquad
+ \Lambda_{a:c}(s)=\Lambda_{a:b}(s)+\Lambda_{b:c}(s)\quad(a\le b\le c).
+ \label{eq:broadcast-prefix-ratio}
+\end{equation}
+For each eligible source prefix,
+\begin{equation}
+ \mu_b(s)=\frac{\mu_a(s)e^{\Lambda_{a:b}(s)}}
+ {\Ex_{v\sim\mu_a}e^{\Lambda_{a:b}(v)}},\qquad
+ \Gamma_b(s)=\mu_b(s)B_b(s).
+ \label{eq:broadcast-regenerated-requests}
+\end{equation}
+A zero fixed mask stays zero.
+\end{proposition}
+\begin{proof}
+By \cref{prop:rd-law} with the training sampler, $\partial_t\log d_t^{\rm tr}(s)=\lambda_t^{\rm tr}(s)$ on each smooth piece. Integrating and telescoping gives $\log d_b^{\rm tr}(s)-\log d_a^{\rm tr}(s)=\Lambda_{a:b}(s)$. Exponentiating proves the ratio, and additivity of the integral proves the second identity.
+
+Because the eligible set is the same at both endpoints, substitution into the entire source normalizer is valid:
+\begin{align*}
+ Z_b^{\rm tr}
+ &=\sum_s m^{\rm tr}(s)d_a^{\rm tr}(s)e^{\Lambda_{a:b}(s)}\\
+ &=Z_a^{\rm tr}\sum_s\mu_a(s)e^{\Lambda_{a:b}(s)}.
+\end{align*}
+The expectation is strictly positive and finite, since it is a finite sum of positive terms on the nonempty eligible set. Dividing $m^{\rm tr}(s)d_b^{\rm tr}(s)$ by this expression for $Z_b^{\rm tr}$ proves \cref{eq:broadcast-regenerated-requests}. The expression for $\Gamma_b$ defines the regenerated request population with the current numerical field $B_b$. If $m^{\rm tr}(s)=0$, both endpoint weights are zero directly from their definition.
+\end{proof}
+
+An eligible prefix can be absent from a finite recorded batch while having positive population weight at every checkpoint. The reference in \cref{eq:broadcast-regenerated-requests} is the population $\mu_a$, which includes such prefixes. At a root, $\Lambda=0$, although normalization by the total expected token count can change its source weight.
+
+\subsubsection{Finite-batch extraction and native checkpoints}
+\label{app:broadcast-source-conventions}
+\begin{proposition}[Transport of a normalized batch extraction]
+\label[proposition]{prop:batch-transport}
+Let $\mathfrak B$ be a finite batch space and $P_a^{\rm tr},P_b^{\rm tr}$ two batch laws with identical positive support. For each batch $\mathcal B$, let $\widehat\mu_{\mathcal B}(s)\ge0$ be an extraction rule with $\sum_s\widehat\mu_{\mathcal B}(s)=1$, determined only by the batch text. Set $\mu_t(s)=\Ex_{P_t^{\rm tr}}\widehat\mu_{\mathcal B}(s)$ and $\Lambda_{a:b}(\mathcal B)=\log[P_b^{\rm tr}(\mathcal B)/P_a^{\rm tr}(\mathcal B)]$. Then
+\begin{equation}
+ \mu_b(s)=\Ex_{P_a^{\rm tr}}\!\bigl[\widehat\mu_{\mathcal B}(s)e^{\Lambda_{a:b}(\mathcal B)}\bigr],
+ \qquad \Ex_{P_a^{\rm tr}}e^{\Lambda_{a:b}(\mathcal B)}=1.
+ \label{eq:broadcast-batch-transport}
+\end{equation}
+\end{proposition}
+\begin{proof}
+Expand the first expectation and cancel its positive probability factor:
+\[
+ \sum_{\mathcal B}P_a^{\rm tr}(\mathcal B)
+ \widehat\mu_{\mathcal B}(s)\frac{P_b^{\rm tr}(\mathcal B)}{P_a^{\rm tr}(\mathcal B)}
+ =\sum_{\mathcal B}P_b^{\rm tr}(\mathcal B)\widehat\mu_{\mathcal B}(s)=\mu_b(s).
+\]
+Taking $\widehat\mu_{\mathcal B}(s)$ out of this calculation and replacing it by one gives $\sum_{\mathcal B}P_b^{\rm tr}(\mathcal B)=1$. If the batch responses are independent, its probability is their product, so its log likelihood ratio is the sum of their complete-trajectory log ratios. Conditional independence given a fixed shared prompt schedule gives the same factorization conditional on that schedule.
+\end{proof}
+
+For example, if $N_s(\mathcal B)$ is the eligible count at $s$, batch normalization gives $\widehat\mu_{\mathcal B}(s)=N_s(\mathcal B)/\sum_vN_v(\mathcal B)$ when the denominator is positive. Its expectation is generally not $\Ex N_s/\Ex\sum_vN_v$. Thus the random normalization must stay inside \cref{eq:broadcast-batch-transport}; no additional ratio of expectations is introduced. A rule for batches with no eligible positions must be specified before defining a normalized extraction. If extraction also depends on the learner after fixing the text, transport uses the endpoint rule $\widehat\mu_{b,\mathcal B}$, not an unchanged rule from time $a$.
+
+\paragraph{Native checkpoint identity.}
+For discrete checkpoints $k_1<k_2$, assume that every token in the chosen prefix has positive sampler probability at every intermediate checkpoint. Then
+\[
+ \begin{aligned}
+ \Lambda_{k_1:k_2}(s)
+ &:=\sum_{k=k_1}^{k_2-1}\sum_{j<h(s)}
+       \log\frac{\pi_{k+1}^{\rm tr}(a_j\mid s_j)}{\pi_k^{\rm tr}(a_j\mid s_j)}\\
+ &=\sum_{j<h(s)}\log\frac{\pi_{k_2}^{\rm tr}(a_j\mid s_j)}{\pi_{k_1}^{\rm tr}(a_j\mid s_j)}
+ =\log\frac{d_{k_2}^{\rm tr}(s)}{d_{k_1}^{\rm tr}(s)}.
+ \end{aligned}
+\]
+The first equality telescopes the finite sum over checkpoints for each token; the second multiplies the ancestral probability factors and cancels the fixed prompt law. The normalizer calculation in \cref{prop:source-reweighting} then applies unchanged on a fixed eligible support. The identity holds for any optimizer and any learning rate. If a token has zero probability at an intermediate checkpoint, the per-step logarithms above need not exist even when both endpoint probabilities are positive; the endpoint ratio can still be used directly where it is defined.
+
+\subsubsection{Changing support and nonsmooth readouts}
+\label{app:transport}
+\begin{proposition}[Explicit support accounting]
+\label[proposition]{prop:support-accounting}
+Let $P_a,P_b$ be probability laws on a common finite universe, let $\mathcal C=\operatorname{supp}P_a\cap\operatorname{supp}P_b$, and let $F$ be a bounded real function. Define $e^{\Lambda(v)}=P_b(v)/P_a(v)$ only for $v\in\mathcal C$. Then
+\begin{align*}
+ \Ex_{P_b}F-\Ex_{P_a}F
+ &=\sum_{v\in\mathcal C}P_a(v)F(v)(e^{\Lambda(v)}-1)\\
+ &\quad+\sum_{v\in\operatorname{supp}P_b\setminus\mathcal C}P_b(v)F(v)
+       -\sum_{v\in\operatorname{supp}P_a\setminus\mathcal C}P_a(v)F(v).
+\end{align*}
+The absolute value of the last two terms together is at most
+$\|F\|_\infty[P_b(\mathcal C^c)+P_a(\mathcal C^c)]$.
+\end{proposition}
+\begin{proof}
+Split each expectation into its contribution on $\mathcal C$ and on its complement. On $\mathcal C$, replace $P_b(v)$ by $P_a(v)e^{\Lambda(v)}$ and subtract. This gives the identity. Applying the triangle inequality and $|F(v)|\le\|F\|_\infty$ to the remaining sums gives the bound.
+\end{proof}
+
+In particular, $\sum_{v\in\mathcal C}P_a(v)e^{\Lambda(v)}=P_b(\mathcal C)$, which need not be one. Common-support ratios do not recover newly created mass or, by themselves, the full normalization of a changed source. The proposition applies to complete-trajectory laws, batch laws, or normalized source laws. Changed prompt sets and masks require the same care.
+
+The local top-16 loss in \cref{app:rd-protocol} can change its expression when the selected support changes. If a readout path has finitely many such changes and is piecewise $C^1$ with one-sided limits, integration over each smooth piece gives
+\[
+ J(b)-J(a)=\int_a^b\dot J(t)\,dt+
+       \sum_{t_i\in(a,b)}[J(t_i^+)-J(t_i^-)],
+\]
+with endpoints taken on their respective one-sided branches. The formula follows by telescoping the integrals and inserting the jumps; a continuous branch switch has zero jump. Smooth-flow integrals are asserted only under this regularity; the finite four-cell identity below remains valid whenever its four scores are finite. For an exogenously fixed source, the response and outcome laws still hold, while the source's own generating rule replaces the on-policy source-tilt formula.
+
+\subsection{Exact symmetric endpoint accounting and its path limit}
+\label{app:rd-theory}
+\textbf{Connection to \cref{sec:broadcast}, \cref{eq:rd-estimators}.} The four-cell estimator is exactly additive at finite endpoints; the difference between its individual components and the continuous routing and drift integrals is computed and bounded in \cref{prop:endpoint-path-limit}.
+
+\begin{proposition}[Symmetric endpoint accounting]
+\label[proposition]{prop:rd-crossing}
+Let $\nu_a,\nu_b$ be any two probability vectors on the union of two finite rollout banks, and let $Y_a,Y_b$ be finite readouts defined on that union. With $M_{ij}=\sum_x\nu_i(x)Y_j(x)$, define
+\begin{equation}
+ \widehat R_{a:b}=\tfrac12[(M_{ba}-M_{aa})+(M_{bb}-M_{ab})],\qquad
+ \widehat D_{a:b}=\tfrac12[(M_{ab}-M_{aa})+(M_{bb}-M_{ba})].
+ \label{eq:rd-crossing}
+\end{equation}
+Using $\langle\nu,Y\rangle:=\sum_x\nu(x)Y(x)$ for the distribution--readout pairing,
+\[
+ \widehat R_{a:b}=\left\langle\nu_b-\nu_a,\frac{Y_a+Y_b}{2}\right\rangle,
+ \qquad
+ \widehat D_{a:b}=\left\langle\frac{\nu_a+\nu_b}{2},Y_b-Y_a\right\rangle,
+\]
+and $\widehat R_{a:b}+\widehat D_{a:b}=M_{bb}-M_{aa}$. 
+\end{proposition}
+\begin{remark}
+The inner products can be intuitively interpreted: for routing $\widehat R_{a:b}$, we measure the effect of changing the rollout distribution $v_t$ while holding the readout to the averaged $\frac{Y_a + Y_b}{2}$; the drift estimator holds the rollout distribution averaged while varying the readouts (how much fitting happened over the period $(a,b)$).
+\end{remark}
+\begin{proof}
+Set $\Delta\nu=\nu_b-\nu_a$ and $\Delta Y=Y_b-Y_a$. Bilinearity gives
+\[
+ M_{bb}-M_{aa}
+ =\langle\Delta\nu,Y_a\rangle+\langle\nu_a,\Delta Y\rangle
+  +\langle\Delta\nu,\Delta Y\rangle.
+\]
+Expanding the four terms in \cref{eq:rd-crossing} yields
+\[
+ \widehat R_{a:b}=\langle\Delta\nu,Y_a\rangle+\tfrac12\langle\Delta\nu,\Delta Y\rangle,
+ \qquad
+ \widehat D_{a:b}=\langle\nu_a,\Delta Y\rangle+\tfrac12\langle\Delta\nu,\Delta Y\rangle.
+\]
+
+\end{proof}
+
+\begin{proposition}[Difference from the path-integrated channels]
+\label[proposition]{prop:endpoint-path-limit}
+Suppose $\nu_t,Y_t$ are $C^1$ on time interval $[a,b]$, and write
+$R_{a:b}=\int_a^b\langle\dot\nu_t,Y_t\rangle\,dt$ and
+$D_{a:b}=\int_a^b\langle\nu_t,\dot Y_t\rangle\,dt$.
+Then
+\[
+ \widehat R_{a:b}-R_{a:b}
+ =\int_a^b\left\langle\dot\nu_t,\frac{Y_a+Y_b}{2}-Y_t\right\rangle dt
+ =-(\widehat D_{a:b}-D_{a:b}).
+\]
+If $L_\nu=\sup_t\|\dot\nu_t\|_1$ and $L_Y=\sup_t\|\dot Y_t\|_\infty$, each channel error is at most $L_\nu L_Y(b-a)^2/2$. If both functions are $C^2$, define $M_\nu=\sup_t\|\ddot\nu_t\|_1$ and $M_Y=\sup_t\|\ddot Y_t\|_\infty$; the sharper bound is
+\[
+ |\widehat R_{a:b}-R_{a:b}|=|\widehat D_{a:b}-D_{a:b}|
+ \le\frac{(b-a)^3}{12}(L_\nu M_Y+M_\nu L_Y).
+\]
+\end{proposition}
+\begin{proof}
+Substitute $\nu_b-\nu_a=\int_a^b\dot\nu_t\,dt$ in the pairing for $\widehat R$ and subtract $R_{a:b}$. Since the sums of the two channels both equal $J_Y(b)-J_Y(a)$, their errors have opposite signs. The fundamental theorem of calculus gives
+\[
+ \left\|\frac{Y_a+Y_b}{2}-Y_t\right\|_\infty
+ \le\tfrac12L_Y[(t-a)+(b-t)]=\tfrac12L_Y(b-a).
+\]
+Applying $|\langle v,y\rangle|\le\|v\|_1\|y\|_\infty$ and integrating proves the $C^1$ bound.
+
+For the sharper result, insert
+$\frac12(Y_a+Y_b)-Y_t=\frac12(\int_t^b\dot Y_r\,dr-\int_a^t\dot Y_r\,dr)$
+into the exact error. Reordering these finite-dimensional integrals gives
+\[
+ \widehat R-R=\tfrac12\int_{a\le r<t\le b}
+ \bigl[\langle\dot\nu_r,\dot Y_t\rangle-
+       \langle\dot\nu_t,\dot Y_r\rangle\bigr] \,dr\,dt.
+\]
+Add and subtract $\langle\dot\nu_r,\dot Y_r\rangle$ in the integrand. Its absolute value is bounded by
+$L_\nu\|\dot Y_t-\dot Y_r\|_\infty+
+ \|\dot\nu_t-\dot\nu_r\|_1L_Y
+\le(L_\nu M_Y+M_\nu L_Y)(t-r)$.
+Finally $\int_a^b\int_a^t(t-r)\,dr\,dt=(b-a)^3/6$, which proves the coefficient $1/12$.
+\end{proof}
+
+For a partition of a fixed interval with largest width $h$, the finite totals telescope exactly. Summing the $C^1$ bound gives a channel error at most $L_\nu L_Y(b-a)h/2$, tending to zero as $h\to0$; the $C^2$ bound gives order $h^2$ instead.
+
+\paragraph{Scope.}
+The path limit is a population statement; finite-sample differences between empirical banks, checkpoint substitutions, prompt-composition changes, and support-switch jumps lie outside it, and \cref{app:rd-protocol,app:rd-sensitivity} give the corresponding experimental controls. At a fixed finite partition the allocation is a symmetric endpoint convention.
+
+\subsection{Continuation values and completed outcomes}
+\label{app:outcome-proof}
+\textbf{Connection to \cref{sec:broadcast}, \cref{eq:broadcast-continuations}.} Recall that a terminal score is a fixed function of a completed rollout. Now, fix a bounded, model-parameter-independent function $Y:\mathcal T\to\mathbb R$. Write $J_Y(t)=\Ex_{\Pi_t}Y$ for the expectation of the terminal score over the time-$t$ generative distribution. For a non-terminal prefix $x$, define
+\[
+ V_t^Y(x)=\Ex_t[Y\mid x\text{ is reached}],\qquad
+ Q_t^Y(x,a)=V_t^Y(x\oplus a),\qquad
+ \mathcal A_t^Y(x,a)=Q_t^Y(x,a)-V_t^Y(x).
+\]
+For terminal $x$, we simply adopt the convention of $V_t^Y(x)=Y(x)$. These are finite conditional expectations under the student's current sampler with its remaining generation budget. Positivity on the fixed allowed autoregressive tree makes them well-defined. Conditioning on the next action gives
+$V_t^Y(x)=\sum_a\pi_t(a\mid x)Q_t^Y(x,a)$ and
+$\sum_a\pi_t(a\mid x)\mathcal A_t^Y(x,a)=0$.
+
+\begin{proposition}[Recombining exposure and continuation change]
+\label[proposition]{prop:rd-value-cut}
+For an integer $0\le h\le H_{\max}$, let $\mathcal C_h$ contain every allowed node at depth $h$ and every terminal node of depth less than $h$. Then
+$\sum_{x\in\mathcal C_h}d_t(x)=1$, and
+\begin{equation}
+ \begin{aligned}
+ J_Y(t)&=\sum_{x\in\mathcal C_h}d_t(x)V_t^Y(x),\\
+ \dot J_Y(t)&=\sum_{x\in\mathcal C_h}\dot d_t(x)V_t^Y(x)
+            +\sum_{x\in\mathcal C_h}d_t(x)\dot V_t^Y(x).
+ \end{aligned}
+ \label{eq:rd-value-cut}
+\end{equation}
+The first derivative term is the sum of the outcome contributions from decisions of depth less than $h$; the second is the sum from decisions of depth at least $h$. In particular, along any path satisfying the regularity conditions,
+\begin{equation}
+ \dot J_Y(t)=\sum_{x\in\mathcal S}d_t(x)
+          \Ex_{a\sim\pi_t(\cdot\mid x)}[\zeta_t(x,a)\mathcal A_t^Y(x,a)].
+ \label{eq:rd-value-rate}
+\end{equation}
+Under raw flow this equals
+\[
+ \frac1\tau\sum_{x\in\mathcal S}\sum_s d_t(x)
+ [\pi_t\odot\mathcal A_t^Y](x)^\top K_t(x,s)\Gamma_t(s).
+\]
+Integrating from $t_\star$ to $T$ yields \cref{eq:broadcast-continuations} in \cref{sec:broadcast}. If training and evaluation samplers differ, $d_t,\pi_t,\tau$ in this expression are the evaluation quantities, while $\Gamma_t$ uses the training source and field.
+\end{proposition}
+\begin{proof}
+\emph{Finite conditional values and the cut.}
+Every trajectory ends by depth $H_{\max}$. It either reaches depth $h$ or terminates earlier, and therefore meets exactly one element of $\mathcal C_h$. The corresponding reach events are disjoint and exhaustive. Their probabilities sum to one, and conditioning the terminal score on this partition gives the first equality in \cref{eq:rd-value-cut}. At a nonterminal node, $V_t^Y(x)$ is a finite sum of terminal labels multiplied by products of suffix transition probabilities; at a terminal node it is the fixed label. Thus these values are continuous and piecewise $C^1$. The product rule proves the second equality.
+
+\emph{Differentiating a continuation.}
+For each nonterminal $x$, set
+\[
+ \mathfrak h_t(x)=\sum_a\pi_t(a\mid x)\zeta_t(x,a)\mathcal A_t^Y(x,a).
+\]
+Differentiate the finite recursion $V_t^Y(x)=\sum_a\pi_t(a\mid x)V_t^Y(x\oplus a)$. By \cref{lem:centering}, $\dot\pi_t=\pi_t\zeta_t$ and $\sum_a\pi_t\zeta_t=0$, so
+\[
+ \dot V_t^Y(x)=\mathfrak h_t(x)+
+             \sum_a\pi_t(a\mid x)\dot V_t^Y(x\oplus a).
+ \tag{*}
+\]
+At a terminal child the last derivative is zero. For a descendant $y$ of $x$, let $d_t(y\mid x)$ be the product of transition probabilities from $x$ to $y$, with $d_t(x\mid x)=1$. Induction on the remaining depth proves
+\[
+ \dot V_t^Y(x)=\sum_{\substack{y\in\mathcal S\,:\,y\succeq x}}
+                     d_t(y\mid x)\mathfrak h_t(y).
+ \tag{**}
+\]
+Indeed, if all children are terminal, (*) is precisely (**). Otherwise insert (**) for each nonterminal child into (*). Its descendant subtrees are disjoint, and multiplying a child's descendant reach probability by $\pi_t(a\mid x)$ gives $d_t(y\mid x)$. This proves the induction step and counts every remaining decision exactly once.
+
+\emph{Decisions after the cut.}
+For a nonterminal $y$ of depth at least $h$, the ancestry has a unique cut ancestor $x\in\mathcal C_h$. Also $d_t(x)d_t(y\mid x)=d_t(y)$. Multiplying (**) by $d_t(x)$ and summing over the cut therefore gives
+\[
+ \sum_{x\in\mathcal C_h}d_t(x)\dot V_t^Y(x)
+ =\sum_{\substack{y\in\mathcal S\,:\,h(y)\ge h}}d_t(y)\mathfrak h_t(y).
+\]
+Terminal cut nodes have no descendants with decisions and contribute zero.
+
+\emph{Decisions before the cut.}
+The reach derivative at a cut node is $\dot d_t(c)=d_t(c)\sum_{j<h(c)}\zeta_t(c_j,a_j)$. Reorder the finite sum $\sum_{c\in\mathcal C_h}\dot d_t(c)V_t^Y(c)$ by each ancestral decision $(x,a)$ with $h(x)<h$. The coefficient of $\zeta_t(x,a)$ is
+\[
+ \sum_{\substack{c\in\mathcal C_h\,:\,c\succeq x\oplus a}}d_t(c)V_t^Y(c)
+ =d_t(x)\pi_t(a\mid x)Q_t^Y(x,a).
+\]
+To verify this equality, condition on reaching $x$ and selecting $a$. The subsequent cut nodes form a disjoint, exhaustive partition of that conditional event, and the conditional expectation of their values is $Q_t^Y(x,a)$. This includes a terminal child $x\oplus a$, which is itself in the cut. Summing over $a$ and subtracting $V_t^Y(x)\sum_a\pi_t(a\mid x)\zeta_t(x,a)=0$ gives
+\[
+ \sum_{c\in\mathcal C_h}\dot d_t(c)V_t^Y(c)
+ =\sum_{\substack{x\in\mathcal S\,:\,h(x)<h}}d_t(x)\mathfrak h_t(x).
+\]
+Combining the two depth ranges proves \cref{eq:rd-value-rate}, including the boundary cases $h=0$ and $h=H_{\max}$.
+
+\emph{Kernel form and integration.}
+Let $a_t^Y(x)=[\pi_t\odot\mathcal A_t^Y](x)$, extended by zero outside the allowed tokens. Its coordinates sum to zero. Substituting $\zeta_t=\tau^{-1}(e_a-\pi_t)^\top v_t$ gives
+\[
+ \mathfrak h_t(x)
+ =\tau^{-1}\left[a_t^Y(x)^\top v_t(x)
+  -\Bigl(\sum_a\pi_t(a\mid x)\mathcal A_t^Y(x,a)\Bigr)\pi_t^\top v_t(x)\right]
+ =\tau^{-1}a_t^Y(x)^\top v_t(x).
+\]
+Under raw flow, $v_t(x)=\sum_sK_t(x,s)\Gamma_t(s)$, proving the bilinear formula. For an actual optimizer path, the same calculation uses $v_t(x)=\Phi_t(x)\dot\theta_t$. Integrating the continuous, piecewise differentiable $J_Y$ proves the accumulated outcome formula.
+\end{proof}
+
+The suffix derivative in (**) already includes changes to every downstream prediction. Adding a second derivative of $Q_t^Y$ to the full decision sum in \cref{eq:rd-value-rate} would just double-count that motion. Conversely, at a fixed cut prefix, $\dot V_t^Y(x)$ \emph{cannot} generally be replaced by a derivative with respect to the logits at $x$ alone. Local entropy and terminal correctness are very different observables even though their changes follow the same underlying parameter path.
+
+Reordering the finite source-receiver sum gives the source-resolved form
+\[
+ \dot J_Y(t)=\sum_s\mu_t(s)\varphi_{Y,t}(s),\qquad
+ \varphi_{Y,t}(s)=\frac1\tau\sum_xd_t(x)
+ [\pi_t\odot\mathcal A_t^Y](x)^\top K_t(x,s)B_t(s).
+\]
+A source contributes through every coupled receiver, not just through its own continuation value. The experiments in \cref{app:rd} therefore combine prefix dynamics with held-out outcomes.
+
+\subsection{Entropy sensitivity and ancestral exposure}
+\label{app:rd-entropy-response}
+\textbf{Connection to \cref{sec:broadcast}, the entropy-versus-fitting argument.} In this subsection $H_t(x)=-\sum_a p_t(a\mid x)\log p_t(a\mid x)$ is full-vocabulary model entropy. Its policy is $p_t=\softmax(z_t)$ at temperature one; the sampling policy in the routing term remains $\pi_t$ at temperature $\tau$. Fixed-bank evidence is in \cref{app:rd-entropy-evidence}.
+
+\begin{proposition}[Entropy sensitivity]
+\label[proposition]{prop:rd-entropy-response}
+Under \cref{eq:rd-observation},
+\begin{equation}
+ \begin{aligned}
+ R_H(t)&=\operatorname{Cov}_{\nu_t}\!\left(H_t(x),\sum_{j<h(x)}\zeta_t(x_j,a_j)\right),\\
+ D_H(t)&=\Ex_{\nu_t}[\chi_{H,t}(x)^\top v_t(x)],\\
+ \chi_{H,t}(x)&:=\nabla_zH_t(x)
+ =-p_t(\cdot\mid x)\odot[\log p_t(\cdot\mid x)+H_t(x)\mathbf1].
+ \end{aligned}
+ \label{eq:rd-entropy-sensitivity}
+\end{equation}
+At a fixed receiver,
+\begin{equation}
+ \dot H_t(x)=-\operatorname{Cov}_{a\sim p_t(\cdot\mid x)}(\log p_t(a\mid x),v_t(x,a)),
+ \qquad
+ |\dot H_t(x)|\le\sqrt{\operatorname{Var}_{p_t}(\log p_t)\operatorname{Var}_{p_t}(v_t)}.
+ \label{eq:rd-entropy-covariance}
+\end{equation}
+The parameter-space entropy gradient is $\Phi_t(x)^\top\chi_{H,t}(x)$. These identities hold with the actual logit velocity; the raw specialization is $v_t=K_t\Gamma_t$.
+\end{proposition}
+\begin{proof}
+Fix $x$ and suppress it in the notation. Softmax differentiation gives
+$\dot p_a=p_a(v_a-\bar v_p)$, where $\bar v_p=\sum_a p_av_a$. Since $\sum_a\dot p_a=0$,
+\begin{align*}
+ \dot H&=-\sum_a\dot p_a(\log p_a+1)
+        =-\sum_a p_a(v_a-\bar v_p)\log p_a\\
+       &=-\operatorname{Cov}_p(\log p,v)
+        =-\sum_a p_a(\log p_a+H)v_a.
+\end{align*}
+The last equality uses $\sum_a p_a\log p_a=-H$. Since the directional identity holds for every logit direction $v$, its coefficient vector is $\chi_H=\nabla_zH$. Weighted Cauchy--Schwarz applied to the centered vectors $\log p-\Ex_p\log p$ and $v-\Ex_pv$ proves the variance bound. The chain rule gives the parameter gradient $\Phi^\top\chi_H$. Finally substitute the local derivative into \cref{prop:rd-law}; its ancestral score gives the stated $R_H$ and its fixed-prefix derivative gives $D_H$.
+\end{proof}
+
+\begin{proposition}[Ancestral exposure without first-order entropy increase]
+\label[proposition]{prop:stop-entropy}
+Consider a fixed path of $h\ge1$ binary continue/stop decisions. At every gate, let the conditional continuation probability be a differentiable $c_t\in(0,1)$, and hold the suffix executor fixed. Conditional on the path's starting node, its end is reached with probability $c_t^h$. With $H_{\rm bin}(c)=-c\log c-(1-c)\log(1-c)$,
+\begin{equation}
+ \partial_t\log\Pr_t(\text{reach depth }h)=h\dot c_t/c_t,
+ \qquad \partial_tH_{\rm bin}(c_t)=\dot c_t\log[(1-c_t)/c_t].
+ \label{eq:rd-stop-entropy-example}
+\end{equation}
+\end{proposition}
+\begin{proof}
+The probability of reaching the end is the product of the $h$ conditional gate probabilities, regardless of any independence interpretation. Its logarithm is $h\log c_t$, giving the first derivative. Direct differentiation yields $H_{\rm bin}'(c)=-\log c-1+\log(1-c)+1=\log[(1-c)/c]$; the chain rule gives the second.
+\end{proof}
+For example, at $c_t=1/2$ with $\dot c_t>0$, the reach derivative is positive and each gate's entropy derivative is zero. Thus a pre-existing uncertain suffix can receive more exposure in the rollout distribution \emph{without} its predictions becoming flatter.
+
+
+\paragraph{Checking propensity and teacher-relative discrepancy.}
+\label{app:checking-sensitivity}
+For the fixed WAIT-initiated family $\mathcal W$, let $w_t=p_t(\mathcal W\mid x)\in(0,1)$ at a fixed prefix, $b_t=\log[w_t/(1-w_t)]$, and $q_W=q(\mathcal W\mid x)$ be fixed. Define
+\[
+ c_W(t)=D_{\rm KL}(\operatorname{Ber}(q_W)\Vert\operatorname{Ber}(w_t)).
+\]
+With the convention $0\log0=0$ at $q_W\in\{0,1\}$,
+\[
+ \partial_t c_W=(w_t-q_W)\partial_t b_t.
+\]
+Indeed, writing out the two Bernoulli terms gives
+$\partial_wc_W=-q_W/w+(1-q_W)/(1-w)=(w-q_W)/[w(1-w)]$.
+Also $\partial_t b_t=\dot w_t/[w_t(1-w_t)]$. Multiplication proves the identity, including the endpoint teacher probabilities by the same formula. A decrease in propensity is corrective exactly when its product with the current signed teacher discrepancy is negative; an initially above-teacher class need not remain above the teacher throughout training.

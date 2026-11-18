@@ -1,0 +1,35 @@
+{
+  "arxiv_id": "2607.04751v2",
+  "title": "Trust Region Policy Distillation",
+  "authors": [
+    "Xie, Zhengpeng",
+    "Zhang, Li Lyna",
+    "Xie, Zeke",
+    "Yang, Mao"
+  ],
+  "submitted_date": "2026/07/06",
+  "abs_url": "https://arxiv.org/abs/2607.04751v2",
+  "schema_version": 2,
+  "requested_input": "https://arxiv.org/pdf/2607.04751",
+  "requested_id": "2607.04751",
+  "source_url": "https://arxiv.org/src/2607.04751v2",
+  "downloaded_at": "2026-11-04T08:30:27.540813+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "dd2ec2735597e3bad170959addee292abceb0093e8afcc1e6cef9672d4410971",
+  "tex_files": [
+    "checklist.tex",
+    "neurips_2026.tex"
+  ],
+  "main_tex_candidates": [
+    "neurips_2026.tex"
+  ],
+  "source_file_count": 10,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2607.04751v2",
+    "sha256": "2977e8ff6540438bbce718c001cbe2f3073dc1053141444cfbc207fcd5619260",
+    "downloaded_at": "2026-11-04T08:30:30.831456+00:00",
+    "content_type": "application/pdf"
+  }
+}

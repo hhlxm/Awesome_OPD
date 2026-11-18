@@ -1,0 +1,15 @@
+\FloatBarrier
+\section{Conclusion}
+
+We introduced ResOPD, a principled estimator for full-vocabulary reverse-KL distillation under sparse teacher feedback. By integrating the observable coarse distribution analytically and sampling only the unresolved fine-tail residual, ResOPD reduces variance in the evaluated settings while preserving exact unbiasedness under ancestral on-policy sampling, without expanding the teacher payload or adding forward passes. Supported by theoretical analysis, exact covariance audits, and empirical evaluations across math, science, and coding tasks, ResOPD demonstrates higher aggregate downstream scores in the evaluated settings.
+
+% \paragraph{Scope and future directions.}
+% Our guarantees concern the fixed-prefix gradient under the stated sampling
+% conditions; the bucket control reduces variance relative to HETS when it
+% predicts the tail mean better than zero. Empirical conclusions are bounded
+% by the evaluated Qwen model pairs, task suites, and compute budgets.
+% Online residual moments do not replace exact covariance measurements, and
+% lower covariance does not imply uniform checkpoint gains. The learning-rate
+% sweep also shows that residualization does not prevent divergence at an
+% overly aggressive step size. Adaptive within-tail controls and evaluation
+% across additional model families are natural directions for further study.

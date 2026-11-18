@@ -1,0 +1,21 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "rad_iclr2027.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "iclr2027_conference.bst"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "ref.bib"
+      }
+   ],
+   "spec_version" : 1,
+   "texlive_version" : "2025",
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}

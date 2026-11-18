@@ -1,0 +1,19 @@
+\begin{wraptable}{r}{0.55\textwidth}
+\vspace{-10pt}
+\centering
+\caption{\raggedright Ablation on \textbf{components}. Success (\%); the rows are vanilla OPD, label-SFT and \method{}.}
+\label{tab:abl-components}
+\fontsize{8}{9.5}\selectfont
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}cc|ccc@{}}
+\toprule
+\textbf{Takeovers} & \shortstack{\textbf{Informed}\\\textbf{targets}} & \textbf{ALFWorld} & \textbf{WebShop} & \textbf{ScienceWorld} \\
+\midrule\midrule
+\textcolor{gray}{\xmark} & \textcolor{gray}{\xmark} & $65.8{\pm}2.6$ & $34.6{\pm}2.9$ & $34.6{\pm}3.5$ \\
+\textcolor{box_green}{\cmark} & \textcolor{gray}{\xmark} & \secondscore{$76.8{\pm}3.5$} & \secondscore{$46.7{\pm}1.3$} & \secondscore{$41.0{\pm}3.0$} \\
+\midrule
+\textcolor{box_green}{\cmark} & \textcolor{box_green}{\cmark} & \bestscore{$81.9{\pm}2.4$} & \bestscore{$55.9{\pm}1.4$} & \bestscore{$47.8{\pm}3.0$} \\
+\bottomrule
+\end{tabular}
+\vspace{-8pt}
+\end{wraptable}

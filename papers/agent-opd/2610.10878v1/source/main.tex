@@ -1,0 +1,320 @@
+\documentclass{article} %
+\pdfobjcompresslevel=0
+\usepackage{template}
+
+\input{math_commands.tex}
+
+\usepackage[utf8]{inputenc} %
+\usepackage[T1]{fontenc}    %
+\usepackage[backref=section]{hyperref}
+\usepackage{url}
+\def\UrlBreaks{\do\/\do-\do_}
+
+
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{multicol}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage[most]{tcolorbox}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage{dirtytalk}
+\usepackage{enumitem}
+\usepackage{makecell}
+\usepackage{titletoc}
+\usepackage{minted}
+\setlength{\marginparwidth}{2cm}
+\usepackage{todonotes}
+
+\usepackage[toc,page,header]{appendix}
+
+\renewcommand \thepart{}
+\renewcommand \partname{}
+
+\usepackage{bm}
+
+\usepackage{tabularx} 
+\usepackage{arydshln}
+\usepackage{ragged2e} 
+\newcolumntype{L}{>{\RaggedRight\hangafter=1\hangindent=0em}X}
+
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=Maroon,
+    citecolor=Cyan,
+    filecolor=magenta,      
+    urlcolor=magenta,
+}
+
+\usepackage[capitalize,noabbrev]{cleveref}
+\crefname{section}{§}{§§}
+\Crefname{section}{§}{§§}
+\crefname{lemma}{lemma}{lemma}
+\Crefname{lemma}{Lemma}{Lemma}
+
+\usepackage{calligra}
+\DeclareMathAlphabet{\mathcalligra}{T1}{calligra}{m}{n}
+
+\usepackage{pifont}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\renewcommand{\paragraph}[1]{\vspace{1mm}\noindent\textbf{#1}}
+
+\DeclareCaptionLabelFormat{cont}{#1~#2\alph{ContinuedFloat}}
+
+
+\tcbset{
+  promptbox/.style={
+    top=10pt,
+    colback=lightgray!20,
+    colframe=Black,
+    colbacktitle=NavyBlue,
+    enhanced,
+    center,
+    attach boxed title to top center={yshift=-0.1in,xshift=0.0in},
+    boxed title style={boxrule=0pt,colframe=white,},
+  }
+}
+\newtcolorbox{promptbox}[2][]{promptbox, title=#2,#1}
+\tcbset{
+  takeawaybox/.style={
+    top=10pt,
+    colback=lightgray!20,
+    colframe=Black,
+    colbacktitle=BurntOrange,
+    enhanced,
+    center,
+    attach boxed title to top center={yshift=-0.1in,xshift=0.0in},
+    boxed title style={boxrule=0pt,colframe=white,},
+  }
+}
+\newtcolorbox{takeawaybox}[2][]{takeawaybox, title=#2,#1}
+\tcbset{
+  observationbox/.style={
+    top=10pt,
+    colback=lightgray!20,
+    colframe=Black,
+    colbacktitle=YellowGreen,
+    enhanced,
+    center,
+    attach boxed title to top center={yshift=-0.1in,xshift=0.0in},
+    boxed title style={boxrule=0pt,colframe=white,},
+  }
+}
+\newtcolorbox{observationbox}[2][]{observationbox, title=#2,#1}
+
+\newtcbtheorem[number within=section]{prompt}{Prompt}{
+    top=10pt,
+    colback=lightgray!10,
+    colframe=Black,
+    colbacktitle=Cyan,
+    coltitle=white,
+    fonttitle=\bfseries,
+    enhanced,
+    center,
+    breakable,
+    separator sign={:},
+    description delimiters={}{},
+    boxrule=0.8pt,
+    arc=3pt,
+    outer arc=3pt,
+    boxsep=0pt,
+    left=12pt,right=12pt,top=10pt,bottom=10pt,
+    lefttitle=12pt,righttitle=12pt,toptitle=5pt,bottomtitle=5pt,
+    before skip=12pt,after skip=12pt,
+    pad at break*=3mm,
+    fontupper=\normalsize
+}{pt}
+
+\newtcbtheorem[number within=section]{tool}{Tool Card}{
+    top=10pt,
+    colback=lightgray!20,
+    colframe=Black,
+    colbacktitle=YellowGreen,
+    enhanced,
+    center,
+    attach boxed title to top center={yshift=-0.1in,xshift=0.0in},
+    boxed title style={boxrule=0pt,colframe=white,},
+    breakable
+}{tl} 
+
+\lstdefinelanguage{yaml}{
+  keywords={true,false,null,y,n},
+  keywordstyle=\color{blue}\bfseries,
+  basicstyle=\ttfamily\small,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{purple},
+  moredelim=[l][\color{orange}]{\&},
+  moredelim=[l][\color{magenta}]{\*},
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]"
+} 
+
+\lstset{
+  language=yaml,
+  breaklines=true,      
+  columns=fullflexible,
+  frame=single,                 
+  frameround=tttt, 
+  xleftmargin=25pt,             
+  framexleftmargin=25pt,        
+  rulecolor=\color{gray!50},    
+  backgroundcolor=\color{lightgray!10}, 
+  numbers=left,                  
+  numberstyle=\tiny\color{gray}, 
+  numbersep=10pt,                
+  stepnumber=1,                  
+} 
+
+\definecolor{ageCaseHeader}{HTML}{4B4B4B}
+\definecolor{ageTaskGray}{HTML}{F0F0F0}
+\definecolor{ageTeacherBg}{HTML}{FFF0E6}
+\definecolor{ageStudentBg}{HTML}{D9FBDD}
+\definecolor{ageAnalysisBg}{HTML}{F0FFF2}
+\definecolor{ageAnalysisGreen}{HTML}{15962B}
+
+\newtcbtheorem[number within=section]{case}{Case}{
+    top=10pt,
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=ageCaseHeader,
+    colbacktitle=ageCaseHeader,
+    coltitle=white,
+    fonttitle=\bfseries,
+    separator sign={:},
+    description delimiters={}{},
+    boxrule=0.8pt,
+    arc=3pt,
+    outer arc=3pt,
+    boxsep=0pt,
+    left=12pt,right=12pt,top=10pt,bottom=10pt,
+    lefttitle=12pt,righttitle=12pt,toptitle=5pt,bottomtitle=5pt,
+    before skip=12pt,after skip=12pt,
+    pad at break*=3mm,
+    fontupper=\normalsize
+}{cs}
+
+\newtcolorbox{agetaskbox}{
+    colback=ageTaskGray,
+    colframe=ageTaskGray,
+    boxrule=0pt,
+    arc=0mm,
+    left=2.5mm,
+    right=2.5mm,
+    top=1.5mm,
+    bottom=1.5mm
+}
+
+\newtcolorbox{ageanalysisbox}{
+    colback=ageAnalysisBg,
+    colframe=ageAnalysisGreen,
+    colbacktitle=ageAnalysisBg,
+    coltitle=ageAnalysisGreen,
+    fonttitle=\bfseries,
+    title={Analysis},
+    boxrule=0.7pt,
+    arc=2mm,
+    left=3mm,
+    right=3mm,
+    top=2mm,
+    bottom=2mm
+} 
+
+\newcommand{\agePromptLine}[1]{\noindent\detokenize{#1}\par}
+\newcommand{\agePromptBlank}{\vspace{0.55em}}
+
+\usepackage{xspace}
+\newcommand{\name}[0]{\textsc{{STI-OPD}}\xspace}
+\newcommand{\drop}[1]{\textcolor{red!50!black}{$\downarrow${\scriptsize #1}}}
+\newcommand{\up}[1]{\textcolor{green!50!black}{$\uparrow${\scriptsize #1}}}
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+\newcommand{\nbc}[3]{
+        {\colorbox{#3}{\scriptsize\textcolor{white}{#1}}}
+            {\textcolor{#3}{\small$\blacktriangleright$\textit{#2}$\blacktriangleleft$}}
+}
+\definecolor{carnelian}{rgb}{0.7, 0.11, 0.11}
+\newcommand{\ctrang}[1]{\nbc{TV}{#1}{carnelian}}
+\newcommand{\trang}[1]{\textcolor{carnelian}{#1}}
+
+\title{Stochastic Teacher Intervention for Agentic On-Policy Distillation}
+
+
+\author{\textbf{Junnan Liu}$^{1}$,
+\textbf{Linhao Luo}$^{1}$,
+\textbf{Zhijun Chen}$^{2}$,
+\textbf{Qianren Mao}$^{3}$, \\
+\textbf{Thuy-Trang Vu}$^{1}$
+\& \textbf{Gholamreza Haffari}$^{1}$ \\[0.4em]
+\normalfont
+$^{1}$Department of Data Science and AI, Faculty of Information Technology, \\
+Monash University, Australia \\
+$^{2}$The Hong Kong Polytechnic University, Hong Kong SAR, China \\
+$^{3}$Zhongguancun Laboratory, Beijing, P.R. China
+}
+
+\date{\today}
+\correspondence{Junnan Liu at
+  \href{mailto:junnan.liu@monash.edu}{\texttt{junnan.liu@monash.edu}}}
+
+
+
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+
+\begin{document}
+
+
+\maketitle
+\input{sections/1.abstract.tex}
+\input{sections/2.introduction.tex}
+\input{sections/3.related.tex}
+\input{sections/4.method.tex}
+\input{sections/5.experiment.tex}
+\input{sections/6.conclusion.tex}
+
+\clearpage
+\bibliography{refs}
+\bibliographystyle{template}
+
+\input{sections/7.appendix.tex}
+
+\end{document}

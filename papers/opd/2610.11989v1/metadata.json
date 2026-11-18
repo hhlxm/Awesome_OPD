@@ -1,0 +1,39 @@
+{
+  "arxiv_id": "2610.11989v1",
+  "title": "MetaOPD: Meta-Learned Token Weighting for On-Policy Distillation",
+  "authors": [
+    "Wang, Zipeng",
+    "Dong, Xinpeng",
+    "Wang, Yuefan",
+    "Lu, Pingchen",
+    "Wei, Xian",
+    "Kuang, Kun",
+    "Wu, Fei",
+    "Dai, Zhongxiang",
+    "Zhang, Min"
+  ],
+  "submitted_date": "2026/10/08",
+  "abs_url": "https://arxiv.org/abs/2610.11989v1",
+  "schema_version": 2,
+  "requested_input": "2610.11989",
+  "requested_id": "2610.11989",
+  "source_url": "https://arxiv.org/src/2610.11989v1",
+  "downloaded_at": "2026-11-17T03:04:55.516396+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "1ec6c0ea24725ad18f89bc5924b264b02ee0dec7fbda391c17745b9c6fe012e8",
+  "tex_files": [
+    "main.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 11,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2610.11989v1",
+    "sha256": "f4833001367301aca5eae6ec2bacbb5690c05163801aba456a2190ce638e5886",
+    "downloaded_at": "2026-11-17T03:04:56.171750+00:00",
+    "content_type": "application/pdf"
+  }
+}

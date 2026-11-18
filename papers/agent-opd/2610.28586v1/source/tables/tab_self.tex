@@ -1,0 +1,16 @@
+\begin{table}[h]
+\centering
+\caption{\textbf{Self-distillation: Qwen3.5-4B teaches Qwen3.5-4B.} \method{} first repairs the 4B teacher on its own takeovers; the other arms learn from the unrepaired 4B.}
+\label{tab:self}
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Environment & Student alone & Vanilla OPD & TCOD-F2B & Guided-OPD & FutureBridge & \textbf{\textcolor{box_green}{\method{} (ours)}} \\
+\midrule\midrule
+ALFWorld & $43.4{\pm}1.0$ & $49.9{\pm}2.6$ & $49.7{\pm}2.6$ & $48.5{\pm}3.8$ & \secondscore{$50.6{\pm}1.9$} & \bestscore{$72.7{\pm}1.3$} \\
+WebShop & $33.7{\pm}0.9$ & $33.3{\pm}2.2$ & $31.3{\pm}0.9$ & \secondscore{$34.0{\pm}1.8$} & $31.1{\pm}1.5$ & \bestscore{$58.1{\pm}2.5$} \\
+ScienceWorld & $28.0{\pm}1.5$ & $28.2{\pm}2.3$ & $27.2{\pm}0.8$ & \secondscore{$29.3{\pm}1.8$} & $29.2{\pm}2.9$ & \bestscore{$42.4{\pm}3.4$} \\
+\bottomrule
+\end{tabular}
+\end{table}

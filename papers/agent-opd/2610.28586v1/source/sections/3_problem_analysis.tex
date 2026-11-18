@@ -1,0 +1,40 @@
+\section{Analysis}
+\label{sec:gap}\label{sec:analysis}\label{sec:setup}\label{sec:setup-objective}\label{sec:setup-taxonomy}%
+\label{sec:syndrome}\label{sec:anatomy}\label{sec:anatomy-force}\label{sec:anatomy-carrierchannel}\label{sec:anatomy-keystone}\label{sec:anatomy-lock}\label{sec:gap-general}
+
+\subsection{Preliminaries: Agentic On-Policy Distillation}
+\label{sec:prelim}
+
+Agentic on-policy distillation (OPD) trains a student $\student$ to match a teacher $\teacher$. The student acts in the environment: at each turn $t$ it reads the history $h_t$ (the task, the observations so far and its own earlier responses) and emits a response $y_t$; the environment returns the next observation. In vanilla OPD the teacher does not act; it scores every token the student produces, given the same history.
+
+The training signal is the teacher's next-token distribution on the student's own histories. The student minimizes a token-level divergence to it; we use the reverse KL,
+\begin{equation}
+\label{eq:opd}
+\mathcal{L}_{\mathrm{OPD}}(\theta)=
+\mathbb{E}_{h\sim\student}\;
+\mathrm{KL}\big(\student(\cdot\mid h)\,\|\,\teacher(\cdot\mid h)\big),
+\end{equation}
+estimated at the sampled token~\citep{mimo2026,li2026bestval}. Other OPD variants use forward KL or Jensen--Shannon divergence~\citep{sdft2026,sdpo2026}; what follows concerns the per-token scoring, not the choice of divergence. The loss reports how closely the student matches the teacher's scores. Nothing in this objective looks past the current token: the teacher scores $h$ without seeing how the episode ends.
+The analysis below studies one teacher, Qwen3.5-9B, and its Qwen3.5-4B student.
+
+\subsection{Where the Student Drifts, the Teacher Still Finishes}
+\label{sec:takeover}\label{sec:loss-success}
+
+\textbf{Where the student trains is not the whole story.} Recent methods trace what goes wrong in agentic OPD to long horizons. The student's early mistakes compound~\citep{dagger2011} and carry it into states beyond the teacher's reach, where the teacher's scores can no longer guide it, so the student learns the wrong thing there. TCOD-F2B, Guided-OPD and FutureBridge therefore keep training within that reach, by shortening the student's episodes, handing turns to the teacher, or intervening where the two disagree.
+
+The explanation assumes that the states the student drifts into lie beyond what the teacher can handle. If so, the teacher acting from them should fail as well. We test this on the states the explanation points to: the turns at which the untrained student's next-token distribution departs most from the teacher's. From each state the teacher takes over eight times. As the success columns of \Cref{tab:drift} show, in every environment its takeovers finish more often than the student did from the same states. The student has not drifted beyond what the teacher can handle.
+
+\input{tables/tab_drift}
+
+\textbf{Its plain scores let the student's delay pass.} Once one of its finishing takeovers is in context, the teacher's scores turn against the student's delay: in the drop columns of \Cref{tab:drift}, its probability of the student's hedging and searching words falls two to three times as much as that of the rest of the student's thinking. The plain scores OPD trains on lack this direction: these states are within the teacher's reach, yet the student learns from the teacher's next-token scores there, not from its rollouts. As a result, the student trained on these plain scores to its final checkpoint still runs out of turns in a third of its held-out ALFWorld and ScienceWorld episodes and in more than half of its WebShop ones, about twice as often as when it trains on the repaired teacher.
+
+\begin{takeaway}{Takeaway: recoverable states, cautious student}
+At the states where the student departs most from the teacher, even late in its episodes, the teacher's own takeovers still finish the task. The teacher's plain scores let the student's delay pass, and the student trained on them keeps running out of turns.
+\end{takeaway}
+
+\subsection{The Scorer Never Sees Where the Episode Ends}
+\label{sec:myopia}
+
+\textbf{Outcome-based RL punishes delay with zero reward when the episode runs out of turns; plain scoring lacks this continuation signal.} Acting, the teacher generates a continuation from the student's state, observes the consequences of its actions, and reaches an outcome. Scoring, it rates the student's tokens given the observed history, without that continuation in context. Its probabilities may encode expectations about future outcomes, but ordinary OPD supplies no explicit feedback from the realized task outcome. This distinction matters when useful information gathering and costly delay look similar locally. Another look or search keeps options open, but it spends one turn of a fixed budget, which the student trained on plain scores often uses up. Plain next-token scores carry no penalty for delay: each extra look is scored on its own, and on its own it is reasonable. Conditioning the scorer on a selected teacher continuation changes its supervision on the same student text. We call the distinction between the teacher's demonstrated rollout competence and its token-level supervision the \emph{rollout--scorer gap}.
+
+\textbf{Design implications.} We mine the untrained student's high-disagreement states and use selected teacher takeovers to inform the scores supplied there. Agreement on an observable outcome or an offline filter supplies the selection rule without reading task reward. We train the teacher to reproduce takeover-informed distributions on every assistant token from the divergence turn onward, without the takeover in context. The repaired teacher then becomes the sole scorer for ordinary OPD.

@@ -1,0 +1,46 @@
+\begin{table}[htbp]
+\caption{Full LiveCodeBench-v6 pass@1 (\%; mean $\pm$ standard deviation over four
+sample positions), comparing RAD at step 100 with baselines at step 200.
+Bold/underline: best/second-best trained means;
+parentheses: gains of RAD in each column over the best evaluated baseline
+(pp, before rounding).}
+\label{tab:coding-results}
+\centering
+\normalsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{@{\hspace{\tabcolsep}}l*{4}{>{\centering\arraybackslash}X}@{\hspace{\tabcolsep}}}
+\toprule
+\radhead \multicolumn{1}{c}{Method} & Easy (322) & Medium (383) & Hard (350) & Overall (1,055) \\
+\midrule
+\radhead\multicolumn{5}{l}{\textit{\textbf{Student: Qwen3-1.7B (non-thinking)}}} \\
+\addlinespace[1pt]
+Teacher & \meanstd{96.27}{0.79} & \meanstd{69.71}{1.21} & \meanstd{26.07}{0.24} & \meanstd{63.34}{0.38} \\
+\midrule
+Base (student) & \meanstd{60.02}{1.17} & \meanstd{16.45}{0.26} & \meanstd{1.79}{0.71} & \meanstd{24.88}{0.35} \\
+\addlinespace[1pt]
+GRPO & \meanstd{66.07}{2.64} & \meanstd{23.11}{1.13} & \meanstd{4.07}{0.47} & \meanstd{29.91}{1.14} \\
+OPD & \meanstd{81.37}{1.54} & \meanstd{41.38}{1.40} & \meanstd{10.79}{1.02} & \meanstd{43.44}{0.70} \\
+TIP & \meanstd{82.69}{1.08} & \meanstd{40.34}{2.16} & \meanstd{9.71}{0.90} & \meanstd{43.10}{0.52} \\
+RLAD & \secondmeanstd{85.56}{1.55} & \secondmeanstd{44.58}{1.24} & \secondmeanstd{11.07}{0.62} & \secondmeanstd{45.97}{0.26} \\
+ExOPD & \meanstd{78.88}{0.58} & \meanstd{32.96}{1.93} & \meanstd{6.29}{0.70} & \meanstd{38.13}{0.52} \\
+\midrule
+\radrow\radlabel{\method{} (ours)} & \bestmeanstd{88.90}{0.40} & \bestmeanstd{57.11}{1.26} & \bestmeanstd{20.57}{0.35} & \bestmeanstd{54.69}{0.31} \\
+\radgainrow\baselinegainlabel & \radgain{+3.34} & \radgain{+12.53} & \radgain{+9.50} & \radgain{+8.72} \\
+\midrule
+\radhead\multicolumn{5}{l}{\textit{\textbf{Student: OLMo3-7B-Instruct}}} \\
+\addlinespace[1pt]
+Teacher & \meanstd{89.36}{1.41} & \meanstd{64.23}{1.86} & \meanstd{28.86}{0.97} & \meanstd{60.17}{0.98} \\
+\midrule
+Base (student) & \meanstd{76.09}{1.58} & \meanstd{43.41}{2.31} & \meanstd{14.86}{1.73} & \meanstd{43.91}{1.50} \\
+\addlinespace[1pt]
+GRPO & \meanstd{84.55}{0.89} & \secondmeanstd{54.11}{1.49} & \secondmeanstd{20.57}{0.73} & \secondmeanstd{52.27}{0.26} \\
+OPD & \meanstd{69.25}{3.10} & \meanstd{48.69}{1.17} & \meanstd{18.43}{1.77} & \meanstd{44.93}{1.36} \\
+TIP & \meanstd{53.49}{0.83} & \meanstd{40.86}{1.30} & \meanstd{16.79}{1.02} & \meanstd{36.73}{0.37} \\
+RLAD & \secondmeanstd{84.70}{2.30} & \meanstd{53.92}{0.54} & \meanstd{16.57}{0.70} & \meanstd{50.92}{0.91} \\
+\midrule
+\radrow\radlabel{\method{} (ours)} & \bestmeanstd{89.67}{1.86} & \bestmeanstd{63.51}{0.34} & \bestmeanstd{24.86}{1.50} & \bestmeanstd{58.67}{0.52} \\
+\radgainrow\baselinegainlabel & \radgain{+4.97} & \radgain{+9.40} & \radgain{+4.29} & \radgain{+6.40} \\
+\bottomrule
+\end{tabularx}
+\end{table}

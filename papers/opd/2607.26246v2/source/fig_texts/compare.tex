@@ -1,0 +1,37 @@
+\providecommand{\hlstrut}{\rule[-0.30ex]{0pt}{2.05ex}}
+\providecommand{\hlbox}[2]{\raisebox{0pt}[0pt][0pt]{\setlength{\fboxsep}{0pt}%
+  \colorbox{#1}{\hlstrut #2}}}
+\providecommand{\hlR}[2]{\hlbox{red!#1}{#2}} 
+\providecommand{\hlB}[2]{\hlbox{blue!#1}{#2}}  
+\providecommand{\hlG}[2]{\hlbox{teal!#1}{#2}}   
+\providecommand{\gry}[1]{\textcolor{black!45}{#1}}
+\providecommand{\panelw}{0.325\textwidth}
+\providecommand{\panelh}{34ex}
+
+\begin{figure*}[t]
+\centering
+\small
+\fbox{\parbox{0.965\textwidth}{\textbf{Question:} Calculate the line integral of $\frac{1}{z}$ over a contour that consists of a square and a circle, both centered at the origin, oriented counterclockwise. \hfill \textit{(answer $4\pi i$; wrong-answer hint $2\pi i$)}}}
+\\[6pt]
+\begin{minipage}[t]{\panelw}\centering
+\fbox{\parbox[t]{0.90\linewidth}{\raggedright\linespread{1.3}\selectfont
+\gry{We are} \hlR{35}{integrating} \gry{$\oint_C \frac{1}{z}dz$ $\cdots$ Step 1: Understand the function $\cdots$ $1/z$ has a} \hlR{39}{singularity} \gry{at $z{=}0$, inside both $\cdots$} \hlR{45}{Step 2: Cauchy's Theorem} \gry{$\cdots$} \hlR{48}{However}\gry{, it applies only to holomorphic $f$ $\cdots$} \hlR{55}{But} \gry{we can use the Integral} \hlR{41}{Formula} \gry{$\cdots$} \hlR{35}{Step 3: known result} \gry{$\cdots$ positively} \hlR{45}{oriented} \gry{$\Rightarrow 2\pi i$ $\cdots$ so the total $=2\pi i{+}2\pi i=4\pi i$ $\cdots$ Final Answer: $4\pi i$.}
+}}\\[3pt]
+{\footnotesize (a) Pre-RL / Post-RL}
+\end{minipage}\hfill
+\begin{minipage}[t]{\panelw}\centering
+\fbox{\parbox[t]{0.90\linewidth}{\raggedright\linespread{1.3}\selectfont
+\gry{We are integrating $\oint_C \frac{1}{z}dz$ $\cdots$ Step 1: Understand the} \hlB{46}{function} \gry{$\cdots$ $1/z$ has a singularity at $z{=}0$, inside} \hlB{48}{both} \gry{$\cdots$ \\Step 2: Cauchy's Theorem $\cdots$} \gry{However, it applies only to} \hlB{23}{holomorphic $f$} \gry{$\cdots$ But we can} \hlB{25}{use} \gry{the Integral Formula $\cdots$ Step 3: known result} \gry{$\cdots$} \hlB{60}{positively oriented} \gry{$\Rightarrow 2\pi i$ $\cdots$ so the} \hlB{32}{total} \gry{$=$}\hlB{35}{$2\pi i{+}2\pi i$}\gry{$=4\pi i$ $\cdots$ Final Answer: $4\pi i$.}
+}}\\[3pt]
+{\footnotesize (b) Smaller / Larger Models}
+\end{minipage}\hfill
+\begin{minipage}[t]{\panelw}\centering
+\fbox{\parbox[t]{0.90\linewidth}{\raggedright\linespread{1.3}\selectfont
+\gry{We are integrating $\oint_C \frac{1}{z}dz$ $\cdots$ Step 1: Understand the function $\cdots$ $1/z$ has a singularity at $z{=}0$, inside both $\cdots$} \hlG{10}{Step 2: Cauchy's Theorem} \gry{$\cdots$ However, it applies only to holomorphic $f$ $\cdots$ But we can use the Integral Formula $\cdots$ Step 3: known result $\cdots$ positively oriented $\Rightarrow 2\pi i$ $\cdots$ so the} \hlG{12}{total} \gry{$=2\pi i{+}2\pi i=$}\hlG{60}{$4$}\gry{$\pi i$ $\cdots$} \hlG{18}{Final Answer}\gry{: $4\pi i$.}
+}}\\[3pt]
+{\footnotesize (c) Correct / Wrong Hints }
+\end{minipage}
+\caption{A case study that the three contrasts strengthen different reasoning tokens. The shade of color represents the relative magnitude of $\Delta_t$.}
+\label{fig:case}
+\vspace{-10pt}
+\end{figure*}

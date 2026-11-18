@@ -1,0 +1,38 @@
+{
+  "arxiv_id": "2607.26246v2",
+  "title": "Weak-to-Strong On-Policy Distillation",
+  "authors": [
+    "Yu, Fangxu",
+    "Xu, Weijia",
+    "Xu, Michael",
+    "Zhou, Tianyi",
+    "Lin, Zinan"
+  ],
+  "submitted_date": "2026/07/28",
+  "abs_url": "https://arxiv.org/abs/2607.26246v2",
+  "schema_version": 2,
+  "requested_input": "2607.26246",
+  "requested_id": "2607.26246",
+  "source_url": "https://arxiv.org/src/2607.26246v2",
+  "downloaded_at": "2026-11-11T07:02:19.866519+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "d9c3c63304fbf25046590e695f3debd2215e742ed6f8fed0a4f8d4edba1474a3",
+  "tex_files": [
+    "fig_texts/compare.tex",
+    "fig_texts/example_generations.tex",
+    "iclr2026_conference.tex",
+    "math_commands.tex"
+  ],
+  "main_tex_candidates": [
+    "iclr2026_conference.tex"
+  ],
+  "source_file_count": 14,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2607.26246v2",
+    "sha256": "4e4e1e7af67bc35c919cec13e61a97ff675ac9c159fb228d4cc4c46a92ee8500",
+    "downloaded_at": "2026-11-11T07:02:24.604406+00:00",
+    "content_type": "application/pdf"
+  }
+}

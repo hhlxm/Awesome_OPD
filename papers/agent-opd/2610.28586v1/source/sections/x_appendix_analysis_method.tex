@@ -1,0 +1,108 @@
+
+\clearpage
+\section{Extended Related Work}
+\label{app:relwork}
+
+\subsection{Detailed Comparison with the Closest Methods}
+\label{app:compare}
+
+\input{tables/tab_positioning}
+
+\Cref{tab:positioning} places the compared methods by the three properties in its columns; updating an EMA self-teacher during actor training is different from this separate scorer-repair stage.
+
+\textbf{Student-side curricula.} TCOD-F2B~\citep{tcod2026} gradually lengthens the student's training episodes. Guided-OPD~\citep{guidedopd2026} assigns a decreasing share of turns to the teacher, combining cross-entropy on teacher tokens with distillation on student tokens. ReOPD~\citep{reopd2026} replays pre-collected teacher prefixes. All three leave the external scorer unchanged; a repaired teacher can supply scores under such curricula as well as under ordinary OPD.
+
+\textbf{FutureBridge and teacher continuations.} FutureBridge~\citep{futurebridge2026} is our closest experimental comparator. It continues from high-disagreement student states and validates a bridge with short student rollouts; accepted teacher text enters the student's training buffer, alongside a curriculum over success-selected reference prefixes. Its online acceptance rule reads no task reward, although the reference pool uses success selection. \method{} instead uses a selected takeover as privileged context for teacher repair: the teacher learns to reproduce its informed scores without that context and is then frozen, and the student retains ordinary OPD.
+
+\textbf{Privileged context and consensus.} SDFT~\citep{sdft2026} and Self-Distilled Reasoner~\citep{opsd2026} train an acting model from a demonstration-conditioned self-teacher. OPCD~\citep{opcd2026} also supports an external context-conditioned teacher, but transfers the context into the student directly. CANON~\citep{canon2026} supplies a label-free reference by selecting the solution with the majority answer. Our consensus selection follows this principle, applied to an external teacher's continuations from student states; the model being fitted becomes the scorer of a subsequent distillation stage.
+
+\textbf{Feedback and reward-based learning.} SDPO~\citep{sdpo2026} turns rich environment feedback into self-distillation targets, and in scalar-feedback settings uses successful attempts as feedback. SDAR~\citep{sdar2026} is a multi-turn hybrid that keeps reward-based RL as its primary objective and adds gated self-distillation. We exclude this additional student reward signal from the experimental comparison; \method{} could supply the distillation scorer of such a hybrid.
+
+\textbf{External teacher calibration.} Distillation Traps and Guards~\citep{trapsguards2026} also changes the teacher before distillation, by reinforcement fine-tuning with utility and calibration rewards and a KL anchor; \method{} instead fits takeover-informed soft targets on student histories through the cross-entropy of \Cref{eq:r2s}, without task reward.
+
+\subsection{Further Related Work}
+\label{app:related}
+
+\textbf{OPD at scale.} MiMo-V2-Flash integrates domain-specialized teachers with dense token-level supervision~\citep{mimo2026}, and Nemotron-Cascade 2 uses multi-domain OPD between Cascade RL stages to recover capabilities from the strongest intermediate domain checkpoints~\citep{nemotroncascade22026}. Our question concerns the quality of the next-token supervision a given teacher supplies on multi-turn student histories.
+
+\textbf{Other ways to adapt a model.} OPD is one of several routes from a pretrained model to a task. Fine-tuning adapts the weights on fixed data, through low-rank adapters, knowledge-anchored low-resource adaptation or prompt-based continual learning~\citep{zhao2026mora,zhao2025kalahash,zhao2024reconstruct,zou2025learning}; RL adapts them on task reward, as in ParallelSearch for search agents~\citep{zhao2025parallelsearch}; in-context learning leaves the weights fixed and adapts through examples, including self-mined errors~\citep{zhao2026value}; and task-specific models are built for one domain~\citep{hao2025safemap}. Agentic OPD differs from all four in its signal: a teacher's next-token distribution on the student's own trajectories, scored while the student acts.
+
+\textbf{Local supervision and privileged information.} Beyond the compatibility and privileged-context findings of \citet{li2026bestval} and \citet{rethinkingopsd2026} discussed in \Cref{sec:related}, Multi-Rollout OPD~\citep{mropd2026} enriches the teacher's context with peer attempts labelled by success or failure. Our references are teacher takeovers from the student's own state, selected without task reward and internalized into an external scorer, which we assess through target fidelity and the completion behavior of its distilled students.
+
+
+\section{Analysis Details}
+\label{app:analysis}
+\label{app:delay}
+
+\input{tables/tab_drift_detail}
+
+\textbf{The table of \Cref{sec:takeover}.} \Cref{tab:drift} uses the untrained student's highest-disagreement states from turn five on, where a takeover is no longer close to the teacher acting alone from the start; \Cref{tab:drift-detail} counts them. Success is the environment's own outcome. The drop columns keep the states where at least one takeover finishes and read the student's turns up to and including the mined one. The teacher scores the student's own tokens twice, plain and with that takeover in context, as described in \Cref{app:r2s}; a drop entry is $100\,(1-e^{\bar d})$, where $\bar d$ is the mean change in log-probability over the student's tokens of that kind. Hedging words are the thinking tokens \emph{maybe, might, likely, probably, perhaps, could, possibly, seem(s), guess, assume, unsure, potentially, whether, if, unless, unclear, unknown, hopefully, presumably}; searching words are \emph{look, search, check, examine, explore, find, locate, scan, browse} with their inflections, and \emph{inventory}; \emph{other} is the rest of the thinking. \Cref{tab:drift-detail} also gives, with 95\% intervals over states, how much more each class falls than the rest of the thinking, and the drop on the student's words of committing (\emph{take, put, use, buy, now, done}, \ldots), which fall less than its hedging words and more than the rest, and on its action tokens, which barely move.
+
+\input{tables/tab_takeover_all}
+
+\textbf{The takeovers of every pair.} \Cref{tab:takeover-all} repeats the student-versus-takeover comparison of \Cref{tab:drift} for every cell of \Cref{tab:main}, over all mined states rather than those from turn five on; both entries of its Qwen3.5-9B$\to$4B row are therefore above the matching entries of \Cref{tab:drift}, since the earlier states are easier for the student and for the teacher alike. The $K{=}8$ takeovers beat the student's own outcome in eleven of twelve cells; the exception is the Qwen3-8B student on ALFWorld, which already beats its teacher acting alone and which \method{} still lifts ten points above vanilla OPD. On WebShop the 30B-A3B teacher, which seldom finishes from the first turn, finishes $14\%$ and $32\%$ of its takeovers from the students' states.
+
+\textbf{How the episodes end.} The out-of-turn shares that \Cref{sec:takeover} cites are those of \Cref{fig:scorer-effect} and \Cref{tab:timeouts}: held-out evaluation episodes that reach the turn budget unfinished, for the 9B-taught 4B students of \Cref{tab:main} at their final checkpoint, in the three decodes behind their success there; \Cref{fig:scorer-effect} averages the seen and unseen splits, \Cref{tab:timeouts} reports the seen split.
+
+\textbf{The \method{} student spends fewer turns searching.} \Cref{tab:search-turns} reads the students' own training rollouts in the last ten updates of each run. \emph{Searching} counts the turns spent moving, opening and looking (ALFWorld: go to, open, close, look, examine, inventory; ScienceWorld: teleport, look, read, wait, open, close; WebShop: search, next or previous page, back to search); \emph{task} counts the turns spent acting on the goal (ALFWorld: take, move, put, clean, heat, cool, use; ScienceWorld: focus, pick up, move, pour, use, activate, connect and the like; WebShop: opening an item, choosing an option, reading its description, buying). The win-only counts of \Cref{sec:exp-longhorizon} are averaged over the three runs in the same way.
+
+\section{\method{} Implementation Details}
+\label{app:r2s}
+
+\textbf{Untrained-student episodes.} Before training, the untrained student plays the training-split tasks under the training prompt at $T{=}1.0$, for the episode budget of a training run (150 steps); evaluation tasks are discarded before scoring.
+
+\textbf{Mining score.} In $\Delta_t$ of \Cref{eq:divscore}, $\student$ is the untrained student, and each term is the sampled per-token estimate of the reverse KL of \Cref{eq:opd}, so a single token's term can take either sign. Action tokens stay out of $\Delta_t$ because the thinking before them decides the action; with a finishing takeover in context, the teacher's scores of the student's action tokens barely move, as \Cref{tab:drift-detail} shows.
+
+\textbf{Filters and mining.} A turn is eligible when its thinking span has at least three tokens and when it ends in a tool call. Within each episode we keep the eligible turn with the largest $\Delta_t$ (one state per episode), cap three states per goal, and keep the top $N{=}2{,}400$ states by $\Delta_t$. A state is dropped when its prompt cannot be re-tokenized identically, when its privileged stream exceeds $32{,}768$ tokens, or when it has no privileged position.
+
+\textbf{Takeovers.} From each restored state the teacher attempts the episode $K{=}8$ times independently, sampled at $T{=}1.0$ with reasoning mode off, up to the environment's turn budget. \Cref{tab:takeover-all} gives the takeover success of every cell of \Cref{tab:main}; between $2{,}159$ and $2{,}400$ of a cell's mined states have at least one replayable takeover, and at least one of the eight takeovers finishes in $28$--$83\%$ of them, depending on the cell.
+
+\textbf{Selection.} We use two reward-free checks. The consensus vote groups a state's takeovers by how they end and keeps the state when the largest group holds at least $m$ of them; the LLM judge, Qwen3.5-9B with reasoning mode on, reads each takeover and keeps the state when it approves at least $m{=}1$. For \Cref{tab:main}, the vote uses $m{=}2$ on ALFWorld, over the takeovers that end within the turn budget, and $m{=}1$ on ScienceWorld, over those that end with the environment's completion message; on WebShop the judge checks each purchase against the instruction, for both teachers, and the approved takeovers are grouped by the item bought. The shortest takeover of the largest group is selected. In \Cref{tab:selection}, the consensus row votes with $m{=}2$ everywhere, and on ALFWorld and ScienceWorld the judge row reads the whole episode but never the reward or the completion message, and takes the shortest approved takeover. Only the ground-truth row of \Cref{tab:selection} reads the task reward.
+
+\textbf{Privileged targets and plain scores.} The frozen teacher $T_0$ scores the student's unmodified token stream through the end of the episode. In the privileged pass the selected takeover is inserted as one extra user message immediately before the student's first turn. The message is headed ``Reference walkthrough'' and lists the teacher's thinking and action for each takeover step, without the replayed prefix and without environment observations; the header presents it as a successful expert completion of the same task. Every position of the student stream shifts by one constant offset, so the two passes align position by position. The plain pass scores the same stream without the message. Both passes cache per-position top-16 (token, log-probability) lists. Every assistant position from the mined turn, inclusive, to the student's final assistant turn receives $q^+$, including assistant turns without a tool call; earlier history remains causal context, and prompts and environment observations are not targets. \method{} trains only on the privileged targets; the plain pass is the reference of the drop columns of \Cref{tab:drift}.
+
+\textbf{Loss and fine-tuning.} The loss at each labeled position is the cross-entropy between the target $q^+$, kept on its top-16 tokens and renormalized, and the model's full-vocabulary log-softmax. The targets are computed once from the frozen $T_0$ and are not recomputed as $T_\phi$ trains. As in \Cref{eq:r2s}, we average all selected assistant positions within each state, then average states. The teacher is initialized from $T_0$ and fine-tuned full-parameter for one epoch at learning rate $2\times10^{-6}$, with AdamW (betas $0.9/0.95$, no weight decay), 10 warmup steps followed by cosine decay to $0.1\times$, gradient clip 1.0, batches of 8 labeled states and bf16; 10\% of goals form a goal-disjoint held-out split. For Qwen3.5-9B the vision tower stays frozen, so full-parameter means the text decoder. The label-SFT control of \Cref{tab:abl-components} uses the same recipe. The repaired teacher is then refrozen and scores otherwise ordinary OPD in place of $T_0$, with the sampled estimator of \Cref{eq:opd-sampled}; the original teacher takes no part in the student's training.
+
+\textbf{Self-distillation.} In \Cref{tab:self,tab:self-full}, teacher and untrained student are the same Qwen3.5-4B checkpoint, so $\Delta_t$ of \Cref{eq:divscore} is zero up to numerical noise and cannot rank states. The self pipeline instead draws one eligible turn per episode of the untrained student at random, under the same goal cap and budget, and the 4B itself runs the takeovers and the selection, so no larger model enters the pipeline. Repair and distillation follow the settings above. The vanilla control, TCOD-F2B, Guided-OPD and FutureBridge learn from the unrepaired 4B teacher; the Student alone column is the untrained 4B of \Cref{tab:main,tab:main-full}.
+
+\section{Experimental Protocol}
+\label{app:protocol}
+
+\textbf{Environments.} WebShop~\citep{webshop2022} reports success on the 500 canonical evaluation goals and on a disjoint 256-goal pool. ALFWorld~\citep{alfworld2021} reports seen and unseen success on its held-out games under a TCOD-aligned full-history protocol; our wrapper ends an episode only on success. ScienceWorld~\citep{scienceworld2022} follows the TCOD splits: the first half of each of the 17 training task types' variations trains, 140 variations sampled from the second half form the seen evaluation, and the first 134 rows of the frozen 1{,}308-task test set of unseen types form the unseen evaluation; the metric is the simulator's completion flag, and the simulator and the action and object lists shown to the agent are TCOD's.
+
+\textbf{Models.} The models are those of \Cref{sec:exp-setup}. Model and tokenizer revisions, prompts, environment wrappers and checkpoint provenance are in the code release, tag \texttt{r2s} of \href{https://github.com/Tree-Shu-Zhao/miles-agent}{\nolinkurl{github.com/Tree-Shu-Zhao/miles-agent}}; its 24 checkpoints are on the Hugging Face Hub.
+
+\textbf{Prompt protocol.} Every arm and anchor of \Cref{tab:main} uses one prompt per environment, rendered in each model's native tool-call template; the prompt asks for one to three sentences of plain-text deliberation before exactly one tool call per turn, and that deliberation stays part of the generated response.
+
+\textbf{Objective.} The vanilla OPD, \method{} and TCOD-F2B rows of \Cref{tab:main} minimize the reverse KL of \Cref{eq:opd} with its sampled estimator, which gives each student token the advantage~\citep{mimo2026,li2026bestval}
+\begin{equation}
+\label{eq:opd-sampled}
+A_{t,i}=-\beta\!\left[\log \student(y_{t,i}\mid h_{t,i})-\log \teacher(y_{t,i}\mid h_{t,i})\right],
+\qquad \tau\sim\student,
+\end{equation}
+with coefficient $\beta{=}1$, observations loss-masked and updates restricted to student tokens. Guided-OPD selects the teacher or the student to act at each turn and trains the student with cross-entropy on teacher-generated tokens and the same sampled reverse KL on student-generated tokens; FutureBridge applies the same sampled reverse KL to episodes that carry an accepted teacher bridge. Task reward is logged and zeroed for every distillation arm.
+
+\textbf{Training.} Every distillation run takes 150 optimization steps and evaluates every 25 steps; the 128 WebShop episodes per step are $16$ goals $\times$ $8$ samples. Adam uses betas $(0.9, 0.98)$, weight decay 0.1 and gradient clip 1.0, and the PPO ratio clip is 0.2. TCOD-F2B, Guided-OPD and FutureBridge share this protocol and keep their own method settings.
+
+\textbf{Evaluation.} Student-alone anchors are three decodes of the untrained student under the same prompt. An evaluation in which an episode returned no outcome after an infrastructure failure is repeated at unchanged weights and decoding seed.
+
+\textbf{Teacher acting alone.} The teacher itself is evaluated as the acting policy at $T{=}0.4$; its split means are the teacher-alone anchors of \Cref{tab:main}, and \Cref{tab:main-full} gives them per split.
+
+\section{Every Split of the Main Results}
+\label{app:results}
+\label{app:splits}
+
+\textbf{The main text averages the splits.} Each cell of \Cref{tab:main} and \Cref{tab:self} is, per decoding seed, the mean of the seen and unseen values of the same evaluation (ALFWorld, ScienceWorld) or the success rate on the 500 canonical WebShop goals; the mean and std are then taken over the three decoding seeds. \Cref{tab:main-full} and \Cref{tab:self-full} give every split, and for WebShop also the disjoint 256-goal pool. \method{} exceeds every baseline in mean on all $24$ splits.
+
+\input{tables/tab_main_full}
+\input{tables/tab_self_full}
+
+\section{Training Curves}
+\label{app:curves}
+\label{app:curves-all}
+
+\input{figures/fig_curves_all}
+
+\textbf{Training curves complement the final-checkpoint comparison.} \Cref{fig:curves-all} plots the in-training evaluation of the vanilla and \method{} students of every cell of \Cref{tab:main}: one decode every 25 updates under the training seed, so the final point of each curve is the first of the three decodes behind the table. The \method{} student ends above vanilla OPD in all twelve cells, on both splits, and above the teacher acting alone on the seen split in all twelve, with no checkpoint selection.
+
+\textbf{Three training runs per method.} \Cref{fig:teacher-bars} follows vanilla OPD, TCOD-F2B, Guided-OPD, FutureBridge and \method{} from the Qwen3.5-9B teacher to the Qwen3.5-4B student under the protocol of \Cref{app:protocol}. Each method has three training runs per environment, started from the same untrained student and differing only in the training seed; the three \method{} runs share the one repaired teacher of \Cref{tab:main}, so its band reflects student training alone. Each run is evaluated every 25 updates under its own seed, update 0 being the untrained student common to all five curves. Lines are means over the three runs and bands one sample standard deviation, without interpolation or checkpoint selection; the dashed line is the teacher acting alone.

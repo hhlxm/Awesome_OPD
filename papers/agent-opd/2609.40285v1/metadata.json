@@ -1,0 +1,41 @@
+{
+  "arxiv_id": "2609.40285v1",
+  "title": "PivotOPD: Learning to Recover from Pivotal Mistakes in Multi-Turn Agents",
+  "authors": [
+    "He, Yinghui",
+    "Chang, Yapei",
+    "Bhardwaj, Khushi",
+    "Molinari, Daniele",
+    "Konuk, Tugrul",
+    "Kautz, Jan",
+    "Hatamizadeh, Ali"
+  ],
+  "submitted_date": "2026/09/30",
+  "abs_url": "https://arxiv.org/abs/2609.40285v1",
+  "schema_version": 2,
+  "requested_input": "2609.40285",
+  "requested_id": "2609.40285",
+  "source_url": "https://arxiv.org/src/2609.40285v1",
+  "downloaded_at": "2026-11-17T03:04:17.941493+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "158e20a75dc9f7741459511a4a6c8d2c97bb53fc822bc655f7e9e4237d199b1f",
+  "tex_files": [
+    "appendix.tex",
+    "main.tex",
+    "math_commands.tex",
+    "preamble.tex",
+    "utils/macro.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 18,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2609.40285v1",
+    "sha256": "415a2241f5e114d40fc5cc309393283dc94b2a0e422012f2bce5502afbb6ae86",
+    "downloaded_at": "2026-11-17T03:04:20.078024+00:00",
+    "content_type": "application/pdf"
+  }
+}

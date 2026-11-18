@@ -1,0 +1,59 @@
+\section{The Learning Dynamics of the OPD loop}
+\label{sec:theory}
+\label{sec:calculus}\label{sec:anatomy}
+
+\subsection{The OPD loop and the response law}
+\label{sec:loop}\label{sec:conversion:request}
+
+Recall that $\Pi_t$ denotes the distribution of student rollouts and $\mu_t=\cM(\Pi_t)$ the distribution of prefixes used by the loss. At a sampled prefix $s \sim \mu_t$, the student $p_t$ and the teacher $q$ supply the request $B_t(s)=-\nabla_{z_t(s)}c_t(s)$. The request population $\Gamma_t(s)=\mu_t(s)B_t(s)$ specifies \emph{what change} it requests on a prefix, across the rollout disitribution $\mu_t$. These requests then convert into parameter motion through the tangent map $\Phi_t(s)=\nabla_\theta z_t(s)$, which changes the future policy and rollouts. More explicitly, one training step follows
+\begin{equation}
+\resizebox{0.97\linewidth}{!}{$
+\underbrace{\Pi_t}_{\text{rollouts}}
+\xrightarrow{\;\cM\;}
+\underbrace{\mu_t}_{\text{source}}
+\xrightarrow{\;q\;}
+\underbrace{\Gamma_t=\mu_tB_t}_{\text{weighted requests}}
+\xrightarrow{\;\Phi\;}
+\underbrace{\Delta\theta_t}_{\text{parameter step}}
+\xrightarrow{\;\text{response}\;}
+\underbrace{\Delta \log p_t(\cdot)}_{\text{policy changes}}
+\longrightarrow
+\underbrace{\Pi_{t+1}}_{\text{next rollouts}}
+$}
+\label{eq:loop}
+\end{equation}
+%The response $\delta^p_t(x,a)=\log p_{t+1}(a\mid x)-\log p_t(a\mid x)$ measures the change in output probability at a probing prefix $x$.
+%Sampling with the changed policy regenerates the prefix (and rollout) distribution, $\mu_{t+1}=\cM(\Pi_{t+1})$.
+
+
+
+
+
+\paragraph{Local requests shape future motion.}
+Training imposes the gradient-based update \mbox{$u_t=\Ex_{\mu_t}[\Phi_t(s)^\top B_t(s)]$}.
+For a gradient step $\Delta\theta_t=\eta u_t$, the response at \emph{any} receiver prefix $x$ is
+\begin{equation}
+\Delta p_t(a \mid x)
+%\delta^p_t(x,a)
+=
+\eta\sum_s
+\underbrace{\mu_t(s)}_{\text{source weight}}
+\Big[
+\underbrace{\mathsf A_t^p(x)}_{\text{normalization}}\;
+\overbrace{\underbrace{K_t(x,s)}_{\text{student coupling}}\;
+\underbrace{B_t(s)}_{\text{request}}}^{\Delta z_t(x)\text{: logit response}}
+\Big]_a+O(\eta^2),
+\label{eq:response-law}
+\end{equation}
+where $K_t(x,s)=\Phi_t(x)\Phi_t(s)^\top$ and $\mathsf A_t^p(x)=I-\mathbf1p_t(\cdot\mid x)^\top$.
+The kernel $K_t$ measures how source and receiver logits move together through shared parameters; $\mathsf A_t^p$ converts logit motion into log-probability motion. Therefore, the model's prediction at any ``receiver'' prefix $x$ can change without appearing in the training batch.
+
+In particular, since every prefix $x$ in a \emph{future} rollout (from the future policy) is a receiver, (1) OPD updates will affect \emph{local per-prefix predictions} of the student, captured by the logit motion $\dot{z}(x)$ and policy motion $\partial \log p(\cdot \mid x)$, (2) the updates will also shape \emph{which prefixes the student visits} (changed $\mu$) and expose to teacher supervision (changed $\Gamma$), as the policy motion along the ancestor tokens of any prefix $x$ accumulate to change its reach-probability. 
+
+Let us look at the illustrative process in \cref{fig:opd_illustration}. Intuitively, imagine that the earlier requests locally promote the student to reason more and in specific manners (for instance, by requesting more ``wait''-based backtracking, suppressing early ``Answer:'' commitment, asking for a specific theorem, and so on). Due to the autoregressive nature of the policies, this will not only affect how likely the student emits specific tokens such as ``wait'' or ``answer:'' in a future rollout of the student, but will also alter the overall rollout distribution, by lengthening the reasoning trace, exposing new reasoning sub-trajectories, different errors, etc. In the \emph{benign} case, such online dynamics can be beneficial, as the teacher can correct the student in real time as if in a ``tutorial'' session. 
+
+However, one can also imagine that such a dynamical process can be quite \emph{fragile} for a ill-prepared student. A weak student's tangent map $\Phi$ simply might not be very sensitive to the requests, resulting in \emph{limited motion} propagated from training to future prefixes via kernel $K$, thus limited changes in task accuracy. Moreover, even if there is substantial motion, such motion can be harmful. Taking our analogy further, an ill-prepared student which has not ``gone to class before the tutorial'' might benefit very little from online corrections on its own rollouts and even become more confused. That is, the ill-prepared student which has not been pretrained properly on the task and sustain sufficiently strong rollouts might only mimic superficial local patterns requested by the teacher, and \emph{push its rollout population $\mu$ towards chaos}, which can then be hard for the teacher to generate the right request population $\Gamma$ to even rescue, let alone improve.
+
+The rest of our analysis builds on the OPD loop and the response law to make precise the above intuitions, complemented by empirical analysis of real OPD runs, and examine how offline-distillation preparation before OPD helps alleviate the problems for weak student models. \Cref{sec:local} (conversion) studies the student’s response to the supervised requests, which primarily concerns whether and how well a student model can convert different request populations $\Gamma$ (from different teachers) into policy motion $\dot{z}$ along the request fields. We develop early-training diagnostics of OPD runs from this perspective. \Cref{sec:broadcast} (broadcast) then focuses on \emph{where} policy motion $\dot{z}$ goes and how it influences future training sources $\mu$, and analyze how and why policy motion which improves local per-prefix readouts (such as training loss) might not make positive progress on terminal readouts such as answer accuracy. Motivated by the failure mechanisms, we then show in \Cref{sec:preparation}, across Qwen-2.5 and Llama-3.1 models, that with sufficient offline preparation, OPD runs improve pooled held-out accuracy (up to pass@32) and aggregate per-problem reliability on AIME 2024 and 2025 problems.
+
+In the rest of this section, we primarily rely on the continuous gradient flow for cleaner theoretical discussions. Please see \cref{app:ftc} for further details on the finite step approximations. 

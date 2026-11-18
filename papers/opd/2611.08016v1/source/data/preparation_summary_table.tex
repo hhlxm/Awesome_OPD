@@ -1,0 +1,20 @@
+\begin{tabular}{llrrrrr}
+\toprule
+Student & Arm & pass@1 & pass@32 & Coverage & $\ge 1/2$ & All 32\\
+\midrule
+Qwen 1.5B & Base & $0.0115$ & $0.1333$ & 8 & 0 & 0\\
+ & Cold start & $0.0099$ & $0.1333$ & 8 & 0 & 0\\
+ & + offline & $0.0078$ & $0.0833$ & 5 & 0 & 0\\
+ & + OPD & $0.0281$ & $0.1833$ & 11 & 0 & 0\\
+\midrule
+Qwen 7B & Base & $0.0953$ & $0.3167$ & 19 & 4 & 0\\
+ & Cold start & $0.1302$ & $0.4167$ & 25 & 7 & 0\\
+ & + offline & $0.1906$ & $0.4333$ & 26 & 10 & 1\\
+ & + OPD & $0.2693$ & $0.6000$ & 36 & 15 & 5\\
+\midrule
+Llama 8B & Base & $0.0219$ & $0.1833$ & 11 & 1 & 0\\
+ & Cold start & $0.0385$ & $0.2333$ & 14 & 1 & 0\\
+ & + offline & $0.0349$ & $0.2333$ & 14 & 0 & 0\\
+ & + OPD & $0.0693$ & $0.3500$ & 21 & 3 & 0\\
+\bottomrule
+\end{tabular}

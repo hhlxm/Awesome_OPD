@@ -1,0 +1,19 @@
+\section{Related Work}
+\label{sec:related_work}
+
+\vspace{-0.5em}
+\paragraph{On-policy Distillation for Multi-Turn Agents.}
+Small errors compound across turns and move student rollouts into histories on which teacher supervision is unreliable~\citep{abs-2605-07725,abs-2604-24005,abs-2606-15912}.
+Existing methods manage this instability by controlling either the supervision signal or the rollout distribution.
+The first group reweights or masks the distillation loss: SCOPE~\citep{abs-2604-10688} calibrates supervision using trajectory correctness together with teacher or student confidence, and SAGE-OPD~\citep{abs-2606-19659} applies guidance selectively within multi-turn rollouts.
+The second group reshapes which trajectories the student is trained on: TCOD~\citep{abs-2604-24005} progressively expands the trajectory depth exposed to the student, Guided-OPD~\citep{abs-2606-15912} mixes teacher- and student-generated turns by a curriculum, TurnOPD~\citep{abs-2607-05804} allocates rollout depth and loss weight across turns, and ReOPD~\citep{abs-2607-04763} replays teacher trajectories as prefixes, trading student occupancy against teacher reliability.
+Closest to \name, Relay-OPD~\citep{abs-2607-26057} temporarily hands generation to the teacher after detecting a failed prefix, and FutureBridge-OPD~\citep{abs-2608-01953} scores a short teacher bridge by its effect on the subsequent student continuation.
+Methods in the second group that hand control to the teacher face an estimation problem that neither group addresses: the tokens produced during intervention are sampled from the teacher, yet they are supervised with an integrand that assumes student sampling.
+
+\vspace{-0.5em}
+\paragraph{Expert Intervention and Distribution Shift.}
+Teacher intervention is an instance of interactive imitation learning, where the learner's own actions change its future state distribution.
+DAgger repeatedly queries an expert on states induced by the learner~\citep{RossGB11}, scheduled sampling gradually replaces ground-truth prefixes with model-generated prefixes in autoregressive prediction~\citep{BengioVJS15}, and more recent methods treat expert interventions themselves as learning signals~\citep{LuoDZ0L24}.
+The same idea has been carried into LLM distillation: MOTAB monitors student trajectories, backtracks when they cross an adaptive boundary, and invokes the teacher from the last safe state~\citep{abs-2605-19433}, while SMRC-SD applies privileged reference guidance to multi-turn agents only when the student's execution state matches a supported reference state~\citep{abs-2608-05219}.
+The intervention rules closest to ours are all specified by hand, making them inflexible and sensitive to noisy turn-level estimates: Guided-OPD follows a predefined curriculum~\citep{abs-2606-15912}, Relay-OPD uses a continuation-asymmetry trigger~\citep{abs-2607-26057}, FutureBridge-OPD validates guidance through future rollouts~\citep{abs-2608-01953}, and DASH-OPD switches executors on hysteretic thresholds over accumulated log-probability-ratio evidence~\citep{abs-2607-29078}.
+\name differs in both respects: each decision is stochastic, with a probability read off the instantaneous teacher--student KL divergence rather than a threshold, and the estimation mismatch that intervention introduces is corrected by importance sampling so that teacher-generated tokens still serve the target OPD objective.

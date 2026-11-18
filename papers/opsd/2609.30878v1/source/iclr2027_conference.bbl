@@ -1,0 +1,226 @@
+\begin{thebibliography}{28}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Agarwal et~al.(2024)Agarwal, Vieillard, Zhou, Stanczyk, Ramos~Garea,
+  Geist, and Bachem]{agarwal2024opd}
+Rishabh Agarwal, Nino Vieillard, Yongchao Zhou, Piotr Stanczyk, Sabela
+  Ramos~Garea, Matthieu Geist, and Olivier Bachem.
+\newblock On-policy distillation of language models: Learning from
+  self-generated mistakes.
+\newblock In \emph{The Twelfth International Conference on Learning
+  Representations}, 2024.
+
+\bibitem[Cui et~al.(2026)Cui, Yuan, Wang, Wang, Zhang, Chen, Li, He, Fan, Yu,
+  Xu, Chen, Yuan, Chen, Zhang, Lv, Wang, Yao, Han, Peng, Cheng, Liu, Sun, Zhou,
+  and Ding]{cui2025prime}
+Ganqu Cui, Lifan Yuan, Zefan Wang, Hanbin Wang, Yuchen Zhang, Jiacheng Chen,
+  Wendi Li, Bingxiang He, Yuchen Fan, Tianyu Yu, Qixin Xu, Weize Chen, Jiarui
+  Yuan, Huayu Chen, Kaiyan Zhang, Xingtai Lv, Shuo Wang, Yuan Yao, Xu~Han, Hao
+  Peng, Yu~Cheng, Zhiyuan Liu, Maosong Sun, Bowen Zhou, and Ning Ding.
+\newblock Process reinforcement through implicit rewards.
+\newblock \emph{Transactions on Machine Learning Research}, 2026.
+\newblock ISSN 2835-8856.
+
+\bibitem[Fontaine et~al.(2021)Fontaine, Perrault, Valko, and
+  Perchet]{fontaine2021design}
+Xavier Fontaine, Pierre Perrault, Michal Valko, and Vianney Perchet.
+\newblock Online a-optimal design and active linear regression.
+\newblock In \emph{Proceedings of the 38th International Conference on Machine
+  Learning}, volume 139 of \emph{Proceedings of Machine Learning Research},
+  pp.\  3374--3383. PMLR, 2021.
+\newblock URL \url{https://proceedings.mlr.press/v139/fontaine21a.html}.
+
+\bibitem[Gehring et~al.(2025)Gehring, Zheng, Copet, Mella, Cohen, and
+  Synnaeve]{gehring2025rlef}
+Jonas Gehring, Kunhao Zheng, Jade Copet, Vegard Mella, Taco Cohen, and Gabriel
+  Synnaeve.
+\newblock {RLEF}: Grounding code {LLM}s in execution feedback with
+  reinforcement learning.
+\newblock In \emph{International Conference on Machine Learning}, pp.\
+  19034--19055, 2025.
+
+\bibitem[Guo et~al.(2025)Guo, Yang, Zhang, Song, Zhang, Xu, Zhu, Ma, Wang, Bi,
+  et~al.]{guo2025deepseekr1}
+Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Ruoyu Zhang, Runxin Xu,
+  Qihao Zhu, Shirong Ma, Peiyi Wang, Xiao Bi, et~al.
+\newblock {DeepSeek-R1}: Incentivizing reasoning capability in {LLM}s via
+  reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:2501.12948}, 2025.
+
+\bibitem[Huang et~al.(2026)Huang, Song, Zhang, and Ren]{huang2026selectkd}
+Haiduo Huang, Jiangcheng Song, Yadong Zhang, and Pengju Ren.
+\newblock Selectkd: Selective token-weighted knowledge distillation for llms.
+\newblock In \emph{Proceedings of the IEEE/CVF Conference on Computer Vision
+  and Pattern Recognition}, pp.\  19287--19297, 2026.
+
+\bibitem[H{\"u}botter et~al.(2026)H{\"u}botter, L{\"u}beck, Behric, Baumann,
+  Bagatella, Marta, Hakimi, Shenfeld, Buening, Guestrin, and
+  Krause]{hubotter2026sdpo}
+Jonas H{\"u}botter, Frederike L{\"u}beck, Lejs~Deen Behric, Anton Baumann,
+  Marco Bagatella, Daniel Marta, Ido Hakimi, Idan Shenfeld, Thomas~Kleine
+  Buening, Carlos Guestrin, and Andreas Krause.
+\newblock Reinforcement learning via self-distillation.
+\newblock In \emph{Forty-third International Conference on Machine Learning},
+  2026.
+
+\bibitem[Jain et~al.(2025)Jain, Han, Gu, Li, Yan, Zhang, Wang, Solar-Lezama,
+  Sen, and Stoica]{jain2024livecodebench}
+Naman Jain, King Han, Alex Gu, Wen-Ding Li, Fanjia Yan, Tianjun Zhang, Sida
+  Wang, Armando Solar-Lezama, Koushik Sen, and Ion Stoica.
+\newblock Livecodebench: Holistic and contamination free evaluation of large
+  language models for code.
+\newblock In \emph{The Thirteenth International Conference on Learning
+  Representations}, 2025.
+
+\bibitem[Jiang et~al.(2026)Jiang, Xu, Ding, and Zhang]{jiang2026trajectory}
+Li~Jiang, Haoran Xu, Yichuan Ding, and Amy Zhang.
+\newblock Trajectory-refined distillation.
+\newblock \emph{arXiv preprint arXiv:2606.08432}, 2026.
+
+\bibitem[Jiang \& Ferraro(2026)Jiang and Ferraro]{jiang2026topd}
+Yuxuan Jiang and Francis Ferraro.
+\newblock Bridging reasoning trajectories in on-policy distillation via
+  near-future guidance, 2026.
+\newblock URL \url{https://arxiv.org/abs/2606.00305}.
+
+\bibitem[Kazemnejad et~al.(2025)Kazemnejad, Aghajohari, Portelance, Sordoni,
+  Reddy, Courville, and Roux]{kazemnejad2024vineppo}
+Amirhossein Kazemnejad, Milad Aghajohari, Eva Portelance, Alessandro Sordoni,
+  Siva Reddy, Aaron Courville, and Nicolas~Le Roux.
+\newblock Vine{PPO}: Refining credit assignment in {RL} training of {LLM}s.
+\newblock In \emph{Forty-second International Conference on Machine Learning},
+  2025.
+
+\bibitem[Kim et~al.(2026)Kim, Luo, Kim, Lee, Kim, Jeon, Li, and
+  Yang]{kim2026why}
+J.~Kim, X.~Luo, M.~Kim, S.~Lee, D.~Kim, J.~Jeon, D.~Li, and Y.~Yang.
+\newblock Why does self-distillation (sometimes) degrade the reasoning
+  capability of {LLM}s?
+\newblock \emph{arXiv preprint arXiv:2603.24472}, 2026.
+
+\bibitem[Le et~al.(2022)Le, Wang, Gotmare, Savarese, and Hoi]{le2022coderl}
+Hung Le, Yue Wang, Akhilesh~Deepak Gotmare, Silvio Savarese, and Steven~C.H.
+  Hoi.
+\newblock {CodeRL}: Mastering code generation through pretrained models and
+  deep reinforcement learning.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~35, 2022.
+
+\bibitem[Lightman et~al.(2024)Lightman, Kosaraju, Burda, Edwards, Baker, Lee,
+  Leike, Schulman, Sutskever, and Cobbe]{lightman2024verify}
+Hunter Lightman, Vineet Kosaraju, Yuri Burda, Harrison Edwards, Bowen Baker,
+  Teddy Lee, Jan Leike, John Schulman, Ilya Sutskever, and Karl Cobbe.
+\newblock Let's verify step by step.
+\newblock In \emph{The Twelfth International Conference on Learning
+  Representations}, 2024.
+
+\bibitem[Liu et~al.(2023)Liu, Zhu, Xiao, Fu, Han, Yang, and Ye]{liu2023rltf}
+Jiate Liu, Yiqin Zhu, Kaiwen Xiao, Qiang Fu, Xiao Han, Wei Yang, and Deheng Ye.
+\newblock {RLTF}: Reinforcement learning from unit test feedback.
+\newblock \emph{Transactions on Machine Learning Research}, 2023.
+
+\bibitem[Liu et~al.(2026)Liu, Jiao, Xiao, Zhao, Ruan, Li, Liu, Wang, Chen,
+  Wang, Wang, Xiao, and Zhu]{liu2026teacherguidedpolicyoptimizationonpolicy}
+Xinyu Liu, Kechen Jiao, Chunyang Xiao, Runsong Zhao, Junhao Ruan, Bei Li,
+  Jiahao Liu, Qifan Wang, Xin Chen, Jingang Wang, Chenglong Wang, Tong Xiao,
+  and JingBo Zhu.
+\newblock Teacher-guided policy optimization for on-policy reasoning
+  distillation under large policy divergence, 2026.
+\newblock URL \url{https://arxiv.org/abs/2605.13230}.
+
+\bibitem[{OLMo Team}(2025)]{olmo2025olmo3}
+{OLMo Team}.
+\newblock Olmo 3.
+\newblock \emph{arXiv preprint arXiv:2512.13961}, 2025.
+
+\bibitem[Parthasarathi et~al.(2025)Parthasarathi, Reymond, Chen, Cui, and
+  Chandar]{parthasarathi2025grpolambda}
+Prasanna Parthasarathi, Mathieu Reymond, Boyu Chen, Yi~Cui, and Sarath Chandar.
+\newblock {GRPO-$\lambda$}: Credit assignment improves {LLM} reasoning.
+\newblock \emph{arXiv preprint arXiv:2510.00194}, 2025.
+
+\bibitem[Ross et~al.(2011)Ross, Gordon, and Bagnell]{ross2011dagger}
+Stephane Ross, Geoffrey Gordon, and Drew Bagnell.
+\newblock A reduction of imitation learning and structured prediction to
+  no-regret online learning.
+\newblock In \emph{Proceedings of the Fourteenth International Conference on
+  Artificial Intelligence and Statistics}, volume~15 of \emph{Proceedings of
+  Machine Learning Research}, pp.\  627--635. PMLR, 2011.
+
+\bibitem[Shao et~al.(2024)Shao, Wang, Zhu, Xu, Song, Zhang, Li, Wu, and
+  Guo]{shao2024deepseekmath}
+Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Mingchuan Zhang,
+  Y.K. Li, Y.~Wu, and Daya Guo.
+\newblock {DeepSeekMath}: Pushing the limits of mathematical reasoning in open
+  language models.
+\newblock \emph{arXiv preprint arXiv:2402.03300}, 2024.
+
+\bibitem[Song et~al.(2026)Song, Chen, Tajwar, Munos, Pathak, Bagnell, Singh,
+  and Zanette]{song2026rltf}
+Yuda Song, Lili Chen, Fahim Tajwar, R{\'e}mi Munos, Deepak Pathak, Drew
+  Bagnell, Aarti Singh, and Andrea Zanette.
+\newblock Expanding the capabilities of reinforcement learning via text
+  feedback.
+\newblock In \emph{Forty-third International Conference on Machine Learning},
+  2026.
+
+\bibitem[Tavor et~al.(2026)Tavor, Ebenspanger, Cnaan, and
+  Geva]{tavor2026rethinking}
+Amir Tavor, I.~Ebenspanger, N.~Cnaan, and Mor Geva.
+\newblock Rethinking selective knowledge distillation.
+\newblock \emph{arXiv preprint arXiv:2602.01395}, 2026.
+
+\bibitem[Wang et~al.(2024)Wang, Li, Shao, Xu, Dai, Li, Chen, Wu, and
+  Sui]{wang2024mathshepherd}
+Peiyi Wang, Lei Li, Zhihong Shao, Runxin Xu, Damai Dai, Yifei Li, Deli Chen,
+  Yu~Wu, and Zhifang Sui.
+\newblock Math-shepherd: Verify and reinforce {LLM}s step-by-step without human
+  annotations.
+\newblock In \emph{Proceedings of the 62nd Annual Meeting of the Association
+  for Computational Linguistics (Volume 1: Long Papers)}. Association for
+  Computational Linguistics, 2024.
+
+\bibitem[Wang et~al.(2025)Wang, Yu, Gao, Zheng, Liu, Lu, Dang, Chen, Yang,
+  Zhang, Liu, Yang, Zhao, Yue, Song, Yu, Huang, and Lin]{wang2025beyond8020}
+Shenzhi Wang, Le~Yu, Chang Gao, Chujie Zheng, Shixuan Liu, Rui Lu, Kai Dang,
+  Xiong-Hui Chen, Jianxin Yang, Zhenru Zhang, Yuqiong Liu, An~Yang, Andrew
+  Zhao, Yang Yue, Shiji Song, Bowen Yu, Gao Huang, and Junyang Lin.
+\newblock Beyond the 80/20 rule: High-entropy minority tokens drive effective
+  reinforcement learning for {LLM} reasoning.
+\newblock In \emph{The Thirty-ninth Annual Conference on Neural Information
+  Processing Systems}, 2025.
+
+\bibitem[Xu et~al.(2026)Xu, Sang, Zhou, He, and Geramifard]{xu2026tip}
+Y.~Xu, H.~Sang, Z.~Zhou, R.~He, and A.~Geramifard.
+\newblock {TIP}: Token importance in on-policy distillation.
+\newblock \emph{arXiv preprint arXiv:2604.14084}, 2026.
+
+\bibitem[Yang et~al.(2025)Yang, Li, Yang, Zhang, Hui, Zheng, Yu, Gao, Huang,
+  Lv, et~al.]{yang2025qwen3}
+An~Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo~Zheng, Bowen
+  Yu, Chang Gao, Chengen Huang, Chenxu Lv, et~al.
+\newblock Qwen3 technical report.
+\newblock \emph{arXiv preprint arXiv:2505.09388}, 2025.
+
+\bibitem[Yang et~al.(2026)Yang, Luo, Wang, Han, He, Li, and
+  Xu]{yang2025lowprob}
+Zhihe Yang, Xufang Luo, Zilong Wang, Dongqi Han, Zhiyuan He, Dongsheng Li, and
+  Yunjian Xu.
+\newblock Do not let low-probability tokens over-dominate in {RL} for {LLM}s.
+\newblock In \emph{The Fourteenth International Conference on Learning
+  Representations}, 2026.
+
+\bibitem[Zhao et~al.(2026)Zhao, Xie, Liu, Huang, Pang, Chen, and
+  Grover]{zhao2026sdr}
+Siyan Zhao, Zhihui Xie, Mengchen Liu, Jing Huang, Guan Pang, Feiyu Chen, and
+  Aditya Grover.
+\newblock Self-distilled reasoner: On-policy self-distillation for large
+  language models.
+\newblock In \emph{Forty-third International Conference on Machine Learning},
+  2026.
+
+\end{thebibliography}

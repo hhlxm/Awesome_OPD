@@ -1,0 +1,131 @@
+\documentclass{article}
+
+
+
+
+\usepackage{iclr2027_conference,times}
+
+
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+
+\definecolor{BrickRed}{rgb}{0.6,0,0}
+\definecolor{RoyalBlue}{rgb}{0,0,0.5}
+\definecolor{Tdgreen}{rgb}{0,0.4,0.7}
+
+\definecolor{CodeKeyword}{HTML}{008000}
+\definecolor{CodeComment}{HTML}{287D80}
+\definecolor{CodeFunction}{HTML}{0000CC}
+\definecolor{CodeBackground}{HTML}{F2F2F2}
+\lstdefinestyle{tisd-pseudocode}{
+  language=Python,
+  basicstyle=\small\ttfamily,
+  keywordstyle=\color{CodeKeyword}\bfseries,
+  commentstyle=\color{CodeComment},
+  stringstyle=\color{BrickRed},
+  emph={tisd_step},
+  emphstyle=\color{CodeFunction},
+  numbers=left,
+  numberstyle=\scriptsize\color{black!60},
+  numbersep=8pt,
+  stepnumber=1,
+  firstnumber=1,
+  numberblanklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  tabsize=4,
+  breaklines=true,
+  aboveskip=0pt,
+  belowskip=0pt
+}
+
+\hypersetup{
+  colorlinks=true,
+  allcolors=black,
+  linkcolor=BrickRed,
+  citecolor=RoyalBlue,
+  pdftitle={TISD: On-Policy Self-Distillation with Trajectory Intervention},
+  pdfauthor={Taeckyung Lee, Rinat Amankos, Jeonghye Kim, Hyungjun Yoon, Woogyeol Jin, Sung-Ju Lee}
+}
+
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+
+\newcommand{\method}{\text{TISD}}
+\newcommand{\Lorig}{\mathcal{L}_{\tt{SDPO}}}
+\newcommand{\Lrepo}{\mathcal{L}_{\tt{\method}}}
+\newcommand{\sg}{{\tt sg}}
+\newcommand{\tstar}{t^{*}}
+\newcommand{\teachertok}{a_\phi}
+
+\title{\method{}: On-Policy Self-Distillation with\\Trajectory Intervention}
+\author{
+\begin{minipage}[t]{\textwidth}
+\vspace{-0.2in}
+\raggedright
+\textbf{Taeckyung Lee$^1$}\hspace{0.6cm}\textbf{Rinat Amankos$^1$}\hspace{0.6cm}\textbf{Jeonghye Kim$^1$}\hspace{0.6cm}\textbf{Hyungjun Yoon$^1$}\\
+\textbf{Woogyeol Jin$^1$}\hspace{0.6cm}\textbf{Sung-Ju Lee$^1$}\\[3pt]
+{\normalfont
+\textsuperscript{1}KAIST \\[1pt]
+{\small \texttt{\{taeckyung, profsj\}@kaist.ac.kr}} \\[2pt]
+\bloglogo ~ {\small \href{https://miil.kaist.ac.kr/projects/tisd/}{\texttt{project page}}}
+~~
+\githublogo ~ {\small \href{https://github.com/taeckyung/TISD}{\texttt{taeckyung/TISD}}}
+}
+\end{minipage}
+}
+\date{}
+
+\def\githublogo{\raisebox{-1.5pt}{\includegraphics[height=1.05em]{figures/logo/github-logo-red.png}}}
+\def\bloglogo{\raisebox{-1.5pt}{\includegraphics[height=1.05em]{figures/logo/link-red.png}}}
+
+\begin{document}
+
+
+
+\iclrfinalcopy
+\maketitle
+\lhead{Preprint}
+\vspace{-0.16in}
+
+\begin{abstract}
+
+On-policy self-distillation (OPSD) provides dense teacher targets, but evaluates them only along student-sampled rollouts. When the privileged teacher favors an alternative action at a visited prefix, OPSD can provide a target for the branch decision but cannot supervise the successor contexts induced by that action unless the student samples it. This creates a training-time data-collection bottleneck and suggests a different role for teacher--student disagreement: proposing a trajectory branch rather than identifying a sufficient local repair. Our diagnostic framework using controlled token interventions reveals that a teacher-preferred token at peak disagreement can improve student continuation success, while its local corrective value is limited. Motivated by this finding, we introduce a simple branch--regenerate--distill algorithm, \textbf{Trajectory-Intervention Self-Distillation (\method{})}. \method{} forces a teacher-selected branch action, returns suffix generation to the student, and distills the full trajectory under the privileged-context-conditioned teacher. Across the coding models, \method{} improves average Avg@4 over SDPO by 1.2 percentage points. Across the science domains, it improves average Avg@128 by 0.8 points under an equal-step budget and by 0.3 points under an equal-time budget. These results support teacher-guided branching as a way to expose useful successor contexts for self-distillation.
+
+\end{abstract}
+
+\input{sections/1_introduction}
+\input{sections/2_related_work}
+\input{sections/3_analysis}
+\input{sections/4_method}
+\input{sections/5_experiment}
+\input{sections/6_discussion}
+
+\section*{AI Use Statement}
+We used generative AI tools to (1) polish writing, (2) LLM-judge analysis in Section~\ref{sec:analysis}, and (3) implement methods. We have not used generative AI tools otherwise. We have reviewed all AI-assisted work. We take responsibility for the final content of this work, including text, claims or artifacts produced with the aid of generative AI.
+
+\section*{Reproducibility Statement}
+To support reproducibility, Section~\ref{sec:algorithm} specifies the trajectory construction and distillation objective of \method{}, and Appendix~\ref{app:implementation} provides pseudocode. Section~\ref{sec:experiments} describes the datasets, baselines, evaluation metrics, and checkpoint-selection criteria, with training hyperparameters detailed in Appendix~\ref{app:hyperparameters}. Appendix~\ref{app:eval} documents the semantic annotation and continuation-evaluation protocols used in the diagnostic analyses. We will publicly release the source code upon acceptance.
+
+
+
+\input{iclr2027_conference.bbl}
+
+\newpage
+\appendix
+\input{sections/99_appendix}
+
+\end{document}

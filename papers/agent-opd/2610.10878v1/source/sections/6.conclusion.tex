@@ -1,0 +1,5 @@
+\section{Conclusion}\label{sec:conclusion}
+
+In this work, we studied on-policy distillation for multi-turn LLM agents, where an early student error changes the observations that follow and pushes the trajectory toward histories on which teacher supervision is less reliable. 
+We introduced \name, which answers the two questions this setting raises: a per-sample non-negative $k_3$ estimate of teacher--student policy discrepancy sets a stochastic turn-level intervention probability, and an importance-sampling correction keeps supervision on teacher-generated responses faithful to the conditional reverse-KL objective.
+Across tool-integrated reasoning and long-horizon agentic benchmarks, \name outperforms standard OPD and every intervention-based baseline we evaluate, at both student scales and with its largest margins on the longest-horizon tasks, while adding only modest wall-clock overhead over standard OPD. 

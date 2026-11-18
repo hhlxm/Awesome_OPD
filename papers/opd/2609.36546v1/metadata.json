@@ -1,0 +1,38 @@
+{
+  "arxiv_id": "2609.36546v1",
+  "title": "Interactive-Policy Distillation with Bidirectional Propose-and-Verify",
+  "authors": [
+    "Wu, Shutong",
+    "Chen, Xiwen",
+    "Rappazzo, Brendan",
+    "Zhang, Daiheng",
+    "Schneider, Anderson",
+    "Nevmyvaka, Yuriy",
+    "Zhang, Jiawei"
+  ],
+  "submitted_date": "2026/09/29",
+  "abs_url": "https://arxiv.org/abs/2609.36546v1",
+  "schema_version": 2,
+  "requested_input": "2609.36546",
+  "requested_id": "2609.36546",
+  "source_url": "https://arxiv.org/src/2609.36546v1",
+  "downloaded_at": "2026-11-13T03:27:03.076457+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "e491ff671eb1b68a8280ee661ce915e1f6bf27409d49c24af6a7f061207d1b92",
+  "tex_files": [
+    "iclr2027_conference.tex",
+    "math_commands.tex"
+  ],
+  "main_tex_candidates": [
+    "iclr2027_conference.tex"
+  ],
+  "source_file_count": 19,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2609.36546v1",
+    "sha256": "fefae1df532c1e1ecd3f671ec18c4eb6f0c332844b17500aa4f324b224226281",
+    "downloaded_at": "2026-11-13T03:27:06.298288+00:00",
+    "content_type": "application/pdf"
+  }
+}

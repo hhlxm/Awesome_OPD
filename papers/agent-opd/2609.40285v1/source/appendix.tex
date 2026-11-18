@@ -1,0 +1,524 @@
+\renewcommand{\thesection}{\Alph{section}}
+\renewcommand\thefigure{S.\arabic{figure}}
+\setcounter{figure}{0}
+\renewcommand\thetable{S.\arabic{table}}
+\setcounter{table}{0}
+\crefalias{section}{appendix}
+\crefalias{subsection}{appendix}
+
+\raggedbottom
+\section{Motivating Analysis Details}
+\label{app:analysis}
+
+This appendix gives the protocol behind \Cref{fig:motivation} and \Cref{sec:evidence}.
+
+\paragraph{Rollouts.} We roll out three models, Qwen3-8B, Qwen3-30B-A3B, and Qwen3-235B-A22B, on the $140$ held-out ALFWorld tasks of the \texttt{valid\_seen} split, sampling at temperature $0.4$ with a cap of $30$ turns and a history window of $5$ turns. The analysis runs on ALFWorld because it is the one benchmark of the three that provides a symbolic oracle, and the oracle is what makes pivotal turns identifiable without a model in the loop. \method{} does not use this oracle during training (\Cref{sec:pivotal_analysis}).
+
+\paragraph{Oracle-labeled pivotal turns.} Every recorded trajectory is replayed in the environment alongside the ALFWorld PDDL oracle, which recomputes the number of turns that an optimal trajectory still needs, i.e., $L(s_t)$ in \Cref{sec:formulation}. A turn is pivotal when the action committed there raises this number or leaves the task unsolvable. Among the failed trajectories, $72$ of $111$ contain a pivotal turn for Qwen3-8B, $35$ of $70$ for Qwen3-30B-A3B, and $48$ of $81$ for Qwen3-235B-A22B, which amounts to $155$ of $262$ across the three models. The analysis uses the first pivotal turn of each failed trajectory, with the oracle action at that turn as the correction. Before this turn, the agent has not moved away from completing the task, so correcting it gives a clean counterfactual. The replay reproduces the recorded outcome for all $420$ trajectories, so the counterfactuals below are exact rather than approximate.
+
+\paragraph{Counterfactual replay.} Qwen3-8B fails $111$ of the held-out tasks, and $72$ of these failed trajectories contain a pivotal turn. From the pivotal turn of each, we replay the remainder of the trajectory with the same model under the five interventions of \Cref{fig:motivation}b: no intervention, the model resampled at the pivotal turn, the oracle action forced at another turn drawn at random from the turns that are not pivotal, the oracle action forced at the pivotal turn itself, and the oracle action forced at each of the two turns after the mistake, with the mistake left in place and the oracle re-queried at every forced turn. Each intervention is repeated four to eight times per trajectory. The later-turn intervention is a control for the position of the correction, and it controls for position only when the drawn turn lands after the pivotal turn, since an earlier correction also erases the model's own mistake. We therefore report it over the $51$ trajectories where the drawn turn does land later, while the other interventions use all $72$. This control forces the oracle action later in the trajectory and has fewer turns left to work with, but success after correcting the pivotal turn is flat in the position of that turn, between $57\%$ and $63\%$ across position tertiles. Extending the correction after the mistake from two turns to three adds about four points, so the two-turn result is not an artifact of how many turns we correct.
+
+\paragraph{Confidence intervals.} For each intervention, we average the replayed success over the replays of each trajectory and compute a $95\%$ bootstrap confidence interval over trajectories ($4{,}000$ draws, seed $0$), which we give in brackets in percent. Without intervention, the replayed success is $8.2\%$ $[3.8, 13.0]$, and resampling the pivotal turn gives $6.9\%$ $[2.4, 12.2]$. Forcing the oracle action at a later turn gives $17.2\%$ $[8.3, 27.5]$. Correcting the pivotal turn instead gives $59.0\%$ $[48.3, 69.8]$, and forcing the oracle action at the two turns after the mistake gives $58.3\%$ $[47.6, 69.1]$, or $62.2\%$ $[51.4, 72.9]$ with three forced turns. The intervals of correcting the pivotal turn and of forcing the oracle action after the mistake therefore lie entirely above those of the other three interventions.
+
+\paragraph{On-policy distillation run.} Qwen3-8B is trained from its base checkpoint for $120$ steps with standard on-policy distillation. Here, standard OPD is the OPSD baseline of \Cref{tab:main_results}, which distills a privileged self-teacher \citep{zhao2026opsd} under the configuration of \Cref{app:hyperparameters,app:baseline_details}. For \Cref{fig:motivation}c, we roll out each saved checkpoint on the same $140$ held-out tasks, label the rollouts with the oracle exactly as above, and split each checkpoint's failures into those that fail at a pivotal turn and those whose trajectory contains no pivotal turn and leaves the task unfinished. Among the $72$ tasks that the base model loses at a pivotal turn, roughly seven in ten are lost again after distillation, and about half of the $72$ repeat the same kind of mistake. We score the probability that the model assigns to the oracle action under the frozen policy at each pivotal turn, before and after distillation. Distillation moves the median probability of the committed mistake from $0.999$ to below $10^{-5}$ and raises the median probability of the oracle action by ten orders of magnitude. The raised probability nevertheless stays below $10^{-2}$ at every pivotal turn, so a group of $8$ rollouts is not expected to sample the oracle action even once. This run is shorter than the $160$-step runs of \Cref{sec:setup}, and its numbers are not comparable to \Cref{tab:main_results}, though both sides of every comparison within this analysis are measured under the same protocol.
+
+\section{Method Details}
+\label{app:method_details}
+
+This appendix details the components of \method{} summarized in \Cref{sec:method}, and \Cref{alg:method} presents one training step.
+
+\paragraph{Teacher report and hints.} For each trajectory, the teacher returns one structured reply containing a trajectory summary, a trajectory-level lesson, a per-turn lesson, and gold-action blocks that name an action for up to $m$ candidate turns. The trajectory-level lesson is the brief feedback on the whole trajectory that \Cref{sec:recovery} mentions. It is inserted into the prompt at every turn of the trajectory and scored with the distillation advantage $A^{\mathrm{distill}}_\ell$, weighted by $w_\text{traj}$ in place of $w_\text{prev}$. For brevity, \Cref{eq:objective} omits this term. Replies that name no action contribute only the lesson signal and never trigger recovery. The hint $h(a)$ renders the action as a short passage. The passage states that $a$ is a reasonable approach at this turn and instructs the model to reason toward it from scratch, in its own style, without referencing, acknowledging, or quoting the hint. The exact templates are in \Cref{app:prompts}.
+
+\paragraph{Action resolution.} The teacher's free-text action is matched onto the admissible set by normalized exact equality, then by equality after stripping articles, then by containment by a unique admissible command, and finally by highest token overlap above a fixed threshold, with a strict winner. If none of the rules resolves a reply, the recovery is dropped. For the open action spaces of Search-based QA and SWE-Bench, no matching is required: the teacher's named action is taken verbatim, subject to the same schema-validity check as student actions, i.e., a well-formed search query or answer for Search-based QA, and for SWE-Bench, a call that parses against the scaffold's tool interface and executes in the task container.
+
+\paragraph{Mismatch check.} A candidate turn is pivotal when the student's committed action differs from the gold action after both are lowercased and their whitespace is collapsed. In Search-based QA, both actions are first rewritten in the forms \texttt{search[$\cdot$]} and \texttt{answer[$\cdot$]}. A response without a parsable action counts as a mismatch. Free-text actions such as search queries rarely match verbatim, so candidate turns with such actions are usually treated as pivotal. This is one source of the false positives discussed in the next paragraph.
+
+\paragraph{Relation to oracle-labeled pivotal turns.} Pivot detection relaxes the oracle labeling of \Cref{sec:evidence} in four ways. \textbf{(1)} The teacher's judgment replaces the oracle. Although ALFWorld provides an oracle, we do not use it during training, so that \method{} stays identical across benchmarks and does not depend on a benchmark-specific oracle. \textbf{(2)} A trajectory may contain several pivotal turns, because the agent can move away from completing the task more than once. \textbf{(3)} Pivot detection covers successful trajectories as well as failed ones, because a successful trajectory can still contain a pivotal mistake from which the student happens to recover. \textbf{(4)} Disagreement with the gold action replaces an increase in $L$, so an equally reasonable alternative action can be flagged as pivotal. Such false positives are inexpensive. The preventive weight $w_\text{prev}$ is small (\Cref{tab:method_hparams}), and recovery distillation at such a turn still trains the student toward the teacher's next action at a state that the student actually visited.
+
+\paragraph{Teacher--oracle agreement.} We measure how often pivot detection finds the oracle-labeled pivotal turns on ALFWorld. To this end, we run each training teacher on ALFWorld rollouts of the student that it trains, i.e., Qwen3-30B-A3B on Qwen3-1.7B and Qwen3.5-122B-A10B on Qwen3-8B (\Cref{sec:setup}). As in \Cref{app:analysis}, we keep the failed trajectories that contain an oracle-labeled pivotal turn. Each teacher uses the same prompt, parsing, and decoding configuration as in training (\Cref{app:prompts}). It therefore receives the full trajectory and its outcome, may choose among all turns, and selects up to $m = 5$ candidate turns. We draw $5$ samples per trajectory and score only the teacher-detected pivotal turns, i.e., the candidate turns whose gold action disagrees with the student's committed action. A sample is correct when at least one of these turns lies within one turn of the first oracle-labeled pivotal turn, and a reply that cannot be parsed counts as incorrect. We average correctness over the samples of each trajectory and then over trajectories. The random baseline selects as many turns as the sample's teacher-detected pivotal turns, uniformly at random without replacement, and applies the same criterion. Its value therefore differs between the two teachers, which are evaluated on different trajectories and detect different numbers of pivotal turns. Both teachers agree with the oracle at least twice as often as the random baseline (\Cref{tab:teacher_oracle}). In \Cref{sec:pivotal_analysis}, we say that at least one teacher-detected pivotal turn falls within one turn of the oracle-labeled pivotal turn when a sample is correct in this sense, and we report the mean accuracy of the two teachers, $77.8\%$.
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{8pt}
+\begin{tabular}{llccc}
+\toprule
+\textbf{Teacher} & \textbf{Student} & \textbf{\begin{tabular}[b]{@{}c@{}}$\pm1$-turn\\accuracy (\%)\end{tabular}} & \textbf{\begin{tabular}[b]{@{}c@{}}Random\\baseline (\%)\end{tabular}} & \textbf{\begin{tabular}[b]{@{}c@{}}Gain over\\random (\%)\end{tabular}} \\
+\midrule
+Qwen3-30B-A3B & Qwen3-1.7B & $71.1$ & $33.6$ & $+37.5$ \\
+Qwen3.5-122B-A10B & Qwen3-8B & $84.4$ & $28.1$ & $+56.3$ \\
+\bottomrule
+\end{tabular}
+\vspace{4pt}
+\caption{\textbf{Teacher--oracle agreement on ALFWorld.} Each teacher analyzes failed rollouts of the student that it trains. Accuracy is the percentage of teacher samples with at least one teacher-detected pivotal turn within one turn of the first oracle-labeled pivotal turn, averaged over failed trajectories with such a turn. The random baseline selects the same number of turns uniformly at random, and the last column subtracts it from the accuracy.}
+\label{tab:teacher_oracle}
+\end{table}
+
+\paragraph{Leakage control.} A generated recovery response is discarded if it matches any of a family of leakage patterns covering acknowledgments of a hint, suggestion, or provided approach. Training sequences are rebuilt from the unprivileged observation, and an assertion rejects any training prompt containing a privileged marker. As a result, hinted text can never enter the training prompt.
+
+\paragraph{Environment replay.} Before taking recovery turns, multi-turn recovery replays the recorded action prefix in a pooled copy of the environment and verifies that the reached observation matches the recorded one exactly. A mismatch aborts the recovery. For $k \ge 2$, the recovery context $\tilde{c}_{t+k}$ is reached by executing $\act(y_\text{rec})$ of the previous recovery turn in this replayed environment rather than recorded in the original trajectory. The teacher is then queried again at $\tilde{c}_{t+k}$ for the next recovery action $a^{*}_{t+k}$. Each recovery turn adds one training sequence with its own loss $\mathcal{L}^{\mathrm{rec}}_{t,k}$. Beyond this check, at most $64$ recoveries are processed per training step, which bounds the time that recovery rollouts add to each step.
+
+\paragraph{Combined advantage and surrogate.} The distillation terms of \Cref{eq:objective} enter the PPO update as per-token advantages built from the distillation advantage $A^{\mathrm{distill}}_\ell$ of \Cref{eq:distill_adv},
+\begin{equation}
+A^{\mathrm{prev}}_{\ell} = w_\text{prev}\, A^{\mathrm{distill}}_\ell,
+\qquad
+A^{\mathrm{rec}}_{\ell} = w_\text{rec}\, \operatorname{clip}_{[-\delta,\, \delta]}\!\left( A^{\mathrm{distill}}_\ell \right),
+\label{eq:advantage}
+\end{equation}
+where $\ell$ indexes the tokens of the scored sequence and the clip bound $\delta$ caps the distillation advantage on any single token. For prevention, the distillation advantage is evaluated at the pivotal context $c_t$ with the gold action $a^{*}_t$ and applied to the recorded response $y_t$. Positive values increase the weight of tokens preferred by the hinted view, and negative values decrease the weight of tokens that it disfavors, so the update shifts the student's response toward the gold action. We keep the preventive weight $w_\text{prev}$ small (\Cref{tab:method_hparams}), since recovery distillation provides the main signal after a pivotal mistake. For recovery, the distillation advantage is evaluated at the recovery context $\tilde{c}_{t+k}$ with the recovery action $a^{*}_{t+k}$ and applied to $y_\text{rec}$. Unlike \Cref{eq:hint}, the recovery loss of \Cref{eq:recovery} takes its expectation under the frozen self-teacher, and gradients again flow only through $\pi_\theta$. The hint enters only this frozen target, while the trained response is conditioned on the unprivileged context $\tilde{c}_{t+k}$. Relative to standard on-policy self-distillation \citep{zhao2026opsd}, the privileged view is the hint that names the gold action, and the preventive term applies only at the pivotal turns rather than on every response. On a recovery sequence, the distillation advantage is near zero on the text that the plain policy would emit regardless and largest on the tokens that encode the recovery action, so the update concentrates where the hint mattered. The advantages combine with the group-relative advantage as
+\begin{equation}
+A_{\ell} \;=\;
+\begin{cases}
+A^{\mathrm{rec}}_{\ell} & \text{on recovery sequences}, \\[2pt]
+A^{\mathrm{RL}}_{\ell} + A^{\mathrm{prev}}_{\ell} & \text{otherwise, where } A^{\mathrm{prev}}_{\ell} = 0 \text{ off pivotal turns}.
+\end{cases}
+\label{eq:combined}
+\end{equation}
+In both cases, $\ell$ indexes the tokens of the sequence. Writing $\rho_\ell(\theta) = \pi_\theta(y_\ell \mid c, y_{<\ell}) \,/\, \pib(y_\ell \mid c, y_{<\ell})$ for the token-level ratio at the context $c$ of each sequence, one PPO update minimizes the clipped surrogate
+\begin{equation}
+\widehat{\mathcal{L}}(\theta) \;=\; -\, \frac{1}{\sum_{(c,\, y)} |y|} \sum_{(c,\, y)} \sum_{\ell=1}^{|y|} \min\Bigl( \rho_\ell(\theta)\, A_{\ell},\; \operatorname{clip}_{[1-\epsilon_\text{clip},\; 1+\epsilon_\text{clip}]}\bigl(\rho_\ell(\theta)\bigr)\, A_{\ell} \Bigr),
+\label{eq:loss}
+\end{equation}
+where the outer sum runs over every rollout and recovery sequence of the training step, $\ell$ indexes the tokens of each sequence, and $\epsilon_\text{clip}$ is the clip ratio. These advantages implement the corresponding terms of \Cref{eq:objective}, exactly in expectation for prevention and as a clipped, mass-covering step for recovery (\Cref{prop:starvation,prop:rescue}). The surrogate also carries a low-variance KL penalty (\Cref{app:hyperparameters}).
+
+\begin{algorithm}[h]
+\caption{One training step of \method{}}
+\label{alg:method}
+\begin{algorithmic}[1]
+\Require frozen policy $\pib$, teacher $M$, group size $G$, weights $w_\text{prev}, w_\text{traj}, w_\text{rec}$, clip $\delta$, recovery turns $K$
+\State collect $G$ rollouts per task with $\pib$; compute group-relative advantages $A^{\mathrm{RL}}$
+\For{each trajectory $\tau$}
+    \State $\{(t_j, a^{*}_{t_j})\}_{j \le m} \gets M(\tau)$ \Comment{candidate turns, gold actions, and lessons}
+    \For{each candidate turn $t$ with gold action $a^{*}_t$}
+        \If{$a_t \neq a^{*}_t$} \Comment{pivotal turn, $t \in \mathcal{T}_\text{pivot}$}
+            \State add $A^{\mathrm{prev}}$ on the tokens of $y_t$ \Comment{\Cref{eq:advantage}}
+            \State $c \gets c_{t+1}$
+            \For{$k = 1, \dots, K$}
+                \State $a^{*} \gets$ resolve$\big(M(c),\, \mathcal{A}(c)\big)$; \textbf{break} if unresolved
+                \State $y_\text{rec} \sim \pib\!\left(\cdot \mid c,\, h(a^{*})\right)$; \textbf{break} if no action or hint leaked
+                \State append $(c, y_\text{rec})$ with advantage $A^{\mathrm{rec}}$ and all other signals zeroed \Comment{\Cref{eq:advantage}}
+                \If{$k < K$} \State $c \gets$ context after executing $\act(y_\text{rec})$ in the replayed environment \EndIf
+            \EndFor
+        \EndIf
+    \EndFor
+\EndFor
+\State update $\theta$ on all sequences with the PPO clipped surrogate \Comment{\Cref{eq:loss}}
+\end{algorithmic}
+\end{algorithm}
+
+\section{Analysis of Recovery Distillation}
+\label{app:theory}
+
+This appendix proves \Cref{prop:rescue} of \Cref{sec:theory}, states and proves two further propositions, and records a surrogate characterization of the recovery update. Parts (ii) and (iii) of \Cref{prop:rescue} follow the standard contrast between reverse and forward KL \citep{agarwal2024gkd,gu2024minillm}, and what is specific to \method{} is that recovery distillation applies the forward update at the states that the student's own mistakes create. We analyze the committed action at a single recovery turn as one categorical decision, which is the standard abstraction for token-level updates. Every statement holds verbatim per token, with the conditional next-token distributions in place of the action marginals and summed over the prefixes that the hinted policy visits. Fix a recovery turn with context $c = \tilde{c}_{t+k}$ and recovery action $a^{*} = a^{*}_{t+k}$, and write $p = \pib(\act(y) = \cdot \mid c)$ and $q = \pib(\act(y) = \cdot \mid c,\, h(a^{*}))$ over $\mathcal{A}(c)$. Write $u$ for the logits, so that $p_\theta = \softmax(u)$ has full support. At the start of an update, the PPO ratio equals one, so the surrogate gradient reduces to the advantage-weighted score function. All gradients are therefore evaluated at $p_\theta = p$.
+
+The first result shows why preventive distillation and group-based RL provide little learning signal on the recovery action.
+
+\begin{proposition}[Learning signal vanishes after a mistake]
+\label{prop:starvation}
+When the action-level distillation advantage $\log q(a) - \log p(a)$ is used as the per-action training signal on actions sampled from $p$, as in preventive distillation, the expected update is $-\nabla_u \KL(p_\theta \,\|\, q)$. The component of this update on an action $a$ is $p(a)\bigl(\log\tfrac{q(a)}{p(a)} + \KL(p \,\|\, q)\bigr)$, which vanishes on the recovery action as $p(a^{*}) \to 0$ at any fixed $q$. In a group of $G$ plain rollouts, the recovery action appears with probability $1 - (1 - p(a^{*}))^{G} \le G\, p(a^{*})$, and it first appears after $1 / p(a^{*})$ plain samples in expectation, against $1 / q(a^{*})$ under the hinted policy. Moreover, if every rollout of the task receives the same return, the group-relative advantage is identically zero.
+\end{proposition}
+
+\begin{proof}[Proof of \Cref{prop:starvation}]
+Since $\mathbb{E}_{p_\theta}[\nabla_u \log p_\theta] = 0$,
+$\nabla_u \KL(p_\theta \| q) = \mathbb{E}_{a \sim p}\!\left[ (\log p(a) - \log q(a)) \nabla_u \log p_\theta(a) \right]$,
+which is the negative of the stated update. With $\partial \log p(b) / \partial u_a = \1[a = b] - p(a)$, the component on action $a$ is $p(a) \log \tfrac{q(a)}{p(a)} + p(a)\, \KL(p \| q)$, whose magnitude is at most $p(a) \bigl( |\log \tfrac{q(a)}{p(a)}| + \KL(p \| q) \bigr)$ and therefore vanishes as $p(a^{*}) \to 0$ at fixed $q$. For the sampling claims, the first appearance of $a^{*}$ under independent draws from $p$ is geometric with success probability $p(a^{*})$. This gives the mean $1/p(a^{*})$ and, by Bernoulli's inequality, $\Pr[a^{*} \text{ appears among } G \text{ draws}] = 1 - (1 - p(a^{*}))^{G} \le G\, p(a^{*})$. The hinted case is identical with $q$ in place of $p$. For the advantage claim, the group-relative advantage subtracts the group mean return, so identical returns give zero advantage on every token.
+\end{proof}
+
+For the clipped loss, the trainer-level analog of the identity in \Cref{prop:starvation} appears in prior work \citep{yang2026opid}. The component form in turn isolates what preventive distillation and group-based RL cannot do.
+
+\begin{lemma}[Lower bound on the recovery loss]
+\label{lem:kl_bound}
+Let $\pi$ and $\pi'$ be two response distributions at the same context, and let $q$ and $p$ be their induced distributions over committed actions. Then for every action $a$ with $p(a) > 0$,
+\begin{equation}
+\KL(\pi \,\|\, \pi') \;\ge\; q(a) \log \frac{1}{p(a)} - \log 2.
+\label{eq:kl_bound}
+\end{equation}
+In particular, with $\pi$ the privileged self-teacher and $\pi'$ the frozen student at $\tilde{c}_{t+k}$, the recovery loss of \Cref{eq:recovery} is at least $q(a^{*}) \log(1/p(a^{*})) - \log 2$.
+\end{lemma}
+
+\begin{proof}
+The indicator $\1[\act(y) = a]$ is a function of the response $y$, so the data processing inequality gives $\KL(\pi \,\|\, \pi') \ge q(a) \log \frac{q(a)}{p(a)} + (1 - q(a)) \log \frac{1 - q(a)}{1 - p(a)}$. Since $1 - p(a) \le 1$, the second term is at least $(1 - q(a)) \log (1 - q(a))$. The right-hand side is therefore at least $q(a) \log \frac{1}{p(a)} - H(q(a))$, where $H(x) = -x \log x - (1 - x) \log (1 - x) \le \log 2$ is the binary entropy.
+\end{proof}
+
+\Cref{lem:kl_bound} holds for any hint, including the recorded hints of \Cref{app:recovery_kl}. It shows that the divergence from the self-teacher stays large whenever the self-teacher places substantial probability on an action that the student almost never takes, and that it can fall only when the student raises the probability of that action.
+
+\begin{proof}[Proof of \Cref{prop:rescue}]
+Part (i) is \Cref{lem:kl_bound} with $a = a^{*}$. For parts (ii) and (iii), let actions be sampled from a distribution $r$ and weighted by a signal $w$. Since $\partial \log p_\theta(b) / \partial u_a = \1[a = b] - p(a)$ at $p_\theta = p$, the expected update on $u_a$ is $\sum_b r(b)\, w(b) \bigl(\1[a = b] - p(a)\bigr) = r(a)\, w(a) - p(a)\, \mathbb{E}_r[w]$. Taking $r = p$ gives part (ii). For a bounded signal, $|w(a^{*}) - \mathbb{E}_p[w]| \le 2 \max_a |w(a)|$, so the expected update on $u_{a^{*}}$ is at most $2\, p(a^{*}) \max_a |w(a)|$ in magnitude. For part (iii), take $r = q$ and $w = \phi_\delta$, where $\phi_\delta(a) = \operatorname{clip}_{[-\delta,\delta]}\bigl(\log\tfrac{q(a)}{p(a)}\bigr)$ is the clipped distillation advantage. This gives
+\begin{equation}
+g_a \;=\; q(a)\,\phi_\delta(a) \;-\; p(a)\,\mathbb{E}_{q}\!\left[\phi_\delta\right].
+\label{eq:recovery_coords}
+\end{equation}
+Under the condition $q(a^{*}) \ge e^{\delta}\, p(a^{*})$, we have $\phi_\delta(a^{*}) = \delta$. Since $\mathbb{E}_q[\phi_\delta] \le \delta$, \Cref{eq:recovery_coords} gives $g_{a^{*}} \ge \delta\, q(a^{*}) - \delta\, p(a^{*})$, which is positive because the condition implies $q(a^{*}) > p(a^{*})$.
+\end{proof}
+
+
+Without clipping, the recovery update on $a^{*}$ grows without bound as the student's probability of $a^{*}$ vanishes, and it stops only when the student's distribution matches the self-teacher's.
+
+\begin{lemma}[Unclipped recovery update]
+\label{lem:unclipped}
+Suppose that $q(a^{*}) > p(a^{*})$. Without clipping, $g_{a^{*}} \to \infty$ as $p(a^{*}) \to 0$ while the remaining mass stays bounded away from zero. Moreover, the unclipped expected update of \Cref{eq:recovery_coords} vanishes in every component if and only if $p = q$.
+\end{lemma}
+
+\begin{proof}
+Without clipping, \Cref{eq:recovery_coords} reads $g_{a^{*}} = q(a^{*}) \log \tfrac{q(a^{*})}{p(a^{*})} - p(a^{*})\, \KL(q \| p)$. Write $\KL(q \| p) = q(a^{*}) \log \tfrac{q(a^{*})}{p(a^{*})} + B$, where $B = \sum_{a \neq a^{*}} q(a) \log \tfrac{q(a)}{p(a)}$ stays bounded when the remaining mass is bounded away from zero. Then $g_{a^{*}} = (1 - p(a^{*}))\, q(a^{*}) \log \tfrac{q(a^{*})}{p(a^{*})} - p(a^{*})\, B \to \infty$. For the second claim, if $p = q$, both terms of \Cref{eq:recovery_coords} vanish. Conversely, suppose that $q(a) \log \tfrac{q(a)}{p(a)} = p(a)\, \kappa$ for all $a$, where $\kappa = \KL(q \| p) \ge 0$. Writing $r(a) = q(a)/p(a) > 0$, this reads $r(a) \log r(a) = \kappa$ for every $a$. If $\kappa = 0$, then $r \equiv 1$ and $p = q$. If $\kappa > 0$, then all $r(a)$ equal a single root $r^{*} > 1$, since $r \log r \le 0$ on $(0, 1]$ and is strictly increasing on $[1, \infty)$. But then $1 = \sum_a q(a) = r^{*} \sum_a p(a) = r^{*} > 1$, a contradiction.
+\end{proof}
+
+The last result concerns the recovery budget $K$.
+
+\begin{proposition}[Deeper mistakes need more recovery turns]
+\label{prop:depth}
+Suppose that completing the task after the pivotal turn requires taking a specific action at each of $d$ successive turns, and that the plain policy places mass at most $\varepsilon < 1$ on each required action along this chain. After $K < d$ enforced recovery turns, the plain policy completes the remaining chain with probability at most $\varepsilon^{\,d - K}$.
+\end{proposition}
+
+\begin{proof}[Proof of \Cref{prop:depth}]
+By the chain rule, the probability of taking all $d - K$ remaining required actions is the product of their conditional probabilities, each at most $\varepsilon$.
+\end{proof}
+
+\Cref{prop:depth} guides the recovery budget, since $K$ should grow with the depth $d$ of the required chain. Validation is consistent with this, selecting $K=2$ on ALFWorld, whose tasks chain subgoals over the longest trajectories, and $K=1$ on WebShop and Search-based QA (\Cref{fig:ablation_k}), although we do not measure the depth of individual mistakes. On ALFWorld, $K=2$ also matches the two guided turns after the pivotal mistake that restore success in the replay of \Cref{fig:motivation}b.
+
+\begin{lemma}[Surrogate form of the recovery update]
+\label{lem:surrogate}
+Let $r = q / p$. The expected recovery update of \Cref{eq:recovery_coords} is the exact gradient of the frozen surrogate $F(u) = \mathbb{E}_{a \sim p_\theta}\!\left[ r(a)\, \phi_\delta(a) \right]$ at $p_\theta = p$, and without clipping, $F = \KL(q \,\|\, p)$ at $p_\theta = p$.
+\end{lemma}
+\begin{proof}
+$\nabla_u F = \mathbb{E}_{p_\theta}[r\, \phi_\delta \nabla_u \log p_\theta]$, and at $p_\theta = p$, the reweighting by $r$ turns the expectation over $p$ into one over $q$, which yields the update of \Cref{prop:rescue}. Without clipping, at $p_\theta = p$, $F = \sum_a p(a) \tfrac{q(a)}{p(a)} \log \tfrac{q(a)}{p(a)} = \KL(q \| p)$.
+\end{proof}
+
+Three remarks connect the analysis to the implementation. First, the acceptance filters of \Cref{sec:recovery} replace the sampling distribution $q$ by its conditional on the accepted event while leaving the coefficients unchanged. The formulas above thus hold with $q(a)$ read as the accepted mass, and the expected update on the recovery action stays proportional to the mass that the filtered self-teacher places on it. Second, all statements concern the recovery context $\tilde{c}_{t+k}$, which follows the student's own mistake, and the student is trained without the hint. Supervised fine-tuning enforces teacher actions at the states that the teacher visits, whereas recovery distillation enforces the recovery action at the state produced by the student's own mistake with a single hinted generation. Recovery therefore avoids the compounding mismatch of imitation at the states that only an expert visits \citep{ross2011reduction}. Third, \Cref{prop:starvation,prop:rescue} make the division of labor in \method{} precise. Preventive distillation tempers the student where it already places mass, and recovery distillation plants mass exactly on the modes that the student has starved, at the turns that its mistakes produce.
+
+\section{Experiment Details}
+\label{app:exp_details}
+
+This appendix complements the setup in \Cref{sec:setup} with the full training configurations (\Cref{app:hyperparameters}), the per-benchmark evaluation protocols (\Cref{app:eval_details}), and the baseline descriptions and configurations (\Cref{app:baseline_details}).
+
+\subsection{Training Configurations}
+\label{app:hyperparameters}
+
+All methods share one on-policy training stack built on verl and train on H100 nodes. Training uses the standard ALFWorld training tasks, the WebShop instructions outside the held-out split, and the Search-R1 training split of Natural Questions and HotpotQA ($169{,}615$ questions). The student is served by vLLM for rollouts (tensor parallel $1$, thinking disabled) and updated with FSDP. Rollouts sample at temperature $1.0$ during training and $0.4$ at validation. Optimization uses token-mean loss aggregation, gradient clipping $1.0$, a low-variance KL loss, and discount $\gamma=0.95$. Teachers are served as vLLM endpoints with a $32$K context window, with tensor parallel $2$ for Qwen3-30B-A3B and $8$ for Qwen3.5-122B-A10B. Teacher calls use the served model's default sampling configuration. \Cref{tab:train_hparams} lists the per-benchmark hyperparameters, and \Cref{tab:method_hparams} lists the \method{} configuration. The recovery weight $w_\text{rec}$ is selected per benchmark with a halving sweep on validation performance, and on Search-based QA, the sweep selects a smaller weight for the 8B student. The recovery budget $K$ and the weight $w_\text{rec}$ interact, since each additional recovery turn adds one more distilled sequence per pivotal turn and thereby multiplies the total recovery signal. Deeper recovery therefore calls for a proportionally smaller weight, and on WebShop, $K=2$ requires a quarter of the $K=1$ weight to remain stable. Baselines receive the same tuning budget.
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{l l l l}
+\toprule
+ & \textbf{ALFWorld} & \textbf{WebShop} & \textbf{Search-based QA} \\
+\midrule
+Tasks per step               & $16$              & $16$              & $64$ \\
+Rollouts per task (group size) & $8$             & $8$               & $8$ \\
+Trajectories per step        & $128$             & $128$             & $512$ \\
+PPO mini-batch size          & $128$             & $64$              & $256$ \\
+Learning rate                & $1\times10^{-6}$  & $1\times10^{-6}$  & $1\times10^{-6}$ \\
+KL coefficient               & $0.01$            & $0.01$            & $0.01$ \\
+Clip ratio                   & $0.2$             & $0.2$             & $0.2$ \\
+Prompt / response length     & $2048$ / $512$    & $4096$ / $512$    & $4096$ / $512$ \\
+Max turns per trajectory        & $30$              & $15$              & $4$ \\
+History length               & $5$               & $2$               & $4$ \\
+Training steps               & $160$             & $160$             & $160$ \\
+Validation size / frequency  & $128$ / $10$      & $128$ / $10$      & $256$ / $10$ \\
+\bottomrule
+\end{tabular}
+\vspace{4pt}
+\caption{Training hyperparameters per benchmark. Both students share this configuration.}
+\label{tab:train_hparams}
+\end{table}
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{l l l l}
+\toprule
+ & \textbf{ALFWorld} & \textbf{WebShop} & \textbf{Search-based QA} \\
+\midrule
+Candidate turns per trajectory $m$    & $5$    & $5$    & $2$ \\
+Recovery turns $K$                    & $2$    & $1$    & $1$ \\
+Recovery weight $w_\text{rec}$        & $1.0$  & $0.25$ & $0.0625$ (8B) / $0.125$ (1.7B) \\
+Preventive / lesson weights $w_\text{prev}$ / $w_\text{traj}$ & $0.001$ / $0.001$ & $0.001$ / $0.001$ & $0.001$ / $0.001$ \\
+Recovery clip $\delta$                & $5.0$  & $5.0$  & $5.0$ \\
+Max recoveries per training step      & $64$   & $64$   & $64$ \\
+\bottomrule
+\end{tabular}
+\vspace{4pt}
+\caption{\method{} hyperparameters per benchmark. The preventive-only ablation uses $w_\text{prev} = 0.1$ (\Cref{app:additional_results}).}
+\label{tab:method_hparams}
+\end{table}
+
+\subsection{Evaluation Details}
+\label{app:eval_details}
+
+For every method and benchmark, we train for $160$ steps, select the best checkpoint on a validation set, and evaluate the selected checkpoint on a held-out test set. Every experiment is run with three random seeds, and all reported results are averages over them. Validation and test rollouts sample at temperature $0.4$ and are capped at $30$ turns on ALFWorld, $15$ on WebShop, and $4$ on Search-based QA.
+
+\paragraph{ALFWorld.} Checkpoint selection uses $128$ validation tasks evaluated every $10$ training steps at temperature $0.4$. The selected checkpoint is evaluated on all $274$ held-out tasks, i.e., the $140$ tasks of the \texttt{valid\_seen} split and the $134$ tasks of the \texttt{valid\_unseen} split. The reported average is the unweighted mean of the six task-type success rates.
+
+\paragraph{WebShop.} The benchmark provides $6{,}910$ instructions over $1{,}000$ products. The first $500$ instructions are held out, and the rest are used for training. Checkpoint selection uses a $128$-instruction validation set evaluated every $10$ steps. The selected checkpoint runs on each of the $500$ held-out instructions. The success rate counts strictly completed purchases, and the score is the dense task score. Product retrieval uses BM25 ($k_1=1.5$, $b=0.75$) over the title, description, category, bullet-point, and option fields at both training and evaluation.
+
+\paragraph{Search-based QA.} Checkpoint selection uses a mixed validation set of $256$ questions evaluated every $10$ steps. The per-dataset accuracies use a balanced evaluation set of $725$ questions, drawn with a fixed seed from a held-out pool of $51{,}713$ questions, with $100$ per dataset plus all $125$ Bamboogle questions. The metric is strict exact match, and the reported average is the unweighted mean of the seven per-dataset accuracies. The agent queries an E5 retriever \citep{wang2022e5} over the 2018 Wikipedia corpus and receives the top-$3$ passages per call, identically at training and evaluation.
+
+\subsection{Baseline Descriptions and Configurations}
+\label{app:baseline_details}
+
+\paragraph{Standard post-training.}
+\begin{itemize}
+\item \textbf{GRPO} \citep{shao2024deepseekmath} optimizes a group-relative advantage from outcome rewards.
+\item \textbf{OPSD} \citep{zhao2026opsd} distills a privileged self-teacher on the student's own responses.
+\item \textbf{RLSD} \citep{yang2026rlsd} combines the two through teacher-guided advantage rescaling.
+\item \textbf{SDAR} \citep{lu2026sdar} combines the two through a gated distillation loss.
+\end{itemize}
+
+\paragraph{Turn-level distillation for multi-turn agents.}
+\begin{itemize}
+\item \textbf{TurnOPD} \citep{zhou2026turnopd} makes the distillation signal turn-aware.
+\item \textbf{TCOD} \citep{wang2026tcod} expands the distilled trajectory depth from short to long with a curriculum.
+\item \textbf{SOD} \citep{zhong2026sod} reweights turn-level divergences.
+\item \textbf{StepOPSD} \citep{zhang2026stepopsd} weights turns by hindsight from successful trajectories in the same rollout group.
+\item \textbf{AgentOPSD} \citep{wang2026agentopsd} converts outcome rewards into turn-level credit through recursive self-distillation.
+\end{itemize}
+
+\paragraph{High-level guidance through skills or pivotal turns.}
+\begin{itemize}
+\item \textbf{Skill-GRPO}, the skill-augmented GRPO baseline of OPID \citep{yang2026opid}, injects retrieved skills into training prompts.
+\item \textbf{Skill-SD} \citep{wang2026skillsd} conditions the self-teacher on retrieved skills.
+\item \textbf{OPID} distills trajectory- and turn-level skills extracted from the student's own rollouts.
+\item \textbf{PivotRL} \citep{yi2026pivotrl} concentrates updates on pivotal turns identified from rollout outcomes.
+\end{itemize}
+
+\paragraph{Configurations.} All baselines share the benchmarks, data, and optimization of \Cref{app:hyperparameters}, and GRPO uses the same advantage estimator with no teacher signal. The skill-based baselines (OPSD, Skill-SD, RLSD, SDAR, and Skill-GRPO) draw on a per-benchmark skill bank distilled from the student's own earlier rollouts, with $47$ entries for ALFWorld, $200$ for WebShop, and $75$ for Search-based QA. Skill-GRPO injects the top-$6$ retrieved skills into training prompts only. StepOPSD instead uses the first successful trajectory from the same rollout group as hindsight guidance. The auxiliary distillation coefficient is $1.0$ for OPSD, $0.001$ for Skill-SD, and $0.01$ for SDAR. RLSD and StepOPSD reshape advantages and carry no auxiliary loss.
+
+\paragraph{Implementation differences.} Two implementation choices differ from the original papers. OPSD's full-vocabulary divergence is approximated with a sampled-token reverse-KL surrogate, and the RLSD and StepOPSD self-teachers re-synchronize every training step instead of every ten.
+
+\subsection{Prompts}
+\label{app:prompts}
+
+This appendix lists the prompt templates of \method{}. Placeholders appear in shaded curly braces, tags that the model must emit are shown in green, and dashed lines separate the parts of each template. Several templates address the model directly, writing ``step'' for what the paper calls a turn.
+
+\paragraph{Student turn prompt.} At every turn, the student receives one prompt containing the task, the current observation, and the admissible actions. It responds with reasoning in \texttt{<think>} tags followed by one action in \texttt{<action>} tags. The example below is the first turn of a held-out ALFWorld task, with the location and action lists abbreviated; WebShop and Search-based QA use the same structure with their own action formats.
+
+\begin{promptbox}{Student turn prompt (ALFWorld)}
+You are an expert agent operating in the ALFRED Embodied Environment.\\
+Your current observation is: -= Welcome to TextWorld, ALFRED! =-\\[5pt]
+You are in the middle of a room. Looking quickly around you, you see a bed 2, a bed 1, a desk 1, a drawer 11, ..., a drawer 1, a dresser 1, a garbagecan 1, a safe 1, a sidetable 2, and a sidetable 1.
+\promptsep
+Your task is to: look at alarmclock under the desklamp.\\
+Your admissible actions of the current situation are: ['go to bed 1', 'go to bed 2', 'go to desk 1', 'go to drawer 1', ..., 'go to sidetable 2', 'inventory', 'look'].
+\promptsep
+Now it's your turn to take an action.\\
+You should first reason step-by-step about the current situation. This reasoning process MUST be enclosed within \ptag{<think> </think>} tags.\\
+Once you've finished your reasoning, you should choose an admissible action for current step and present it within \ptag{<action> </action>} tags.
+\end{promptbox}
+
+\paragraph{Teacher prompt.} For each trajectory, the teacher receives the task, the outcome, the indices of all turns as \emph{eligible turns}, and the formatted trajectory, and it returns the report of \Cref{app:method_details} in one reply. The template calls the eligible turns candidate step indices, and the turns that the teacher selects among them are the candidate turns of \Cref{sec:pivotal_analysis}. The JSON fields \texttt{episode\_summary}, \texttt{episode\_lesson}, and \texttt{step\_lessons} carry the trajectory summary, the trajectory-level lesson, and the per-turn lessons, and one \texttt{<correct\_action>} block per chosen turn names the gold action. The action-format example is benchmark-specific, shown here for ALFWorld. On WebShop and Search-based QA, the template appends short environment rules that force each recommended action to be a literal executable action, such as clicking every required option value before a purchase or adding new disambiguating terms to a search query.
+
+\begin{promptbox}{Teacher prompt}
+Analyze the following agent episode. Think deeply, step by step, about which step was the most critical for the outcome and what the CORRECT action would have been at that step.
+\promptsep
+You MUST output BOTH of the following:\\[5pt]
+1) A single JSON object (no other JSON elsewhere) with EXACTLY these fields:
+\begin{promptcard}
+\{\\
+\hspace*{2ex}"episode\_summary": "string",\\
+\hspace*{2ex}"episode\_lesson": "string",\\
+\hspace*{2ex}"step\_lessons": \{\\
+\hspace*{4ex}"<idx>": "policy-facing imperative lesson text for step idx"\\
+\hspace*{2ex}\}\\
+\}
+\end{promptcard}
+Use up to \ph{max lesson count} keys in step\_lessons, chosen from the candidate indices below. Each step\_lessons value should be one short imperative sentence.\\[5pt]
+2) For EACH step you placed in step\_lessons, ALSO emit a block of the exact form:
+\begin{promptcard}
+\ptag{<correct\_action step="N">}action text the agent should have emitted at step N\ptag{</correct\_action>}
+\end{promptcard}
+The action text must match the agent's action format (e.g. go to drawer 1). Do not include explanations or quotes inside the block.
+\promptsep
+\textbf{Important constraints:}\\
+- Step indexing is 0-based.\\
+- The chosen steps in step\_lessons MUST come from the candidate indices list below.\\
+- Wrap the JSON in a single \textasciigrave\textasciigrave\textasciigrave json ...\textasciigrave\textasciigrave\textasciigrave{} fenced block.
+\promptsep
+\textbf{Episode context:}\\
+- Task description: \ph{task description}\\
+- episode\_success: \ph{outcome}\\
+- Candidate step indices: \ph{eligible turn indices}\\
+- Interaction trajectory: \ph{formatted trajectory}
+\end{promptbox}
+
+\paragraph{Recovery-action prompt.} At each recovery turn after a pivotal mistake, the teacher receives the student-facing observation of the current post-mistake state and names the single best next action, which becomes the recovery action of \Cref{sec:method}. The situation block already contains the task, the recent history, and the admissible actions, so the teacher sees exactly what the student sees.
+
+\begin{promptbox}{Recovery-action prompt (ALFWorld)}
+You are an expert alfworld agent. Below is the exact situation another agent is currently facing (its task, recent history, current observation, and the list of admissible actions).\\[5pt]
+Decide the single best next action to make progress on the task from THIS state.
+\promptsep
+\textbf{Rules:}\\
+- Choose the action verbatim from the admissible actions listed in the situation.\\
+- Output exactly one block of the form:
+\begin{promptcard}
+\ptag{<correct\_action>}action text\ptag{</correct\_action>}
+\end{promptcard}
+- The action text must match the agent's action format (e.g. go to drawer 1).\\
+- Do not add explanations inside the block. Keep any reasoning outside it brief.
+\promptsep
+\textbf{Situation:}\\
+\ph{observation at the current post-mistake state}
+\end{promptbox}
+
+\paragraph{Hint.} The hint $h(a)$ renders a named action as a short passage that only the self-teacher sees. The same passage serves preventive distillation with the gold action and recovery distillation with the recovery action, and the leakage control of \Cref{app:method_details} discards any response that acknowledges it.
+
+\begin{promptbox}{Hint $h(a)$}
+A reasonable approach at this step is: \ph{named action}\\[3pt]
+Reason from scratch in your own style as if you arrived at this approach independently. Do NOT reference, acknowledge, or quote the hint above in your output. Decide and act as your own choice.
+\end{promptbox}
+
+\subsection{Benchmark Examples}
+\label{app:benchmark_examples}
+
+We show one successful episode from each benchmark to illustrate its tasks, observations, and actions. Each episode is copied from a rollout log. For brevity, we show only the committed action of each turn, omit the reasoning and the list of admissible actions, and abbreviate long observations with [...]. Each numbered card is one turn, and highlighted text marks the evidence that determines the next action. The three episodes come from different policies, namely the Qwen3-8B student after $120$ steps of standard on-policy distillation on ALFWorld (\Cref{app:analysis}), Qwen3-235B-A22B on WebShop, and Qwen3-8B during AgentOPSD training on Search-based QA.
+
+\paragraph{ALFWorld.} The agent must find a spatula, clean it at the sink, and place it on the dining table. It completes the task in seven turns.
+
+\begin{examplebox}{Example episode (ALFWorld, Clean task type)}
+\extask{Task}{clean some spatula and put it in diningtable.}
+\exinit{You are in the middle of a room. Looking quickly around you, you see a cabinet 2, a cabinet 1, a coffeemachine 1, a countertop 3, [...], a diningtable 1, [...], a sinkbasin 1, [...], and a toaster 1.}
+\exturn{1}{look}{You are in the middle of a room. Looking quickly around you, you see nothing.}
+\exturn{2}{go to diningtable 1}{You arrive at diningtable 1. On the diningtable 1, you see a bread 2, a bread 1, [...], a \exhl{spatula 2}, and a spoon 2.}
+\exturn{3}{take spatula 2 from diningtable 1}{You pick up the spatula 2 from the diningtable 1.}
+\exturn{4}{go to sinkbasin 1}{You arrive at sinkbasin 1. On the sinkbasin 1, you see a cup 2, a fork 2, and a knife 1.}
+\exturn{5}{clean spatula 2 with sinkbasin 1}{You \exhl{clean the spatula 2} using the sinkbasin 1.}
+\exturn{6}{go to diningtable 1}{You arrive at diningtable 1. On the diningtable 1, you see a bread 2, a bread 1, [...], and a spoon 2.}
+\exturn{7}{move spatula 2 to diningtable 1}{You move the spatula 2 to the diningtable 1.}
+\exoutcome{task completed (reward 10)}
+\end{examplebox}
+
+\paragraph{WebShop.} The agent must buy a product that matches every attribute, option, and price constraint of the instruction. It searches once, opens a matching product, selects the requested color and size, and buys it.
+
+\begin{examplebox}{Example episode (WebShop)}
+\extask{Instruction}{Find me men's shorts with drawstring closure, elastic waist for gym workout with color: \#2 army green, and size: 30, and price lower than 30.00 dollars}
+\exturn{1}{search[men's gym workout shorts drawstring closure elastic waist army green size 30 under \$30]}{`Back to Search' [SEP] `Page 1 (Total results: 50)' [SEP] `Next $>$' [SEP] \exhl{`B07WMMYB6G'} [SEP] `MAGCOMSEN Men's Gym Workout Shorts with Pockets Mesh Liner Quick Dry Running Shorts for Jogging, Hiking' [SEP] \exhl{`\$17.98 to \$17.99'} [SEP] `B092T8CY89' [SEP] [...]}
+\exturn{2}{click[b07wmmyb6g]}{`Back to Search' [SEP] `$<$ Prev' [SEP] `color' [SEP] `\#1 black grey' [SEP] [...] [SEP] \exhl{`\#2 army green'} [SEP] [...] [SEP] `size' [SEP] \exhl{`30'} [SEP] `32' [SEP] [...] [SEP] `Price: \$17.98 to \$17.99' [SEP] [...] [SEP] `Buy Now'}
+\exturn{3}{click[\#2 army green]}{(the same product page as in turn 2)}
+\exturn{4}{click[30]}{(the same product page as in turn 2)}
+\exturn{5}{click[buy now]}{Thank you for shopping with us! [SEP] [...] [SEP] Purchased [SEP] asin [SEP] B07WMMYB6G [SEP] options [SEP] \exhl{\texttt{\{"color": "\#2 army green", "size": "30"\}}} [SEP] [...] [SEP] Your score (min 0.0, max 1.0) [SEP] 1.0}
+\exoutcome{purchased a product that matches the instruction (score 1.0)}
+\end{examplebox}
+
+\paragraph{Search-based QA.} The agent must answer a two-hop question. It first searches for the director of the film and then for the TV drama that this director co-created.
+
+\begin{examplebox}{Example episode (Search-based QA)}
+\extask{Question}{What is the TV drama co-created by this Irish film and TV writer/director who directed the 2001 film ``On the Edge''?}
+\exturn[Information]{1}{<search>Director of the 2001 film "On the Edge"</search>}{Doc 1: ``On the Edge (2001 film)'' On the Edge (2001 film) On the Edge is a 2001 Irish film \exhl{directed by John Carney} and starring Cillian Murphy, Tricia Vessey, Jonathan Jackson and Stephen Rea. [...]}
+\exturn[Information]{2}{<search>TV drama co-created by John Carney</search>}{Doc 1: ``John Carney (director)'' John Carney (director) John Carney (born 1972) is an Irish film and TV writer/director who specialises in low-budget indie films. [...] He is also a co-creator of the Irish TV drama series ``\exhl{Bachelors Walk}''. [...]}
+\exturn{3}{<answer>Bachelors Walk</answer>}{}
+\exoutcome{exact match with the gold answer (score 1.0)}
+\end{examplebox}
+
+\subsection{SWE-Bench Verified}
+\label{app:swebench}
+\paragraph{Training.} We train on a curated software-engineering curriculum of root-cause bug-fix instances augmented with single-file SWE-rebench tasks, decontaminated against SWE-Bench Verified by removing all overlapping repositories and issues. The agent operates an OpenHands-style function-calling scaffold whose tools are repository exploration, file editing, shell execution, and patch submission, with a $100$-turn and $3{,}600$-second budget per episode and a $196$K-token context. Each training step rolls out $G = 16$ trajectories for each of $32$ instances at temperature $0.6$, and the teacher is served as a vLLM endpoint. Because SWE-Bench episodes are long and containerized, we adapt the configuration as follows. For each task group with failures, the teacher audits one failed trajectory at its final committed action ($m = 1$) and names a gold action. The hint uses the same template as in \Cref{app:prompts}. Unlike on the other benchmarks, the hinted distribution comes from Nemotron-3-Super rather than from a privileged self-teacher, and it enters the unclipped preventive advantage $A^{\mathrm{prev}}_\ell$ of \Cref{eq:advantage} at weight $w_\text{prev} = 0.1$. The recovery budget is $K = 0$, since the audited turn is the final committed action, after which the recorded trajectory contains no turn at which to apply recovery distillation. Extending pivot detection to earlier turns, where recovery distillation would apply, is left to future work. The standard OPD baseline is on-policy distillation from the same Nemotron-3-Super teacher, which distills its token-level distribution on the student's own trajectories \citep{agarwal2024gkd}, and \method{} adds preventive distillation to this objective. Both methods share data, scaffold, and tuning budget, and they train at a constant learning rate of $3 \times 10^{-6}$.
+
+\paragraph{Evaluation.} We evaluate on the $500$ tasks of SWE-Bench Verified using the OpenCode agent scaffold within the NeMo Gym harness. Each task is run once under each of $3$ evaluation seeds in an isolated per-task sandbox, and the agent queries our model through a disaggregated vLLM deployment with separate prefill and decode workers. We sample at temperature $1.0$ with top-$p$ of $0.95$ and report the resolve rate, i.e., the percentage of tasks whose submitted patch passes the associated unit tests, averaged over the three evaluation seeds.
+
+\section{Additional Results}
+\label{app:additional_results}
+
+\Cref{tab:ablation_full} reports the component ablations of \Cref{sec:discussion} on every ALFWorld task type. The preventive-only variant sets $K = 0$ and raises the preventive weight from $w_\text{prev} = 0.001$ (\Cref{tab:method_hparams}) to $0.1$. Without recovery distillation, the smaller weight would add only a small pivot-specific signal to the group-relative RL advantage. The larger weight therefore makes preventive only a stronger reference, so its comparison with \method{} tests whether recovery distillation adds to a substantial preventive signal rather than to group-based RL alone. The variant with random pivotal turns injects the same hints as \method{} at randomly chosen turns under a matched budget. Relative to preventive only, removing gold actions from the hints lowers the success rate the most on Pick2, by $9.3\%$. This gap suggests that naming the action is necessary on task types whose decisions cannot be inferred from the observations alone.
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{l@{\hspace{7pt}} ccccccc}
+\toprule
+\textbf{Variant}
+& {\footnotesize Pick} & {\footnotesize Look} & {\footnotesize Clean} & {\footnotesize Heat} & {\footnotesize Cool} & {\footnotesize Pick2} & {\footnotesize\textbf{Avg.}} \\
+\midrule
+Random pivotal turns
+ & 71.4 & \cellcolor{cellsecond}\underline{78.6} & 76.2 & 61.1 & 50.0 & 38.6 & 62.6 \\
+Hints w/o gold actions
+ & 87.3 & \cellcolor{cellbest}\textbf{82.7} & 90.5 & 63.7 & \cellcolor{cellsecond}\underline{72.9} & 34.1 & 71.9 \\
+Reverse-KL recovery
+ & 75.0 & 71.4 & 85.7 & 50.0 & 61.5 & 43.4 & 64.5 \\
+Recovery only
+ & \cellcolor{cellbest}\textbf{87.7} & 63.1 & 66.7 & 40.9 & 53.9 & \cellcolor{cellbest}\textbf{76.2} & 64.7 \\
+Preventive only
+ & 83.8 & 71.4 & \cellcolor{cellsecond}\underline{93.2} & \cellcolor{cellsecond}\underline{70.2} & \cellcolor{cellsecond}\underline{72.9} & 43.4 & \cellcolor{cellsecond}\underline{72.5} \\
+\textbf{\method{}}
+ & \cellcolor{cellsecond}\underline{87.6} & 55.9 & \cellcolor{cellbest}\textbf{93.7} & \cellcolor{cellbest}\textbf{72.6} & \cellcolor{cellbest}\textbf{73.9} & \cellcolor{cellsecond}\underline{58.5} & \cellcolor{cellbest}\textbf{73.7} \\
+\bottomrule
+\end{tabular}
+\vspace{4pt}
+\caption{\textbf{Full component ablations on ALFWorld with the Qwen3-1.7B student.} Each variant changes one component of \method{} and holds the rest of the training recipe fixed, except that preventive only also raises $w_\text{prev}$ to $0.1$. This table extends \Cref{tab:ablation_components} to every task type. Results are averaged over three seeds.}
+\label{tab:ablation_full}
+\end{table}
+
+\Cref{fig:ablation_k} presents the validation trends for the recovery-budget ablation in \Cref{sec:discussion}, where $K = 0$ is the preventive-only variant. The choice of $K$ has a substantial effect on validation performance. On WebShop, the score at the end of training differs by up to $19.5\%$ across budgets. More recovery turns, however, do not always improve performance, and increasing the budget from $K = 1$ to $K = 3$ lowers this score by $7.8\%$.
+
+\subsection{Training Compute Overhead}
+\label{app:compute}
+
+\method{} changes only training. At test time, the student acts without the teacher model, hints, or recovery, so \method{} adds no computation at inference. During training, preventive and recovery distillation add two computations to group-based RL. The first is the forward pass of the privileged self-teacher, which computes the distillation advantage of \Cref{eq:distill_adv}. The second consists of the \emph{recovery rollouts}, which query the teacher model for a recovery action and sample a recovery response at every recovery turn (\Cref{alg:method}). We do not include pivot detection, whose cost depends mainly on the choice of teacher model and how it is served.
+
+We time both computations on ALFWorld with the Qwen3-1.7B student on one node of four H100 GPUs, where GRPO takes $367.3$ seconds per training step (\Cref{tab:compute}). The self-teacher forward pass is the same kind of computation that self-distillation baselines such as OPSD and RLSD perform. With $K = 1$, recovery rollouts are inexpensive because the only recovery turn starts from the post-mistake state that the rollout has already reached, so it needs no environment replay. Each later recovery turn must instead be reached through environment replay (\Cref{app:method_details}), and the time of recovery rollouts grows by more than ten times from $K = 1$ to $K = 2$. Among the three main benchmarks, only ALFWorld uses more than one recovery turn (\Cref{tab:method_hparams}). On WebShop, where $K = 1$ is the selected budget, recovery rollouts likewise add only $12.2\%$ to the time per training step of GRPO, measured with $16$ GPUs per run over the first $41$ training steps.
+
+\begin{table}[h]
+\centering
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{l cccc}
+\toprule
+\textbf{Computation} & $K = 0$ & $K = 1$ & $K = 2$ & $K = 3$ \\
+\midrule
+Self-teacher forward pass & \multicolumn{4}{c}{$17.2$ s ($+4.7\%$)} \\
+Recovery rollouts & \na & $28.5$ s ($+7.8\%$) & $328.7$ s ($+89.5\%$) & $395.1$ s ($+107.6\%$) \\
+\midrule
+\textbf{Total overhead} & $+4.7\%$ & $+12.4\%$ & $+94.2\%$ & $+112.3\%$ \\
+\bottomrule
+\end{tabular}
+\vspace{4pt}
+\caption{\textbf{Training compute overhead of \method{} on ALFWorld with the Qwen3-1.7B student.} Each entry is the median time per training step of a computation that preventive and recovery distillation add to group-based RL, with the resulting increase over the time per training step of GRPO in parentheses. The last row sums both increases, and $K = 0$ is the preventive-only variant. The overhead stays small with one recovery turn and grows once later recovery turns require environment replay.}
+\label{tab:compute}
+\end{table}
+
+\subsection{Recovery Analysis Details}
+\label{app:recovery_analysis}
+
+This analysis examines whether trained policies can recover after a pivotal mistake has already been committed, complementing the motivating replay study in \Cref{app:analysis}.
+
+\paragraph{Replay protocol.} We use the same $72$ pivotal mistakes identified by the environment's symbolic oracle in \Cref{sec:evidence}. These oracle-labeled pivotal mistakes are independent of the teacher-detected pivotal turns used in training, so this evaluation does not reward agreement with the teacher's own labels. For each pivotal mistake, we replay the trajectory prefix up to and including the pivotal mistake in a fresh copy of the ALFWorld environment, verify that the reached state matches the recorded one, and let the policy continue on its own for the remainder of the $30$-turn budget. Each prefix is replayed $8$ times per policy, giving $576$ replays per policy.
+
+\paragraph{Policies.} We compare four policies. \textbf{Base} is the untrained Qwen3-8B model. \textbf{Standard OPD} is the best checkpoint of the OPSD run in \Cref{app:analysis} from a sweep over training steps. \textbf{Preventive only} is \method{} trained for $160$ steps with recovery budget $K = 0$, as in \Cref{sec:discussion}. \textbf{\method{}} is the full method trained for $160$ steps with $K = 2$.
+
+\paragraph{Recovery curves (\Cref{fig:case_study_curves}, top).} A replay counts as recovered within $x$ turns when it completes the task and its continuation after the pivotal mistake uses at most $x$ turns. The curve at each value of $x$ is the per-mistake mean averaged over the $72$ pivotal mistakes, so every pivotal mistake contributes equally regardless of how many of its replays succeed. Final recovery rates are $8.3\%$ (Base), $20.3\%$ (Standard OPD), $45.8\%$ (preventive only), and $72.7\%$ (\method{}).
+
+\paragraph{Paired comparison per pivotal mistake.} Because every policy replays the same $72$ pivotal mistakes, we also compare each trained policy with the base model on each pivotal mistake separately. The recovery rate of a pivotal mistake is the fraction of its $8$ replays that recover, and the sign of its difference from the rate of the base model marks the pivotal mistake as improved, worsened, or unchanged. Standard OPD improves the recovery rate on $20$ of the $72$ pivotal mistakes, worsens it on $4$, and leaves $48$ unchanged. The preventive-only variant improves $47$, worsens $6$, and leaves $19$ unchanged. \method{} improves $60$ and worsens none, leaving $12$ unchanged. These counts come from the same replays as the recovery curves, and they show that the higher recovery rate of \method{} extends across most pivotal mistakes rather than coming from a few of them.
+
+\paragraph{Recovery efficiency (\Cref{fig:case_study_curves}, bottom).} Among the replays that recover, we report the average number of turns from the pivotal mistake to task completion, with $95\%$ bootstrap confidence intervals ($2{,}000$ draws, seed $0$). The gray reference bar reports the average remaining optimal trajectory at the post-mistake state, computed over the $72$ pivotal mistakes. Because each policy recovers on a different number and mixture of pivotal mistakes, the efficiency values are conditioned on different sets of replays: $48$ (Base), $117$ (Standard OPD), $264$ (preventive only), and $419$ (\method{}). Despite this difference in conditioning, the per-policy recovered sets have near-identical own-set optimal means ($5.2$--$5.8$ turns), so the common reference bar provides a fair comparison across policies.
+
+\subsection{Divergence from the Self-Teacher Details}
+\label{app:recovery_kl}
+
+\Cref{fig:recovery_kl} compares the Qwen3-8B checkpoints of the preventive-only variant ($K = 0$) and a separate \method{} run with $K = 1$ at training steps $140$ and $160$. Each pair of checkpoints scores the ALFWorld training rollouts of the preventive-only variant from a disjoint window of steps, i.e., steps $130$--$149$ for the checkpoints at step $140$ and steps $150$--$160$ for those at step $160$. Both variants therefore score the same responses at the same turns, and every scored state is one that the preventive-only variant visits itself. For each turn, we compute the forward KL divergence from each policy's privileged self-teacher to the policy over the full vocabulary and average it over the response tokens. The self-teacher receives the hints recorded with these rollouts, which include the trajectory-level lesson at every turn and the gold action at candidate turns. The preventive-only variant records no recovery actions, so this divergence uses the recorded hints rather than the recovery-action hint of \Cref{eq:recovery}, and it serves as a proxy for the recovery loss rather than the loss itself (\Cref{lem:kl_bound}). We align each trajectory at its first teacher-detected pivotal turn and exclude turn $0$. The analysis covers $600$ trajectories, $351$ of which contain a teacher-detected pivotal turn. The shaded bands show $95\%$ bootstrap confidence intervals clustered over trajectories ($2{,}000$ draws, seed $0$). In \Cref{fig:recovery_kl}, both students track their self-teachers closely before the pivotal mistake, and the divergence spikes at the pivotal turn, where the hint names the gold action.
+
+\section{Related Works}
+\label{app:related_work}
+
+\paragraph{On-policy distillation and the direction of KL.} Sequence-level knowledge distillation trains a student on outputs sampled from the teacher \citep{kim2016sequence, yang2026sfd}. On-policy distillation instead supervises the student on its own samples, and prior work discusses which KL direction suits this setting. GKD compares forward and reverse KL on student-generated sequences \citep{agarwal2024gkd}, and MiniLLM favors reverse KL so that the student does not overestimate regions where the teacher places little mass \citep{gu2024minillm,lu2025onpolicydistillation}. For multi-turn agents, recent methods reweight turns or schedule the distilled trajectory depth \citep{zhou2026turnopd,wang2026tcod,zhong2026sod,zhang2026stepopsd,wang2026agentopsd}, but they still distill only on student-sampled responses. \method{} chooses the direction by where the supervision is needed. Preventive distillation applies reverse KL to a response that the student has already sampled, while recovery distillation applies forward KL to self-teacher responses that the student rarely produces, in the spirit of sequence-level distillation.
+
+\paragraph{Self-correction and learning from failures.} Several lines of work teach language models to correct or learn from their own mistakes. Reflexion stores verbal reflections on failed trials in memory instead of updating the model \citep{shinn2023reflexion}. SCoRe and RISE train models to revise their responses over multiple attempts \citep{kumar2024score,qu2024rise}. For agents, Agent-R splices failed trajectories with correct continuations found by Monte Carlo tree search \citep{yuan2025agentr}. ETO and NAT fine-tune agents on failed trajectories through contrastive pairs and explicit failure markers, respectively \citep{song2024eto,wang2024nat}, and LEMA fine-tunes on mistake corrections written by a stronger model \citep{an2023lema}. These methods rely on outcome rewards or offline revision data, whereas \method{} provides dense teacher supervision at the post-mistake states that the student's own mistakes create.
+
+\paragraph{Credit assignment at key turns.} Outcome rewards reveal little about which turn caused a failure. GiGPO estimates step-level advantages by grouping actions taken from repeated states across rollouts \citep{feng2025gigpo}, and process reward models score intermediate steps \citep{lightman2023prm,wang2024mathshepherd}. PivotRL \citep{yi2026pivotrl} and OPID \citep{yang2026opid} concentrate training on the few turns that determine the outcome. Like standard OPD, however, these methods assign credit only to actions that the student samples, whereas \method{} also distills recovery actions that the student rarely produces after its own pivotal mistakes.
+
+\paragraph{Interactive imitation learning.} Recovery distillation resembles interactive imitation learning, where an expert supervises the learner at the states that the learner itself reaches. DAgger queries the expert at states visited by the learner's policy \citep{ross2011reduction}, and HG-DAgger lets a human expert take over when the learner enters unsafe states \citep{kelly2019hgdagger}. Recovery distillation similarly queries the teacher at the post-mistake states produced by the student's own mistakes. It differs in that the teacher only names the recovery action, while the token-level target comes from the student's own hinted distribution.
+
+\paragraph{Privileged information.} Learning using privileged information provides extra information during training that is unavailable at test time \citep{vapnik2009lupi}, as in asymmetric actor-critic methods whose critic observes the full state \citep{pinto2018asymmetric}. Recent work on language models conditions a self-teacher on privileged information \citep{zhao2026opsd,penaloza2026pid, he2026sdzero, kaur2026rethinking, liu2026mixsd}. \method{} uses the named gold or recovery action as the privileged information and trains the student without it.
+
+\section{Limitations and Open Directions}
+\label{app:limitations}
+
+\paragraph{Replayable environments.} Recovery turns after the first are reached by replaying the recorded actions in a copy of the environment (\Cref{app:method_details}), so recovery budgets above $K = 1$ require an environment that reproduces recorded observations exactly. ALFWorld, WebShop, and Search-based QA meet this requirement, and our budget ablation uses up to $K = 3$ on each (\Cref{fig:ablation_k}). Many interactive environments, such as live websites, do not. Extending pivot detection to earlier turns of such long episodes and reaching later recovery turns without exact replay remain open directions.
+
+\paragraph{Dependence on the teacher model.} \method{} trains toward the actions that the teacher model names, so a wrong gold action or recovery action becomes a wrong distillation target. On ALFWorld, pivot detection agrees with the oracle within one turn in $77.8\%$ of failed trajectories on average (\Cref{tab:teacher_oracle}), so in the remaining cases, supervision lands away from the first oracle-labeled pivotal turn. The mismatch check can also flag a reasonable alternative action as pivotal (\Cref{app:method_details}). When the student serves as its own teacher, \method{} remains the best method in \Cref{fig:self_distillation}, but its ALFWorld success rate falls short of that under the stronger teacher (\Cref{tab:main_results}). Estimating the reliability of each named action before distilling it could reduce this dependence.
+
+\paragraph{Tuning and scope of the diagnosis.} The recovery budget $K$ and the recovery weight $w_\text{rec}$ interact, and we select both per benchmark on validation (\Cref{app:hyperparameters}). Applying \method{} to a new benchmark therefore requires a sweep over them. Our diagnosis of pivotal mistakes relies on the symbolic oracle of ALFWorld, which the other benchmarks lack, so on those benchmarks only the teacher model estimates where pivotal turns occur. Finally, every agent sees a history window of at most five turns (\Cref{tab:train_hparams}). The turns that the agents waste after a pivotal mistake in \Cref{sec:evidence} are counted under this window, so part of this waste may come from the limited history.

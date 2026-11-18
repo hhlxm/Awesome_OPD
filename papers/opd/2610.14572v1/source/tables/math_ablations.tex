@@ -1,0 +1,31 @@
+\begin{table}[t]
+\caption{Qwen3-1.7B (non-thinking) math ablations at step 100 ($c=0$): mean
+accuracy over the four benchmarks (AIME24/25 and HMMT2025-Feb/Nov).
+Reversing scores or shuffling weights sharply reduces accuracy.
+Variants use separate meta rollouts unless rollout reuse is specified.
+$\Delta$ (pp) denotes difference from RAD.
+\textbf{Bold}/\underline{underline}: best/second-best displayed means.
+}
+\label{tab:math-ablations}
+\centering
+\normalsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.27\linewidth}>{\raggedright\arraybackslash}Xrr@{}}
+\toprule
+\radhead Variant & Change from RAD & Acc. (\%) & $\Delta$ (pp) \\
+\midrule
+\radrow\radlabel{RAD} & AdamW lookahead; separate meta rollouts & \underline{32.71} & --- \\
+Negative score & Reverse the score: $I_t\mapsto -I_t$ & 0.36 & $(-32.34)$ \\
+Shuffled weights & Permute weights within each response & 6.35 & $(-26.35)$ \\
+\midrule
+Positive only & Restrict weights to $[0,1]$ & 25.00 & $(-7.71)$ \\
+Negative-bound warmup & Cosine lower bound: $0\to -1$ over 50 steps & 31.20 & $(-1.51)$ \\
+\midrule
+Pre-update gradient & Reward gradient before the temporary update & \textbf{34.32} & $(+1.61)$ \\
+ ~~+ rollout reuse & Pre-update reward grad; reuse distillation rollouts & 18.54 & $(-14.17)$ \\
+\midrule
+SGD lookahead & SGD lookahead update & 16.88 & $(-15.83)$ \\
+\bottomrule
+\end{tabularx}
+\end{table}

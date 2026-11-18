@@ -1,0 +1,82 @@
+\section{High-Advantage Responses from the Initial Student}
+\label{app:high_advantage_examples}
+
+We present three responses sampled from Qwen3-1.7B-Base before any OPD
+update and scored by the Qwen3-4B teacher. All three belong to the
+highest-advantage group, A10, in the analysis of
+Section~\ref{sec:teacher_selection} and illustrate excessive length and
+mechanical repetition already present under $S_{\mathrm{INIT}}$.
+All three are incorrect and contain no parseable final answer.
+
+\paragraph{Reading the complete responses.}
+Each response consists almost entirely of a repeated string. We specify its
+complete content using exact repetition counts: $+$ denotes concatenation
+without an added separator, and $\operatorname{repeat}(s,n)$ denotes $n$
+consecutive copies of $s$. Quotation marks delimit strings and are not part
+of the response; \texttt{\textbackslash n} denotes a newline. Unicode
+characters are written as \texttt{\textbackslash uXXXX} escapes. No text is
+omitted from these representations. Prompt mathematics below is
+typeset for readability. Every prompt ends with: ``Please reason step by
+step, and put your final answer within \texttt{\textbackslash boxed\{\}}.''
+
+\subsection{Length-Cap Repetition}
+
+\paragraph{Prompt (AIME24, \texttt{aime24\_001}).}
+Every morning Aya goes for a $9$-kilometer-long walk and stops at a coffee
+shop afterwards. When she walks at a constant speed of $s$ kilometers per
+hour, the walk takes her 4 hours, including $t$ minutes spent in the coffee
+shop. When she walks $s+2$ kilometers per hour, the walk takes her 2 hours
+and 24 minutes, including $t$ minutes spent in the coffee shop. Suppose Aya
+walks at $s+\frac{1}{2}$ kilometers per hour. Find the number of minutes the
+walk takes her, including the $t$ minutes spent in the coffee shop.
+
+\paragraph{Response (sample 65).}
+\begin{quote}
+\small\ttfamily
+"\textbackslash uFFFD\textbackslash uFFFD\textbackslash u6001\ T 10T 50 10 1 10 10"\\
+\normalfont $+\;\operatorname{repeat}($\texttt{"T 10"}$,\;2043)$
+\end{quote}
+The response mechanically repeats \texttt{T 10} until it reaches the
+8,192-token generation cap. The two initial
+\texttt{\textbackslash uFFFD} characters are present in the stored response.
+
+\subsection{Severe Repetition without Reaching the Length Cap}
+
+\paragraph{Prompt (AIME25, \texttt{aime25\_028}).}
+Let the sequence of rationals $x_1,x_2,\ldots$ be defined such that
+$x_1=\frac{25}{11}$ and
+$x_{k+1}=\frac{1}{3}\left(x_k+\frac{1}{x_k}-1\right)$.
+$x_{2025}$ can be expressed as $\frac{m}{n}$ for relatively prime positive
+integers $m$ and $n$. Find the remainder when $m+n$ is divided by 1000.
+
+\paragraph{Response (sample 110).}
+\begin{quote}
+\small
+$\operatorname{repeat}($\texttt{".slfwith\textbackslash n"}$,\;2154)
++$ \texttt{".slfwith"}
+\end{quote}
+The response consists of repeated \texttt{.slfwith} lines and ends after
+6,465 recorded tokens, showing that severe repetition can occur without
+reaching the generation cap.
+
+\subsection{Severe Repetition at the Length Cap}
+
+\paragraph{Prompt (AIME25, \texttt{aime25\_013}).}
+Alex divides a disk into four quadrants with two perpendicular diameters
+intersecting at the center of the disk. He draws 25 more line segments
+through the disk, drawing each segment by selecting two points at random
+on the perimeter of the disk in different quadrants and connecting those
+two points. Find the expected number of regions into which these 27 line
+segments divide the disk.
+
+\paragraph{Response (sample 58).}
+\begin{quote}
+\small\ttfamily
+"\textbackslash u6CD5\ newVal89\textbackslash u6CD5\ newVal8\textbackslash u6CD5\ newVal8"\\
+\normalfont $+\;\operatorname{repeat}($\texttt{"\textbackslash u6CD5\ newVal"}$,\;4091)$
+\end{quote}
+The response repeats the same fragment until it reaches the 8,192-token
+generation cap, exhibiting both excessive length and severe repetition.
+
+Together, these cases illustrate how excessively long and repetitive responses can receive
+high relative teacher advantage already under $S_{\mathrm{INIT}}$.

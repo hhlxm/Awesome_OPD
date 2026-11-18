@@ -1,0 +1,42 @@
+\begin{table}[htbp]
+\caption{Dataset statistics and evaluation metrics. Counts denote dataset
+examples or tasks; responses per prompt are sampled whenever a prompt is
+selected. RAD additionally samples an independent outer batch of 64 meta
+prompts with eight responses each (512 responses). Coding training and
+validation counts refer to the Eurus split before model-specific
+prompt-length filtering.}
+\label{tab:dataset-statistics}
+\centering
+\normalsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabularx}{\linewidth}{@{}ll>{\raggedright\arraybackslash}XrC{0.12\linewidth}>{\raggedright\arraybackslash}X@{}}
+\toprule
+Domain & Use & Dataset & \# Problems & Responses / prompt & Metric \\
+\midrule
+Math & Train & DeepMath-103K, level \(\geq 6\)
+& 57,046 & 8 & Binary correctness reward \\
+Math & Eval & AIME24 & 30 & 16
+& pass@1 accuracy (Math-Verify) \\
+Math & Eval & AIME25 & 30 & 16
+& pass@1 accuracy (Math-Verify) \\
+Math & Eval & AIME26 & 30 & 16
+& pass@1 accuracy (Math-Verify) \\
+Math & Eval & HMMT2025-Feb & 30 & 16
+& pass@1 accuracy (Math-Verify) \\
+Math & Eval & HMMT2025-Nov & 30 & 16
+& pass@1 accuracy (Math-Verify) \\
+Math & Eval & OlympiadBench & 675 & 16
+& pass@1 accuracy (Math-Verify) \\
+\midrule
+Code & Train & Eurus code split (APPS, CodeContests, Codeforces, and TACO)
+& 25,276 & 8 & Binary all-tests-pass reward \\
+Code & Val & APPS & 142 & 1 & pass@1 functional correctness \\
+Code & Val & CodeContests & 377 & 1 & pass@1 functional correctness \\
+Code & Val & Codeforces & 123 & 1 & pass@1 functional correctness \\
+Code & Val & TACO & 382 & 1 & pass@1 functional correctness \\
+Code & Eval & LiveCodeBench-v6
+& 1,055 & 4 & pass@1 functional correctness (native execution) \\
+\bottomrule
+\end{tabularx}
+\end{table}

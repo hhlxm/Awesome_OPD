@@ -1,0 +1,100 @@
+
+\section{On-policy distillation as implicit reward optimization}
+\label{sec:opd-implicit-reward}
+
+We formulate the sampled-token reverse-KL variant of on-policy distillation (OPD) studied in this paper as policy optimization with a teacher-derived reward.
+This formulation makes explicit what the teacher scores, how those scores guide student updates, and why their reliability must be examined on student-generated trajectories.
+
+\subsection{On-policy teacher supervision}
+\label{sec:opd-supervision}
+
+Let $q\sim\mathcal{D}$ be a training question with prompt $x_q$. We denote the fixed teacher by $T$, the initial student by $S_{\mathrm{INIT}}$, the trainable student by $S_\theta$, and the final trained student by $S_{\mathrm{OPD}}$. At each rollout iteration, the current student policy $\bar S=S_{\bar\theta}$ generates a response $y=(y_1,\ldots,y_L)$. The teacher evaluates tokens conditioned on the resulting prefixes $h_t=(x_q,y_{<t})$.
+
+Let $d^{\bar S}$ denote the prefix distribution induced by the rollout policy. The conditional reverse-KL objective is
+\begin{equation}
+\mathcal{L}_T(\theta;\bar S)
+=
+\mathbb{E}_{h\sim d^{\bar S}}\!\left[
+D_{\mathrm{KL}}\!\left(
+\pi_{S_\theta}(\cdot\mid h)
+\,\Vert\,
+\pi_T^{(\tau_T)}(\cdot\mid h)
+\right)
+\right],
+\label{eq:opd-conditional-kl}
+\end{equation}
+where $\tau_T$ is the teacher scoring temperature. We hold the rollout-prefix distribution fixed during each optimization step and refresh it through subsequent student rollouts. The student thus determines where supervision is evaluated, while the teacher supplies the target token probabilities at those states.
+
+\subsection{The teacher as an implicit reward model}
+\label{sec:opd-reward}
+
+\paragraph{Reward interpretation.}
+By expanding the KL divergence in Equation~\eqref{eq:opd-conditional-kl}, we can recast the objective into a maximum-entropy policy objective over sampled prefixes in Equation~\ref{eq:opd-reward-entropy}:
+\begin{equation}
+\begin{aligned}\mathcal{L}_T(\theta;\bar S)
+&=- \mathbb{E}_{h\sim d^{\bar S}}\!\left[
+\mathbb{E}_{a\sim\pi_{S_\theta}(\cdot\mid h)}
+\bigl[r_T(h,a)\bigr]
+\right.\left.
++\mathcal{H}\!\left(\pi_{S_\theta}(\cdot\mid h)\right)
+\right],
+\end{aligned}
+\label{eq:opd-reward-entropy}
+\end{equation}
+where \(r_T(h,a)=\log \pi_T^{(\tau_T)}(a\mid h)\) and \(H\) denotes entropy.
+Minimizing the conditional reverse KL is therefore equivalent to maximizing the expected teacher reward with entropy regularization on the sampled prefix distribution. This is the token-level reward interpretation underlying policy-gradient implementations of OPD~\citep{lu2025onpolicydistillation}.
+
+\paragraph{Policy-gradient update.}
+The reward interpretation also yields the sampled-token update. For each rollout token, define
+\begin{equation}
+A_t^T
+=r_T(h_t,y_t)-\log\pi_{\bar S}(y_t\mid h_t).
+\label{eq:opd-teacher-advantage}
+\end{equation}
+Writing $A^T(h,a)=r_T(h,a)-\log\pi_{\bar S}(a\mid h)$, the unclipped estimator at a fixed prefix $h$ satisfies
+\begin{equation}
+\begin{aligned}
+&\left.
+\mathbb{E}_{a\sim\pi_{\bar S}(\cdot\mid h)}\!\left[
+A^T(h,a)
+\nabla_\theta\log\pi_{S_\theta}(a\mid h)
+\right]\right|_{\theta=\bar\theta}
+\\
+&\qquad=
+-\left.\nabla_\theta
+D_{\mathrm{KL}}\!\left(
+\pi_{S_\theta}(\cdot\mid h)
+\,\Vert\,
+\pi_T^{(\tau_T)}(\cdot\mid h)
+\right)\right|_{\theta=\bar\theta}.
+\end{aligned}
+\label{eq:opd-gradient-identity}
+\end{equation}
+In practice, we treat $A_t^T$ as a stop-gradient advantage in a PPO-style clipped surrogate and add reference-KL regularization toward $S_{\mathrm{INIT}}$. The teacher score $r_T$ and the update weight $A_t^T$ are distinct: the latter includes the student log-probability term arising from entropy regularization. These updates use immediate token-level signals on student-generated prefixes.
+When most advantages are negative, the main effect is to reduce token probabilities by different amounts.
+More negative advantages lead to stronger pressure to reduce the probability, while less negative advantages lead to weaker pressure.
+
+\begin{table}[t]
+\centering
+\small
+\caption{OPD settings used in our analysis. Each setting is named after its teacher.}
+\label{tab:opd-settings}
+\begin{tabular}{@{}p{0.28\linewidth}p{0.39\linewidth}p{0.25\linewidth}@{}}
+\toprule
+Teacher & Student initialization & Training data \\
+\midrule
+JustRL-1.5B & DeepSeek-R1-Distill-Qwen-1.5B & DeepMath-103K ($\geq6$) \\
+DeepScaleR-1.5B-Preview & DeepSeek-R1-Distill-Qwen-1.5B & DeepMath-103K ($\geq6$) \\
+Qwen3-4B & Qwen3-1.7B-Base & OpenThoughts3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Experimental settings}
+\label{sec:opd-experimental-settings}
+
+We study three teacher--student settings, summarized in Table~\ref{tab:opd-settings}.
+The JustRL and DeepScaleR settings share the same student initialization and training data.
+Their teachers, JustRL-1.5B~\citep{he2025justrlscaling15bllm} and DeepScaleR-1.5B-Preview~\citep{deepscaler2025}, were obtained through RL from DeepSeek-R1-Distill-Qwen-1.5B~\citep{guo2025deepseek}, which also initializes our student. Both settings use the level $\geq6$ subset of DeepMath-103K and a 16,384-token rollout limit.
+The Qwen3-4B setting follows~\citet{li2026rethinkingopd}, using Qwen3-4B to supervise Qwen3-1.7B-Base on OpenThoughts3  prompts ~\citep{guha2025openthoughtsdatarecipesreasoning} with an 8,192-token rollout limit. The teacher remains fixed in all settings.
+We train for 100 rollout iterations using the Slime training framework~\citep{slime_github}, with a reference-KL coefficient of $0.001$. We evaluate mathematical reasoning on AIME24--26, reporting mean@4 for routine evaluation and using 256 responses per problem for the coverage and sampling efficiency analyses. Full training and evaluation protocols are provided in Appendix~\ref{app:training_details}.

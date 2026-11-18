@@ -1,0 +1,18 @@
+\begin{table}[h]
+\centering
+\caption{\textbf{The repaired student spends fewer turns searching.} Turns per episode in the last ten training updates, mean$\pm$std over three training runs. \emph{Task} turns act on the goal, such as taking or buying.}
+\label{tab:search-turns}
+\vspace{2pt}
+\small
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}lccccccccc@{}}
+\toprule
+\multirow{2}{*}{Method} & \multicolumn{3}{c}{ALFWorld} & \multicolumn{3}{c}{WebShop} & \multicolumn{3}{c}{ScienceWorld} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(l){8-10}
+ & Turns & Searching & Task & Turns & Searching & Task & Turns & Searching & Task \\
+\midrule\midrule
+Vanilla OPD & \secondscore{$20.7{\pm}0.9$} & \secondscore{$15.9{\pm}1.2$} & \secondscore{$4.0{\pm}0.3$} & \secondscore{$11.5{\pm}0.4$} & \secondscore{$7.8{\pm}0.5$} & \secondscore{$3.6{\pm}0.1$} & \secondscore{$18.2{\pm}0.5$} & \secondscore{$10.9{\pm}0.6$} & \secondscore{$6.9{\pm}0.7$} \\
+\method{} & \bestscore{$15.6{\pm}0.5$} & \bestscore{$11.4{\pm}0.6$} & \bestscore{$3.7{\pm}0.3$} & \bestscore{$8.8{\pm}0.2$} & \bestscore{$4.1{\pm}0.1$} & \bestscore{$4.7{\pm}0.1$} & \bestscore{$14.6{\pm}0.3$} & \bestscore{$8.2{\pm}0.6$} & \bestscore{$6.1{\pm}0.3$} \\
+\bottomrule
+\end{tabular}
+\end{table}

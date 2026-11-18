@@ -1,0 +1,40 @@
+\begingroup
+    \centering
+    \scriptsize
+    \setlength{\tabcolsep}{1.5pt}
+    \vspace{-3mm}
+    \renewcommand{\arraystretch}{1.08}
+
+    \caption{
+        \textbf{Endpoint generation characteristics on AIME24--26.}
+        Model pairs denote teacher $\rightarrow$ student.
+        Bold values mark length-limit saturation and severe repetition.
+    }
+    \label{tab:endpoint_generation_characteristics}
+
+    \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrr@{}}
+        \toprule
+        Model & Acc. (\%) & Len. (k) & Trunc. (\%) & Rep. (\%) \\
+        \midrule
+
+        \rowcolor{black!6}
+        \multicolumn{5}{@{}l}{\rule{0pt}{2.2ex}\textbf{JustRL-1.5B $\rightarrow$ DS-Distill-1.5B}} \\[1pt]
+        Teacher & 39.3 & 9.30 & 13.8 & 0.0 \\
+
+        $S_{\mathrm{INIT}}$ & 20.9 & 11.19 & 12.5 & 0.0 \\
+
+        $S_{\mathrm{OPD}}$ & 37.1\,{\tiny(+16.2)} & 9.72 & 16.5 & 0.0 \\
+
+        \midrule
+
+        \rowcolor{black!6}
+        \multicolumn{5}{@{}l}{\rule{0pt}{2.2ex}\textbf{Qwen3-4B $\rightarrow$ Qwen3-1.7B-Base}} \\[1pt]
+        Teacher & 19.6 & 3.09 & 2.1 & 0.0 \\
+
+        $S_{\mathrm{INIT}}$ & 0.2 & 1.18 & 4.1 & 4.2 \\
+
+        $S_{\mathrm{OPD}}$ & 5.4\,{\tiny(+5.2)} & \textbf{8.16} & \textbf{99.4} & \textbf{38.0} \\
+
+        \bottomrule
+    \end{tabular*}
+\endgroup

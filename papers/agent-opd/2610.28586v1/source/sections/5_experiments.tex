@@ -1,0 +1,82 @@
+\section{Experiments}
+\label{sec:exp}
+
+Our experiments ask four questions. RQ1: does repairing the scorer improve OPD across teachers, students and environments? RQ2: can the takeovers be selected without reward? RQ3: which parts of \method{} are necessary? RQ4: what does the repaired scorer change in long-horizon behavior? We answer these questions below.
+
+\input{tables/tab_main}
+
+\subsection{Setup}
+\label{sec:exp-setup}
+
+\textbf{Teachers and students.}
+Qwen3.5-9B~\citep{qwen352026} teaches Qwen3.5-2B and Qwen3.5-4B on three environments, and Qwen3.5-4B teaches itself in \Cref{tab:self}.
+Qwen3-30B-A3B-Instruct-2507~\citep{qwen32025} teaches Qwen3-4B and Qwen3-8B on the same three environments.
+We chose these pairs to vary three things: model size, from 2B to 30B parameters; model generation, Qwen3.5 and Qwen3; and architecture, a dense 9B teacher and a mixture-of-experts 30B-A3B teacher.
+Every prompt carries one fixed worked demonstration per environment; native reasoning mode is off, and each turn opens with one to three sentences of plain-text deliberation before the tool call, as detailed in \Cref{app:protocol}.
+
+\textbf{Environments.}
+ALFWorld (household tasks), WebShop (shopping) and ScienceWorld (science experiments) are scored by success (\%). ALFWorld and ScienceWorld have a seen and an unseen split, and the main text reports their mean; WebShop is evaluated on its 500 canonical goals. Following TCOD, the held-out splits hold 140 seen and 134 unseen games on ALFWorld and 140 seen variations and 134 unseen task rows on ScienceWorld. An episode has 30 turns, 15 on WebShop, under one full-history tool-call protocol.
+
+\textbf{Protocol.}
+Each teacher--student--environment cell is one 150-step training run. Its final checkpoint is evaluated in three sampled decodes, with no checkpoint selection. The teacher and the untrained student acting alone follow the same prompt and evaluation protocol. In every cell, \method{} mines up to $2{,}400$ states, takes $K{=}8$ takeovers from each and fine-tunes the teacher for one epoch.
+
+\textbf{Training and evaluation.} Each step trains on 16 episodes, 128 on WebShop, sampled at temperature 0.4 within a $32{,}768$-token context; the distillation log-ratio of the sampled estimator enters a clipped PPO surrogate as the per-token advantage, with no additional KL or entropy term, and Adam runs at a constant learning rate of $10^{-6}$. Reasoning mode is off for acting, scoring and distillation; a turn is capped at 512 tokens in training and $4{,}096$ at evaluation, and student responses are copied byte-identically into the separately served teacher context. Table entries are the mean$\pm$std over the three decodes of the final checkpoint: its in-training evaluation and two re-loads under further decoding seeds. The teacher acting alone is evaluated through the same path, prompts and seeds.
+
+\textbf{Repair settings.} A turn is eligible for mining when its thinking has at least three tokens and ends in a tool call; we keep the eligible turn with the largest $\Delta_t$ in each episode, at most three states per goal, and the $N$ states with the largest $\Delta_t$ overall. In the privileged pass the selected takeover enters as one reference message before the student's first turn, listing the teacher's thinking and action at each of its steps; $T_\phi$ sees the same stream without that message. The targets $q^{+}$ keep the teacher's sixteen most probable tokens at each position, renormalized, and are computed once from $T_0$; $T_\phi$ is initialized from $T_0$ and fine-tuned full-parameter for one epoch at learning rate $2\times10^{-6}$, in batches of eight states, with 10\% of goals held out. \Cref{app:r2s} lists every remaining setting.
+
+\textbf{Baselines.}
+Vanilla OPD minimizes \Cref{eq:opd} with the sampled estimator against the original teacher $T_0$; \method{} runs the same OPD against the repaired teacher $T_\phi$, so vanilla OPD is its direct control.
+The other three are recent agentic-OPD methods, chosen because, like \method{}, they train the student by distillation alone, without a task-reward RL objective such as GRPO~\citep{grpo2024}. TCOD-F2B~\citep{tcod2026} trains the student on shortened episodes that lengthen over training, Guided-OPD~\citep{guidedopd2026} hands part of the turns to the teacher, and FutureBridge~\citep{futurebridge2026}, the closest prior method, trains the student on validated teacher bridges from the states where the two disagree most.
+Their code is public, so all three run under the same models, prompts, estimator and protocol as vanilla OPD and \method{}.
+We leave out methods that combine distillation with reward-based RL, such as SDAR~\citep{sdar2026}: their students also learn from task reward, which would confound the comparison; a repaired teacher could serve as the distillation term of such a hybrid.
+
+\subsection{Main Results}
+\label{sec:exp-main}
+
+\input{figures/fig_teacher_bars}
+
+\textbf{\method{} beats every baseline in all twelve cells of \Cref{tab:main} and ends above the teacher acting alone.} The gain over vanilla OPD averages $+17.8$ points from the 9B teacher and $+9.8$ from the 30B-A3B teacher, and \method{} exceeds every baseline in mean on all $24$ splits of \Cref{tab:main-full}.
+Averaged over the ten cells outside the 30B-A3B teacher's WebShop pair, the vanilla student ends within a point of the teacher acting alone. On WebShop the 30B-A3B teacher acting alone seldom completes a purchase: on $13.7$ of its $15$ turns per episode, on average, it answers without calling the action tool, so $94\%$ of its episodes run out of turns, and every student ends above it. \Cref{fig:teacher-bars} follows the Qwen3.5-9B-to-4B students of all five methods over three training runs each: the \method{} student separates from every baseline well before the final checkpoint. The three \method{} runs share the one repaired teacher of \Cref{tab:main}, so the width of its band comes from student training alone. The teacher's takeovers from the untrained student's highest-disagreement states finish more often than the student does in eleven of the twelve cells (\Cref{tab:takeover-all} in \Cref{app:analysis}), so what \Cref{sec:takeover} found for one pair holds for all four.
+
+\input{tables/tab_self}
+
+\textbf{The teacher can be the student's own base model.}
+\Cref{tab:self} repeats the Qwen3.5-4B cells with the 4B as its own teacher. In all three environments, the \method{} student taught by the repaired 4B passes the vanilla student that the 9B teaches in \Cref{tab:main}. Since the teacher and the student are the same model, the student--teacher gap that ranks states is zero, so the pipeline draws one turn per episode of the untrained student at random under the same goal cap and budget; the 4B itself runs the takeovers and the selection, so no larger model enters the pipeline. In all three environments this self-taught student also ends above the 9B teacher acting alone in \Cref{tab:main}. Taught by the unrepaired 4B, the four other students gain about six points on ALFWorld and at most about a point on WebShop and ScienceWorld: a model's plain scores of its own tokens teach it little. What lifts the student is not a larger model's knowledge but scores informed by the ending, which its own base model can supply.
+
+\Needspace{17\baselineskip}
+\subsection{Ablations}
+\label{sec:exp-repair}
+
+\input{tables/tab_selection}
+Each ablation below varies one part of \method{} in the Qwen3.5-9B-to-4B cells of \Cref{tab:main}, on all three environments.
+
+\textbf{Takeover selection.}\label{sec:exp-select}
+\Cref{tab:selection} repairs the teacher with three rules for picking the winning takeovers. Ground truth reads the task reward; the consensus vote and the LLM judge do not. With either reward-free rule the student ends above vanilla OPD in all three environments, so the repair depends neither on reading the reward nor on one particular rule.
+
+\Needspace{14\baselineskip}
+\input{tables/tab_abl_components}
+
+\textbf{Effect of informed targets.}
+\Cref{tab:abl-components} separates the takeovers from the informed targets built on them. The label-SFT control fine-tunes the teacher on the selected takeovers by standard SFT. Its student already ends well above vanilla OPD in all three environments, so the takeovers carry signal of their own; fitting the informed targets instead lifts the student further. The takeovers help most as context for the teacher's scores of the student's own tokens, not as SFT data.
+
+\Needspace{13\baselineskip}
+\input{tables/tab_abl_scope}
+\textbf{Supervised turns.}
+\method{} fits the informed targets on the suffix of the student's episode, from the divergence turn to its end. \Cref{tab:abl-scope} supervises instead the divergence turn alone or the prefix up to it. Every span lifts the student well above vanilla OPD in all three environments, so the informed targets help whichever turns they cover. Vanilla OPD, whose teacher scores each token without seeing how the episode ends, trails them all by a wide margin.
+
+\subsection{Long-Horizon Behavior}
+\label{sec:exp-longhorizon}
+
+We compare the Qwen3.5-9B-to-4B \method{} teachers and students of \Cref{tab:main} with vanilla OPD.
+
+\input{figures/fig_scorer_effect}
+
+\textbf{Repair brings the teacher closer to its informed targets, and its student runs out of turns less often.} Scored against the same $q^{+}$ targets over the complete assistant suffix of held-out states, the repaired teacher is closer to them than the unrepaired teacher in every environment, as the left panel of \Cref{fig:scorer-effect} shows. In the evaluation episodes behind \Cref{tab:main}, the student trained on the repaired teacher runs out of turns about half as often as the vanilla OPD student, as the right panel shows.
+
+\input{tables/tab_timeouts}
+
+\textbf{The vanilla student inherits the teacher's endings.} \Cref{tab:timeouts} counts, for the same evaluation episodes, how often each policy runs out of turns and how many turns it takes, beside the teacher acting alone and the untrained student. On ALFWorld every failure is a timeout, since the wrapper ends an episode only on success. In every environment the vanilla student takes about the teacher's number of turns and runs out of turns almost as often as the teacher does. The \method{} student finishes in fewer turns and runs out of turns far less often than the teacher that scores it.
+
+\textbf{The saved turns are searching turns.} \Cref{tab:search-turns} splits the turns of the students' training rollouts into searching, that is moving, opening and looking, or searching and paging on WebShop, and acting on the task. The \method{} student spends fewer turns searching than the vanilla OPD student in every environment and about as many on the task. Counting only the episodes each student wins, it still searches less: $8.4$ turns against $10.5$ on ALFWorld, $2.0$ against $3.0$ on WebShop and $7.1$ against $9.1$ on ScienceWorld. On ALFWorld it opens fewer receptacles, on ScienceWorld it looks, reads and waits less, and on WebShop it searches and pages less and buys more. This matches the direction of the informed scores in \Cref{tab:drift}, which fall most on the student's hedging and searching words.
+
+\input{tables/tab_search_turns}

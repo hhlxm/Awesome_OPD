@@ -1,0 +1,40 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Main results: \method{} versus vanilla OPD, TCOD-F2B, Guided-OPD and FutureBridge.} Success (\%) of one training run per cell, mean$\pm$std over three decodes of its final checkpoint; every split in \Cref{tab:main-full}. The \colorbox{box_green!12}{\textcolor{box_green}{best}} and \colorbox{box_red!12}{\textcolor{box_red}{second best}} of the five trained students in each column are highlighted.}
+\label{tab:main}
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\multirow{3}{*}{Method} & \multicolumn{6}{c}{Qwen3.5-9B $\to$ Qwen3.5-2B\,/\,4B} \\
+\cmidrule(lr){2-7}
+ & \multicolumn{2}{c}{ALFWorld} & \multicolumn{2}{c}{WebShop} & \multicolumn{2}{c}{ScienceWorld} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+ & 2B & 4B & 2B & 4B & 2B & 4B \\
+\midrule\midrule
+Teacher alone & \multicolumn{2}{c}{$63.1{\pm}1.7$} & \multicolumn{2}{c}{$33.5{\pm}0.3$} & \multicolumn{2}{c}{$32.0{\pm}1.8$} \\
+Student alone & $15.1{\pm}1.8$ & $43.4{\pm}1.0$ & $17.6{\pm}1.1$ & $33.7{\pm}0.9$ & $3.1{\pm}0.4$ & $28.0{\pm}1.5$ \\
+\midrule
+Vanilla OPD & $58.0{\pm}2.4$ & \secondscore{$65.8{\pm}2.6$} & $35.7{\pm}1.6$ & $34.6{\pm}2.9$ & $23.7{\pm}2.0$ & \secondscore{$34.6{\pm}3.5$} \\
+TCOD-F2B & $62.7{\pm}2.0$ & $59.6{\pm}1.5$ & $33.1{\pm}0.5$ & $35.1{\pm}0.9$ & \secondscore{$28.0{\pm}2.6$} & $30.6{\pm}0.7$ \\
+Guided-OPD & \secondscore{$63.6{\pm}2.2$} & $61.6{\pm}2.0$ & $35.6{\pm}0.6$ & \secondscore{$35.5{\pm}1.3$} & $25.9{\pm}3.7$ & $32.2{\pm}1.1$ \\
+FutureBridge & $56.8{\pm}2.8$ & $58.4{\pm}3.7$ & \secondscore{$36.3{\pm}1.0$} & $33.9{\pm}1.7$ & $19.0{\pm}2.0$ & $30.7{\pm}1.3$ \\
+\textbf{\textcolor{box_green}{\method{} (ours)}} & \bestscore{$77.9{\pm}1.3$} & \bestscore{$81.9{\pm}2.4$} & \bestscore{$57.9{\pm}1.6$} & \bestscore{$55.9{\pm}1.4$} & \bestscore{$37.9{\pm}0.6$} & \bestscore{$47.8{\pm}3.0$} \\
+\midrule[\heavyrulewidth]
+\multirow{3}{*}{Method} & \multicolumn{6}{c}{Qwen3-30B-A3B-Instruct-2507 $\to$ Qwen3-4B\,/\,8B} \\
+\cmidrule(lr){2-7}
+ & \multicolumn{2}{c}{ALFWorld} & \multicolumn{2}{c}{WebShop} & \multicolumn{2}{c}{ScienceWorld} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+ & 4B & 8B & 4B & 8B & 4B & 8B \\
+\midrule\midrule
+Teacher alone & \multicolumn{2}{c}{$42.3{\pm}1.1$} & \multicolumn{2}{c}{$2.9{\pm}0.3$} & \multicolumn{2}{c}{$32.9{\pm}3.2$} \\
+Student alone & $30.4{\pm}2.3$ & $46.9{\pm}0.8$ & $15.5{\pm}1.2$ & $23.6{\pm}1.2$ & $9.0{\pm}1.4$ & $24.0{\pm}3.9$ \\
+\midrule
+Vanilla OPD & $41.2{\pm}1.7$ & $44.5{\pm}2.6$ & \secondscore{$24.7{\pm}1.1$} & $20.3{\pm}0.9$ & $38.0{\pm}1.2$ & $36.8{\pm}1.0$ \\
+TCOD-F2B & \secondscore{$42.6{\pm}1.1$} & \secondscore{$48.8{\pm}1.8$} & $22.8{\pm}0.7$ & \secondscore{$23.4{\pm}0.7$} & \secondscore{$38.4{\pm}0.9$} & $34.9{\pm}0.5$ \\
+Guided-OPD & $42.0{\pm}0.4$ & $47.0{\pm}1.9$ & $23.3{\pm}1.6$ & $22.3{\pm}0.8$ & $34.7{\pm}1.8$ & $33.0{\pm}1.5$ \\
+FutureBridge & $41.8{\pm}2.6$ & $45.9{\pm}1.1$ & $16.7{\pm}0.9$ & $20.7{\pm}0.7$ & $36.1{\pm}1.5$ & \secondscore{$37.1{\pm}2.0$} \\
+\textbf{\textcolor{box_green}{\method{} (ours)}} & \bestscore{$54.5{\pm}1.4$} & \bestscore{$54.7{\pm}1.0$} & \bestscore{$28.5{\pm}0.6$} & \bestscore{$30.4{\pm}1.2$} & \bestscore{$45.8{\pm}1.4$} & \bestscore{$50.5{\pm}1.4$} \\
+\bottomrule
+\end{tabular}
+\end{table}

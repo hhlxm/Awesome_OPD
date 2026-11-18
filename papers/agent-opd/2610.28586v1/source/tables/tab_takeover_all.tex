@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{The teacher's takeovers finish from the student's states in every cell.} Success (\%) of the untrained student and of the teacher's $K{=}8$ takeovers over all mined states, for every pair of \Cref{tab:main}.}
+\label{tab:takeover-all}
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\multirow{2}{*}{Teacher $\to$ student} & \multicolumn{2}{c}{ALFWorld} & \multicolumn{2}{c}{WebShop} & \multicolumn{2}{c}{ScienceWorld} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7}
+ & Student & Takeover & Student & Takeover & Student & Takeover \\
+\midrule\midrule
+Qwen3.5-9B$\to$2B & $11.9$ & $54.6$ & $5.0$ & $21.8$ & $1.2$ & $31.2$ \\
+Qwen3.5-9B$\to$4B & $51.8$ & $56.7$ & $19.6$ & $22.0$ & $22.4$ & $35.6$ \\
+Qwen3-30B-A3B$\to$4B & $33.3$ & $41.8$ & $10.4$ & $14.0$ & $10.2$ & $36.6$ \\
+Qwen3-30B-A3B$\to$8B & $45.5$ & $42.2$ & $20.1$ & $31.7$ & $21.6$ & $38.8$ \\
+\bottomrule
+\end{tabular}
+\end{table}

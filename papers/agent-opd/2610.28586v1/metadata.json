@@ -1,0 +1,59 @@
+{
+  "arxiv_id": "2610.28586v1",
+  "title": "Capable Teacher, Myopic Scorer: Reward-Free Teacher Repair for Agentic On-Policy Distillation",
+  "authors": [
+    "Zhao, Shu",
+    "Yu, Tan"
+  ],
+  "submitted_date": "2026/10/20",
+  "abs_url": "https://arxiv.org/abs/2610.28586v1",
+  "schema_version": 2,
+  "requested_input": "2610.28586",
+  "requested_id": "2610.28586",
+  "source_url": "https://arxiv.org/src/2610.28586v1",
+  "downloaded_at": "2026-11-17T03:04:26.326294+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "19b170defaeb182e7f9cc7dbd931a8da467d61ce8e1c69b3859e630af1793ded",
+  "tex_files": [
+    "figures/fig_curves_all.tex",
+    "figures/fig_overview.tex",
+    "figures/fig_pipeline.tex",
+    "figures/fig_scorer_effect.tex",
+    "figures/fig_teacher_bars.tex",
+    "main.tex",
+    "math_commands.tex",
+    "sections/0_abstract.tex",
+    "sections/1_introduction.tex",
+    "sections/2_related_work.tex",
+    "sections/3_problem_analysis.tex",
+    "sections/4_method.tex",
+    "sections/5_experiments.tex",
+    "sections/6_conclusion.tex",
+    "sections/x_appendix_analysis_method.tex",
+    "tables/tab_abl_components.tex",
+    "tables/tab_abl_scope.tex",
+    "tables/tab_drift.tex",
+    "tables/tab_drift_detail.tex",
+    "tables/tab_main.tex",
+    "tables/tab_main_full.tex",
+    "tables/tab_positioning.tex",
+    "tables/tab_search_turns.tex",
+    "tables/tab_selection.tex",
+    "tables/tab_self.tex",
+    "tables/tab_self_full.tex",
+    "tables/tab_takeover_all.tex",
+    "tables/tab_timeouts.tex"
+  ],
+  "main_tex_candidates": [
+    "main.tex"
+  ],
+  "source_file_count": 36,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2610.28586v1",
+    "sha256": "51a28b6780528467963ac84182e0b7936551ff9f6c67821d26200e7fcfd70728",
+    "downloaded_at": "2026-11-17T03:04:29.566897+00:00",
+    "content_type": "application/pdf"
+  }
+}

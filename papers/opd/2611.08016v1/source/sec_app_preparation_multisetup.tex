@@ -1,0 +1,77 @@
+% Three-family preparation comparison.
+\subsection{Three-family AIME comparison}
+\label{app:preparation-multisetup}
+% AIME statistics use n = 32 responses per problem, batch a only.
+% Regenerate tables with scripts/regenerate_preparation.py and figures with scripts/plot_preparation.py.
+% Matched continuation budgets: 200 steps for Qwen 1.5B and Llama, 100 for Qwen 7B.
+
+\paragraph{Students and teachers.}
+The pairs are Qwen2.5-1.5B-Instruct / JustRL-1.5B, Qwen2.5-7B-Instruct / AceReason-Nemotron-7B, and Llama-3.1-8B-Instruct / Llama-3.1-Nemotron-Nano-8B-v1. Each pair shares a tokenizer vocabulary. The fixed teacher supplies the preparation text, the offline-control targets, and the on-policy log-probabilities. The Llama teacher uses its reasoning mode with the system prompt ``detailed thinking on.'' 
+
+\paragraph{Stage 1: offline preparation on OMI2.}
+Each teacher generates solutions to problems drawn from OpenMathInstruct-2 \citep{toshniwal2024openmathinstruct2}, at temperature one with an 8,192-token response cap. The student uses token-level forward KL on the teacher's recorded top-16 next-token support. The plotted cold start uses 512 optimizer steps of 256 sequences, or 131,072 sequence presentations. The Qwen 1.5B, 7B and Llama corpora each contain 32,768 teacher solutions, so this is four corpus sweeps.
+
+The offline settings are AdamW, learning rate $10^{-6}$, momentum coefficients $(0.9,0.95)$, no weight decay, gradient clipping at 1.0. The cold-start sequence limit is 8,192 tokens.
+
+\paragraph{Stage 2: DAPO comparisons.}
+The prompt pool is DAPO-Math-17k \citep{yu2025dapo}, recorded as 17,398 unique problems. Training uses consecutive blocks of 6,400 rows in the released ordering. Each block contains 6,235--6,318 unique problems.
+
+OPD samples four student responses for each of 64 prompts per step, giving 256 responses and one optimizer step per update. Sampling is at temperature one, capped at 8,192 tokens for Qwen and 14,336 for Llama. 
+
+The offline continuation instead uses four teacher-generated solutions for each prompt row in the same blocks: 25,600 sequences per 6,400-row block. It uses the teacher forward-KL objective and optimizer settings as preparation, at 256 sequences per step. The sequence limits are 8,192 for Qwen and 15,360 for Llama, the latter retaining the reported teacher solutions generated with a 14,336-token response cap. Thus the comparison matches the implemented offline and on-policy recipes in prompt blocks, sequence counts, and total optimizer steps.
+
+\begin{table}[t]
+\centering\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrr}
+\toprule
+Student & Offline-control steps & Steps in the OPD arm & Sequence presentations per arm\\
+\midrule
+Qwen 1.5B & 200 offline & 200 OPD & 51,200\\
+Qwen 7B & 100 offline & 100 OPD & 25,600\\
+Llama 8B & 200 offline & 200 OPD & 51,200\\
+\bottomrule
+\end{tabular}
+\caption{Comparison budgets from the same prepared checkpoint within each model pair, after 512 OMI2 preparation steps. Sequence presentations include repetitions.}
+\label{tab:preparation-budgets}
+\end{table}
+
+
+\paragraph{Evaluation and sampled coverage.}
+The evaluation pools AIME 2024 and 2025, 30 problems each. Each checkpoint is evaluated using 32 responses per problem from the first sampling batch (batch~a), with vLLM, the student's template, temperature $0.6$, top-$p=0.95$, and a 16,384-new-token cap. Scoring is lenient: answer extraction uses a boxed answer when present, otherwise an explicit answer marker including ``the answer is''.
+
+Following \citet{chen2021evaluatingcode}, if $c_i$ of the 32 responses solve problem $i$, we estimate
+\begin{equation}
+\widehat{\mathrm{pass@}k}=\frac1{60}\sum_{i=1}^{60}\left[1-\frac{\binom{32-c_i}{k}}{\binom{32}{k}}\right],\qquad 1\le k\le32,
+\label{eq:preparation-passk}
+\end{equation}
+with a zero numerator when $32-c_i<k$. In particular, pass@1 is the average observed success rate, and pass@32 is the fraction solved at least once in the sample. A problem never solved in 32 attempts can still lie within the model's support, and one solved on all 32 attempts can still have success probability below one.
+
+The lower panels plot the empirical survival curve $60^{-1}\sum_i\mathbf1\{c_i/32\ge r\}$ for $r>0$. Its limit as $r\downarrow0$ is observed coverage and its area on $[0,1]$ is the average solve rate. At exactly $r=0$, the literal weak-inequality expression equals one; the plotted left endpoint represents the positive-threshold limit. These are marginal distributions across problems.
+
+\paragraph{Endpoints and paired problem changes.}
+\Cref{tab:preparation-aime-summary} gives the pooled pass@$k$ endpoints and the number of problems at each empirical reliability threshold.
+
+\begin{table}[t]
+\centering\small
+\setlength{\tabcolsep}{5pt}
+\input{data/preparation_summary_table.tex}
+\caption{Pooled AIME endpoints and observed reliability at 32 samples per problem (batch~a). Coverage, at-least-half, and all-32 columns count problems out of 60. Both Llama comparison arms start from the same prepared checkpoint and use the budgets in \cref{tab:preparation-budgets}.}
+\label{tab:preparation-aime-summary}
+\end{table}
+
+Among problems solved at least once by both the OPD and offline endpoints, mean observed success rates (OPD/offline) are $0.281/0.104$ for Qwen 1.5B (3 problems), $0.599/0.455$ for Qwen 7B (25), and $0.264/0.159$ for Llama (13). These intersections are selected using both arms' samples, so their means are descriptive. Against the offline endpoint, OPD gains coverage on 8, 11, and 8 problems and loses it on 2, 1, and 1, respectively.
+
+
+\paragraph{Uncertainty.}
+For each student and year, we resample the 30 problem indices with replacement, keeping the OPD and offline outcomes paired. For pass@1 the per-problem difference is $(c_i^{\mathrm{OPD}}-c_i^{\mathrm{offline}})/32$; for pass@32 it is $\mathbf1\{c_i^{\mathrm{OPD}}>0\}-\mathbf1\{c_i^{\mathrm{offline}}>0\}$. \Cref{tab:preparation-aime-ci} reports the mean difference and the 2.5th and 97.5th percentiles of its exact conditional bootstrap distribution, computed by convolution of the empirical per-problem difference distribution. This avoids Monte Carlo error in the interval endpoints. The intervals quantify problem-resampling uncertainty conditional on the checkpoints and recorded outcomes.
+
+\begin{table}[t]
+\centering\small
+\setlength{\tabcolsep}{5pt}
+\input{data/preparation_aime_ci_table.tex}
+\caption{OPD minus offline control at 32 samples per problem (batch~a), with 95\% paired problem-bootstrap percentile intervals computed separately within each year. Values are in probability units.}
+\label{tab:preparation-aime-ci}
+\end{table}
+
+\FloatBarrier

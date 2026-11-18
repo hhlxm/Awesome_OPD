@@ -1,0 +1,17 @@
+\section{Discussion and Conclusion}
+\label{sec:discussion}
+
+
+
+
+
+
+
+
+
+On-policy self-distillation depends not only on the teacher targets but also on the trajectories on which they are evaluated. Our results identify trajectory collection as an important design dimension in privileged-context self-distillation: teacher guidance can determine which student contexts receive supervision, in addition to what the student learns at an observed prefix. Based on this insight, we introduce \method{}, which uses a teacher-selected action to initiate an alternative student continuation and distills the resulting trajectory. Improvements across coding and science support teacher-guided branching as a way to expose additional contexts for privileged supervision.
+
+Our analysis further shows that teacher--student disagreement can serve as a trajectory-steering signal rather than only a local correction signal. A teacher-preferred token can redirect subsequent student generation even when substituting that token alone does not repair the response. This distinction suggests that trajectory interventions should be evaluated not only by immediate success, but also by the new contexts they expose for teacher supervision.
+
+\vspace{-0.1cm}\paragraph{Limitations.}
+The effectiveness of \method{} depends on the student's ability to continue from a teacher-selected action and on the quality of the privileged teacher targets. Also, branch selection and suffix regeneration introduce additional training-time computation. Reducing this overhead through more efficient branch selection or generation is an important direction for future work.

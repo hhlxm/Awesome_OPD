@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\caption{\textbf{Among these methods, only \method{} repairs an external teacher without task reward and refreezes it for distillation.} RQ-free: no task-reward query for distillation supervision. The two right columns concern an external scorer, not an evolving self-teacher. $^{\dagger}$FutureBridge uses a success-selected reference pool.}
+\label{tab:positioning}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{5.8cm}ccc@{}}
+\toprule
+\textbf{Method} & \textbf{RQ-free} & \shortstack{\textbf{Repairs external}\\\textbf{teacher}} & \shortstack{\textbf{Freeze, then}\\\textbf{distill}} \\
+\midrule\midrule
+TCOD-F2B \citep{tcod2026} & \textcolor{box_green}{\cmark} & \textcolor{gray}{\xmark} & \textcolor{gray}{\xmark} \\
+Guided-OPD \citep{guidedopd2026} & \textcolor{box_green}{\cmark} & \textcolor{gray}{\xmark} & \textcolor{gray}{\xmark} \\
+FutureBridge$^{\dagger}$ \citep{futurebridge2026} & \textcolor{box_green}{\cmark} & \textcolor{gray}{\xmark} & \textcolor{gray}{\xmark} \\
+ReOPD \citep{reopd2026} & \textcolor{box_green}{\cmark} & \textcolor{gray}{\xmark} & \textcolor{gray}{\xmark} \\
+SDFT / OPCD \citep{sdft2026,opcd2026} & \textcolor{box_green}{\cmark} & \textcolor{gray}{\xmark} & \textcolor{gray}{\xmark} \\
+CANON \citep{canon2026} & \textcolor{box_green}{\cmark} & \textcolor{gray}{\xmark} & \textcolor{gray}{\xmark} \\
+SDAR \citep{sdar2026} & \textcolor{gray}{\xmark} & \textcolor{gray}{\xmark} & \textcolor{gray}{\xmark} \\
+Distillation Traps and Guards \citep{trapsguards2026} & \textcolor{gray}{\xmark} & \textcolor{box_green}{\cmark} & \textcolor{box_green}{\cmark} \\
+\midrule
+\textbf{\method{} (ours)} & \textcolor{box_green}{\cmark} & \textcolor{box_green}{\cmark} & \textcolor{box_green}{\cmark} \\
+\bottomrule
+\end{tabular}
+\end{table}

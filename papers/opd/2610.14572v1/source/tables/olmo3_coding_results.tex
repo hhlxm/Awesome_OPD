@@ -1,0 +1,26 @@
+\begin{table}[htbp]
+\caption{OLMo3-7B-Instruct coding-validation pass@1 (\%) over 1,024 Eurus
+problems, with one response per problem and one training run per method.
+Bold/underline: best/second-best reported value per column, with ties sharing
+a rank; dashes: unavailable. Parentheses give RAD's step-100 gain over the
+best available baseline at the indicated step (percentage points, before
+rounding).}
+\label{tab:olmo-coding-results}
+\centering
+\normalsize
+\setlength{\tabcolsep}{9pt}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Method & Step 100 & Step 200 \\
+\midrule
+GRPO & \underline{34.28} & \textbf{35.84} \\
+OPD & 33.20 & 33.01 \\
+TIP & 27.44 & 25.68 \\
+RLAD & \underline{34.28} & \underline{33.98} \\
+\midrule
+\textbf{\method{} (ours)} & \textbf{40.23} & --- \\
+\baselinegainlabel & \baselinegain{+5.96} & \baselinegain{+4.39} \\
+\bottomrule
+\end{tabular}
+\end{table}

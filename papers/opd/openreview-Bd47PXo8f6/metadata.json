@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "openreview_id": "Bd47PXo8f6",
+  "title": "Learning When to Imitate: Counterfactual Value Modeling for On-Policy Distillation",
+  "openreview_url": "https://openreview.net/forum?id=Bd47PXo8f6",
+  "venue": "ICLR 2027 submission",
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://openreview.net/pdf?id=Bd47PXo8f6",
+    "sha256": "2cd71b1f2e6c50170ef9b1abb8f0ab1c2f19a6e67ac6ffe9d754587e85b71660"
+  },
+  "note": "Archived from the local manuscript with reader annotations removed."
+}

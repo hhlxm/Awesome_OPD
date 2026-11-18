@@ -1,0 +1,71 @@
+\begin{figure*}[t]
+    \centering
+    \begingroup
+    \definecolor{responsehealthyframe}{HTML}{3C7D73}
+    \definecolor{responsehealthyfill}{HTML}{F1F8F6}
+    \definecolor{responsecollapseframe}{HTML}{B85245}
+    \definecolor{responsecollapsefill}{HTML}{FCF3F1}
+    \setlength{\fboxsep}{5pt}
+    \setlength{\fboxrule}{0.55pt}
+    \newcommand{\responseexample}[5]{%
+        \begin{minipage}[t]{0.485\textwidth}
+            \fcolorbox{#1}{#2}{%
+                \parbox[t][25mm][t]{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{%
+                    \raggedright
+                    \scriptsize
+                    \textbf{#3}\par
+                    {\fontsize{6.8}{7.5}\selectfont\textbf{#4}}\par
+                    \vspace{1.5pt}
+                    #5
+                }%
+            }
+        \end{minipage}%
+    }
+
+    \responseexample{responsehealthyframe}{responsehealthyfill}
+        {(a) Teacher: coherent solution}{correct; 842 tokens}{%
+        ``Number of \textbf{grand prize} outcomes: 1. \ldots\ Number of
+        \textbf{prize} outcomes ($\geq 2$ matches): 115. \ldots
+        $P(\text{Grand Prize}\mid\text{Prize})=1/115$.
+        Thus, $m+n=1+115=116$.''}
+    \hfill
+    \responseexample{responsehealthyframe}{responsehealthyfill}
+        {(b) $S_{\mathrm{INIT}}$: coherent solution}{correct; 771 tokens}{%
+        ``Jen has exactly 2 of the chosen 4 numbers:
+        $C(4,2)C(6,2)=90$. \ldots\ Exactly 3: 24; all 4: 1.
+        So, the total number of ways to win a prize is
+        $90+24+1=115$. \ldots
+        $P(\text{grand prize}\mid\text{prize})=1/115$.
+        \ldots\ \fbox{116}.''}
+
+    \vspace{4pt}
+
+    \responseexample{responsecollapseframe}{responsecollapsefill}
+        {(c) $S_{\mathrm{INIT}}$, teacher-preferred: repeated reconsideration}{incorrect; 7,311 tokens}{%
+        ``$17{,}499{,}840/661{,}680=26.5$.
+        \textbf{Wait, this is incorrect.} The calculation is not correct.
+        Instead, we should compute the number of valid sequences. Let's go
+        back. \ldots\ But this is not correct. \textbf{Wait, for the last word}
+        to be GY, \ldots\ \textbf{Wait, this is not correct.}''}
+    \hfill
+    \responseexample{responsecollapseframe}{responsecollapsefill}
+        {(d) $S_{\mathrm{INIT}}$, teacher-preferred: mechanical repetition}{correct; 8,192 tokens; truncated}{%
+        ``\textbf{Final Answer: \fbox{116}} \ldots\
+        \textbf{Answer: \fbox{116}} \ldots\
+        \textbf{Final Answer: \fbox{116}} \ldots\
+        \textbf{Answer: \fbox{116}} \ldots''\par
+        \vspace{2pt}
+        The same answer line repeats 365 times until the generation length
+        limit.}
+    \endgroup
+    \caption{
+        \textbf{Illustrative response excerpts from the Qwen3-4B setting.}
+        The teacher and a typical $S_{\mathrm{INIT}}$ response give coherent
+        solutions, whereas the $S_{\mathrm{INIT}}$ responses the teacher most
+        prefers repeatedly restart their reasoning or mechanically repeat an
+        answer until the generation length limit. All four excerpts predate any
+        OPD update. Ellipses mark omitted text. These examples illustrate
+        behaviors and do not estimate their prevalence.
+    }
+    \label{fig:qualitative_response_examples}
+\end{figure*}

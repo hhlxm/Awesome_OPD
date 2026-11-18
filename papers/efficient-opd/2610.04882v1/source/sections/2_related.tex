@@ -1,0 +1,10 @@
+\section{Related Work}
+
+\paragraph{On-Policy Language-Model Distillation.}
+On-policy distillation (OPD) mitigates exposure bias by training students on self-generated rollouts under dense teacher supervision \citep{gu2024minillm,agarwal2024policy}. Subsequent work explores skew divergences \citep{ko2024distillm}, adaptive targets \citep{jang2026stable,heo2026policy,jin2026entropy}, and diagnostic behaviors in complex reasoning regimes \citep{fu2026revisiting,zhu2026many}. However, full-vocabulary OPD incurs prohibitive communication and memory footprints during distributed rollout generation, severely hindering scalability.
+\vspace{-4mm}
+\paragraph{Sparse Divergences and Truncation Biases.}
+To alleviate communication bottlenecks, distributed training frequently adopts sparse Teacher Top-$k$ payloads \citep{zhu2026many}. Nonetheless, naively renormalizing or truncating to the Top-$k$ support optimizes a biased surrogate that misallocates tail probability mass. While coarse-support approaches like TA-OPD \citep{huang2026tail} incorporate a ghost token \citep{anshumann-etal-2025-sparse} to aggregate omitted mass, they still optimize a surrogate $(k+1)$-way divergence that discards the teacher's fine-grained within-tail geometry.
+\vspace{-4mm}
+\paragraph{Stochastic Estimators and Variance Reduction.}
+An alternative paradigm constructs stochastic estimators to recover the true full-vocabulary rKL gradient unbiasedly. Standard sampled-token estimators \citep{gu2024minillm,lu2025onpolicydistillation} suffer from extreme Monte Carlo variance, motivating variance-reduction baselines like vOPD \citep{oh2026kl}. HETS, a hybrid scheme proposed in EMA-PG \citep{zhang2026ema}, computes the Top-$k$ head analytically and samples only within the tail, yet still incurs severe gradient bursts upon tail hits, which destabilizes training dynamics.

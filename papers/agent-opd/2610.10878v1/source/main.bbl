@@ -1,0 +1,227 @@
+\begin{thebibliography}{44}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Agarwal et~al.(2024)Agarwal, Vieillard, Zhou, Stanczyk, Garea, Geist, and Bachem]{AgarwalVZSGGB24}
+Rishabh Agarwal, Nino Vieillard, Yongchao Zhou, Piotr Stanczyk, Sabela~Ramos Garea, Matthieu Geist, and Olivier Bachem.
+\newblock On-policy distillation of language models: Learning from self-generated mistakes.
+\newblock In \emph{{ICLR}}. OpenReview.net, 2024.
+
+\bibitem[Bengio et~al.(2015)Bengio, Vinyals, Jaitly, and Shazeer]{BengioVJS15}
+Samy Bengio, Oriol Vinyals, Navdeep Jaitly, and Noam Shazeer.
+\newblock Scheduled sampling for sequence prediction with recurrent neural networks.
+\newblock In \emph{{NIPS}}, pp.\  1171--1179, 2015.
+
+\bibitem[Chen et~al.(2026)Chen, Fan, Sun, Yang, Sun, Mao, Qiao, Zhang, Wang, Sun, Hu, Pan, Liu, and Zhang]{abs-2608-01953}
+Chishui Chen, Yaoyou Fan, Te~Sun, Yi~Yang, Chenghao Sun, Delin Mao, Hongbo Qiao, Zuowei Zhang, Junxi Wang, Chenxing Sun, Yangen Hu, Lu~Pan, Xuyang Liu, and Linfeng Zhang.
+\newblock Look ahead before you distill: Future trajectory validation of teacher guidance for agentic on-policy distillation.
+\newblock \emph{CoRR}, abs/2608.01953, 2026.
+
+\bibitem[Dao et~al.(2022)Dao, Fu, Ermon, Rudra, and R{\'{e}}]{DaoFERR22}
+Tri Dao, Daniel~Y. Fu, Stefano Ermon, Atri Rudra, and Christopher R{\'{e}}.
+\newblock Flashattention: Fast and memory-efficient exact attention with io-awareness.
+\newblock In \emph{NeurIPS}, 2022.
+
+\bibitem[DeepSeek{-}AI(2025)]{abs-2512-02556}
+DeepSeek{-}AI.
+\newblock Deepseek-v3.2: Pushing the frontier of open large language models.
+\newblock \emph{CoRR}, abs/2512.02556, 2025.
+
+\bibitem[Dekoninck et~al.(2026)Dekoninck, Jovanovic, Gehrunger, R{\"{o}}gnvaldsson, Petrov, Sun, and Vechev]{abs-2605-00674}
+Jasper Dekoninck, Nikola Jovanovic, Tim Gehrunger, K{\'{a}}ri R{\"{o}}gnvaldsson, Ivo Petrov, Chenhao Sun, and Martin~T. Vechev.
+\newblock Beyond benchmarks: Matharena as an evaluation platform for mathematics with llms.
+\newblock \emph{CoRR}, abs/2605.00674, 2026.
+
+\bibitem[Fan et~al.(2025)Fan, Wang, and Liu]{abs-2507-16812}
+Run{-}Ze Fan, Zengzhi Wang, and Pengfei Liu.
+\newblock Megascience: Pushing the frontiers of post-training datasets for science reasoning.
+\newblock \emph{CoRR}, abs/2507.16812, 2025.
+
+\bibitem[Gu et~al.(2024)Gu, Dong, Wei, and Huang]{Gu0WH24}
+Yuxian Gu, Li~Dong, Furu Wei, and Minlie Huang.
+\newblock Minillm: Knowledge distillation of large language models.
+\newblock In \emph{{ICLR}}. OpenReview.net, 2024.
+
+\bibitem[He et~al.(2025)He, Liu, Liu, Yan, Wang, Cheng, Zhang, Zhang, Xu, Shen, Li, Zeng, Wei, Cheng, An, Liu, and Zhou]{abs-2505-22312}
+Jujie He, Jiacai Liu, Chris~Yuhao Liu, Rui Yan, Chaojie Wang, Peng Cheng, Xiaoyu Zhang, Fuxiang Zhang, Jiacheng Xu, Wei Shen, Siyuan Li, Liang Zeng, Tianwen Wei, Cheng Cheng, Bo~An, Yang Liu, and Yahui Zhou.
+\newblock Skywork open reasoner 1 technical report.
+\newblock \emph{CoRR}, abs/2505.22312, 2025.
+
+\bibitem[Jain et~al.(2025)Jain, Han, Gu, Li, Yan, Zhang, Wang, Solar{-}Lezama, Sen, and Stoica]{JainHGLYZWSSS25}
+Naman Jain, King Han, Alex Gu, Wen{-}Ding Li, Fanjia Yan, Tianjun Zhang, Sida Wang, Armando Solar{-}Lezama, Koushik Sen, and Ion Stoica.
+\newblock Livecodebench: Holistic and contamination free evaluation of large language models for code.
+\newblock In \emph{{ICLR}}. OpenReview.net, 2025.
+
+\bibitem[Jin et~al.(2026)Jin, Min, Yang, Kadhe, Zhou, Wei, Baracaldo, and Lee]{abs-2603-07079}
+Woogyeol Jin, Taywon Min, Yongjin Yang, Swanand~Ravindra Kadhe, Yi~Zhou, Dennis Wei, Nathalie Baracaldo, and Kimin Lee.
+\newblock Entropy-aware on-policy distillation of language models.
+\newblock \emph{CoRR}, abs/2603.07079, 2026.
+
+\bibitem[Kwon et~al.(2023)Kwon, Li, Zhuang, Sheng, Zheng, Yu, Gonzalez, Zhang, and Stoica]{KwonLZ0ZY0ZS23}
+Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng, Cody~Hao Yu, Joseph Gonzalez, Hao Zhang, and Ion Stoica.
+\newblock Efficient memory management for large language model serving with pagedattention.
+\newblock In \emph{{SOSP}}, pp.\  611--626. {ACM}, 2023.
+
+\bibitem[Li et~al.(2026{\natexlab{a}})Li, Zheng, Song, Liu, Yang, Sun, Zhong, Guo, Fang, Zhang, and Wang]{abs-2606-15912}
+Gengsheng Li, Mao Zheng, Mingyang Song, Ruiqi Liu, Tianyu Yang, Jie Sun, Qiyong Zhong, Haiyun Guo, Junfeng Fang, Dan Zhang, and Jinqiao Wang.
+\newblock On-policy distillation with curriculum turn-level guidance for multi-turn agents.
+\newblock \emph{CoRR}, abs/2606.15912, 2026{\natexlab{a}}.
+
+\bibitem[Li et~al.(2024)Li, Chiang, Frick, Dunlap, Zhu, Gonzalez, and Stoica]{arenahard2024}
+Tianle Li, Wei-Lin Chiang, Evan Frick, Lisa Dunlap, Banghua Zhu, Joseph~E. Gonzalez, and Ion Stoica.
+\newblock From live data to high-quality benchmarks: The arena-hard pipeline.
+\newblock \url{https://lmsys.org/blog/2024-04-19-arena-hard/}, 2024.
+
+\bibitem[Li et~al.(2026{\natexlab{b}})Li, Zuo, He, Zhang, Xiao, Qian, Yu, Gao, Yang, Liu, and Ding]{abs-2604-13016}
+Yaxuan Li, Yuxin Zuo, Bingxiang He, Jinqian Zhang, Chaojun Xiao, Cheng Qian, Tianyu Yu, Huan{-}ang Gao, Wenkai Yang, Zhiyuan Liu, and Ning Ding.
+\newblock Rethinking on-policy distillation of large language models: Phenomenology, mechanism, and recipe.
+\newblock \emph{CoRR}, abs/2604.13016, 2026{\natexlab{b}}.
+
+\bibitem[Liao et~al.(2026)Liao, Dong, Monz, Xu, Dong, and Wei]{abs-2607-04763}
+Baohao Liao, Hanze Dong, Christof Monz, Xinxing Xu, Li~Dong, and Furu Wei.
+\newblock Multi-turn on-policy distillation with prefix replay.
+\newblock \emph{CoRR}, abs/2607.04763, 2026.
+
+\bibitem[Liu et~al.(2026)Liu, Li, Ling, and Wang]{abs-2608-05219}
+Junzhuo Liu, Weiwei Li, Jun Ling, and Peng Wang.
+\newblock When privileged guidance misaligns: State-matched routing and contextualized self-distillation for multi-turn agents.
+\newblock \emph{CoRR}, abs/2608.05219, 2026.
+
+\bibitem[Lu \& Lab(2025)Lu and Lab]{lu2025onpolicydistillation}
+Kevin Lu and Thinking~Machines Lab.
+\newblock On-policy distillation.
+\newblock \emph{Thinking Machines Lab: Connectionism}, 2025.
+\newblock \url{https://thinkingmachines.ai/blog/on-policy-distillation}.
+
+\bibitem[Luo et~al.(2024)Luo, Dong, Zhai, Ma, and Levine]{LuoDZ0L24}
+Jianlan Luo, Perry Dong, Yuexiang Zhai, Yi~Ma, and Sergey Levine.
+\newblock {RLIF:} interactive imitation learning as reinforcement learning.
+\newblock In \emph{{ICLR}}. OpenReview.net, 2024.
+
+\bibitem[Pan et~al.(2025)Pan, Chen, Chen, Sun, Chen, Zhang, Xie, Huang, Zhang, Gao, Li, Ding, and Zhou]{abs-2505-17826}
+Xuchen Pan, Yanxi Chen, Yushuo Chen, Yuchang Sun, Daoyuan Chen, Wenhao Zhang, Yuexiang Xie, Yilun Huang, Yilei Zhang, Dawei Gao, Yaliang Li, Bolin Ding, and Jingren Zhou.
+\newblock Trinity-rft: {A} general-purpose and unified framework for reinforcement fine-tuning of large language models.
+\newblock \emph{CoRR}, abs/2505.17826, 2025.
+
+\bibitem[Paszke et~al.(2019)Paszke, Gross, Massa, Lerer, Bradbury, Chanan, Killeen, Lin, Gimelshein, Antiga, Desmaison, K{\"{o}}pf, Yang, DeVito, Raison, Tejani, Chilamkurthy, Steiner, Fang, Bai, and Chintala]{PaszkeGMLBCKLGA19}
+Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, Alban Desmaison, Andreas K{\"{o}}pf, Edward~Z. Yang, Zachary DeVito, Martin Raison, Alykhan Tejani, Sasank Chilamkurthy, Benoit Steiner, Lu~Fang, Junjie Bai, and Soumith Chintala.
+\newblock Pytorch: An imperative style, high-performance deep learning library.
+\newblock In \emph{NeurIPS}, pp.\  8024--8035, 2019.
+
+\bibitem[Rein et~al.(2023)Rein, Hou, Stickland, Petty, Pang, Dirani, Michael, and Bowman]{abs-2311-12022}
+David Rein, Betty~Li Hou, Asa~Cooper Stickland, Jackson Petty, Richard~Yuanzhe Pang, Julien Dirani, Julian Michael, and Samuel~R. Bowman.
+\newblock {GPQA:} {A} graduate-level google-proof q{\&}a benchmark.
+\newblock \emph{CoRR}, abs/2311.12022, 2023.
+
+\bibitem[Ross et~al.(2011)Ross, Gordon, and Bagnell]{RossGB11}
+St{\'{e}}phane Ross, Geoffrey~J. Gordon, and Drew Bagnell.
+\newblock A reduction of imitation learning and structured prediction to no-regret online learning.
+\newblock In \emph{{AISTATS}}, volume~15 of \emph{{JMLR} Proceedings}, pp.\  627--635. JMLR.org, 2011.
+
+\bibitem[Schulman(2020)]{Schulman2020KL}
+John Schulman.
+\newblock Approximating {KL} divergence, 2020.
+\newblock URL \url{http://joschu.net/blog/kl-approx.html}.
+\newblock Blog post.
+
+\bibitem[Schulman et~al.(2017)Schulman, Wolski, Dhariwal, Radford, and Klimov]{SchulmanWDRK17}
+John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
+\newblock Proximal policy optimization algorithms.
+\newblock \emph{CoRR}, abs/1707.06347, 2017.
+
+\bibitem[Shridhar et~al.(2021)Shridhar, Yuan, C{\^{o}}t{\'{e}}, Bisk, Trischler, and Hausknecht]{ShridharYCBTH21}
+Mohit Shridhar, Xingdi Yuan, Marc{-}Alexandre C{\^{o}}t{\'{e}}, Yonatan Bisk, Adam Trischler, and Matthew~J. Hausknecht.
+\newblock Alfworld: Aligning text and embodied environments for interactive learning.
+\newblock In \emph{{ICLR}}. OpenReview.net, 2021.
+
+\bibitem[Wang et~al.(2026{\natexlab{a}})Wang, Yan, Shen, Liu, Fan, Li, Miao, Yuan, Shen, and Ye]{abs-2605-19433}
+Bing Wang, Shaotian Yan, Chen Shen, Kaiyuan Liu, Sinan Fan, Ximing Li, Rui Miao, Xiaosong Yuan, Zhanming Shen, and Jieping Ye.
+\newblock Backtracking when it strays: Mitigating dual exposure biases in {LLM} reasoning distillation.
+\newblock \emph{CoRR}, abs/2605.19433, 2026{\natexlab{a}}.
+
+\bibitem[Wang et~al.(2026{\natexlab{b}})Wang, Zhang, Shi, Li, and Cheng]{abs-2604-24005}
+Jiaqi Wang, Wenhao Zhang, Weijie Shi, Yaliang Li, and James Cheng.
+\newblock {TCOD:} exploring temporal curriculum in on-policy distillation for multi-turn autonomous agents.
+\newblock \emph{CoRR}, abs/2604.24005, 2026{\natexlab{b}}.
+
+\bibitem[Wang et~al.(2022)Wang, Jansen, C{\^{o}}t{\'{e}}, and Ammanabrolu]{WangJCA22}
+Ruoyao Wang, Peter~A. Jansen, Marc{-}Alexandre C{\^{o}}t{\'{e}}, and Prithviraj Ammanabrolu.
+\newblock Scienceworld: Is your agent smarter than a 5th grader?
+\newblock In \emph{{EMNLP}}, pp.\  11279--11298. Association for Computational Linguistics, 2022.
+
+\bibitem[Xia et~al.(2026)Xia, Sun, Song, Wu, Qi, and Xu]{abs-2607-29078}
+Yuchen Xia, Qianguo Sun, Chao Song, Junlong Wu, Yiyan Qi, and Yunjian Xu.
+\newblock {DASH-OPD:} discrepancy-aware switching with hysteresis for on-policy distillation.
+\newblock \emph{CoRR}, abs/2607.29078, 2026.
+
+\bibitem[Xu et~al.(2026)Xu, Xu, Hong, Ni, Li, Qiu, Lu, and Shen]{abs-2607-26057}
+Haolei Xu, Xiaowen Xu, Haiwen Hong, Zixuan Ni, Hongxing Li, Yiwen Qiu, Weiming Lu, and Yongliang Shen.
+\newblock Pass the baton: Trajectory-relayed on-policy distillation.
+\newblock \emph{CoRR}, abs/2607.26057, 2026.
+
+\bibitem[Yang et~al.(2024)Yang, Zhang, Hui, Gao, Yu, Li, Liu, Tu, Zhou, Lin, Lu, Xue, Lin, Liu, Ren, and Zhang]{abs-2409-12122}
+An~Yang, Beichen Zhang, Binyuan Hui, Bofei Gao, Bowen Yu, Chengpeng Li, Dayiheng Liu, Jianhong Tu, Jingren Zhou, Junyang Lin, Keming Lu, Mingfeng Xue, Runji Lin, Tianyu Liu, Xingzhang Ren, and Zhenru Zhang.
+\newblock Qwen2.5-math technical report: Toward mathematical expert model via self-improvement.
+\newblock \emph{CoRR}, abs/2409.12122, 2024.
+
+\bibitem[Yang et~al.(2025)Yang, Li, Yang, Zhang, Hui, Zheng, Yu, Gao, Huang, Lv, Zheng, Liu, Zhou, Huang, Hu, Ge, Wei, Lin, Tang, Yang, Tu, Zhang, Yang, Yang, Zhou, Zhou, Lin, Dang, Bao, Yang, Yu, Deng, Li, Xue, Li, Zhang, Wang, Zhu, Men, Gao, Liu, Luo, Li, Tang, Yin, Ren, Wang, Zhang, Ren, Fan, Su, Zhang, Zhang, Wan, Liu, Wang, Cui, Zhang, Zhou, and Qiu]{abs-2505-09388}
+An~Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo~Zheng, Bowen Yu, Chang Gao, Chengen Huang, Chenxu Lv, Chujie Zheng, Dayiheng Liu, Fan Zhou, Fei Huang, Feng Hu, Hao Ge, Haoran Wei, Huan Lin, Jialong Tang, Jian Yang, Jianhong Tu, Jianwei Zhang, Jian Yang, Jiaxi Yang, Jingren Zhou, Jingren Zhou, Junyang Lin, Kai Dang, Keqin Bao, Kexin Yang, Le~Yu, Lianghao Deng, Mei Li, Mingfeng Xue, Mingze Li, Pei Zhang, Peng Wang, Qin Zhu, Rui Men, Ruize Gao, Shixuan Liu, Shuang Luo, Tianhao Li, Tianyi Tang, Wenbiao Yin, Xingzhang Ren, Xinyu Wang, Xinyu Zhang, Xuancheng Ren, Yang Fan, Yang Su, Yichang Zhang, Yinger Zhang, Yu~Wan, Yuqiong Liu, Zekun Wang, Zeyu Cui, Zhenru Zhang, Zhipeng Zhou, and Zihan Qiu.
+\newblock Qwen3 technical report.
+\newblock \emph{CoRR}, abs/2505.09388, 2025.
+
+\bibitem[Yao et~al.(2023)Yao, Zhao, Yu, Du, Shafran, Narasimhan, and Cao]{YaoZYDSN023}
+Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik~R. Narasimhan, and Yuan Cao.
+\newblock React: Synergizing reasoning and acting in language models.
+\newblock In \emph{{ICLR}}. OpenReview.net, 2023.
+
+\bibitem[Yu et~al.(2025)Yu, Zhang, Zhu, Yuan, Zuo, Yue, Fan, Liu, Liu, Liu, Lin, Lin, Ma, Sheng, Tong, Zhang, Zhang, Zhang, Zhu, Zhu, Chen, Chen, Wang, Yu, Dai, Song, Wei, Zhou, Liu, Ma, Zhang, Yan, Qiao, Wu, and Wang]{abs-2503-14476}
+Qiying Yu, Zheng Zhang, Ruofei Zhu, Yufeng Yuan, Xiaochen Zuo, Yu~Yue, Tiantian Fan, Gaohong Liu, Lingjun Liu, Xin Liu, Haibin Lin, Zhiqi Lin, Bole Ma, Guangming Sheng, Yuxuan Tong, Chi Zhang, Mofan Zhang, Wang Zhang, Hang Zhu, Jinhua Zhu, Jiaze Chen, Jiangjie Chen, Chengyi Wang, Hongli Yu, Weinan Dai, Yuxuan Song, Xiangpeng Wei, Hao Zhou, Jingjing Liu, Wei{-}Ying Ma, Ya{-}Qin Zhang, Lin Yan, Mu~Qiao, Yonghui Wu, and Mingxuan Wang.
+\newblock {DAPO:} an open-source {LLM} reinforcement learning system at scale.
+\newblock \emph{CoRR}, abs/2503.14476, 2025.
+
+\bibitem[Zhang \& Math-AI(2024)Zhang and Math-AI]{aime24}
+Yifan Zhang and Team Math-AI.
+\newblock American invitational mathematics examination (aime) 2024, 2024.
+
+\bibitem[Zhang \& Math-AI(2025)Zhang and Math-AI]{aime25}
+Yifan Zhang and Team Math-AI.
+\newblock American invitational mathematics examination (aime) 2025, 2025.
+
+\bibitem[Zhang \& Math-AI(2026)Zhang and Math-AI]{aime26}
+Yifan Zhang and Team Math-AI.
+\newblock American invitational mathematics examination (aime) 2026, 2026.
+
+\bibitem[Zhao et~al.(2026)Zhao, Xie, Liu, Huang, Pang, Chen, and Grover]{abs-2601-18734}
+Siyan Zhao, Zhihui Xie, Mengchen Liu, Jing Huang, Guan Pang, Feiyu Chen, and Aditya Grover.
+\newblock Self-distilled reasoner: On-policy self-distillation for large language models.
+\newblock \emph{CoRR}, abs/2601.18734, 2026.
+
+\bibitem[Zheng et~al.(2026)Zheng, Ma, Liang, Ruan, Fu, Lin, Zhu, Zeng, and Cai]{abs-2604-10688}
+Binbin Zheng, Xing Ma, Yiheng Liang, Jingqing Ruan, Xiaoliang Fu, Kepeng Lin, Benchang Zhu, Ke~Zeng, and Xunliang Cai.
+\newblock {SCOPE:} signal-calibrated on-policy distillation enhancement with dual-path adaptive weighting.
+\newblock \emph{CoRR}, abs/2604.10688, 2026.
+
+\bibitem[Zhong et~al.(2026)Zhong, Zheng, Song, Lin, Sun, Jiang, Wang, and Fang]{abs-2605-07725}
+Qiyong Zhong, Mao Zheng, Mingyang Song, Xin Lin, Jie Sun, Houcheng Jiang, Xiang Wang, and Junfeng Fang.
+\newblock {SOD:} step-wise on-policy distillation for small language model agents.
+\newblock \emph{CoRR}, abs/2605.07725, 2026.
+
+\bibitem[Zhou et~al.(2023)Zhou, Lu, Mishra, Brahma, Basu, Luan, Zhou, and Hou]{abs-2311-07911}
+Jeffrey Zhou, Tianjian Lu, Swaroop Mishra, Siddhartha Brahma, Sujoy Basu, Yi~Luan, Denny Zhou, and Le~Hou.
+\newblock Instruction-following evaluation for large language models.
+\newblock \emph{CoRR}, abs/2311.07911, 2023.
+
+\bibitem[Zhou et~al.(2026{\natexlab{a}})Zhou, Zhang, Wu, Wang, Peng, Liu, Fan, and Zhao]{abs-2606-19659}
+Yuhang Zhou, Lizhu Zhang, Yifan Wu, Mingyi Wang, Bo~Peng, Jiayi Liu, Xiangjun Fan, and Zhuokai Zhao.
+\newblock {SAGE-OPD:} selective agent-guided intervention for multi-turn on-policy distillation.
+\newblock \emph{CoRR}, abs/2606.19659, 2026{\natexlab{a}}.
+
+\bibitem[Zhou et~al.(2026{\natexlab{b}})Zhou, Zheng, Li, Peng, Xu, and Chen]{abs-2607-05804}
+Yuhang Zhou, Kai Zheng, Haoling Li, Dengyun Peng, Can Xu, and Jingjing Chen.
+\newblock Turnopd: Making on-policy distillation turn-aware for efficient long-horizon agent training.
+\newblock \emph{CoRR}, abs/2607.05804, 2026{\natexlab{b}}.
+
+\end{thebibliography}

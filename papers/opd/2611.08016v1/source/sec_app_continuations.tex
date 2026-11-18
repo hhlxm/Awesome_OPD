@@ -1,0 +1,80 @@
+% Supplement for Appendix E (sec_app_routing_drift.tex).
+% Prose paragraphs are stored as single source lines, without manual breaks.
+%
+% PROVENANCE / INTEGRATION NOTES:
+% The continuation design and rounded contrasts were supplied in the editing conversation. The original Overleaf archive contains neither the raw continuation records nor the aggregate export. These are transcribed point estimates, not a new computation from raw outcomes.
+% Confirm decoder settings, stopping rules, inherited-prefix serialization, total-budget handling, and grader implementation against the experiment records. No settings or uncertainty intervals were inferred from the separate answer-boundary study.
+% In particular, verify that the exported averages retain earlier terminal responses with their original scores and the full rollout-bank denominator. A mean conditional on surviving to the cut is a different quantity.
+
+\newpage
+\subsection{Fixed-reference continuation experiments}
+\label{app:continuation-profile}
+\label{app:fixed-reference-continuations}
+
+The answer-versus-continue experiment in \cref{app:steer-probe} conducted a case study probing continuation from fixed prefixes. This, however, is not enough in understanding the decline in terminal score of the trained student model. Recall that, at a high level, the broadcast not only affects continuation behaviors of the model, but also changes its prefix visitation probabilities. Therefore, to understand the terminal-score decline during OPD, we must also consider how the prefixes that the student checkpoints generates as training proceeds. At any rollout depth, successful completion depends on two quantities: which prefixes the student reaches, and how successfully it continues from those prefixes. We first express terminal score in terms of these two quantities, then show how the reference-policy experiment separates their changes.
+
+\paragraph{Prefix visitation and continuation.}
+Fix a cut depth $h$. Recall our notation from before, that $d_t(x)$ is the probability that checkpoint $t$ reaches prefix $x$, and $V_t^Y(x)$ is its expected terminal score when it completes that prefix. The set of rollout cuts $\mathcal C_h$ includes depth-$h$ prefixes and responses that ended earlier (an earlier \emph{completed} response just retains its terminal score). Conditioning on $\mathcal C_h$ gives
+\[
+ J_Y(t)=\sum_{x\in\mathcal C_h}d_t(x)V_t^Y(x).
+\]
+This is just the usual average over the ``continuation problems'' presented to the student by its own generation. Training changes both the weights $d_t$ and the continuation values $V_t^Y$. Comparing each checkpoint's prefixes using that checkpoint as the continuer therefore only measures their \emph{combined} effect.
+
+\paragraph{Hold the continuer fixed.}
+Using the initial student as the reference, add and subtract $\sum_{x\in\mathcal C_h}d_t(x)V_0^Y(x)$ to obtain
+\begin{equation}
+ \begin{aligned}
+ J_Y(t)-J_Y(0)
+ &=\underbrace{\sum_{x\in\mathcal C_h}[d_t(x)-d_0(x)]V_0^Y(x)}_{\text{prefix visitation, evaluated by the initial continuer}}
+ \quad+\underbrace{\sum_{x\in\mathcal C_h}d_t(x)[V_t^Y(x)-V_0^Y(x)]}_{\text{continuation change on the same current prefixes}}.
+ \end{aligned}
+ \label{eq:continuation-reference-split}
+\end{equation}
+The first term \emph{compares the initial and trained prefix distributions} while keeping the continuer fixed. A negative value means that the initial student finds the trained prefixes harder to finish than its own prefixes. The second term keeps the trained prefix distribution fixed and compares the two continuers. A negative value means that the trained student is less successful than the initial student on those same prefixes. Thus the comparison changes the prefix-generating policy first, then the continuing policy.
+
+Our experiment implements the intermediate case directly: checkpoint $t$ generates the first $h$ tokens, and the initial student completes the rest of the rollout. Let us write its expected score as
+\begin{equation}
+ F_t^0(h)=\sum_{x\in\mathcal C_h}d_t(x)V_0^Y(x).
+ \label{eq:continuation-handoff}
+\end{equation}
+The two terms in \cref{eq:continuation-reference-split} are therefore $F_t^0(h)-J_Y(0)$ and $J_Y(t)-F_t^0(h)$. They can be estimated by averaging completed responses. The first supplies a common measure of prefix difficulty across checkpoints; the second compares continuers on each checkpoint's own prefix distribution. 
+
+\paragraph{Experimental setup and results.}
+The study uses 250 held-out MATH problems, two source rollouts per problem from each of checkpoints 50, 100, and 200, and cuts at 256, 512, and 1,024 response tokens. Each active prefix is continued four times by the generating checkpoint, the initial student, and the teacher. All continuers receive the remainder of an 8,192-token total response budget. The readout is extracted-answer success on the full prefix and continuation; the answer need not be immediately followed by an end-of-turn token. Stopping is recorded separately. The estimator averages continuation scores within each prefix, then over the two source rollouts and uniformly over problems, retaining earlier completed responses as above. This population and budget differ from those of the selected answer-boundary probe in \cref{app:steer-probe}. The reported values below are rounded sample means; independently sampled self-continuations estimate the same $J_Y(t)$ but need not give identical means at different cuts.
+% This experiment does not inherit T=0.6, top-p=0.95, or the 16,384-new-token budget from app:steer-probe. Raw records are needed to verify the aggregation convention and estimate uncertainty while preserving prompt and prefix pairing.
+
+Consider the 256-token cut at step 50. The initial student scores $48.4\%$ on its own rollouts and $50.5\%$ when it completes the trained checkpoint's prefixes. The trained checkpoint scores $39.5\%$ on those same prefixes. The first comparison therefore contributes $+2.1$ percentage points, while the second contributes $-11.0$ points, accounting for the total $-8.9$-point difference. At this cut, the prefixes remain usable by the initial student; the trained student loses performance in completing them.
+
+\begin{table}[ht]
+\centering\small
+\setlength{\tabcolsep}{8pt}
+\begin{tabular}{r rrr}
+\toprule
+Cut depth & Step 50 & Step 100 & Step 200\\
+\midrule
+256   & $+2.1$ & $-1.7$ & $-5.9$\\
+512   & $-1.3$ & $-2.7$ & $-6.1$\\
+1,024 & $-8.1$ & $-7.6$ & $-8.5$\\
+\bottomrule
+\end{tabular}
+\caption{Change in initial-policy completion success, $100[F_t^0(h)-J_Y(0)]$, in percentage points. The initial student completes prefixes from each trained checkpoint; its own-rollout baseline is $48.4\%$. These are the values plotted in \cref{fig:rd-initial-continuation}, reported as rounded aggregate point estimates from one training run.}
+\label{tab:continuation-reference}
+\end{table}
+
+\Cref{tab:continuation-reference} shows that at step 50, the initial continuer already scores lower on deep prefixes: the 1,024-token contrast is $-8.1$ points. At later checkpoints, the deficit also reaches the shallow cuts, while the 1,024-token deficit remains similar in magnitude. On the 256-token prefixes, the trained-minus-initial continuation contrast remains negative at steps 100 and 200 ($-12.1$ and $-6.2$ points). By step 200, both terms in \cref{eq:continuation-reference-split} are negative: the initial student finds the new prefixes harder, and the trained student completes those prefixes less successfully than the initial student.
+
+\paragraph{Connection to \Cref{eq:broadcast-continuations}.}
+The same two factors describe the instantaneous dynamics. Differentiating the cut identity gives
+\begin{equation}
+ \dot J_Y(t)=\sum_{x\in\mathcal C_h}\dot d_t(x)V_t^Y(x)+\sum_{x\in\mathcal C_h}d_t(x)\dot V_t^Y(x).
+ \label{eq:continuation-infinitesimal}
+\end{equation}
+Under the regularity assumptions in \cref{prop:rd-value-cut}, the first term computes the contributions to \cref{eq:broadcast-continuations} from decisions before the cut, and the second collects those from the cut onward. Both arise from the same shared parameter update. If the reference is checkpoint $t$ instead of checkpoint 0, and the compared policy is an infinitesimally later checkpoint $t+dt$, the differences in \cref{eq:continuation-reference-split} (divided by elapsed training time) recover the derivative, hence recovering these two terms. Such measurements are unrealistic to implement and too noisy to measure in practice, however, so our experiment instead use the initial policy as the reference continuer to magnify the trend of visited-prefix quality / continuation difficulty.
+
+\paragraph{What does moving the cut measure?}
+Another interesting question is, at a fixed checkpoint $t$, moving the rollout cut from $h_1$ to $h_2$ lets the trained student generate an additional block of tokens before the initial student takes over. A decrease in $F_t^0$ means that this additional trained-student generation leaves the initial continuer less able to reach a correct answer. To connect it to continuation advantages, let us follow the initial student's value along a trained rollout. For each action decision, $\mathcal A_0^Y(x_j,a_j)=V_0^Y(x_{j+1})-V_0^Y(x_j)$. Summing over a block yields a telescoping series over depth of the cuts, then averaging over the rollouts gives
+\begin{equation}
+ F_t^0(h_2)-F_t^0(h_1)=\sum_{\substack{x\in\mathcal S\\h_1\le h(x)<h_2}}d_t(x)\Ex_{a\sim\pi_t(\cdot\mid x)}[\mathcal A_0^Y(x,a)].
+ \label{eq:continuation-block-identity}
+\end{equation}
+Here $\mathcal S$ contains decision prefixes; completed responses contribute no further decisions and retain their scores. At depth zero, the initial student generates the whole response, so $F_t^0(0)=J_Y(0)$. At the total response cap, the trained student has generated the whole response, so $F_t^0(H_{\max})=J_Y(t)$. Consequently, the differences across any partition of the full response sum to $J_Y(t)-J_Y(0)$. Fixed cuts therefore measure aggregate contributions of token blocks to this finite policy comparison, using completed outcomes in place of separate continuation-value estimates at every token.

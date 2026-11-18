@@ -1,0 +1,14 @@
+\begin{table}[ht]
+\centering\small
+\begin{tabular}{llrrrr}
+\toprule
+Learner & Reference class & Positions & $c_W$ at reference & $c_W$ at 200 & $\Delta$ log-odds\\
+\midrule
+DeepSeek & Above teacher & 33,010 & 0.0789 & 0.0032 & -2.073\\
+DeepSeek & Below teacher & 11,336 & 0.1915 & 0.0149 & +1.381\\
+Prepared Qwen & Above teacher & 25,794 & 0.0276 & 0.0580 & -0.606\\
+Prepared Qwen & Below teacher & 18,211 & 0.5627 & 0.3813 & +0.721\\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Checking probability on fixed prefixes.} We report discrepancy from the teacher, $c_W$, and the change in log-odds from the reference checkpoint to checkpoint 200. The reference is checkpoint 0 for DeepSeek and checkpoint 20 for prepared Qwen. Each class contains the same prefixes at both checkpoints. The main-text routing and drift plots instead compare successive banks.}\label{tab:rd-check-calibration}
+\end{table}

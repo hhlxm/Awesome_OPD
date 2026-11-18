@@ -1,0 +1,134 @@
+\documentclass{article} 
+\usepackage{iclr2027_conference,times}
+
+\usepackage[T1]{fontenc}
+
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\usepackage{url}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{subcaption}
+\usepackage{placeins}
+\usepackage{needspace}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{xcolor}
+\usepackage[capitalize,noabbrev]{cleveref}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{fvextra}
+
+\newtcolorbox{promptbox}[1]{
+    title={#1},
+    colback=gray!5,
+    colframe=black!60,
+    boxrule=0.5pt,
+    arc=2pt,
+    breakable
+}
+
+
+
+\usetikzlibrary{arrows.meta,positioning,calc}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\TV}{\mathrm{TV}}
+\newcommand{\Prob}{\mathbb{P}}
+
+
+\newenvironment{principlebox}[1]{
+  \begin{center}\begin{minipage}{0.94\linewidth}
+  \vspace{2pt}\hrule\vspace{5pt}
+  \noindent\textbf{#1}\ \ }{
+  \vspace{5pt}\hrule\vspace{2pt}
+  \end{minipage}\end{center}}
+\providecommand{\cS}{\mathcal{S}}
+\providecommand{\cV}{\mathcal{V}}   
+\providecommand{\cA}{\mathcal{A}}
+\providecommand{\cE}{\mathcal{E}}
+\providecommand{\cR}{\mathcal{R}}
+\providecommand{\cP}{\mathcal{P}}
+\providecommand{\cC}{\mathcal{C}}
+\newcommand{\ip}[2]{\langle #1, #2\rangle}
+
+\providecommand{\cO}{\mathcal{O}}    
+\providecommand{\cM}{\mathcal{M}}    
+\providecommand{\cG}{\mathcal{G}}    
+\providecommand{\Ex}{\mathbb{E}}
+\providecommand{\R}{\mathbb{R}}
+\providecommand{\softmax}{\mathrm{softmax}}
+\renewcommand{\KL}[2]{D_{\mathrm{KL}}\!\left(#1 \,\Vert\, #2\right)}
+\title{Learning Dynamics of On-policy Distillation}
+
+\author{Guan Zhe Hong$^{1}$ \quad Sumeet R. Motwani$^{1}$ \quad  Liang Chen$^{2}$ \quad Yangchen Pan$^{3}$ \\
+\textbf{Junchi Yu}$^{1}$ \quad \textbf{Jialin Yu}$^{1}$ \quad \textbf{Philip H.S. Torr}$^{1}$ \quad \textbf{Yi Ren}$^{1}$\\
+$^1$University of Oxford \quad $^2$EPFL \quad $^3$City University of Hong Kong
+}
+
+\iclrfinalcopy
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{abs}
+\end{abstract}
+
+\input{sec1_intro_20260909}
+
+\input{sec2_setup_v1}
+
+\input{sec3_loop_v2}
+
+\input{sec3_local_v2}
+
+\input{sec3_broadcast}
+
+\input{sec3_preparation}
+
+\input{conclusion}
+
+\bibliography{iclr2027_conference,opd_appendix_references}
+\bibliographystyle{iclr2027_conference}
+
+\appendix
+\clearpage
+\input{sec_app_clarifications}
+\FloatBarrier
+\clearpage
+\input{sec_app_related_work}
+\FloatBarrier
+\clearpage
+\input{sec_app_derivations}
+\FloatBarrier
+\Needspace{12\baselineskip}
+\input{sec_app_collective_conversion}
+\FloatBarrier
+\Needspace{12\baselineskip}
+\input{sec_app_routing_drift}
+\FloatBarrier
+%\Needspace{12\baselineskip}
+%\input{sec_app_broadcast}
+%\FloatBarrier
+\Needspace{12\baselineskip}
+\input{sec_app_preparation}
+\FloatBarrier
+\end{document}

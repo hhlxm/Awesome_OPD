@@ -1,0 +1,19 @@
+\begin{center}
+    \centering
+    \small
+    \setlength{\tabcolsep}{5.0pt}
+    \captionof{table}{\textbf{Standalone teacher accuracy depends on the generation-sampling temperature.}
+    Accuracy is in percent; Macro gives equal weight to the three benchmarks, and bold marks each column maximum.}
+    \label{tab:deepscaler_teacher_temperature}
+    \begin{tabular}{@{}lrrrr@{}}
+        \toprule
+        Temperature & AMC23 & AIME24 & AIME25 & Macro \\
+        \midrule
+        0.1 & 66.27 & 23.33 & \textbf{30.00} & 39.87 \\
+        0.5 & \textbf{67.47} & 30.00 & 26.67 & 41.38 \\
+        0.75 & 65.06 & \textbf{36.67} & 23.33 & \textbf{41.69} \\
+        1 & 56.63 & 20.00 & 10.00 & 28.88 \\
+        1.5 & 0.00 & 0.00 & 0.00 & 0.00 \\
+        \bottomrule
+    \end{tabular}
+\end{center}

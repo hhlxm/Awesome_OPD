@@ -1,0 +1,50 @@
+% =====================================================================
+%  Paper-specific packages and macros for PivotOPD
+%  (carried over from the ICLR 2027 preamble; the template packages
+%  are loaded in nv.cls and preamble.tex)
+% =====================================================================
+
+% ---------- Packages --------------------------------------------------
+\usepackage{algorithm}       % floating algorithm environment
+\usepackage{algpseudocode}   % \Procedure, \State, \For, \If, \Call, \Comment
+\tcbuselibrary{most}         % enhanced, breakable prompt boxes in the appendix
+
+% 8pt captions in wrap floats.
+\DeclareCaptionFont{eightpt}{\fontsize{8}{9.5}\selectfont}
+\AddToHook{env/wrapfigure/begin}{\captionsetup{font=eightpt}}
+\AddToHook{env/wraptable/begin}{\captionsetup{font=eightpt}}
+
+% Global list spacing: tight above the list, readable between items.
+\setlist{topsep=2pt, partopsep=0pt, itemsep=3pt, parsep=0pt}
+
+% ---------- Paper-specific names --------------------------------------
+\newcommand{\na}{--}
+% nv.cls letterspaces all small caps (microtype tracking=smallcaps); \textls[0]
+% keeps the method name set solid, and \mbox prevents breaks such as "Piv-otOPD".
+\newcommand{\method}{\texorpdfstring{\mbox{\textsc{\textls[0]{PivotOPD}}}}{PivotOPD}}
+
+% ---------- Theorem environments --------------------------------------
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+% ---------- Macros used in the method section -------------------------
+\newcommand{\pib}{\pi_{\bar\theta}}
+\newcommand{\act}{\operatorname{act}}
+
+% ---------- Cross-references ------------------------------------------
+% \Cref is the paper-wide cross-reference form; names match the previous
+% manual idioms ("Eq. 1" without parentheses, "Appendix C.1" via the
+% aliases set at the top of appendix.tex).
+\usepackage{cleveref}
+\crefname{equation}{Eq.}{Eqs.}
+\Crefname{equation}{Eq.}{Eqs.}
+\creflabelformat{equation}{#2#1#3}
+\crefname{algorithm}{algorithm}{algorithms}
+\Crefname{algorithm}{Algorithm}{Algorithms}
+\crefname{proposition}{proposition}{propositions}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefname{lemma}{lemma}{lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{appendix}{appendix}{appendices}
+\Crefname{appendix}{Appendix}{Appendices}

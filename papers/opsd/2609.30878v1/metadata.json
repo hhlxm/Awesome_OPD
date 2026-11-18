@@ -1,0 +1,44 @@
+{
+  "arxiv_id": "2609.30878v1",
+  "title": "TISD: On-Policy Self-Distillation with Trajectory Intervention",
+  "authors": [
+    "Lee, Taeckyung",
+    "Amankos, Rinat",
+    "Kim, Jeonghye",
+    "Yoon, Hyungjun",
+    "Jin, Woogyeol",
+    "Lee, Sung-Ju"
+  ],
+  "submitted_date": "2026/09/25",
+  "abs_url": "https://arxiv.org/abs/2609.30878v1",
+  "schema_version": 2,
+  "requested_input": "2609.30878",
+  "requested_id": "2609.30878",
+  "source_url": "https://arxiv.org/src/2609.30878v1",
+  "downloaded_at": "2026-11-12T06:04:46.562289+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "a3a4d030517b710548b9634da3cbd18fbaba981febde5bbd4e18b2abd169be6d",
+  "tex_files": [
+    "arxiv.tex",
+    "math_commands.tex",
+    "sections/1_introduction.tex",
+    "sections/2_related_work.tex",
+    "sections/3_analysis.tex",
+    "sections/4_method.tex",
+    "sections/5_experiment.tex",
+    "sections/6_discussion.tex",
+    "sections/99_appendix.tex"
+  ],
+  "main_tex_candidates": [
+    "arxiv.tex"
+  ],
+  "source_file_count": 30,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2609.30878v1",
+    "sha256": "c3057064a29375420bf839969443f6a65e1220c3e029b5b67f1b62befb5085a2",
+    "downloaded_at": "2026-11-12T06:04:49.588187+00:00",
+    "content_type": "application/pdf"
+  }
+}

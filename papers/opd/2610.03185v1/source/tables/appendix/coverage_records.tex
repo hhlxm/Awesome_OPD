@@ -1,0 +1,69 @@
+\begin{center}
+\captionof{table}{\textbf{Audited observed-solvable-set partitions.}
+Each cell gives the number of problems followed by their three-digit suffixes.}
+\label{tab:appendix_coverage_sets}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular}{llp{0.31\textwidth}p{0.12\textwidth}p{0.10\textwidth}p{0.20\textwidth}}
+\toprule
+Teacher & Data & Both & $S_{\mathrm{INIT}}$ only & $S_{\mathrm{OPD}}$ only & Neither \\
+\midrule
+JustRL & AIME24
+& \textbf{24}: 001--007, 009, 010, 013--022, 025--029
+& \textbf{1}: 023 & \textbf{0}: --
+& \textbf{5}: 008, 011, 012, 024, 030 \\
+JustRL & AIME25
+& \textbf{18}: 001--006, 008, 009, 012, 016, 017, 019, 021, 022, 024, 025, 027, 029
+& \textbf{6}: 010, 013, 014, 023, 028, 030 & \textbf{0}: --
+& \textbf{6}: 007, 011, 015, 018, 020, 026 \\
+JustRL & AIME26
+& \textbf{23}: 001--008, 010, 012--014, 016, 018--027
+& \textbf{1}: 011 & \textbf{0}: --
+& \textbf{6}: 009, 015, 017, 028--030 \\
+\midrule
+DeepScaleR & AIME24
+& \textbf{23}: 001--007, 009, 010, 013--022, 025--028
+& \textbf{2}: 023, 029 & \textbf{0}: --
+& \textbf{5}: 008, 011, 012, 024, 030 \\
+DeepScaleR & AIME25
+& \textbf{18}: 001--006, 008, 009, 012, 016, 017, 019, 021--024, 027, 029
+& \textbf{6}: 010, 013, 014, 025, 028, 030 & \textbf{0}: --
+& \textbf{6}: 007, 011, 015, 018, 020, 026 \\
+DeepScaleR & AIME26
+& \textbf{22}: 001--008, 010, 012--014, 016, 018--026
+& \textbf{2}: 011, 027 & \textbf{0}: --
+& \textbf{6}: 009, 015, 017, 028--030 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}
+\captionof{table}{\textbf{Resolution of the raw $S_{\mathrm{OPD}}$-only cases.}
+The third column records how a correct $S_{\mathrm{INIT}}$ response was
+obtained. ``Extended sampling'' means the verifier accepted a response drawn
+while extending the pool to 1,024. ``Manual review'' means a correct response
+was already present and had been missed by the verifier, so no additional
+generation was needed. ``None'' means neither route produced one.}
+\label{tab:appendix_coverage_audit}
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}llp{0.22\textwidth}p{0.17\textwidth}p{0.27\textwidth}@{}}
+\toprule
+Teacher & Problem & $S_{\mathrm{INIT}}$ solution found by & $S_{\mathrm{OPD}}$ derivation & Resolution \\
+\midrule
+JustRL & AIME25-020 & None & Invalid & Removed as an accidental verifier hit \\
+JustRL & AIME25-025 & Extended sampling & Valid & Shared \\
+JustRL & AIME26-010 & Extended sampling & Valid & Shared \\
+JustRL & AIME26-022 & Manual review & Valid & Shared \\
+JustRL & AIME26-027 & Manual review & Valid & Shared \\
+\midrule
+DeepScaleR & AIME25-014 & Extended sampling & Invalid & $S_{\mathrm{INIT}}$ only \\
+DeepScaleR & AIME25-023 & Extended sampling & Valid & Shared \\
+DeepScaleR & AIME25-025 & Extended sampling & Invalid & $S_{\mathrm{INIT}}$ only \\
+DeepScaleR & AIME26-010 & Extended sampling & Not needed & Shared \\
+DeepScaleR & AIME26-022 & Extended sampling & Valid (two reviews) & Shared \\
+\bottomrule
+\end{tabular}
+\end{center}

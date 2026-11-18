@@ -1,0 +1,355 @@
+\newtcolorbox{ReasoningBox}[1][]{
+  enhanced, colback=gray!3, colframe=black!65, boxrule=0.6pt,
+  left=2mm, right=2mm, top=1.5mm, bottom=1.5mm,
+  fonttitle=\bfseries\small, fontupper=\small, #1}
+\newcommand{\opdwrong}[1]{\textcolor{red!80!black}{#1}}
+
+\begin{ReasoningBox}[title={Case Study: Math Reasoning (Pre-RL / Post-RL Setting)}, breakable]
+\textbf{Question:} Let $p$ be the least prime number for which there exists a positive integer $n$ such that $n^{4}+1$ is divisible by $p^{2}$. Find the least positive integer $m$ such that $m^{4}+1$ is divisible by $p^{2}$.\\
+\textbf{Correct Answer:} \textcolor{forestgreen}{110}
+
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
+\textbf{Direct OPD:}
+
+We need to find the least prime $p$ such that there exists a positive integer $n$ with $n^4+1$ divisible by $p^2$. Then, once we find that $p$, we need to find the smallest positive integer $m$ such that $m^4+1$ is divisible by $p^2$.
+
+\textbf{Step 1: Understand the problem.} We are looking for the smallest prime $p$ such that there exists an integer $n$ where $n^4 + 1 \equiv 0 \pmod{p^2}$, \ie $n^4 \equiv -1 \pmod{p^2}$. Then, once we find such $p$, we need to find the minimal positive integer $m$ satisfying the same congruence.
+
+\textbf{Step 2: Find the minimal prime $p$.} To solve this congruence, we need to know when $-1$ is a quartic residue. Let's try small primes:
+
+\textit{Try $p=2$:} we need $n^4+1$ divisible by 4. $n=1$: $2$; $n=2$: $17$; $n=3$: $82$; $n=4$: $257 \equiv 1 \pmod 4$ --- none divisible by 4. No solution.
+
+\textit{Try $p=3$:} we need $n^4 \equiv -1 \equiv 8 \pmod 9$. Checking $n = 0, \dots, 8$: $0, 1, 7, 0, 4, 4, 0, 7, 1$ (\eg $5^2 = 25 \equiv 7$, so $5^4 \equiv 7^2 = 49 \equiv 4$; $8 \equiv -1$, so $8^4 \equiv 1$). None give 8. No solution.
+
+\textit{Try $p=5$:} check mod 5 first: $x^4 \bmod 5$ for $x = 0,\dots,4$ gives $0, 1, 1, 1, 1$, so all $x^4 \equiv 0$ or $1 \pmod 5$, and $-1 \equiv 4$ is not a quartic residue. Not possible.
+
+\textit{Try $p=7$:} $x^4 \bmod 7$ takes values $\{0, 1, 2, 4\}$ ($2^4 = 16 \equiv 2$; $3^4 = 81 \equiv 4$; $5^4 \equiv 2$; $6 \equiv -1$ gives 1). $-1 \equiv 6$ is not among them. No solution.
+
+\textit{Try $p=11$:} computing $x^2$ then $x^4$ mod 11 for $x = 1, \dots, 10$ gives quartic residues $\{1, 3, 4, 5, 9\}$; $-1 \equiv 10$ is not among them. No solution.
+
+\textit{Try $p=13$:} $-1 \equiv 12$. Checking: $3^4 \equiv 3$; $4^4 \equiv 9$; $5^2 = 25 \equiv 12$, $5^4 \equiv 12^2 = 144 \equiv 1$; $6^4 \equiv 9$; $7^4 \equiv 9$; $8^2 = 64 \equiv 12$, $8^4 \equiv 1$; $9^4 \equiv 9$; $10^4 \equiv 3$; $11^4 \equiv 3$; $12^4 \equiv 1$. No $x$ with $x^4 \equiv 12$. No solution.
+
+Maybe we can think about orders: in the cyclic group mod $p$, the equation $x^4 \equiv -1$ has solutions iff $-1$ lies in the image of the 4th-power map\dots this is getting complex. Let me try concrete examples.
+
+\textit{Try $p=17$:} try $x = 2$: $2^4 = 16 \equiv -1 \pmod{17}$. Yes! So $2^4 \equiv -1 \pmod{17}$, and $p = 17$ is such a prime. Since we checked $p = 2, 3, 5, 7, 11, 13$ and found no solutions, and there is no prime between 13 and 17, $p = 17$ is the smallest such prime.
+
+\textbf{Step 3: Find the least $m$ with $m^4 + 1 \equiv 0 \pmod{289}$.} We know $2^4 \equiv -1 \pmod{17}$, but $2^4 + 1 = 17$ is divisible by 17, not by $17^2$. So we lift with Hensel's lemma. Write $m = 2 + 17k$; modulo $17^2$, terms with $(17k)^2$ vanish, so
+\[
+(2 + 17k)^4 \equiv 2^4 + 4 \cdot 2^3 \cdot (17k) = 16 + 32 \cdot 17k \pmod{289}.
+\]
+We want $16 + 544k \equiv -1 \pmod{289}$. Since $544 \equiv 255 \pmod{289}$, this is $255k \equiv -17 \pmod{289}$, and $255 \equiv -34$, so $-34k \equiv -17$, \ie $34k \equiv 17 \pmod{289}$. Dividing by 17: $2k \equiv 1 \pmod{17}$, so $k \equiv 9 \pmod{17}$ (since $2 \times 9 = 18 \equiv 1$). Therefore $m = 2 + 17 \times 9 = 155$.
+
+Is there a smaller $m$? \opdwrong{If we consider $m \equiv 2 \pmod{17}$, the possible $m$'s are $2, 19, 36, 53, 70, 87, 104, 121, 138, 155, \dots$} Check $m = 2$: $2^4 + 1 = 17$, not divisible by 289. Check $m = 19$: $19^2 = 361 \equiv 72 \pmod{289}$, $19^4 \equiv 72^2 = 5184 \equiv 271 \pmod{289}$ (since $289 \times 17 = 4913$ and $5184 - 4913 = 271$), so $19^4 + 1 \equiv 272 \neq 0$. Not divisible. Checking $m = 36$ would be tedious. \opdwrong{Alternatively, note that the solution is unique in the congruence class, so the minimal $m$ is 155.} Since we used Hensel's lemma and the lifting worked, we can trust that this is the correct answer. Thus, the least positive integer $m$ is 155.
+
+\opdwrong{\textbf{Final Answer:} $\boxed{155}$} \quad \opdwrong{($\leftarrow$ the lift itself is valid, $155^4 \equiv -1 \bmod 289$, but the trace only examines the root $m \equiv 2 \pmod{17}$; the congruence $x^4 \equiv -1 \pmod{17}$ has 4 roots ($2, 8, 9, 15$), and lifting the root $8$ gives $110 < 155$.)}
+
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
+\textbf{\ours:}
+
+We are given a problem involving prime numbers and divisibility. Let me break it down step by step.
+
+\textbf{Step 1: Understand the problem.} We need two things: (1) find the smallest prime $p$ such that $p^2$ divides $n^4+1$ for some positive integer $n$; (2) for that $p$, find the smallest $m$ such that $p^2$ divides $m^4+1$. So first, we need to determine what primes $p$ satisfy the condition that there exists some $n$ where $n^4 \equiv -1 \pmod{p^2}$.
+
+\textbf{Step 2: Analyze the equation $n^4 \equiv -1 \pmod{p^2}$.} This is equivalent to $n^8 \equiv 1 \pmod{p^2}$, since squaring both sides gives $(n^4)^2 \equiv (-1)^2 = 1 \pmod{p^2}$. So the order of $n$ modulo $p^2$ must divide 8, but not divide 4 (since $n^4 \equiv -1 \neq 1$). Let me start checking small primes and see which ones satisfy this condition.
+
+\textbf{Step 3: Check small primes.}
+For $p=2$: $n=1$ gives $1+1=2$, not divisible by $2^2=4$; $n=2$ gives $16+1=17$, not divisible by 4. No solution.
+For $p=3$: $n=1,\dots,6$ give $n^4+1 \equiv 2, 8, 1, 5, 5, 1 \pmod 9$, none zero. No solution.
+For $p=5$: checking $n=1,\dots,10$ against $p^2=25$, the values $n^4+1 \bmod 25$ are $2, 17, 7, 7, 1, 22, 2, 22, 12, 1$, none zero. No solution.
+
+For larger primes, let me think algebraically. If $p$ divides $n^4+1$, then $n^4 \equiv -1 \pmod p$, hence $n^8 \equiv 1 \pmod p$, so the order of $n$ modulo $p$ is exactly 8. Since the multiplicative group mod $p$ is cyclic of order $p-1$, we need $8 \mid p-1$, \ie $p \equiv 1 \pmod 8$. This rules out $p = 7, 13$ (verified directly: no $n$ with $n^4 \equiv -1$ exists for either). The smallest prime with $p \equiv 1 \pmod 8$ is $p=17$.
+
+\textbf{Step 4: Verify $p=17$.} The group mod 17 has order 16, so elements of order 8 exist. Computing $n^4 \bmod 17$ for small $n$: at $n=8$, $8^2 = 64 \equiv 13$, so $8^4 \equiv 13^2 = 169 \equiv -1 \pmod{17}$. So $n=8$ satisfies $n^4+1 \equiv 0 \pmod{17}$.
+
+But we need $p^2 \mid n^4+1$. For $n=8$: $8^4+1 = 4097$, and $4097 = 14 \times 289 + 51$, so $4097 \equiv 51 \pmod{289}$ --- divisible by 17 but not by $17^2$. So we must lift the solution.
+
+\textbf{Step 5: Hensel lifting.} Write $n = 8 + 17k$ and expand modulo $17^2$, dropping terms with $(17k)^2$:
+\[
+(8+17k)^4 + 1 \;\equiv\; 8^4 + 4 \cdot 8^3 \cdot 17k + 1 \pmod{289}.
+\]
+Since $8^4 = 4096 \equiv 50 \pmod{289}$, the condition becomes $51 + 4 \cdot 8^3 \cdot 17 k \equiv 0 \pmod{289}$. Note $51 = 3 \times 17$, so dividing through by 17 reduces the condition to
+\[
+4 \cdot 8^3 \cdot k \;\equiv\; -3 \pmod{17}.
+\]
+Compute $8^2 \equiv 13$, $8^3 \equiv 8 \cdot 13 = 104 \equiv 2 \pmod{17}$, so $4 \cdot 8^3 \equiv 8 \pmod{17}$ and the condition is $8k \equiv -3 \equiv 14 \pmod{17}$. The inverse of 8 mod 17 is 15 (since $8 \times 15 = 120 \equiv 1$), giving $k \equiv 14 \times 15 = 210 \equiv 6 \pmod{17}$. Therefore $n = 8 + 17 \times 6 = 110$ satisfies $n^4 + 1 \equiv 0 \pmod{289}$.
+
+\textbf{Step 6: Check that no smaller $m$ works.} Any solution must satisfy $m^4 \equiv -1 \pmod{17}$, so $m \equiv 8$ or $m \equiv 9 \pmod{17}$ (among the order-8 residues). For the root $m \equiv 9 \pmod{17}$: $9^4 = 6561 \equiv 203 \pmod{289}$, and repeating the lifting with $9^3 \equiv 15$, $4 \cdot 9^3 \equiv 9 \pmod{17}$ gives $9k \equiv -12 \equiv 5 \pmod{17}$; the inverse of 9 is 2, so $k \equiv 10 \pmod{17}$ and the minimal solution on this branch is $m = 9 + 170 = 179 > 110$.
+
+For the branch $m \equiv 8 \pmod{17}$, the candidates below 110 are $8, 25, 42, 59, 76, 93$, corresponding to $k = 0, 1, \dots, 5$; since the lifting requires $k \equiv 6 \pmod{17}$, none of them works (checked explicitly for $m = 8$: $4097 \equiv 51$; $m = 25$: $25^2 = 625 \equiv 47$, $47^2 = 2209 \equiv 186$, $186 + 1 = 187 \neq 0 \pmod{289}$). Therefore $m = 110$ is the least positive integer with $17^2 \mid m^4+1$.
+
+\textbf{Final Answer:} $\boxed{110}$
+\end{ReasoningBox}
+\captionof{figure}{Math case study under Pre-RL/ Post-RL setting, with the errors of direct OPD marked in red.}
+\label{fig:example_math}
+
+\bigskip
+
+\begin{ReasoningBox}[title={Case Study: Code Generation (Pre-RL/Post-RL Setting)}, breakable]
+\textbf{Question:} Write a Python function to find the last digit of a given number.
+
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
+\textbf{Direct OPD:}
+
+To find the \textbf{last digit} of a given number, we can use the \textbf{modulo 10} operation.
+
+\textbf{Reasoning:} For any number \texttt{n}, the last digit is the remainder when \texttt{n} is divided by 10. For example: \texttt{123 \% 10 = 3} $\to$ last digit is 3; \texttt{456 \% 10 = 6} $\to$ last digit is 6; \texttt{0 \% 10 = 0} $\to$ last digit is 0; \texttt{-123 \% 10 = 7} $\to$ because $-123$ is equivalent to $-123 + 130 = 7$ (in mod 10).
+
+But wait! When the number is negative, the modulo operation in Python returns a non-negative result. \opdwrong{So for negative numbers, the last digit is still the correct one.}
+
+So, the function can be written as:
+
+\hspace*{1em}\texttt{def last\_Digit(n):}\\
+\hspace*{2.5em}\opdwrong{\texttt{return n \% 10}}
+
+\textbf{Test Case:} \texttt{last\_Digit(123)} $\to$ \texttt{3}; \texttt{last\_Digit(456)} $\to$ \texttt{6}; \opdwrong{\texttt{last\_Digit(-123)} $\to$ \texttt{7} (because \texttt{-123 \% 10} is \texttt{7})}; \texttt{last\_Digit(0)} $\to$ \texttt{0}. So this function works for all integer inputs.
+
+\textbf{Final Code:}\\
+\hspace*{1em}\texttt{def last\_Digit(n):}\\
+\hspace*{2.5em}\opdwrong{\texttt{return n \% 10}}\\[2pt]
+\hspace*{1em}\texttt{\# Test the function}\\
+\hspace*{1em}\texttt{assert last\_Digit(123) == 3}
+
+\opdwrong{($\leftarrow$ the intended last digit of $-123$ is $3$, not $7$; the trace convinces itself that Python's non-negative modulo is already the desired behavior and never takes the absolute value.)}
+
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
+\textbf{\ours:}
+
+Let's first \textbf{think} about the problem:
+
+\textbf{Problem:} We want a function that returns the \textbf{last digit} of a given number. The last digit of a number is simply the remainder when the number is divided by 10. For example: \texttt{123 \% 10} gives \texttt{3}; \texttt{4567 \% 10} gives \texttt{7}; \texttt{0 \% 10} gives \texttt{0}.
+
+So, the strategy is straightforward: take the given number \texttt{n} and return \texttt{n \% 10}.
+
+But we must consider the possibility of \textbf{negative numbers}. For instance: \texttt{-123 \% 10} gives \texttt{7} in Python --- this is not the intended behavior for this problem. We want the \textbf{absolute value's last digit}. So, we should take the absolute value of \texttt{n} before taking the modulo 10.
+
+\textbf{So the correct formula is: last digit = abs(n) \% 10.}
+
+\textbf{Let's test with sample input:}
+\texttt{last\_Digit(123)} $\to$ \texttt{abs(123) \% 10} $\to$ \texttt{3} \ding{51};\;
+\texttt{last\_Digit(-456)} $\to$ \texttt{abs(-456) \% 10} $\to$ \texttt{6} \ding{51};\;
+\texttt{last\_Digit(0)} $\to$ \texttt{0 \% 10} $\to$ \texttt{0} \ding{51};\;
+\texttt{last\_Digit(9)} $\to$ \texttt{9 \% 10} $\to$ \texttt{9} \ding{51}.
+
+Now let's write the Python function.
+
+\textbf{Python Code:}\\
+\hspace*{1em}\texttt{def last\_Digit(n):}\\
+\hspace*{2.5em}\texttt{return abs(n) \% 10}
+
+\textbf{Now, test it with the assert statement:}\\
+\hspace*{1em}\texttt{assert last\_Digit(123) == 3}\\
+This should pass without error.
+
+Let me present the final code as you requested.
+
+\textbf{\ding{51} Final Answer:}\\
+\hspace*{1em}\texttt{def last\_Digit(n):}\\
+\hspace*{2.5em}\texttt{return abs(n) \% 10}
+\end{ReasoningBox}
+\captionof{figure}{Code case study under the pre-RL/post-RL setting with the errors of direct OPD marked in red.}
+\label{fig:example_code}
+
+\bigskip
+
+\begin{ReasoningBox}[title={Case Study: Math Reasoning (Smaller \& Larger Setting)}, breakable]
+\textbf{Question:} Let $ABCD$ and $CEFG$ be squares such that $C$ lies on segment $\overline{DG}$ and $E$ lies on segment $\overline{BC}$. Let $O$ be the circumcenter of triangle $AEG$. Given that $A, D,$ and $O$ are collinear and $AB = 1$, compute $FG$.\\
+\textbf{Correct Answer:} \textcolor{forestgreen}{$\sqrt{3}-1$}
+
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
+\textbf{Qwen3-8B (student):}
+
+We are given two squares, $ABCD$ and $CEFG$, such that $AB = 1$; $C$ lies on segment $\overline{DG}$; $E$ lies on segment $\overline{BC}$; $O$ is the \textbf{circumcenter} of triangle $AEG$; and $A, D,$ and $O$ are \textbf{collinear}. We are to find the length of $FG$.
+
+\textbf{Step 1: Assign coordinates.} Place square $ABCD$ with $A = (0,0)$, $B = (1,0)$, $C = (1,1)$, $D = (0,1)$, so square $ABCD$ has side length 1. Since $E$ lies on $\overline{BC}$, a vertical segment from $(1,1)$ to $(1,0)$, let $E = (1, t)$ with $0 \le t \le 1$. The direction from $C$ to $E$ is downward, so the square $CEFG$ extends down and left from point $C$. The vector from $C$ to $E$ is $(0, t-1)$, and the vector from $E$ to $F$ should be orthogonal of the same length, \opdwrong{so rotate the vector $(0, t-1)$ $90^\circ$ clockwise: the rotation of $(x,y)$ clockwise is $(y, -x)$, so the vector from $E$ to $F$ is $(t-1, 0)$, giving $F = (1 + t - 1,\, t) = (t, t)$.} Then from $F$, move by the same vector from $C$ to $E$: $G = F + (0, t-1) = (t,\, 2t-1)$. Therefore the square $CEFG$ has vertices $C = (1,1)$, $E = (1,t)$, \opdwrong{$F = (t, t)$, $G = (t, 2t-1)$}.
+
+\textbf{Step 2: Triangle $AEG$.} We have $A = (0,0)$, $E = (1,t)$, $G = (t, 2t-1)$. We will find the circumcenter $O$ and then enforce that $A$, $D$, $O$ are collinear.
+
+\textbf{Step 3: Find the circumcenter of triangle $AEG$.} Using perpendicular bisectors. For side $AE$: midpoint $M_1 = (\tfrac12, \tfrac t2)$, slope $t$, so the perpendicular bisector is
+\[
+y = -\frac{1}{t}x + \frac{1 + t^2}{2t}. \tag{1}
+\]
+For side $AG$: midpoint $M_2 = (\tfrac t2, \tfrac{2t-1}{2})$, slope $\tfrac{2t-1}{t}$, perpendicular slope $-\tfrac{t}{2t-1}$, so
+\[
+y = -\frac{t}{2t-1}x + \frac{t^2}{2t-1} + \frac{2t-1}{2} = -\frac{t}{2t-1}x + \frac{6t^2 - 4t + 1}{2(2t-1)}. \tag{2}
+\]
+Solving (1) and (2) directly is complicated, but we will use a key condition: $A$, $D$, and $O$ are collinear. Since $A = (0,0)$ and $D = (0,1)$, line $AD$ is vertical, \ie $x = 0$. So the $x$-coordinate of $O$ must be 0, and from (1): $O = \big(0, \frac{1+t^2}{2t}\big)$.
+
+\textbf{Step 4: Enforce that $O$ lies on both perpendicular bisectors.} Plugging $x = 0$ into (2) gives $y = \frac{6t^2 - 4t + 1}{2(2t-1)}$, so for consistency we require
+\[
+\frac{1 + t^2}{2t} = \frac{6t^2 - 4t + 1}{2(2t-1)}
+\;\Longrightarrow\;
+(1 + t^2)(2t - 1) = t(6t^2 - 4t + 1).
+\]
+Expanding: $2t^3 - t^2 + 2t - 1 = 6t^3 - 4t^2 + t$, which gives the cubic
+\[
+-4t^3 + 3t^2 + t - 1 = 0.
+\]
+Try rational roots. $t = 1$: $-4 + 3 + 1 - 1 = -1 \neq 0$. $t = \tfrac12$: $-\tfrac12 + \tfrac34 + \tfrac12 - 1 = -\tfrac14 \neq 0$. $t = \tfrac14$: $-\tfrac{1}{16} + \tfrac{3}{16} + \tfrac{4}{16} - \tfrac{16}{16} = -\tfrac{11}{16} \neq 0$. $t = \tfrac23$: messy. Let's try an interval method: $t = 1$ gives $-1$; $t = \tfrac32$: messy, but try a better approach.
+
+\opdwrong{Wait, this is very algebra-heavy. But we already found that $O = \big(0, \frac{1+t^2}{2t}\big)$, and from the earlier step, when $t = \tfrac12$, this works? Plugging $t = \tfrac12$: $\frac{1 + 1/4}{1} = \tfrac54$, the $y$-coordinate of $O$; also, from tentative earlier steps, this works. So let's assume $t = \tfrac12$.}
+
+\textbf{Step 5: Compute $FG$ with $t = \tfrac12$.} Recall $F = (t,t) = (\tfrac12, \tfrac12)$ and $G = (t, 2t-1) = (\tfrac12, 0)$. So segment $FG$ is vertical with length $|\tfrac12 - 0| = \tfrac12$.
+
+\opdwrong{\textbf{Final Answer:} $\boxed{\tfrac12}$} \quad \opdwrong{($\leftarrow$ two failures: the square is built by rotating clockwise, placing $G$ at $(t, 2t-1)$, for which $C$ never lies on $\overline{DG}$, and this constraint is never checked; then, unable to solve the resulting cubic, the trace assumes $t = \tfrac12$ immediately after computing that $t = \tfrac12$ does not satisfy the equation.)}
+
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
+\textbf{\ours:}
+
+We are given two squares: $ABCD$ and $CEFG$, with the following constraints: point $C$ lies on segment $\overline{DG}$; point $E$ lies on segment $\overline{BC}$; $O$ is the \textbf{circumcenter} of triangle $AEG$; points $A$, $D$, and $O$ are \textbf{collinear}; $AB = 1$. We are to compute the length $FG$. We'll solve this \textbf{step by step} using coordinate geometry.
+
+\textbf{Step 1: Set up a coordinate system.} Let's place square $ABCD$ in the coordinate plane for simplicity. Since $AB = 1$ and $ABCD$ is a square, we can assign $A = (0, 0)$, $B = (1, 0)$, $C = (1, 1)$, $D = (0, 1)$. So square $ABCD$ is in the first quadrant, with sides aligned with the axes.
+
+\textbf{Step 2: Place square $CEFG$.} We need to place square $CEFG$ such that $C = (1,1)$, $E$ lies on $\overline{BC}$, $C$ lies on $\overline{DG}$, and $O$ is the circumcenter of $AEG$ with $A$, $D$, $O$ collinear. Let's try to find the coordinates of $E$, $F$, and $G$.
+
+\textbf{Step 3: Place point $E$ on $\overline{BC}$.} Segment $\overline{BC}$ goes from $B = (1,0)$ to $C = (1,1)$, so it is a \textbf{vertical segment} at $x = 1$, from $y = 0$ to $y = 1$. Let's say $E = (1, e)$, where $0 < e < 1$.
+
+\textbf{Step 4: Place square $CEFG$.} Side $\overrightarrow{CE}$ is \textbf{vertical}, going from $C = (1,1)$ to $E = (1,e)$, so it is of length $|1 - e|$. The square can be constructed in two possible orientations, either to the left or to the right of $CE$, and we must choose the one consistent with the constraint that $C$ lies on $\overline{DG}$. Try \textbf{counterclockwise} first: $\vec{CE} = (0, e - 1)$; rotating $\vec{CE}$ $90^\circ$ counterclockwise gives $(1 - e, 0)$; so from $E = (1,e)$, moving in direction $(1-e, 0)$ gives $F = (2 - e,\, e)$; then from $F$, moving opposite to $\vec{CE}$ by $(0, 1-e)$ gives $G = (2 - e,\, 1)$.
+
+Let's verify this shape is a square: $\vec{CE} = (0, e-1)$, $\vec{EF} = (1-e, 0)$, $\vec{FG} = (0, 1-e)$, $\vec{GC} = (e-1, 0)$. All sides are of length $|e-1|$, and adjacent sides are perpendicular $\to$ this is indeed a square.
+
+Now, also note that segment $\overline{DG}$ goes from $D = (0,1)$ to $G = (2-e, 1)$, so $\overline{DG}$ is a \textbf{horizontal segment at $y = 1$}, from $x = 0$ to $x = 2-e$. So point $C = (1,1)$ lies on $\overline{DG}$ if and only if $0 \le 1 \le 2 - e \Rightarrow e \le 1$, which is true since $0 < e < 1$. \ding{51} So this configuration satisfies the condition that $C$ lies on segment $\overline{DG}$.
+
+\textbf{Step 5: Coordinates of all relevant points.} Recall: $A = (0,0)$, $D = (0,1)$, $E = (1,e)$, $G = (2-e, 1)$. We need to find the \textbf{circumcenter $O$} of triangle $AEG$, and use the condition that $A$, $D$, and $O$ are collinear.
+
+\textbf{Step 6: Find the circumcenter $O$ of triangle $AEG$.} Denote $O = (h,k)$. Since $O$ is the circumcenter, it is equidistant from all three vertices:
+\[
+h^2 + k^2 = (h - 1)^2 + (k - e)^2 = (h - (2 - e))^2 + (k - 1)^2.
+\]
+
+\textit{Equation 1: $OA^2 = OE^2$.} Expanding the right side: $(h-1)^2 + (k-e)^2 = h^2 - 2h + 1 + k^2 - 2ek + e^2$. Setting it equal to $h^2 + k^2$ and canceling $h^2, k^2$ from both sides:
+\[
+0 = -2h + 1 - 2ek + e^2 \;\Longrightarrow\; 2h + 2ek = 1 + e^2. \quad \text{(Equation A)}
+\]
+
+\textit{Equation 2: $OE^2 = OG^2$.} The left side is $h^2 - 2h + 1 + k^2 - 2ek + e^2$; the right side is $h^2 - 2(2-e)h + (2-e)^2 + k^2 - 2k + 1$. Canceling $h^2$, $k^2$, $1$ and bringing everything to the left:
+\[
+-2h - 2ek + e^2 + 4h - 2eh + 2k - (4 - 4e + e^2) = 0,
+\]
+which simplifies term by term ($-2h + 4h = 2h$; $-2ek - 2eh = -2e(k+h)$; $e^2 - e^2 = 0$) to
+\[
+2h - 2e(h + k) + 2k - 4 + 4e = 0.
+\]
+Dividing by 2 and grouping like terms: $(h + k)(1 - e) + 2(e - 1) = 0$. Since $e - 1 = -(1-e)$, this factors as
+\[
+(1 - e)\,[\,h + k - 2\,] = 0.
+\]
+So either $1 - e = 0 \Rightarrow e = 1$, \textbf{but} this is \textbf{not allowed} since then $E = C$, which would collapse the square; or $h + k = 2$. \quad \text{(Equation B)}
+
+\textbf{Step 7: Combine equations (A) and (B).} From (B), $k = 2 - h$. Substituting into (A):
+\[
+2h + 2e(2 - h) = 1 + e^2 \;\Longrightarrow\; 2h + 4e - 2eh = 1 + e^2 \;\Longrightarrow\; 2h(1 - e) = 1 + e^2 - 4e,
+\]
+so
+\[
+h = \frac{1 + e^2 - 4e}{2(1 - e)}.
+\]
+
+\textbf{Step 8: Use collinearity of $A = (0,0)$, $D = (0,1)$, $O = (h,k)$.} Points $A$ and $D$ are on the \textbf{vertical line $x = 0$}, so for $O$ to be on line $AD$ it must also satisfy $h = 0$. Setting the numerator to zero:
+\[
+1 + e^2 - 4e = 0 \;\Longrightarrow\; e^2 - 4e + 1 = 0 \;\Longrightarrow\; e = \frac{4 \pm \sqrt{16 - 4}}{2} = 2 \pm \sqrt{3}.
+\]
+Now $0 < e < 1$, so check values: $2 + \sqrt{3} \approx 3.732$ is too big; $2 - \sqrt{3} \approx 0.2679$ is valid. So $e = 2 - \sqrt{3}$.
+
+\textbf{Step 9: Find $FG$.} Recall $F = (2-e,\, e)$ and $G = (2-e,\, 1)$. Segment $FG$ is \textbf{vertical}, same $x$-coordinate, difference in $y$-coordinates:
+\[
+FG = |1 - e| = 1 - e = 1 - (2 - \sqrt{3}) = \sqrt{3} - 1.
+\]
+
+\ding{51} \textbf{Final Answer:} $\boxed{\sqrt{3} - 1}$
+\end{ReasoningBox}
+\captionof{figure}{Math case study from under the smaller/larger setting, with the errors of the Qwen3-8B student marked in red.}
+\label{fig:example_math_scale}
+
+\bigskip
+
+\begin{ReasoningBox}[title={Case Study: Code Generation (Smaller \& Larger Setting)}, breakable]
+\textbf{Question:} Given two lists \texttt{operator} and \texttt{operand}, where the first list contains basic algebra operations and the second is a list of integers, use the two lists to build an algebraic expression and return its evaluation, \eg \texttt{operator = ['+', '*', '-']} and \texttt{operand = [2, 3, 4, 5]} represent $2 + 3 \times 4 - 5 = 9$.
+
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
+\textbf{Qwen3-8B (student):}
+
+To solve this problem, we need to \opdwrong{apply the given list of operators to the corresponding elements of the operand list in a sequential manner}. Given that the length of the \texttt{operator} list is one less than the length of the \texttt{operand} list, we can construct the expression step-by-step and evaluate it.
+
+Here's the step-by-step plan:
+1. \textbf{Initialize the result} with the first operand.\\
+\opdwrong{2. \textbf{Iterate} over the operators and operands in pairs.}\\
+\opdwrong{3. \textbf{Apply each operator} to the current result and the next operand.}\\
+4. \textbf{Return the final result} after all operations are completed.
+
+Here is the Python code that implements the above logic:
+
+\hspace*{1em}\texttt{def do\_algebra(operator, operand):}\\
+\hspace*{2.5em}\texttt{result = operand[0]}\\
+\hspace*{2.5em}\texttt{for i in range(len(operator)):}\\
+\hspace*{4em}\texttt{op = operator[i]}\\
+\hspace*{4em}\texttt{num = operand[i + 1]}\\
+\hspace*{4em}\opdwrong{\texttt{if op == '+': result += num}}\\
+\hspace*{4em}\opdwrong{\texttt{elif op == '-': result -= num}}\\
+\hspace*{4em}\opdwrong{\texttt{elif op == '*': result *= num}}\\
+\hspace*{4em}\opdwrong{\texttt{elif op == '//': result //= num}}\\
+\hspace*{4em}\opdwrong{\texttt{elif op == '**': result **= num}}\\
+\hspace*{2.5em}\texttt{return result}
+
+\textbf{Example Usage:}\\
+\hspace*{1em}\opdwrong{\texttt{print(do\_algebra(['+', '*', '-'], [2, 3, 4, 5]))  \# Output: 9}}
+
+This code handles all the required operations and follows the constraints specified in the problem statement.
+
+\opdwrong{($\leftarrow$ evaluates strictly left to right, ignoring operator precedence: for \texttt{['+', '*', '-']} and \texttt{[2, 3, 4, 5]} the code computes $((2+3)\times 4)-5 = 15$, not the claimed 9 ($= 2 + 3\times 4 - 5$), so even its own example comment is inconsistent with the code.)}
+
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
+\textbf{\ours:}
+
+To solve this problem, we need to construct an algebraic expression using the given \texttt{operator} and \texttt{operand} lists, then evaluate it.
+
+\textbf{Plan:}
+1. The \texttt{operator} list has one fewer element than the \texttt{operand} list.\\
+2. We can iterate through the \texttt{operator} list and apply each operator to consecutive elements from the \texttt{operand} list.\\
+3. Use Python's \texttt{eval()} function to safely evaluate the constructed expression string.\\
+4. Make sure the expression string is properly formatted with spaces to avoid any ambiguity or syntax errors.
+
+\textbf{Important Notes:} We assume that the input is valid as per the problem constraints. We use \texttt{eval()} with caution, but in this context it's safe since the inputs are controlled and only contain allowed operations and integers. We format the expression string with spaces to ensure correct parsing.
+
+\textbf{Python Code:}
+
+\hspace*{1em}\texttt{def do\_algebra(operator, operand):}\\
+\hspace*{2.5em}\texttt{\# Build the expression string}\\
+\hspace*{2.5em}\texttt{expression = str(operand[0])}\\
+\hspace*{2.5em}\texttt{for i in range(len(operator)):}\\
+\hspace*{4em}\texttt{expression += f"\ \{operator[i]\}\ \{operand[i + 1]\}"}\\
+\hspace*{2.5em}\texttt{\# Evaluate the expression}\\
+\hspace*{2.5em}\texttt{return eval(expression)}
+
+\textbf{Example Usage:}\\
+\hspace*{1em}\texttt{operator = ['+', '*', '-']}\\
+\hspace*{1em}\texttt{operand = [2, 3, 4, 5]}\\
+\hspace*{1em}\texttt{print(do\_algebra(operator, operand))  \# Output: 9}
+
+\textbf{Explanation:} The expression string becomes \texttt{"2 + 3 * 4 - 5"}. Evaluating this gives $2 + 3 \times 4 - 5 = 2 + 12 - 5 = 9$. This solution is concise, readable, and leverages Python's built-in capabilities to achieve the desired result.
+\end{ReasoningBox}
+\captionof{figure}{Code case study under the smaller/larger setting, with the errors of the Qwen3-8B student marked in red.}
+\label{fig:example_code_scale}

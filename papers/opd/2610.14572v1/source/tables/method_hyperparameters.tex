@@ -1,0 +1,24 @@
+\begin{minipage}[t]{0.49\linewidth}
+\captionof{table}{Method-specific math hyperparameters. \(N_1\) and \(N\)
+count valid response tokens in the first and current actor batches.}
+\label{tab:method-hparams}
+\centering
+\normalsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.0}
+\begin{tabular}{@{}C{0.58\linewidth}C{0.36\linewidth}@{}}
+\toprule
+Hyperparameter & Value \\
+\midrule
+Distillation coefficient \(\lambda\) (RAD / baselines) & 0.1 \\
+RAD: meta prompts & 64 \\
+RAD: initial token weight \(c\) & 0 \\
+RAD: weight learning rate \(\gamma\) & \(10^4 N_1/N\) \\
+TIP retention ratio & 0.5 \\
+RLAD \(\alpha\) & 0.5 \\
+RLAD teacher log-ratio clamp & 1.0 \\
+RLAD clipping thresholds & 0.20 / 0.28 \\
+ExOPD \(\lambda\) & 1.25 \\
+\bottomrule
+\end{tabular}
+\end{minipage}

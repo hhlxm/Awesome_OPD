@@ -1,0 +1,16 @@
+\begin{table}[ht]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+&\multicolumn{4}{c}{Local loss}&\multicolumn{4}{c}{Conditional entropy}\\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+Learner & Initial & Final & $\sum\widehat R$ & $\sum\widehat D$ & Initial & Final & $\sum\widehat R$ & $\sum\widehat D$\\
+\midrule
+DeepSeek & 0.263 & 0.015 & -0.033 & -0.214 & 0.664 & 0.707 & -0.049 & 0.093\\
+Unprepared & 0.579 & 0.073 & 0.474 & -0.980 & 0.650 & 3.988 & 3.666 & -0.327\\
+Prepared & 0.707 & 0.362 & 0.108 & -0.453 & 2.171 & 0.842 & -1.183 & -0.146\\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Cumulative routing and drift contributions to loss and entropy.} The comparisons run from initialization through batch 161, including evaluations at substitute checkpoints. Values are rounded independently. At full precision, the routing and drift contributions sum to the change from the initial to the final mean.}\label{tab:rd-summary}
+\end{table}

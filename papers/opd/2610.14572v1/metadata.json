@@ -1,0 +1,50 @@
+{
+  "arxiv_id": "2610.14572v1",
+  "title": "Reward-Aligned Distillation",
+  "authors": [
+    "Chen, Yilan",
+    "Su, Zian",
+    "Prajapat, Manish",
+    "Wang, Dingmin",
+    "Houthooft, Rein",
+    "Song, Rui",
+    "Lingam, Vijay"
+  ],
+  "submitted_date": "2026/10/10",
+  "abs_url": "https://arxiv.org/abs/2610.14572v1",
+  "schema_version": 2,
+  "requested_input": "2610.14572",
+  "requested_id": "2610.14572",
+  "source_url": "https://arxiv.org/src/2610.14572v1",
+  "downloaded_at": "2026-11-17T03:04:44.275072+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "f3e5198ae395c6d9136e48f510a481c5c6edad4175a6a9618ae9dfcce4602a86",
+  "tex_files": [
+    "math_commands_.tex",
+    "rad_iclr2027.tex",
+    "tables/coding_results.tex",
+    "tables/coding_validation_results.tex",
+    "tables/dataset_statistics.tex",
+    "tables/math_ablations.tex",
+    "tables/math_results.tex",
+    "tables/math_wallclock_matched_results.tex",
+    "tables/method_hyperparameters.tex",
+    "tables/olmo3_coding_results.tex",
+    "tables/opd2_compatibility.tex",
+    "tables/rad_training_time.tex",
+    "tables/shared_training_hyperparameters.tex",
+    "tables/training_step_comparison.tex"
+  ],
+  "main_tex_candidates": [
+    "rad_iclr2027.tex"
+  ],
+  "source_file_count": 29,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2610.14572v1",
+    "sha256": "1588ae727d7fba07ffde918d0f1b3e4d32c8fb9d9f2dfb2bdca98dfde96c485a",
+    "downloaded_at": "2026-11-17T03:04:47.263343+00:00",
+    "content_type": "application/pdf"
+  }
+}

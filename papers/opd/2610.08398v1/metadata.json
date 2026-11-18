@@ -1,0 +1,42 @@
+{
+  "arxiv_id": "2610.08398v1",
+  "title": "UP-MOPD: Update Projection in Multi-Teacher On-Policy Distillation",
+  "authors": [
+    "Zhu, Taojie",
+    "Jin, Jing",
+    "Xia, Yuan",
+    "Ding, Chenyang",
+    "He, Qunshan",
+    "Xia, Wanke",
+    "Sun, Tao",
+    "Chen, Yan",
+    "Wang, Jian",
+    "Gu, Jinjie",
+    "Feng, Tao"
+  ],
+  "submitted_date": "2026/10/06",
+  "abs_url": "https://arxiv.org/abs/2610.08398v1",
+  "schema_version": 2,
+  "requested_input": "2610.08398",
+  "requested_id": "2610.08398",
+  "source_url": "https://arxiv.org/src/2610.08398v1",
+  "downloaded_at": "2026-11-17T03:04:35.408382+00:00",
+  "content_type": "application/gzip",
+  "archive_file": "source.tar.gz",
+  "sha256": "665103f7ab32adef644b2e940de9fb67cdc671ea869e6c739eb80168a7e5d682",
+  "tex_files": [
+    "math_commands.tex",
+    "up-mopd_arxiv.tex"
+  ],
+  "main_tex_candidates": [
+    "up-mopd_arxiv.tex"
+  ],
+  "source_file_count": 13,
+  "pdf": {
+    "file": "paper.pdf",
+    "url": "https://arxiv.org/pdf/2610.08398v1",
+    "sha256": "4ee735554e90bba095655b1f05162a3d404028511c7cabc4c6d241f8726ea680",
+    "downloaded_at": "2026-11-17T03:04:38.304960+00:00",
+    "content_type": "application/pdf"
+  }
+}

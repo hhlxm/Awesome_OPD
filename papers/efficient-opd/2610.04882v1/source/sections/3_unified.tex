@@ -1,0 +1,192 @@
+\subsection{A Unified View of Sparse Gradient Estimators}
+\label{sec:unified}
+
+ResOPD changes the between-event component of the HETS variance while
+preserving its conditional within-tail randomness. This distinction provides
+a useful way to compare sparse unbiased estimators: a second,
+conditionally zero-mean control can act inside the tail. We present the
+family, its oracle optimum, and the exact conditions governing the
+ResOPD--SC-TA comparison here. The corresponding audits and downstream
+results appear in Sec.~\ref{sec:control-comparison}.
+
+\subsubsection{Separating between-event and within-tail controls}
+\label{sec:joint-family}
+\label{sec:event-scta}
+
+The single-control family acts only on the head-versus-tail event component. A
+second control can reduce the conditional variance that remains inside the
+tail without changing the sparse Teacher payload. Define the conditionally
+zero-mean score fluctuation
+$\bfluct_A=b(\bscore_A-\bar{\bscore}_{\mathrm{tail}})$, so that
+$\E[\bfluct_A\mid J=1]=\bm0$. For any finite prefix-measurable $\bm B$ and
+scalar $\gamma$, both stopped before drawing $A$, define
+
+\begin{equation}
+ \widehat{\bgrad}(\bm B,\gamma)
+ =\bhead+\tau_p\bm B
+ +J\!\left(\btoken_A-\bm B-\gamma\bfluct_A\right).
+ \label{eq:unified-main}
+\end{equation}
+Equation~(\ref{eq:unified-main}) satisfies
+\begin{equation}
+ \begin{aligned}
+ \E\!\left[\widehat{\bgrad}(\bm B,\gamma)\right]
+ &=\bhead+\tau_p\bm B
+   +\tau_p(\bmean_{\mathrm{tail}}-\bm B)
+   -\gamma\tau_p\E[\bfluct_A\mid J=1]\\
+ &=\bhead+\tau_p\bmean_{\mathrm{tail}}
+  =\bgrad.
+ \end{aligned}
+ \label{eq:family-unbiased-proof}
+\end{equation}
+Conditioned on the head event its value is $\bhead+\tau_p\bm B$, while conditioned
+on the tail event its mean is
+$\bhead+\tau_p\bm B+\bmean_{\mathrm{tail}}-\bm B$. Their difference is
+$\bmean_{\mathrm{tail}}-\bm B$, while only the tail branch retains conditional randomness.
+The law of total covariance therefore gives
+\begin{equation}
+ \mathcal V\!\left(\widehat{\bgrad}(\bm B,\gamma)\right)
+ =\tau_p\mathcal V_{\mathrm{tail}}(\btoken_A-\gamma\bfluct_A)
+ +P\tau_p\lVert\bmean_{\mathrm{tail}}-\bm B\rVert_2^2.
+ \label{eq:two-level-variance}
+\end{equation}
+This factorization proves that the two controls are orthogonal in trace
+covariance: $\bm B$ changes only the between-event term and $\gamma$ only
+the within-tail term. We call Equation~(\ref{eq:unified-main}) the
+\emph{Unified} family: the first coordinate generalizes the single control in
+Equation~(\ref{eq:residualization}), while the second subtracts a
+known-zero-mean within-tail fluctuation. If
+$\mathcal V_{\mathrm{tail}}(\bfluct_A)>0$, their joint
+oracle is
+\begin{equation}
+ \bm B^\star=\bmean_{\mathrm{tail}},\qquad
+ \gamma^\star=
+ \frac{\operatorname{tr}\!\left(
+       \Cov_{\mathrm{tail}}(\btoken_A,\bfluct_A)\right)}
+      {\mathcal V_{\mathrm{tail}}(\bfluct_A)},
+ \label{eq:joint-oracle}
+\end{equation}
+and completing the square in both coordinates yields
+\begin{equation}
+ \begin{aligned}
+ &\mathcal V\!\left(\widehat{\bgrad}(\bm B,\gamma)\right)
+ -\mathcal V\!\left(
+   \widehat{\bgrad}(\bm B^\star,\gamma^\star)\right)\\
+ &\qquad
+ =P\tau_p\lVert\bm B-\bmean_{\mathrm{tail}}\rVert_2^2
+ +\tau_p\mathcal V_{\mathrm{tail}}(\bfluct_A)
+  (\gamma-\gamma^\star)^2.
+ \end{aligned}
+ \label{eq:unified-regret-main}
+\end{equation}
+If $\mathcal V_{\mathrm{tail}}(\bfluct_A)=0$, $\gamma$ is immaterial and the first term
+remains exact. Importantly, neither oracle coordinate is available online:
+$\bm B^\star$ requires the full Teacher tail, while the per-prefix $\gamma^\star$
+requires its conditional covariance. ResOPD instead makes the
+simple but effective choice $(\bmean_B,0)$, and the global fitted coefficient is a
+separate offline diagnostic.
+
+\begin{table}[t]
+\caption{Coordinates in the two-control family.}
+\label{tab:estimator-map}
+\centering
+\begin{tabular*}{0.7\linewidth}{@{\extracolsep{\fill}} lccc @{}}
+\toprule
+Unbiased estimator & $\bm B$ & $\gamma$ & Role \\
+\midrule
+HETS & $\bm 0$ & $0$ & structural baseline \\
+ResOPD & $\bmean_B$ & $0$ & our estimator \\
+SC-TA & $\bmean_B$ & $1$ & boundary estimator \\
+Joint oracle & $\bmean_{\mathrm{tail}}$ & $\gamma^\star$ & unavailable optimum \\
+\bottomrule
+\end{tabular*}
+\end{table}
+\subsubsection{ResOPD and SC-TA as endpoints}
+\label{sec:gamma}
+
+We now specialize the two-level family to $\bm B=\bmean_B$ and connect it to sample-corrected TA-OPD (SC-TA) from the concurrent work of \citet{huang2026tail}. Their primary method, TA-OPD, augments the Teacher Top-$k$ support with a tail pseudo-token and optimizes the resulting coarse $(k+1)$-way reverse-KL objective. SC-TA is subsequently derived as a sample-corrected variant that restores full-vocabulary unbiasedness. We complement this construction with a gradient-level characterization within our two-control family. In particular, we derive the exact pointwise relation between ResOPD and SC-TA, characterize their covariance ordering as a function of the within-tail control coefficient $\gamma$, identify the trace-optimal $\gamma^\star$, and evaluate these predictions across natural prompt distributions.
+
+\paragraph{Exact fine-tail decomposition.}
+On a tail draw,
+\begin{equation}
+ r_A
+ =\log\frac{p_A}{q_A}
+ =\underbrace{\log\frac{\tau_p}{\tau_q}}_{b}
+ +\log\frac{p_A/\tau_p}{q_A/\tau_q}.
+\end{equation}
+Using $\bmean_B=b\bar{\bscore}_{\mathrm{tail}}$ therefore gives
+\begin{equation}
+ \btoken_A
+ =\bmean_B
+ +\underbrace{b(\bscore_A-\bar{\bscore}_{\mathrm{tail}})}_{\bfluct_A}
+ +\underbrace{(r_A-b)\bscore_A}_{\bresid_A},
+ \qquad
+ \E[\bfluct_A\mid J=1]=\bm 0.
+ \label{eq:tail-exact-decomposition}
+\end{equation}
+The terms have different roles. $\bmean_B$ is the coarse tail-bucket prediction; $\bfluct_A$ is a known-zero-mean fluctuation around the conditional Student
+score; and $\bresid_A$ records the unresolved Student--Teacher conditional
+tail-shape mismatch.
+
+With $\bgrad_{\mathrm{coarse}}=\bhead+\tau_p\bmean_B$, the specialization of
+Equation~(\ref{eq:unified-main}) is
+\begin{equation}
+ \widehat{\bgrad}_\gamma
+ =\bgrad_{\mathrm{coarse}}
+ +J\!\left[\bresid_A+(1-\gamma)\bfluct_A\right].
+ \label{eq:event-scta-family}
+\end{equation}
+Equation~(\ref{eq:family-unbiased-proof}) already proves that every fixed
+$\gamma$ targets $\bgrad$. Its two named endpoints are
+\begin{equation}
+ \begin{aligned}
+ \widehat{\bgrad}^{\mathrm{ResOPD}}
+ &=\widehat{\bgrad}_{\gamma=0}
+  =\bgrad_{\mathrm{coarse}}+J(\bresid_A+\bfluct_A),\\
+ \widehat{\bgrad}^{\mathrm{SC}}
+ &=\widehat{\bgrad}_{\gamma=1}
+  =\bgrad_{\mathrm{coarse}}+J\bresid_A.
+ \end{aligned}
+\end{equation}
+Hence their signed pointwise relationship is
+\begin{equation}
+ \boxed{
+ \widehat{\bgrad}^{\mathrm{SC}}
+ =\widehat{\bgrad}^{\mathrm{ResOPD}}-J\bfluct_A
+ }
+ \label{eq:event-scta-difference}
+\end{equation}
+The difference has zero expectation but is generally nonzero on tail actions.
+
+\paragraph{Variance optimum and endpoint certificate.}
+Let $\bz_0 = \bresid_A + \bfluct_A = \btoken_A - \bmean_B$. Decomposing the total variance into the common between-event component and the $\gamma$-dependent within-tail component yields
+\begin{equation}
+  \begin{aligned}
+    \mathcal{V}(\widehat{\bgrad}_\gamma)
+    &= \tau_p \mathcal{V}_{\mathrm{tail}}(\bz_0 - \gamma \bfluct_A) + P\tau_p \lVert\bmean_{\mathrm{tail}} - \bmean_B\rVert_2^2, \\
+    \mathcal{V}_{\mathrm{tail}}(\bz_0 - \gamma \bfluct_A)
+    &= \mathcal{V}_{\mathrm{tail}}(\bz_0) - 2\gamma \operatorname{tr}\!\left(\Cov_{\mathrm{tail}}(\bz_0, \bfluct_A)\right) + \gamma^2 \mathcal{V}_{\mathrm{tail}}(\bfluct_A).
+  \end{aligned}
+  \label{eq:event-scta-total-var}
+\end{equation}
+When $\mathcal{V}_{\mathrm{tail}}(\bfluct_A) > 0$, completing the square with respect to $\gamma$ identifies the trace optimum:
+\begin{equation}
+  \begin{aligned}
+    \gamma^\star
+    &= \frac{\operatorname{tr}\!\left(\Cov_{\mathrm{tail}}(\bz_0, \bfluct_A)\right)}{\mathcal{V}_{\mathrm{tail}}(\bfluct_A)}, \\
+    \mathcal{V}(\widehat{\bgrad}_\gamma) - \mathcal{V}(\widehat{\bgrad}_{\gamma^\star})
+    &= \tau_p \mathcal{V}_{\mathrm{tail}}(\bfluct_A) (\gamma - \gamma^\star)^2.
+  \end{aligned}
+  \label{eq:event-scta-regret}
+\end{equation}
+Evaluating the quadratic regret at the boundary points $\gamma = 1$ (SC-TA) and $\gamma = 0$ (ResOPD) reveals that SC-TA achieves strictly lower trace covariance than ResOPD if and only if $\gamma^\star > 1/2$. Substituting $\bz_0 = \bresid_A + \bfluct_A$ expands the optimal coefficient as
+\begin{equation}
+  \gamma^\star = 1 + \frac{\operatorname{tr}\!\left(\Cov_{\mathrm{tail}}(\bresid_A, \bfluct_A)\right)}{\mathcal{V}_{\mathrm{tail}}(\bfluct_A)}.
+  \label{eq:event-scta-gamma-residual}
+\end{equation}
+Consequently, SC-TA outperforms ResOPD exactly when $\operatorname{tr}\!\left(\Cov_{\mathrm{tail}}(\bresid_A, \bfluct_A)\right) > -\mathcal{V}_{\mathrm{tail}}(\bfluct_A)/2$. By the Cauchy--Schwarz inequality, a sufficient condition is
+\begin{equation}
+  \mathcal{V}_{\mathrm{tail}}(\bresid_A) < \mathcal{V}_{\mathrm{tail}}(\bfluct_A)/4.
+  \label{eq:event-improvement}
+\end{equation}
+In particular, when the conditional tail shapes match, the residual vanishes ($\bresid_A = \bm{0}$), yielding $\gamma^\star = 1$. These conditions serve as distribution-dependent certificates rather than guaranteeing a universal variance ordering.
